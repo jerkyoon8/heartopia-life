@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.VillagerMapper">
+
+    <resultMap id="VillagerResultMap" type="com.heartopia.wiki.model.Villager">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="subTitle" column="sub_title"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="location" column="location"/>
+        <result property="unlockCondition" column="unlock_condition"/>
+
+        <!-- Select Roles (Nested Select) -->
+        <collection property="roles" column="id" select="findRolesByVillagerId"/>
+        
+        <!-- Select Gifts (Nested Select) -->
+        <collection property="gifts" column="id" select="findGiftsByVillagerId"/>
+    </resultMap>
+
+    <resultMap id="RoleResultMap" type="com.heartopia.wiki.model.VillagerRole">
+        <id property="id" column="role_id"/>
+        <result property="villagerId" column="villager_id"/>
+        <result property="roleType" column="role_type"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        
+        <collection property="items" ofType="com.heartopia.wiki.model.RoleItem">
+            <id property="id" column="item_id"/>
+            <result property="roleId" column="item_role_id"/>
+            <result property="itemName" column="item_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllVillagers" resultMap="VillagerResultMap">
+        SELECT * FROM villagers ORDER BY id
+    </select>
+
+    <select id="findRolesByVillagerId" resultMap="RoleResultMap">
+        SELECT 
+            r.id as role_id,
+            r.villager_id,
+            r.role_type,
+            r.title,
+            r.description, 
+            i.id AS item_id, 
+            i.role_id AS item_role_id, 
+            i.item_name
+        FROM villager_roles r
+        LEFT JOIN role_items i ON r.id = i.role_id
+        WHERE r.villager_id = #{id}
+        ORDER BY FIELD(r.role_type, 'GUIDE', 'SHOP', 'EVENT', 'QUEST')
+    </select>
+    
+    <select id="findGiftsByVillagerId" resultType="com.heartopia.wiki.model.VillagerGift">
+        SELECT 
+            id, villager_id, item_name as itemName, is_loved as isLoved
+        FROM villager_gifts
+        WHERE villager_id = #{id}
+    </select>
+
+</mapper>
