@@ -1,0 +1,62 @@
+# --- Java / Gradle ---
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+**/build/
+**/bin/
+**/out/
+
+# --- Spring Boot ---
+**/src/main/resources/application-secret.properties
+**/src/main/resources/application-prod.properties
+
+# --- IDE Settings ---
+# IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# VS Code
+.vscode/
+
+# --- OS / System ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# --- Logs ---
+*.log
+logs/
+
+# --- AI Assistant ---
+.agent/
+.gemini_link
+
+# --- Dev Reference / Scripts ---
+/reference/
+/scripts/
+/query/
+/create_tables.sql
+
+# --- Build Artifacts / Logs ---
+heartopia-wiki/docs/
+heartopia-wiki/*.log
+heartopia-wiki/*.txt
+
+# --- Temp ---
+tmp/
+temp/
