@@ -1,0 +1,382 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <nav th:fragment="header" class="fixed-top">
+        <!-- Paperlogy Font -->
+        <style>
+            @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2');
+
+            @font-face {
+                font-family: 'Paperlogy';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2');
+                font-weight: 400;
+                font-display: swap;
+            }
+
+            @font-face {
+                font-family: 'Paperlogy';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2');
+                font-weight: 700;
+                font-display: swap;
+            }
+
+            /* General Header Styles */
+            .header-wrapper {
+                font-family: 'Paperlogy', sans-serif;
+                background-color: #ffffff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+                width: 100%;
+                /* Rounded Bottom Corners for the whole header if desired, or just internal */
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+            }
+
+            .header-content-container {
+                max-width: 1500px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Top Bar */
+            .top-bar {
+                height: 90px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .brand-logo {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: #000;
+                font-size: 22px;
+                font-weight: 700;
+            }
+
+            .brand-logo img {
+                height: 68px;
+                margin-right: 10px;
+            }
+
+            /* Nav Bar */
+            .nav-bar {
+                padding: 0;
+            }
+
+            .nav-mega-wrapper {
+                position: relative;
+                /* Anchor for mega menu */
+            }
+
+            .navbar-nav {
+                flex-direction: row;
+                gap: 10px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                height: 50px;
+                align-items: center;
+            }
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+            }
+
+            .nav-link {
+                font-size: 16px;
+                color: #333;
+                padding: 8px 15px;
+                font-weight: 600;
+                text-decoration: none;
+                border-radius: 20px;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+            }
+
+            .nav-link:hover {
+                background-color: #f1f3f5;
+                color: #000;
+            }
+
+            /* MEGA MENU Styling */
+            .mega-menu-container {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                /* Matches nav-mega-wrapper width (max 1500px) */
+                background-color: rgba(255, 255, 255, 0.98);
+                border: 1px solid #f0f0f0;
+                border-top: none;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+                padding: 40px;
+                display: none;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+                z-index: 1000;
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                box-sizing: border-box;
+            }
+
+            /* Hover Logic: 
+           If hovering the navbar (parent of items) OR the mega menu itself, show the menu.
+           We'll use a wrapper around nav items and mega menu to maintain hover state. 
+        */
+            .nav-mega-wrapper:hover .mega-menu-container {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Mega Menu Grid */
+            .mega-menu-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                /* 3 Columns: Collection, Items, Others */
+                gap: 30px;
+            }
+
+            .mega-column h5 {
+                font-size: 16px;
+                font-weight: 700;
+                color: #000;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid #eee;
+            }
+
+            .mega-column ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .mega-column li {
+                margin-bottom: 8px;
+            }
+
+            .mega-link {
+                font-size: 14px;
+                color: #555;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 5px 8px;
+                border-radius: 8px;
+                transition: background 0.2s;
+            }
+
+            .mega-link:hover {
+                background-color: #f8f9fa;
+                color: #0d6efd;
+            }
+
+            .mega-link i {
+                width: 20px;
+                text-align: center;
+                margin-right: 8px;
+                color: #888;
+            }
+
+            .mega-link:hover i {
+                color: #0d6efd;
+            }
+
+            /* Gray text for sub-attributes (not implemented in data yet, but style ready) */
+            .sub-text {
+                color: #999;
+                font-size: 12px;
+                margin-left: 28px;
+            }
+
+            /* Search Box Styles - Enhanced */
+            .search-box {
+                position: relative;
+                background: transparent;
+                height: 42px;
+                border-radius: 21px;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                border: 1px solid transparent;
+            }
+
+            .search-box.active {
+                background: #f1f3f5;
+                border: 1px solid #e9ecef;
+                width: 350px;
+                /* Increased width */
+                padding-left: 18px;
+            }
+
+            .search-txt {
+                border: none;
+                background: none;
+                outline: none;
+                padding: 0;
+                color: #212529;
+                font-size: 14px;
+                font-family: 'Paperlogy', sans-serif;
+                transition: all 0.5s;
+                width: 0;
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .search-box.active .search-txt {
+                width: 100%;
+                /* Fill the expanded container */
+                opacity: 1;
+                visibility: visible;
+                margin-right: 10px;
+            }
+
+            .search-btn {
+                color: #495057;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                background: transparent;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                transition: all 0.3s;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+            .search-box.active .search-btn {
+                background: #ffffff;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                color: #0d6efd;
+            }
+
+            .search-btn:hover {
+                color: #0d6efd;
+                transform: scale(1.1);
+            }
+
+            .search-txt::placeholder {
+                color: #adb5bd;
+                font-weight: 400;
+            }
+        </style>
+
+        <div class="header-wrapper">
+            <div class="header-content-container">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <a th:href="@{/wiki}" class="brand-logo">
+                        <img src="/images/logo/header_logo.png" alt="Logo">
+                        <span>두두타 도감</span>
+                    </a>
+
+                    <!-- Search Box -->
+                    <div class="search-box">
+                        <input type="text" class="search-txt" placeholder="Search..." aria-label="Search">
+                        <a class="search-btn" href="javascript:void(0);" onclick="toggleSearch()">
+                            <i class="fas fa-search"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Nav Bar + Mega Menu Wrapper -->
+                <div class="nav-mega-wrapper">
+                    <div class="nav-bar">
+                        <ul class="navbar-nav">
+                            <!-- Simple Links -->
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki/index}">소식</a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki/codes}">쿠폰</a></li>
+
+                            <!-- Trigger Links (Hovering these keeps menu open because they are in wrapper) -->
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">컬렉션</a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">아이템들</a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">기타</a></li>
+                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki/map}">지도</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Mega Dropdown (Full Width Content) -->
+                    <div class="mega-menu-container">
+                        <div class="mega-menu-grid">
+                            <!-- Column 1: 컬렉션 -->
+                            <div class="mega-column">
+                                <h5>컬렉션</h5>
+                                <ul>
+                                    <li><a th:href="@{/wiki/collections/fish}" class="mega-link"><i
+                                                class="fas fa-fish"></i> 생선</a></li>
+                                    <li><a th:href="@{/wiki/collections/bug}" class="mega-link"><i
+                                                class="fas fa-bug"></i> 벌레</a></li>
+                                    <li><a th:href="@{/wiki/collections/bird}" class="mega-link"><i
+                                                class="fas fa-crow"></i> 새</a></li>
+                                    <li><a th:href="@{/wiki/collections/animal}" class="mega-link"><i
+                                                class="fas fa-paw"></i> 동물</a></li>
+                                    <li><a th:href="@{/wiki/collections/forageable}" class="mega-link"><i
+                                                class="fas fa-leaf"></i> 채집물</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Column 2: 아이템들 -->
+                            <div class="mega-column">
+                                <h5>아이템들</h5>
+                                <ul>
+                                    <li><a href="#" class="mega-link"><i class="fas fa-tools"></i> 도구</a>
+                                    </li>
+                                    <li><a th:href="@{/wiki/items/crops}" class="mega-link"><i
+                                                class="fas fa-carrot"></i>
+                                            작물</a></li>
+                                    <li><a th:href="@{/wiki/items/cooking}" class="mega-link"><i
+                                                class="fas fa-utensils"></i>
+                                            음식</a></li>
+                                    <li><a href="#" class="mega-link"><i class="fas fa-box-open"></i> 재료</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Column 3: 기타 -->
+                            <div class="mega-column">
+                                <h5>기타</h5>
+                                <ul>
+                                    <li><a th:href="@{/wiki/others/villagers}" class="mega-link"><i
+                                                class="fas fa-user-group"></i> 주민들</a></li>
+                                    <li><a href="#" class="mega-link"><i class="fas fa-trophy"></i> 업적</a></li>
+                                    <li><a th:href="@{/wiki/map}" class="mega-link"><i class="fas fa-map"></i> 지도</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleSearch() {
+                const searchBox = document.querySelector('.search-box');
+                const searchInput = document.querySelector('.search-txt');
+
+                // If already active and input has value, maybe submit? 
+                // For now, just focus or toggle.
+                if (searchBox.classList.contains('active') && searchInput.value.trim() !== "") {
+                    // Implement search logic here (e.g., form submit)
+                    console.log("Searching for: " + searchInput.value);
+                } else {
+                    searchBox.classList.toggle('active');
+                    if (searchBox.classList.contains('active')) {
+                        searchInput.focus();
+                    }
+                }
+            }
+        </script>
+    </nav>
+</body>
+
+</html>

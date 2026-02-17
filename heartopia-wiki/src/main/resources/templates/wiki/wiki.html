@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartopia Wiki</title>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/css/common.css">
+
+    <style>
+        /* Paperlogy Font */
+        @font-face {
+            font-family: 'Paperlogy';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Paperlogy';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-display: swap;
+        }
+
+        /* --- Navigation Bar & Layout --- */
+        /* body style is in common.css */
+
+        /* Main Logo Styling */
+        .page-main-logo {
+            display: block;
+            margin: 40px auto 30px;
+            /* Reduced bottom margin to make space for search */
+            max-width: 450px;
+            height: auto;
+        }
+
+        /* --- Main Search Box --- */
+        .main-search-container {
+            max-width: 600px;
+            margin: 0 auto 60px;
+            /* Center and add bottom spacing */
+            position: relative;
+        }
+
+        .main-search-box {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 50px;
+            /* Fully rounded */
+            padding: 5px 10px 5px 25px;
+            box-shadow: 0 5px 20px rgba(220, 100, 120, 0.1);
+            /* Soft pinkish shadow matching theme */
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .main-search-box:hover,
+        .main-search-box:focus-within {
+            box-shadow: 0 8px 25px rgba(220, 100, 120, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .main-search-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            color: #333;
+            font-family: 'Paperlogy', sans-serif;
+            padding: 10px 0;
+            background: transparent;
+        }
+
+        .main-search-input::placeholder {
+            color: #aaa;
+        }
+
+        .main-search-btn {
+            background-color: #ff7f9d;
+            /* Pink accent color */
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .main-search-btn:hover {
+            background-color: #ff5c82;
+        }
+
+        /* --- Section Header (RED AREA) --- */
+        .section-container {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 240, 245, 0.6) 100%);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 30px;
+            /* Updated margin to 30px */
+            box-shadow: 0 10px 40px rgba(220, 100, 120, 0.05);
+            /* Soft pinkish shadow */
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            /* Center vertically with icon */
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-left: 10px;
+        }
+
+        .section-icon {
+            font-size: 32px;
+            color: #333;
+            width: 40px;
+            text-align: center;
+        }
+
+        .header-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-family: 'Paperlogy', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .section-desc {
+            font-family: 'Paperlogy', sans-serif;
+            font-size: 14px;
+            color: #666;
+            /* 진한 회색 */
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+
+        /* --- Grid & Card (BLUE AREA) --- */
+        .wiki-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            /* 4 Columns per row */
+            gap: 20px;
+        }
+
+        /* Responsive Grid */
+        @media (max-width: 1200px) {
+            .wiki-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .wiki-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .wiki-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .wiki-card {
+            background-color: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 16px;
+            height: 140px;
+            /* Adjusted height to 140px */
+            display: flex;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .wiki-card-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            gap: 20px;
+            z-index: 2;
+        }
+
+        /* Left Image Area */
+        .card-img-wrapper {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Bouncy effect */
+        }
+
+        .card-img-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .card-icon-text {
+            font-size: 48px;
+            line-height: 1;
+        }
+
+        /* Right Text Area */
+        .card-text-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* YELLOW AREA: Card Title */
+        .card-title {
+            font-family: 'Paperlogy', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2px;
+            /* Reduced margin to bring count closer */
+            transition: color 0.3s ease;
+        }
+
+        /* GREEN AREA: Data Count */
+        .card-count {
+            font-family: 'Paperlogy', sans-serif;
+            font-size: 14px;
+            color: #888;
+            /* Grey text */
+        }
+
+        /* --- Hover Effects --- */
+        .wiki-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+            border-color: #e0e0e0;
+        }
+
+        /* Image: Bends and comes closer (Rotate & Scale) */
+        .wiki-card:hover .card-img-wrapper {
+            transform: scale(1.2) rotate(-8deg);
+        }
+
+        .wiki-card:hover .card-icon-text {
+            transform: scale(1.2) rotate(-8deg);
+        }
+
+        /* Text: Color change */
+        .wiki-card:hover .card-title {
+            color: #0645ad;
+            /* Link color or Primary Theme Color */
+        }
+
+        /* Footer */
+        .mw-footer {
+            margin-top: 50px;
+            border-top: 1px solid #a7d7f9;
+            padding-top: 20px;
+            font-size: 0.8em;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar (Common Fragment) -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Main Body -->
+    <div class="mw-body">
+
+        <!-- Main Logo -->
+        <img src="/images/logo/main_logo.png" alt="Heartopia Wiki Main Logo" class="page-main-logo">
+
+        <!-- Main Search Box -->
+        <div class="main-search-container">
+            <form action="/wiki/search" method="get" class="main-search-box">
+                <input type="text" name="q" class="main-search-input" placeholder="무엇을 찾고 싶으신가요? (예: 배스, 낚시)">
+                <button type="submit" class="main-search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- 1. Collections -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="header-text-group">
+                    <h2 class="section-title">컬렉션</h2>
+                    <p class="section-desc">두근두근 타운이 제공하는 컬렉션 정보입니다!</p>
+                </div>
+            </div>
+            <div class="wiki-grid">
+                <!-- Iterate over collections -->
+                <a th:each="item : ${basics}" th:href="${item.link}" class="wiki-card">
+                    <div class="wiki-card-content">
+                        <div class="card-img-wrapper">
+                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" alt="icon">
+                            <span th:if="${item.imageUrl == null}" class="card-icon-text"
+                                th:text="${item.icon}">🐟</span>
+                        </div>
+                        <div class="card-text-info">
+                            <span class="card-title" th:text="${item.name}">생선</span>
+                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">80+개의 데이터</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. Items -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-toolbox"></i>
+                </div>
+                <div class="header-text-group">
+                    <h2 class="section-title">아이템들</h2>
+                    <p class="section-desc">제작과 수집에 필요한 모든 아이템 정보입니다!</p>
+                </div>
+            </div>
+            <div class="wiki-grid">
+                <a th:each="item : ${creative}" th:href="${item.link}" class="wiki-card">
+                    <div class="wiki-card-content">
+                        <div class="card-img-wrapper">
+                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" alt="icon">
+                            <span th:if="${item.imageUrl == null}" class="card-icon-text"
+                                th:text="${item.icon}">🛠️</span>
+                        </div>
+                        <div class="card-text-info">
+                            <span class="card-title" th:text="${item.name}">도구</span>
+                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">20+개의 데이터</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. Others -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+                <div class="header-text-group">
+                    <h2 class="section-title">기타</h2>
+                    <p class="section-desc">듀근두근 타운의 주민들과 업적 정보입니다!</p>
+                </div>
+            </div>
+            <div class="wiki-grid">
+                <a th:each="item : ${others}" th:href="${item.link}" class="wiki-card">
+                    <div class="wiki-card-content">
+                        <div class="card-img-wrapper">
+                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" alt="icon">
+                            <span th:if="${item.imageUrl == null}" class="card-icon-text"
+                                th:text="${item.icon}">👤</span>
+                        </div>
+                        <div class="card-text-info">
+                            <span class="card-title" th:text="${item.name}">기타 항목</span>
+                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">10+개의 데이터</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer (Common Fragment) -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

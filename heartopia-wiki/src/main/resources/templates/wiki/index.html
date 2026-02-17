@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartopia Wiki - Home</title>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/css/common.css">
+
+    <style>
+        :root {
+            --content-bg: rgba(251, 251, 251, 0.95);
+            --border-color: #a7d7f9;
+            --link-color: #0645ad;
+            --navbar-bg: #ffffff;
+        }
+
+        /* body style moved to common.css */
+
+        /* Navigation */
+        .navbar-custom {
+            background-color: var(--navbar-bg);
+            border-bottom: 1px solid #a7d7f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-link {
+            color: #202122;
+            font-weight: 500;
+        }
+
+        /* [빨간 영역] Carousel */
+        .main-carousel {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .carousel-item img {
+            height: 400px;
+            object-fit: cover;
+        }
+
+        /* [파란 영역 & 초록 영역] Common Box Style */
+        .info-box {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-box h5 {
+            font-weight: 700;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--link-color);
+        }
+
+        /* [파란 영역] Updates & Notices - Specific Height to match Carousel */
+        .update-box {
+            min-height: 400px;
+            /* 캐러셀 높이와 맞춤 */
+        }
+
+        /* [초록 영역] Events */
+        .event-box {
+            min-height: 200px;
+        }
+
+        .mw-footer {
+            margin-top: 50px;
+            border-top: 1px solid #a7d7f9;
+            padding-top: 20px;
+            font-size: 0.8em;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar (Common Fragment) -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Main Body -->
+    <div class="mw-body">
+
+        <!-- Top Row: Carousel + Updates -->
+        <div class="row g-4 mb-4">
+            <!-- [빨간 영역] 메인 캐러셀 -->
+            <div class="col-lg-8">
+                <div id="mainCarousel" class="carousel slide main-carousel" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0"
+                            class="active"></button>
+                        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://via.placeholder.com/800x400?text=Welcome+to+Heartopia"
+                                class="d-block w-100" alt="Slide 1">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Heartopia에 오신 것을 환영합니다!</h5>
+                                <p>나만의 섬을 꾸미고 친구들과 함께하세요.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://via.placeholder.com/800x400?text=New+Fishing+Update" class="d-block w-100"
+                                alt="Slide 2">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>새로운 낚시 업데이트</h5>
+                                <p>전설의 물고기를 잡아보세요!</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://via.placeholder.com/800x400?text=Seasonal+Events" class="d-block w-100"
+                                alt="Slide 3">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>계절 이벤트 진행 중</h5>
+                                <p>한정판 아이템을 놓치지 마세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- [파란 영역] 업데이트 및 공지 (껍데기) -->
+            <div class="col-lg-4">
+                <div class="info-box update-box">
+                    <h5><i class="fas fa-bullhorn me-2"></i>업데이트 및 공지</h5>
+                    <div class="text-muted text-center py-5">
+                        공지사항 영역입니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Events -->
+        <div class="row">
+            <!-- [초록 영역] 이벤트 공지 (껍데기) -->
+            <div class="col-12">
+                <div class="info-box event-box">
+                    <h5><i class="fas fa-calendar-alt me-2"></i>진행 중인 이벤트</h5>
+                    <div class="text-muted text-center py-4">
+                        이벤트 공지 영역입니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mw-footer">
+            <p>&copy; 2026 Heartopia Wiki Project.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
