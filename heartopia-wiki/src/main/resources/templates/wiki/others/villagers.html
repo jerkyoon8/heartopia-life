@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주민 (Villagers) - Heartopia Wiki</title>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/css/common.css">
+    <!-- Wiki Filter JS -->
+    <script src="/js/wiki-filter.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="page-header">
+            <h1>주민 (Villagers)</h1>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <!-- Search -->
+            <div class="filter-group" style="flex-grow: 2;">
+                <i class="fas fa-search text-secondary"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
+            </div>
+
+            <!-- Role Filters -->
+            <select id="roleFilter" class="filter-select">
+                <option value="all">모든 역할</option>
+                <option value="GUIDE">가이드</option>
+                <option value="SHOP">상점</option>
+                <option value="EVENT">사건</option>
+                <option value="QUEST">퀘스트</option>
+            </select>
+
+            <!-- Sort & Reset Control Group -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="sort-group" id="sortGroup">
+                    <i class="fas fa-exchange-alt fa-rotate-90 text-secondary me-1" style="font-size: 0.9rem;"></i>
+                    <button type="button" class="sort-chip active" data-sort="name">이름 <i
+                            class="fas fa-arrow-up"></i></button>
+                    <!-- Location Sort Removed -->
+                </div>
+                <div class="vr mx-2"></div>
+                <button id="resetBtn" class="btn-reset"><i class="fas fa-undo"></i> 초기화</button>
+            </div>
+        </div>
+
+        <div class="villager-grid" id="wikiGrid">
+            <div class="no-results" id="noResults"
+                style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #888; display: none;">
+                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <!-- NPC Card -->
+            <div th:each="npc, stat : ${villagers}" class="npc-card"
+                th:data-name="${#strings.arraySplit(npc.name, '(')[0].trim()}"
+                th:data-role="${#strings.listJoin(npc.roles.![type], ' ')}">
+
+                <!-- 1. Always Visible Header -->
+                <div class="npc-header">
+                    <div class="npc-avatar">
+                        <img th:if="${npc.imageUrl}" th:src="${npc.imageUrl}"
+                            onerror="this.src='https://placehold.co/80x80?text=NPC'" alt="Avatar">
+                    </div>
+
+                    <div class="npc-info">
+                        <div class="npc-name-group">
+                            <h2 class="npc-name" th:text="${#strings.arraySplit(npc.name, '(')[0].trim()}">Name</h2>
+                            <span class="npc-subtitle" th:text="${npc.subTitle}">Subtitle</span>
+                        </div>
+
+                        <!-- Dynamic Role Badges -->
+                        <div class="npc-badges">
+                            <th:block th:each="role : ${npc.roles}">
+                                <span th:if="${role.type != null}"
+                                    th:class="'npc-badge badge-' + ${role.type.toLowerCase()}" th:text="${
+                                        role.type == 'GUIDE' ? '가이드' :
+                                        (role.type == 'SHOP' ? '상점' :
+                                        (role.type == 'EVENT' ? '사건' :
+                                        (role.type == 'QUEST' ? '퀘스트' : role.type)))
+                                    }">TYPE</span>
+                            </th:block>
+                        </div>
+
+                        <div class="npc-meta">
+                            <div class="meta-row">
+                                <a th:href="@{/wiki/map(cat='villager', name=${npc.name})}"
+                                    class="wiki-item-tag location-link" style="padding: 2px 8px; font-size: 0.8rem;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span th:text="${npc.location}">Location</span>
+                                </a>
+                            </div>
+                            <div class="meta-row" th:if="${npc.unlockCondition}">
+                                <i class="fas fa-lock-open"></i>
+                                <span th:text="${npc.unlockCondition}">Unlock</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Toggle Button (Only if roles exist) -->
+                <button th:if="${not #lists.isEmpty(npc.roles)}" class="npc-toggle-btn" type="button"
+                    data-bs-toggle="collapse" th:data-bs-target="'#collapse-' + ${stat.index}" aria-expanded="false">
+                    <span>상세 정보 보기</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+
+                <!-- 3. Collapsible Details -->
+                <div class="collapse npc-details" th:id="'collapse-' + ${stat.index}">
+                    <div class="npc-details-inner">
+
+                        <!-- Iterate Roles -->
+                        <div th:each="role : ${npc.roles}" class="role-block">
+                            <th:block th:switch="${role.type}">
+
+                                <!-- GUIDE Role -->
+                                <th:block th:case="'GUIDE'">
+                                    <div class="role-icon"><i class="fas fa-book-open"></i></div>
+                                    <div class="role-content">
+                                        <div class="role-title">가이드 (Guide)</div>
+                                        <div class="role-desc">
+                                            <span th:text="${role.description}">Hobby</span> 취미를 안내합니다.
+                                        </div>
+                                    </div>
+                                </th:block>
+
+                                <!-- SHOP Role -->
+                                <th:block th:case="'SHOP'">
+                                    <div class="role-icon"><i class="fas fa-store"></i></div>
+                                    <div class="role-content">
+                                        <div class="role-title" th:text="${role.title}">Shop Name</div>
+                                        <div class="role-items">
+                                            <span th:each="item : ${role.items}" class="item-badge"
+                                                th:text="${item.itemName}">Item</span>
+                                        </div>
+                                    </div>
+                                </th:block>
+
+                                <!-- EVENT Role -->
+                                <th:block th:case="'EVENT'">
+                                    <div class="role-icon"><i class="fas fa-calendar-alt"></i></div>
+                                    <div class="role-content">
+                                        <div class="role-title" th:text="${role.title}">Event Name</div>
+                                        <div class="role-desc" th:text="${role.description}">Desc</div>
+                                    </div>
+                                </th:block>
+
+                                <!-- QUEST Role -->
+                                <th:block th:case="'QUEST'">
+                                    <div class="role-icon"><i class="fas fa-scroll"></i></div>
+                                    <div class="role-content">
+                                        <div class="role-title">퀘스트 (Quest)</div>
+                                        <div class="role-desc" th:text="${role.title}">Quest Info</div>
+                                    </div>
+                                </th:block>
+
+                            </th:block>
+                        </div>
+
+                        <!-- Gifts section hidden as per request (Data preserved in Controller) -->
+
+
+                    </div>
+                </div>
+                <!-- End Collapsible -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Include Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize WikiFilter
+            new WikiFilter({
+                gridId: 'wikiGrid',
+                itemSelector: '.npc-card',
+                filters: [
+                    { id: 'roleFilter', dataKey: 'role' }
+                ]
+            });
+
+            // NPC Toggle Logic
+            document.querySelectorAll('.npc-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    const span = this.querySelector('span');
+                    setTimeout(() => {
+                        const expandedNow = this.getAttribute('aria-expanded') === 'true';
+                        span.textContent = expandedNow ? '접기 (Show Less)' : '상세 정보 보기';
+                    }, 50);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
