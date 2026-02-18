@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.heartopia.wiki.mapper.CollectionMapper">
+
+    <select id="findAllFish" resultType="com.heartopia.wiki.model.FishCollection">
+        SELECT 
+            id, location, sub_location as subLocation, name, level, weather, time, 
+            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+            size
+        FROM fish_collections
+        ORDER BY id ASC
+    </select>
+
+    <select id="findAllBirds" resultType="com.heartopia.wiki.model.BirdCollection">
+        SELECT 
+            id, location, sub_location as subLocation, name, level, weather, time, 
+            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5
+        FROM bird_collections
+        ORDER BY id ASC
+    </select>
+
+    <select id="findAllBugs" resultType="com.heartopia.wiki.model.BugCollection">
+        SELECT 
+            id, location, sub_location as subLocation, name, level, weather, time, 
+            max_stars as maxStars,
+            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5
+        FROM bug_collections
+        ORDER BY id ASC
+    </select>
+
+    <select id="findAllAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
+        SELECT 
+            id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather
+        FROM animal_collections
+        ORDER BY id ASC
+    </select>
+
+    <select id="findAllCookings" resultType="com.heartopia.wiki.model.CookingCollection">
+        SELECT 
+            id, name, level, ingredients, buy_price as buyPrice,
+            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5
+        FROM cooking_collections
+        ORDER BY id ASC
+    </select>
+
+    <select id="findAllFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
+        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+        FROM flower_collections
+        ORDER BY level, name
+    </select>
+
+    <select id="findAllGardening" resultType="com.heartopia.wiki.model.GardeningCollection">
+        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+        FROM crop_collections
+        ORDER BY level, name
+    </select>
+
+    <select id="findAllForageables" resultType="com.heartopia.wiki.model.ForageableCollection">
+        SELECT id, name, location, price, energy, image_url as imageUrl
+        FROM forageable_collections
+        ORDER BY id ASC
+    </select>
+
+    <!-- Count Queries -->
+    <select id="countAllFish" resultType="int">
+        SELECT count(*) FROM fish_collections
+    </select>
+
+    <select id="countAllBirds" resultType="int">
+        SELECT count(*) FROM bird_collections
+    </select>
+
+    <select id="countAllBugs" resultType="int">
+        SELECT count(*) FROM bug_collections
+    </select>
+
+    <select id="countAllAnimals" resultType="int">
+        SELECT count(*) FROM animal_collections
+    </select>
+
+    <select id="countAllCookings" resultType="int">
+        SELECT count(*) FROM cooking_collections
+    </select>
+
+    <select id="countAllFlowers" resultType="int">
+        SELECT count(*) FROM flower_collections
+    </select>
+
+    <select id="countAllGardening" resultType="int">
+        SELECT count(*) FROM crop_collections
+    </select>
+
+    <select id="countAllForageables" resultType="int">
+        SELECT count(*) FROM forageable_collections
+    </select>
+
+</mapper>
