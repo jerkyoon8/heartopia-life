@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartopia Wiki - 요리</title>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/css/common.css">
+    <!-- Wiki Filter JS -->
+    <script src="/js/wiki-filter.js" defer></script>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="page-header"><i class="fas fa-utensils fa-2x text-danger"></i>
+            <h1>요리 도감 (Cooking Collection)</h1>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <!-- Search -->
+            <div class="filter-group" style="flex-grow: 2;">
+                <i class="fas fa-search text-secondary"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
+            </div>
+
+            <!-- Custom Filters -->
+            <select id="levelFilter" class="filter-select">
+                <option value="all">모든 레벨</option>
+                <option value="1">Lv.1</option>
+                <option value="2">Lv.2</option>
+                <option value="3">Lv.3</option>
+                <option value="4">Lv.4</option>
+                <option value="5">Lv.5</option>
+                <option value="6">Lv.6</option>
+                <option value="7">Lv.7</option>
+                <option value="8">Lv.8</option>
+                <option value="9">Lv.9</option>
+                <option value="10">Lv.10+</option>
+            </select>
+
+            <!-- Sort & Reset (Fragment) -->
+            <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+        </div>
+
+        <div class="wiki-grid-layout" id="wikiGrid">
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <div th:each="item : ${cookingList}" class="wiki-item-card" th:data-name="${item.name}"
+                th:data-level="${item.level}" th:data-price="${item.prices[0]}">
+
+                <div class="wiki-item-image">
+                    <i class="fas fa-utensils fa-4x text-danger" style="opacity: 0.7;"></i>
+                </div>
+
+                <div class="wiki-item-info">
+                    <a href="#" class="wiki-item-name" th:text="${item.name}"></a>
+                    <!-- Ingredients as small text -->
+                    <div class="text-muted small mt-1" th:text="${item.ingredients}"
+                        style="font-size: 0.85rem; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                    </div>
+                </div>
+
+                <table class="wiki-item-stats">
+                    <tr>
+                        <td class="stat-label">가능 레벨</td>
+                        <td class="stat-value"><span th:text="${item.level}"></span> Lv.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="stat-label">구매가</td>
+                        <td class="stat-value text-end text-danger">
+                            <span th:if="${item.buyPrice != null}" th:text="|${item.buyPrice} G|"></span>
+                            <span th:unless="${item.buyPrice != null}">-</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Price Fragment -->
+                <div th:replace="~{fragments/wiki-components :: priceDisplay(${item.prices})}"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new WikiFilter({
+                gridId: 'wikiGrid',
+                itemSelector: '.wiki-item-card',
+                filters: [
+                    { id: 'levelFilter', dataKey: 'level' }
+                ]
+            });
+        });
+    </script>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

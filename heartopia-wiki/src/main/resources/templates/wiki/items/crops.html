@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Collection - Heartopia Wiki</title>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/css/common.css">
+    <!-- Wiki Filter JS -->
+    <script src="/js/wiki-filter.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Navbar (Common Fragment) -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="page-header">
+            <i class="fas fa-carrot fa-2x text-primary"></i>
+            <h1>작물 도감 (Crop Collection)</h1>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <!-- Search -->
+            <div class="filter-group" style="flex-grow: 2;">
+                <i class="fas fa-search text-secondary"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
+            </div>
+
+            <!-- Custom Filters -->
+            <select id="levelFilter" class="filter-select">
+                <option value="all">모든 레벨</option>
+                <option value="1">Lv.1</option>
+                <option value="2">Lv.2</option>
+                <option value="3">Lv.3</option>
+                <option value="4">Lv.4</option>
+                <option value="5">Lv.5</option>
+                <option value="6">Lv.6</option>
+                <option value="7">Lv.7</option>
+                <option value="8">Lv.8</option>
+                <option value="9">Lv.9</option>
+                <option value="10">Lv.10+</option>
+            </select>
+
+            <!-- Sort & Reset (Fragment) -->
+            <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+        </div>
+
+        <div class="wiki-grid-layout" id="wikiGrid">
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <!-- Crop Card Loop -->
+            <div th:each="crop : ${cropList}" class="wiki-item-card" th:data-name="${crop.name}"
+                th:data-level="${crop.level}" th:data-price="${crop.prices[0]}">
+
+                <div class="wiki-item-image">
+                    <i class="fas fa-leaf fa-4x text-success" style="opacity: 0.7;"></i>
+                </div>
+
+                <div class="wiki-item-info">
+                    <a href="#" class="wiki-item-name" th:text="${crop.name}">작물 이름</a>
+                </div>
+
+                <table class="wiki-item-stats">
+                    <tr>
+                        <td class="stat-label">가능 레벨</td>
+                        <td class="stat-value">
+                            <span th:if="${crop.level != null}" th:text="${crop.level} + ' Lv.'">Lv.1</span>
+                            <span th:unless="${crop.level != null}">-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">성장 시간</td>
+                        <td class="stat-value" th:text="${crop.growthTime != null ? crop.growthTime : '-'}">1일</td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">씨앗 구매</td>
+                        <td class="stat-value text-danger">
+                            <span th:if="${crop.seedBuyPrice != null}" th:text="${crop.seedBuyPrice}">0</span>
+                            <span th:unless="${crop.seedBuyPrice != null}">-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">씨앗 판매</td>
+                        <td class="stat-value">
+                            <span th:if="${crop.seedSellPrice != null}" th:text="${crop.seedSellPrice}">0</span>
+                            <span th:unless="${crop.seedSellPrice != null}">-</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Price Fragment -->
+                <div th:replace="~{fragments/wiki-components :: priceDisplay(${crop.prices})}"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new WikiFilter({
+                gridId: 'wikiGrid',
+                itemSelector: '.wiki-item-card',
+                filters: [
+                    { id: 'levelFilter', dataKey: 'level' }
+                ]
+            });
+        });
+    </script>
+
+    <!-- Footer (Common Fragment) -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
