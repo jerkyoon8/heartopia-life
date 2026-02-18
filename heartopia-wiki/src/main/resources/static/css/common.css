@@ -732,3 +732,9 @@ body {
     line-height: 1.4;
 }
 
+/* Responsive Gift Section */
+@media (max-width: 450px) {
+    .gift-section {
+        grid-template-columns: 1fr;
+    }
+}
