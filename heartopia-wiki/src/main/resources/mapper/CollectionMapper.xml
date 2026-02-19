@@ -4,6 +4,7 @@
 
 <mapper namespace="com.heartopia.wiki.mapper.CollectionMapper">
 
+    <!-- 물고기 도감 전체 조회 -->
     <select id="findAllFish" resultType="com.heartopia.wiki.model.FishCollection">
         SELECT 
             id, location, sub_location as subLocation, name, level, weather, time, 
@@ -13,6 +14,7 @@
         ORDER BY id ASC
     </select>
 
+    <!-- 새 도감 전체 조회 -->
     <select id="findAllBirds" resultType="com.heartopia.wiki.model.BirdCollection">
         SELECT 
             id, location, sub_location as subLocation, name, level, weather, time, 
@@ -21,6 +23,7 @@
         ORDER BY id ASC
     </select>
 
+    <!-- 곤충 도감 전체 조회 -->
     <select id="findAllBugs" resultType="com.heartopia.wiki.model.BugCollection">
         SELECT 
             id, location, sub_location as subLocation, name, level, weather, time, 
@@ -30,6 +33,7 @@
         ORDER BY id ASC
     </select>
 
+    <!-- 동물 도감 전체 조회 -->
     <select id="findAllAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
         SELECT 
             id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather
@@ -37,6 +41,7 @@
         ORDER BY id ASC
     </select>
 
+    <!-- 요리 도감 전체 조회 -->
     <select id="findAllCookings" resultType="com.heartopia.wiki.model.CookingCollection">
         SELECT 
             id, name, level, ingredients, buy_price as buyPrice,
@@ -45,6 +50,7 @@
         ORDER BY id ASC
     </select>
 
+    <!-- 꽃 도감 전체 조회 -->
     <select id="findAllFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
                level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
@@ -52,6 +58,7 @@
         ORDER BY level, name
     </select>
 
+    <!-- 작물 도감 전체 조회 -->
     <select id="findAllGardening" resultType="com.heartopia.wiki.model.GardeningCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
                level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
@@ -59,13 +66,14 @@
         ORDER BY level, name
     </select>
 
+    <!-- 채집물 도감 전체 조회 -->
     <select id="findAllForageables" resultType="com.heartopia.wiki.model.ForageableCollection">
         SELECT id, name, location, price, energy, image_url as imageUrl
         FROM forageable_collections
         ORDER BY id ASC
     </select>
 
-    <!-- Count Queries -->
+    <!-- 도감 카운트 쿼리 -->
     <select id="countAllFish" resultType="int">
         SELECT count(*) FROM fish_collections
     </select>
