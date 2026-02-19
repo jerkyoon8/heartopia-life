@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.heartopia.wiki.mapper.GiftCodeMapper">
+
+    <select id="findAll" resultType="com.heartopia.wiki.model.GiftCode">
+        SELECT 
+            id,
+            code_name,
+            rewards,
+            status,
+            expiration_date,
+            created_at,
+            updated_at
+        FROM gift_code
+        ORDER BY 
+            CASE status
+                WHEN 'ACTIVE' THEN 1
+                WHEN 'SOON' THEN 2
+                ELSE 3
+            END,
+            expiration_date ASC
+    </select>
+
+    <select id="findByStatus" resultType="com.heartopia.wiki.model.GiftCode">
+        SELECT 
+            id,
+            code_name,
+            rewards,
+            status,
+            expiration_date,
+            created_at,
+            updated_at
+        FROM gift_code
+        WHERE status = #{status}
+        ORDER BY expiration_date ASC
+    </select>
+
+</mapper>
