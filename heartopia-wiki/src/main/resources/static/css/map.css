@@ -1,0 +1,730 @@
+/* ===== Layout: Side Panel + Map ===== */
+.map-layout {
+    display: flex;
+    height: 650px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8e8e8;
+}
+
+/* ===== Left Side Panel ===== */
+.map-side-panel {
+    width: 280px;
+    min-width: 280px;
+    background: #f8f9fb;
+    border-right: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Paperlogy', sans-serif;
+}
+
+.side-panel-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid #e8e8e8;
+    background: white;
+}
+
+.side-panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Search */
+.side-panel-search {
+    padding: 12px 14px 8px;
+}
+
+.side-panel-search input {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: 'Paperlogy', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    background: white;
+}
+
+.side-panel-search input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Controls */
+.side-panel-controls {
+    padding: 0 14px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.btn-control {
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Paperlogy', sans-serif;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #555;
+}
+
+.btn-control:hover {
+    background: #e9ecef;
+    border-color: #ccc;
+}
+
+.btn-control.active-hide {
+    background: #fff0f6;
+    color: #f06595;
+    border-color: #fcc2d7;
+}
+
+.btn-control.active-hide:hover {
+    background: #ffdeeb;
+}
+
+/* Category List */
+.side-panel-categories {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 8px 10px;
+}
+
+/* Category Group */
+.category-group {
+    margin-bottom: 2px;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    padding: 9px 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.category-header:hover {
+    background: #eef0f4;
+}
+
+.category-arrow {
+    font-size: 10px;
+    color: #999;
+    margin-right: 8px;
+    transition: transform 0.2s;
+    width: 12px;
+}
+
+.category-arrow.expanded {
+    transform: rotate(90deg);
+}
+
+.category-color-bar {
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    margin-right: 8px;
+}
+
+.category-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.category-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.category-toggle {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    background: white;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s;
+    color: #ced4da;
+    /* More soft grey */
+}
+
+.category-toggle:hover {
+    background: #f1f3f5;
+    border-color: #ced4da;
+    color: #868e96;
+}
+
+.category-toggle.off {
+    color: #dee2e6;
+    background: #f8f9fa;
+}
+
+/* Category Items */
+.category-items {
+    display: none;
+    padding: 2px 4px 6px 25px;
+}
+
+.category-items.expanded {
+    display: block;
+}
+
+/* Pin Item (Back to Simple) */
+.pin-item {
+    display: flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: #555;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.pin-item:hover {
+    background: #eef2ff;
+    color: #333;
+}
+
+.pin-item-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.pin-item-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pin-item-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* Pin Toggle Button (👁️) */
+.pin-toggle-btn {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e8e8e8;
+    background: white;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #ced4da;
+    /* Soft grey icon */
+    font-size: 11px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.pin-toggle-btn:hover {
+    background: #f1f3f5;
+    border-color: #ced4da;
+    color: #868e96;
+}
+
+.pin-toggle-btn.off {
+    color: #dee2e6;
+    background: #f8f9fa;
+}
+
+/* Pin Place Button (📌) */
+.pin-place-btn {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    background: white;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #999;
+    font-size: 11px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.pin-place-btn:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.pin-place-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* Unplaced indicator (주황 점) */
+.pin-unplaced {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffa726;
+    flex-shrink: 0;
+    animation: blink-dot 2s ease-in-out infinite;
+}
+
+@keyframes blink-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Selected pin item */
+.pin-item.placing {
+    background: #eef2ff;
+    border-left: 3px solid #667eea;
+    padding-left: 5px;
+}
+
+/* ===== Right: Map Area ===== */
+.map-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background: #7fb5c8;
+    z-index: 1;
+}
+
+/* ===== Placement Banner (맵 상단) ===== */
+.placement-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.placement-banner.active {
+    transform: translateY(0);
+}
+
+.placement-banner-content {
+    display: flex;
+    align-items: center;
+    padding: 10px 18px;
+    gap: 10px;
+}
+
+.placement-banner-icon {
+    font-size: 18px;
+    animation: pulse-pin 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-pin {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.placement-banner-text {
+    flex: 1;
+    font-family: 'Paperlogy', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.placement-cancel-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Paperlogy', sans-serif;
+    transition: all 0.2s;
+}
+
+.placement-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Map cursor in placement mode */
+.placement-mode-cursor {
+    cursor: crosshair !important;
+}
+
+.placement-mode-cursor .leaflet-container {
+    cursor: crosshair !important;
+}
+
+/* ===== Toast Notification ===== */
+.map-toast {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    z-index: 1002;
+    background: rgba(40, 40, 40, 0.95);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Paperlogy', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.map-toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.map-toast-icon {
+    font-size: 16px;
+}
+
+/* ===== Custom Map Marker ===== */
+.custom-map-marker {
+    background: none;
+    border: none;
+}
+
+/* ===== Popup ===== */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+    margin: 14px;
+    text-align: center;
+    font-family: 'Paperlogy', sans-serif;
+}
+
+.map-popup-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.map-popup-details {
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.detail-item {
+    margin-bottom: 3px;
+}
+
+.detail-key {
+    font-weight: 700;
+    margin-right: 6px;
+    font-size: 11px;
+    padding: 1px 4px;
+    border-radius: 4px;
+}
+
+/* Label Colors */
+.label-role {
+    color: #ae3ec9;
+    background: #f8f0fc;
+}
+
+/* Purple - 역할 */
+.label-loc {
+    color: #1c7ed6;
+    background: #e7f5ff;
+}
+
+/* Blue - 위치 */
+.label-unlock {
+    color: #d9480f;
+    background: #fff4e6;
+}
+
+/* Orange - 해금 */
+.label-weather {
+    color: #087f5b;
+    background: #e6fcf5;
+}
+
+/* Teal - 날씨 */
+.label-time {
+    color: #f59f00;
+    background: #fff9db;
+}
+
+/* Gold - 시간 */
+.label-price {
+    color: #c2255c;
+    background: #fff0f6;
+}
+
+/* Pink - 가격 */
+.label-energy {
+    color: #5c940d;
+    background: #f4fce3;
+}
+
+/* Lime - 에너지 */
+.label-food {
+    color: #e67700;
+    background: #fff4e6;
+}
+
+/* Food - 음식 */
+.label-default {
+    color: #868e96;
+    background: #f1f3f5;
+}
+
+.detail-val {
+    color: #495057;
+    font-weight: 500;
+}
+
+.map-popup-desc {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.map-popup-link {
+    display: block;
+    padding: 6px;
+    background: #f1f3f5;
+    color: #4dabf7;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.map-popup-link:hover {
+    background: #e7f1ff;
+    color: #339af0;
+}
+
+/* ===== Map Info Box (Bottom Left) ===== */
+.map-info-box {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 280px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    padding: 20px;
+    font-family: 'Paperlogy', sans-serif;
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f1f3f5;
+}
+
+.map-info-box.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.info-box-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #adb5bd;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.info-box-close:hover {
+    color: #495057;
+}
+
+.info-box-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.info-box-icon {
+    width: 44px;
+    height: 44px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.info-box-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+}
+
+.info-box-details {
+    display: grid;
+    gap: 8px;
+}
+
+.info-box-details .detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.info-box-footer {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f3f5;
+}
+
+.info-box-minimize-btn {
+    background: #f1f3f5;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    color: #adb5bd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-right: 25px;
+    /* 공간 확보 */
+}
+
+.info-box-minimize-btn:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.status-always {
+    color: #4dabf7;
+    font-weight: 700;
+}
+
+.item-visibility-toggle {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: #adb5bd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.item-visibility-toggle:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.item-visibility-toggle.off {
+    background: #fff5f5;
+    border-color: #ffe3e3;
+    color: #ff8787;
+}
+
+.item-visibility-toggle.off:hover {
+    background: #ffe3e3;
+    color: #fa5252;
+}
+
+.map-info-box.minimized {
+    padding-bottom: 15px;
+}
+
+/* Scrollbar */
+.side-panel-categories::-webkit-scrollbar {
+    width: 5px;
+}
+
+.side-panel-categories::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.side-panel-categories::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 3px;
+}

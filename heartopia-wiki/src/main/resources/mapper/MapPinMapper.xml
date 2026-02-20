@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.MapPinMapper">
+
+    <resultMap id="MapPinResultMap" type="com.heartopia.wiki.model.MapPin">
+        <id property="id" column="id"/>
+        <result property="category" column="category"/>
+        <result property="name" column="name"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="mapX" column="map_x"/>
+        <result property="mapY" column="map_y"/>
+        <result property="linkUrl" column="link_url"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <select id="findAllPins" resultMap="MapPinResultMap">
+        SELECT * FROM map_pins ORDER BY category, name
+    </select>
+
+    <select id="findPinsByCategory" resultMap="MapPinResultMap">
+        SELECT * FROM map_pins WHERE category = #{category} ORDER BY name
+    </select>
+
+    <select id="findPinByCategoryAndName" resultMap="MapPinResultMap">
+        SELECT * FROM map_pins WHERE category = #{category} AND name = #{name} LIMIT 1
+    </select>
+
+    <select id="findAllCategories" resultType="string">
+        SELECT DISTINCT category FROM map_pins ORDER BY category
+    </select>
+
+    <update id="updatePinPosition">
+        UPDATE map_pins SET map_x = #{mapX}, map_y = #{mapY} WHERE id = #{id}
+    </update>
+
+    <insert id="insertPin" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO map_pins (category, name, icon_url, map_x, map_y, link_url, description)
+        VALUES (#{category}, #{name}, #{iconUrl}, #{mapX}, #{mapY}, #{linkUrl}, #{description})
+    </insert>
+
+    <delete id="deletePin">
+        DELETE FROM map_pins WHERE id = #{id}
+    </delete>
+
+</mapper>
