@@ -60,3 +60,9 @@ heartopia-wiki/*.txt
 # --- Temp ---
 tmp/
 temp/
+
+# --- Deploy ---
+deploy/.env
+
+# --- Scripts ---
+rebuild_git.sh
