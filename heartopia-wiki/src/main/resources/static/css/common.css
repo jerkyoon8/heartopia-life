@@ -4,10 +4,10 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
 :root {
-    --main-bg-color: #FFFAFB;
-    /* Even lighter pink */
-    --bg-gradient-start: #FFF5F7;
-    --bg-gradient-end: #FFEEF2;
+    --main-bg-color: #FFFCFD;
+    /* Soft pink tint */
+    --bg-gradient-start: #FFF8FA;
+    --bg-gradient-end: #FFF3F6;
     --content-bg: rgba(255, 255, 255, 0.95);
     /* Slightly brighter content bg */
     --text-color: #202122;
@@ -15,6 +15,32 @@
     /* Standardized padding-top for body */
     --border-color: #a7d7f9;
     --link-color: #0645ad;
+    --card-bg: #ffffff;
+    --filter-bg: #fff;
+    --stat-label: #777;
+    --stat-value: #333;
+    --border-subtle: #f0f0f0;
+    --header-text: #333;
+    --nav-hover: #f1f3f5;
+    --shadow: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] {
+    --main-bg-color: #333333;
+    --bg-gradient-start: #404040;
+    --bg-gradient-end: #333333;
+    --content-bg: rgba(55, 55, 55, 0.95);
+    --text-color: #e8e8e8;
+    --border-color: #666666;
+    --link-color: #a0cfff;
+    --card-bg: #424242;
+    --filter-bg: #4b4b4b;
+    --stat-label: #cccccc;
+    --stat-value: #ffffff;
+    --border-subtle: #555555;
+    --header-text: #f8f9fa;
+    --nav-hover: #505050;
+    --shadow: rgba(0, 0, 0, 0.45);
 }
 
 body {
@@ -55,7 +81,7 @@ body {
 
 .page-header h1 {
     font-weight: 700;
-    color: #333;
+    color: var(--text-color);
     margin: 0;
 }
 
@@ -68,15 +94,15 @@ body {
 }
 
 .wiki-item-card {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px var(--shadow);
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    border: 1px solid transparent;
+    border: 1px solid var(--border-subtle);
 }
 
 .wiki-item-card:hover {
@@ -88,7 +114,7 @@ body {
 .wiki-item-image {
     width: 100%;
     height: 150px;
-    background: #f0faff;
+    background: var(--nav-hover);
     /* Light Blue tint default */
     border-radius: 15px;
     display: flex;
@@ -104,7 +130,7 @@ body {
     width: 120px;
     height: 120px;
     object-fit: contain;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+
 }
 
 .wiki-item-info {
@@ -157,33 +183,33 @@ body {
 
 .wiki-item-stats td {
     padding: 5px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .stat-label {
-    color: #777;
+    color: var(--stat-label);
     font-weight: 500;
     width: 80px;
 }
 
 .stat-value {
-    color: #333;
+    color: var(--stat-value);
     font-weight: 600;
     text-align: right;
 }
 
 /* --- Filter Bar --- */
 .filter-bar {
-    background: #fff;
+    background: var(--filter-bg);
     padding: 20px;
     border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px var(--shadow);
     margin-bottom: 30px;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     align-items: center;
-    border: 1px solid #e0f2fe;
+    border: 1px solid var(--border-subtle);
 }
 
 .filter-group {
@@ -194,15 +220,15 @@ body {
 }
 
 .filter-select {
-    border: 1px solid #bce3ff;
+    border: 1px solid var(--border-subtle);
     border-radius: 10px;
     padding: 8px 12px;
-    color: #555;
+    color: var(--text-color);
     outline: none;
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
-    background-color: white;
+    background-color: var(--card-bg);
 }
 
 .filter-select:hover,
@@ -212,12 +238,14 @@ body {
 }
 
 .search-input {
-    border: 1px solid #bce3ff;
+    border: 1px solid var(--border-subtle);
     border-radius: 10px;
     padding: 8px 15px;
     width: 200px;
     outline: none;
     transition: all 0.2s;
+    background-color: var(--card-bg);
+    color: var(--text-color);
 }
 
 .search-input:focus {
@@ -308,6 +336,30 @@ body {
     display: inline-block;
 }
 
+/* --- Visitor Counter --- */
+.visitor-counter {
+    font-size: 0.85rem;
+    color: var(--stat-label, #777);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--nav-hover, #f8f9fa);
+    padding: 4px 12px;
+    border-radius: 12px;
+    margin-left: auto;
+    /* Push to right in flex parent */
+    border: 1px solid var(--border-subtle, #eee);
+}
+
+.visitor-counter i {
+    color: #ff80ab;
+}
+
+.visitor-count-num {
+    font-weight: 700;
+    color: var(--text-color, #333);
+}
+
 /* --- Villager Card Styles --- */
 .villager-grid {
     display: grid;
@@ -317,11 +369,11 @@ body {
 }
 
 .villager-card {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f0f0f0;
+    box-shadow: 0 5px 15px var(--shadow);
+    border: 1px solid var(--border-subtle);
     transition: transform 0.2s;
 }
 
@@ -337,6 +389,14 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+[data-theme='dark'] .villager-header {
+    background-color: #2d3e2d;
+}
+
+[data-theme='dark'] .villager-name {
+    color: #e0e0e0;
 }
 
 .villager-avatar {
@@ -401,6 +461,10 @@ body {
     gap: 10px;
 }
 
+[data-theme='dark'] .villager-info-list li {
+    color: #ccc;
+}
+
 .villager-info-list li i {
     margin-top: 4px;
     /* Align icon with text */
@@ -462,10 +526,10 @@ body {
 
 /* --- Interactive NPC Card Styles (Collapsible) --- */
 .npc-card {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 12px var(--shadow);
+    border: 1px solid var(--border-subtle);
     overflow: hidden;
     transition: all 0.3s ease;
     margin-bottom: 20px;
@@ -520,7 +584,7 @@ body {
 .npc-name {
     font-size: 1.4rem;
     font-weight: 800;
-    color: #333;
+    color: var(--text-color);
     margin: 0;
 }
 
@@ -704,9 +768,19 @@ body {
     border: 1px solid #c8e6c9;
 }
 
+[data-theme='dark'] .gift-box.loved {
+    background: #1e2e1e;
+    border-color: #2d4d2d;
+}
+
 .gift-box.disliked {
     background: #ffebee;
     border: 1px solid #ffcdd2;
+}
+
+[data-theme='dark'] .gift-box.disliked {
+    background: #3a1e1e;
+    border-color: #5a2a2a;
 }
 
 .gift-header {
