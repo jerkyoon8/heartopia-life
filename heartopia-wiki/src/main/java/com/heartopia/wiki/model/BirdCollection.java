@@ -16,6 +16,8 @@ public class BirdCollection {
     private Integer price3;
     private Integer price4;
     private Integer price5;
+    private String type;
+    private String imageUrl;
 
     public java.util.List<Integer> getPrices() {
         return java.util.Arrays.asList(price1, price2, price3, price4, price5);

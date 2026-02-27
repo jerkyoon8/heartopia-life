@@ -16,6 +16,7 @@ public class CookingCollection {
     private Integer price3;
     private Integer price4;
     private Integer price5;
+    private String imageUrl;
 
     public List<Integer> getPrices() {
         return Arrays.asList(price1, price2, price3, price4, price5);

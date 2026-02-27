@@ -9,4 +9,5 @@ public class AnimalCollection {
     private String location;
     private String favoriteFood;
     private String favoriteWeather;
+    private String imageUrl;
 }
