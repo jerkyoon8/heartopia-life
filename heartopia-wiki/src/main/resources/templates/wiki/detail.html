@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${item.name + ' - Heartopia Wiki'}">상세보기 - Heartopia Wiki</title>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+
+    <style>
+        /* --- Detail Page Styles --- */
+        .detail-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .detail-breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .detail-breadcrumb a:hover {
+            color: var(--link-color);
+        }
+
+        .detail-breadcrumb .separator {
+            color: #ccc;
+        }
+
+        .detail-breadcrumb .current {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .detail-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .detail-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left: Image + Basic Info Card */
+        .detail-image-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border: 1px solid #f0f0f0;
+            position: sticky;
+            top: 180px;
+            height: fit-content;
+        }
+
+        .detail-image-area {
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .detail-image-area.fish {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+
+        .detail-image-area.bug {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        .detail-image-area.bird {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+        }
+
+        .detail-image-area.animal {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+        }
+
+        .detail-image-area.cooking {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+        }
+
+        .detail-image-area.flower {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        }
+
+        .detail-image-area.crop {
+            background: linear-gradient(135deg, #e8f5e9 0%, #a5d6a7 100%);
+        }
+
+        .detail-image-area.forageable {
+            background: linear-gradient(135deg, #efebe9 0%, #d7ccc8 100%);
+        }
+
+        .detail-image-area i {
+            font-size: 5rem;
+            opacity: 0.6;
+        }
+
+        .detail-image-area img {
+            max-width: 180px;
+            max-height: 180px;
+            object-fit: contain;
+        }
+
+        .detail-item-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .detail-category-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .badge-fish {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-bug {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-bird {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge-animal {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .badge-cooking {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .badge-flower {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .badge-crop {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-forageable {
+            background: #efebe9;
+            color: #5d4037;
+        }
+
+        .detail-map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: #e0f2f1;
+            color: #00796b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .detail-map-link:hover {
+            background: #b2dfdb;
+            color: #004d40;
+            transform: translateY(-2px);
+        }
+
+        /* Right: Detail Info */
+        .detail-info-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f0f0f0;
+        }
+
+        .detail-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section-title i {
+            color: #ff8a80;
+        }
+
+        .detail-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .detail-info-table tr {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .detail-info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .detail-info-table td {
+            padding: 12px 8px;
+        }
+
+        .detail-info-table .info-label {
+            color: #888;
+            font-weight: 600;
+            width: 120px;
+            font-size: 0.95rem;
+        }
+
+        .detail-info-table .info-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Price Section */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .price-item {
+            text-align: center;
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 12px 8px;
+            border: 1px solid #eee;
+            transition: all 0.2s;
+        }
+
+        .price-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .price-star {
+            color: #ffc107;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .price-value {
+            font-weight: 700;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        /* Related Items Section */
+        .related-section {
+            margin-top: 40px;
+        }
+
+        .related-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .related-header i {
+            color: #ff8a80;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .related-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .related-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #e0f2fe;
+        }
+
+        .related-card-name {
+            font-weight: 700;
+            color: var(--link-color);
+            font-size: 0.95rem;
+        }
+
+        .related-card-info {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Back Button */
+        .back-to-list {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: #f5f5f5;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .back-to-list:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .no-related {
+            color: #aaa;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <!-- Breadcrumb -->
+        <div class="detail-breadcrumb">
+            <a href="/wiki"><i class="fas fa-home"></i> 위키</a>
+            <span class="separator">›</span>
+            <a th:href="${listUrl}" th:text="${categoryLabel}">카테고리</a>
+            <span class="separator">›</span>
+            <span class="current" th:text="${item.name}">아이템 이름</span>
+        </div>
+
+        <!-- Detail Content -->
+        <div class="detail-container">
+            <!-- Left: Image Card -->
+            <div class="detail-image-card">
+                <div th:class="'detail-image-area ' + ${category}">
+                    <!-- Universal Image Display -->
+                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name + ' 이미지'}">
+                    <!-- Special Case for Animal (legacy variable) -->
+                    <img th:if="${item.imageUrl == null and category == 'animal' and animalImageUrl != null}"
+                        th:src="${animalImageUrl}" alt="동물 이미지">
+                    <!-- Default Icon (Fallback) -->
+                    <i th:if="${item.imageUrl == null and (category != 'animal' or animalImageUrl == null)}"
+                        th:class="${categoryIcon + ' text-muted'}" style="font-size: 5rem; opacity: 0.6;"></i>
+                </div>
+
+                <h1 class="detail-item-name" th:text="${item.name}">아이템 이름</h1>
+                <span th:class="'detail-category-badge badge-' + ${category}" th:text="${categoryLabel}">카테고리</span>
+
+                <!-- Map Link (for items with location field) -->
+                <div
+                    th:if="${category == 'fish' or category == 'bug' or category == 'bird' or category == 'animal' or category == 'forageable'}">
+                    <a th:if="${item.location != null}" th:href="@{/wiki/map(cat=${category}, name=${item.name})}"
+                        class="detail-map-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${item.location}">장소</span>
+                        <span
+                            th:if="${category != 'animal' and category != 'forageable' and item.subLocation != null and item.subLocation != ''}"
+                            th:text="' - ' + ${item.subLocation}"></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: Info Card -->
+            <div class="detail-info-card">
+                <div class="detail-section-title">
+                    <i class="fas fa-info-circle"></i> 기본 정보
+                </div>
+
+                <table class="detail-info-table">
+                    <!-- Fish / Bug / Bird: Level, Weather, Time -->
+                    <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-layer-group me-1"></i>요구 레벨</td>
+                        <td class="info-value"><span th:text="${item.level}">1</span> Lv</td>
+                    </tr>
+                    <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-map-marker-alt me-1"></i>서식지</td>
+                        <td class="info-value">
+                            <span th:text="${item.location}">장소</span>
+                            <span th:if="${item.subLocation != null and item.subLocation != ''}"
+                                th:text="' - ' + ${item.subLocation}" class="text-muted"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-cloud-sun me-1"></i>날씨</td>
+                        <td class="info-value">
+                            <span th:if="${item.weather != null and item.weather != ''}"
+                                th:text="${item.weather}">상시</span>
+                            <span th:if="${item.weather == null or item.weather == ''}">상시</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-clock me-1"></i>시간</td>
+                        <td class="info-value">
+                            <span th:if="${item.time != null and item.time != ''}" th:text="${item.time}">상시</span>
+                            <span th:if="${item.time == null or item.time == ''}">상시</span>
+                        </td>
+                    </tr>
+                    <!-- Fish: Size -->
+                    <tr th:if="${category == 'fish'}">
+                        <td class="info-label"><i class="fas fa-ruler me-1"></i>사이즈</td>
+                        <td class="info-value" th:text="${item.size ?: '-'}">중형</td>
+                    </tr>
+                    <!-- Bird: Type -->
+                    <tr th:if="${category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-tag me-1"></i>종류</td>
+                        <td class="info-value" th:text="${item.type ?: '-'}">종류</td>
+                    </tr>
+                    <!-- Animal: Location, Food, Weather -->
+                    <tr th:if="${category == 'animal'}">
+                        <td class="info-label"><i class="fas fa-map-marker-alt me-1"></i>서식지</td>
+                        <td class="info-value" th:text="${item.location}">장소</td>
+                    </tr>
+                    <tr th:if="${category == 'animal'}">
+                        <td class="info-label"><i class="fas fa-heart me-1"></i>좋아하는 음식</td>
+                        <td class="info-value" th:text="${item.favoriteFood ?: '-'}">음식</td>
+                    </tr>
+                    <tr th:if="${category == 'animal'}">
+                        <td class="info-label"><i class="fas fa-cloud me-1"></i>좋아하는 날씨</td>
+                        <td class="info-value" th:text="${item.favoriteWeather ?: '-'}">날씨</td>
+                    </tr>
+                    <!-- Cooking: Level, Ingredients, Buy Price -->
+                    <tr th:if="${category == 'cooking'}">
+                        <td class="info-label"><i class="fas fa-layer-group me-1"></i>필요 레벨</td>
+                        <td class="info-value"><span th:text="${item.level}">1</span> Lv</td>
+                    </tr>
+                    <tr th:if="${category == 'cooking'}">
+                        <td class="info-label"><i class="fas fa-list me-1"></i>재료</td>
+                        <td class="info-value" th:text="${item.ingredients ?: '-'}">재료</td>
+                    </tr>
+                    <tr th:if="${category == 'cooking' and item.buyPrice != null}">
+                        <td class="info-label"><i class="fas fa-store me-1"></i>구매가</td>
+                        <td class="info-value"><span th:text="${item.buyPrice}">100</span> 골드</td>
+                    </tr>
+                    <!-- Flower / Crop: Level, Growth, Seed Prices -->
+                    <tr th:if="${category == 'flower' or category == 'crop'}">
+                        <td class="info-label"><i class="fas fa-layer-group me-1"></i>필요 레벨</td>
+                        <td class="info-value"><span th:text="${item.level}">1</span> Lv</td>
+                    </tr>
+                    <tr th:if="${category == 'flower' or category == 'crop'}">
+                        <td class="info-label"><i class="fas fa-hourglass-half me-1"></i>성장 시간</td>
+                        <td class="info-value" th:text="${item.growthTime ?: '-'}">24시간</td>
+                    </tr>
+                    <tr th:if="${category == 'flower' or category == 'crop'}">
+                        <td class="info-label"><i class="fas fa-shopping-cart me-1"></i>씨앗 구매가</td>
+                        <td class="info-value">
+                            <span th:if="${item.seedBuyPrice != null}" th:text="${item.seedBuyPrice + ' 골드'}">100
+                                골드</span>
+                            <span th:if="${item.seedBuyPrice == null}">-</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${category == 'flower' or category == 'crop'}">
+                        <td class="info-label"><i class="fas fa-coins me-1"></i>씨앗 판매가</td>
+                        <td class="info-value">
+                            <span th:if="${item.seedSellPrice != null}" th:text="${item.seedSellPrice + ' 골드'}">50
+                                골드</span>
+                            <span th:if="${item.seedSellPrice == null}">-</span>
+                        </td>
+                    </tr>
+                    <!-- Forageable: Location, Price, Energy -->
+                    <tr th:if="${category == 'forageable'}">
+                        <td class="info-label"><i class="fas fa-map-marker-alt me-1"></i>채집 장소</td>
+                        <td class="info-value" th:text="${item.location}">장소</td>
+                    </tr>
+                    <tr th:if="${category == 'forageable'}">
+                        <td class="info-label"><i class="fas fa-coins me-1"></i>판매가</td>
+                        <td class="info-value">
+                            <span th:if="${item.price != null}" th:text="${item.price + ' 골드'}">100 골드</span>
+                            <span th:if="${item.price == null}">-</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${category == 'forageable'}">
+                        <td class="info-label"><i class="fas fa-bolt me-1"></i>에너지</td>
+                        <td class="info-value" th:text="${item.energy ?: '-'}">+10</td>
+                    </tr>
+                </table>
+
+                <!-- Price by Grade (5-star system) -->
+                <div th:if="${prices != null}">
+                    <div class="detail-section-title">
+                        <i class="fas fa-coins"></i> 등급별 판매가
+                    </div>
+                    <div class="price-grid">
+                        <div th:each="price, iterStat : ${prices}" class="price-item">
+                            <div class="price-star" th:text="${iterStat.count} + '★'">1★</div>
+                            <div class="price-value" th:text="${price != null and price != 0 ? price : '-'}">100</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to List -->
+                <a th:href="${listUrl}" class="back-to-list">
+                    <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
+                </a>
+            </div>
+        </div>
+
+        <!-- Related Items Section -->
+        <div th:if="${relatedItems != null and !relatedItems.isEmpty()}" class="related-section">
+            <div class="related-header">
+                <i class="fas fa-link"></i>
+                <span>같은 장소의 관련 정보</span>
+            </div>
+            <div class="related-grid">
+                <a th:each="rel : ${relatedItems}" th:href="${rel.detailUrl()}" class="related-card">
+                    <span class="related-card-name" th:text="${rel.name()}">이름</span>
+                    <span class="related-card-info" th:text="${rel.subInfo()}">정보</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
