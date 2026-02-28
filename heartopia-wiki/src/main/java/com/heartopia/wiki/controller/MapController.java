@@ -79,6 +79,12 @@ public class MapController {
         return collectionService.getAllAnimals();
     }
 
+    @GetMapping("/api/villagers")
+    @ResponseBody
+    public List<Villager> getVillagerMasterList() {
+        return villagerService.getAllVillagers();
+    }
+
     @GetMapping("/api/pins")
     @ResponseBody
     public List<MapPin> getPins(@RequestParam(required = false) String category) {
@@ -119,7 +125,7 @@ public class MapController {
                 collectionService.getAllFish().stream()
                         .filter(f -> f.getName().equals(name))
                         .findFirst().ifPresent(f -> {
-                            details.put("위치", f.getLocation());
+                            details.put("위치", formatLocation(f.getLocation(), f.getSubLocation()));
                             details.put("날씨", f.getWeather());
                             details.put("시간", f.getTime());
                             details.put("가격(1성)", String.valueOf(f.getPrice1()));
@@ -129,7 +135,7 @@ public class MapController {
                 collectionService.getAllBugs().stream()
                         .filter(b -> b.getName().equals(name))
                         .findFirst().ifPresent(b -> {
-                            details.put("위치", b.getLocation());
+                            details.put("위치", formatLocation(b.getLocation(), b.getSubLocation()));
                             details.put("날씨", b.getWeather());
                             details.put("시간", b.getTime());
                             details.put("가격(1성)", String.valueOf(b.getPrice1()));
@@ -139,7 +145,7 @@ public class MapController {
                 collectionService.getAllBirds().stream()
                         .filter(b -> b.getName().equals(name))
                         .findFirst().ifPresent(b -> {
-                            details.put("위치", b.getLocation());
+                            details.put("위치", formatLocation(b.getLocation(), b.getSubLocation()));
                             details.put("날씨", b.getWeather());
                             details.put("시간", b.getTime());
                             details.put("가격(1성)", String.valueOf(b.getPrice1()));
@@ -166,6 +172,15 @@ public class MapController {
                 break;
         }
         pin.setDetails(details);
+    }
+
+    private String formatLocation(String location, String subLocation) {
+        if (location == null)
+            return "-";
+        if (subLocation == null || subLocation.isEmpty() || subLocation.equals("-")) {
+            return location;
+        }
+        return location + " - " + subLocation;
     }
 
     @GetMapping("/api/categories")

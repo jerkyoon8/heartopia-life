@@ -1,35 +1,36 @@
-/* ===== Layout: Side Panel + Map ===== */
 .map-layout {
     display: flex;
     height: 650px;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e8e8e8;
+    box-shadow: 0 8px 30px var(--shadow, rgba(0, 0, 0, 0.08));
+    border: 1px solid var(--border-subtle, #e8e8e8);
+    background-color: var(--card-bg);
 }
 
 /* ===== Left Side Panel ===== */
 .map-side-panel {
     width: 280px;
     min-width: 280px;
-    background: #f8f9fb;
-    border-right: 1px solid #e8e8e8;
+    background: var(--nav-hover, #f8f9fb);
+    border-right: 1px solid var(--border-subtle, #e8e8e8);
     display: flex;
     flex-direction: column;
     font-family: 'Paperlogy', sans-serif;
+    transition: background 0.3s ease;
 }
 
 .side-panel-header {
     padding: 16px 18px;
-    border-bottom: 1px solid #e8e8e8;
-    background: white;
+    border-bottom: 1px solid var(--border-subtle, #e8e8e8);
+    background: var(--card-bg, white);
 }
 
 .side-panel-header h3 {
     margin: 0;
     font-size: 16px;
     font-weight: 700;
-    color: #333;
+    color: var(--text-color, #333);
 }
 
 /* Search */
@@ -40,14 +41,15 @@
 .side-panel-search input {
     width: 100%;
     padding: 9px 13px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-subtle, #e0e0e0);
     border-radius: 10px;
     font-size: 13px;
     font-family: 'Paperlogy', sans-serif;
     outline: none;
     transition: border-color 0.2s;
     box-sizing: border-box;
-    background: white;
+    background: var(--card-bg, white);
+    color: var(--text-color);
 }
 
 .side-panel-search input:focus {
@@ -65,9 +67,9 @@
 
 .btn-control {
     padding: 6px 14px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-subtle, #ddd);
     border-radius: 8px;
-    background: white;
+    background: var(--card-bg, white);
     cursor: pointer;
     font-size: 12px;
     font-family: 'Paperlogy', sans-serif;
@@ -75,12 +77,12 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    color: #555;
+    color: var(--stat-label, #555);
 }
 
 .btn-control:hover {
-    background: #e9ecef;
-    border-color: #ccc;
+    background: var(--nav-hover, #e9ecef);
+    border-color: var(--border-color, #ccc);
 }
 
 .btn-control.active-hide {
@@ -116,7 +118,7 @@
 }
 
 .category-header:hover {
-    background: #eef0f4;
+    background: var(--nav-hover, #eef0f4);
 }
 
 .category-arrow {
@@ -142,7 +144,7 @@
     flex: 1;
     font-size: 13px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-color, #333);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -160,13 +162,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e0e0e0;
-    background: white;
+    border: 1px solid var(--border-subtle, #e0e0e0);
+    background: var(--card-bg, white);
     cursor: pointer;
     border-radius: 6px;
     font-size: 13px;
     transition: all 0.2s;
-    color: #ced4da;
+    color: var(--stat-label, #ced4da);
     /* More soft grey */
 }
 
@@ -200,7 +202,7 @@
     cursor: pointer;
     transition: all 0.15s;
     font-size: 13px;
-    color: #555;
+    color: var(--stat-label, #555);
     gap: 8px;
     margin-bottom: 2px;
 }
@@ -239,11 +241,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e8e8e8;
-    background: white;
+    border: 1px solid var(--border-subtle, #e8e8e8);
+    background: var(--card-bg, white);
     cursor: pointer;
     border-radius: 6px;
-    color: #ced4da;
+    color: var(--stat-label, #ced4da);
     /* Soft grey icon */
     font-size: 11px;
     transition: all 0.2s;
@@ -268,11 +270,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e0e0e0;
-    background: white;
+    border: 1px solid var(--border-subtle, #e0e0e0);
+    background: var(--card-bg, white);
     cursor: pointer;
     border-radius: 6px;
-    color: #999;
+    color: var(--stat-label, #999);
     font-size: 11px;
     transition: all 0.2s;
     flex-shrink: 0;
@@ -460,10 +462,10 @@
 .map-popup-title {
     font-size: 15px;
     font-weight: 700;
-    color: #333;
+    color: var(--text-color, #333);
     margin-bottom: 8px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-subtle, #eee);
 }
 
 .map-popup-details {
@@ -574,9 +576,9 @@
     bottom: 20px;
     left: 20px;
     width: 280px;
-    background: white;
+    background: var(--card-bg, white);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px var(--shadow, rgba(0, 0, 0, 0.15));
     z-index: 1001;
     padding: 20px;
     font-family: 'Paperlogy', sans-serif;
@@ -584,7 +586,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #f1f3f5;
+    border: 1px solid var(--border-subtle, #f1f3f5);
 }
 
 .map-info-box.show {
@@ -630,7 +632,7 @@
 .info-box-title {
     font-size: 18px;
     font-weight: 700;
-    color: #212529;
+    color: var(--text-color, #212529);
     margin: 0;
 }
 
@@ -644,7 +646,7 @@
     justify-content: space-between;
     font-size: 13px;
     padding: 6px 10px;
-    background: #f8f9fa;
+    background: var(--nav-hover, #f8f9fa);
     border-radius: 8px;
 }
 
@@ -655,12 +657,12 @@
 }
 
 .info-box-minimize-btn {
-    background: #f1f3f5;
+    background: var(--nav-hover, #f1f3f5);
     border: none;
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    color: #adb5bd;
+    color: var(--stat-label, #adb5bd);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -681,12 +683,12 @@
 }
 
 .item-visibility-toggle {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
+    background: var(--card-bg, #f8f9fa);
+    border: 1px solid var(--border-subtle, #e9ecef);
     width: 28px;
     height: 28px;
     border-radius: 6px;
-    color: #adb5bd;
+    color: var(--stat-label, #adb5bd);
     cursor: pointer;
     display: flex;
     align-items: center;

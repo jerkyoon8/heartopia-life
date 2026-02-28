@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
         masterFish: [],
         masterBirds: [],
         masterInsects: [],
+        masterAnimals: [],
+        masterVillagers: [],
         markers: {}, // pinId -> marker
         categoryVisible: {},
         itemVisible: {}, // Used for forageable names to toggle all pins of that name
@@ -180,7 +182,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Group by category and init visibility
                 pins.forEach(pin => {
                     if (state.categoryVisible[pin.category] === undefined) {
-                        state.categoryVisible[pin.category] = true;
+                        // Only show specific categories by default
+                        const defaultVisible = ['villager', 'animal', 'bus'];
+                        state.categoryVisible[pin.category] = defaultVisible.includes(pin.category);
                     }
                     if (state.itemVisible[pin.id] === undefined) {
                         state.itemVisible[pin.id] = true;
@@ -204,13 +208,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetch('/wiki/map/api/fish').then(res => res.json()),
                     fetch('/wiki/map/api/birds').then(res => res.json()),
                     fetch('/wiki/map/api/insects').then(res => res.json()),
-                    fetch('/wiki/map/api/animals').then(res => res.json())
-                ]).then(([forageables, fish, birds, insects, animals]) => {
+                    fetch('/wiki/map/api/animals').then(res => res.json()),
+                    fetch('/wiki/map/api/villagers').then(res => res.json())
+                ]).then(([forageables, fish, birds, insects, animals, villagers]) => {
                     state.masterForageables = forageables;
                     state.masterFish = fish;
                     state.masterBirds = birds;
                     state.masterInsects = insects;
                     state.masterAnimals = animals;
+                    state.masterVillagers = villagers;
                     renderCategoryList();
 
                     // Deep link handling (Master lists are now ready)
@@ -395,7 +401,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'forageable': state.masterForageables,
             'fish': state.masterFish,
             'bird': state.masterBirds,
-            'insect': state.masterInsects
+            'insect': state.masterInsects,
+            'animal': state.masterAnimals,
+            'villager': state.masterVillagers
         };
 
         Object.entries(masterMap).forEach(([category, masters]) => {
@@ -425,12 +433,21 @@ document.addEventListener('DOMContentLoaded', function () {
             state.masterForageables.length === 0 &&
             state.masterFish.length === 0 &&
             state.masterBirds.length === 0 &&
-            state.masterInsects.length === 0) {
+            state.masterInsects.length === 0 &&
+            state.masterAnimals.length === 0 &&
+            state.masterVillagers.length === 0) {
             categoryList.innerHTML = '<div class="no-pins">데이터가 없습니다.</div>';
             return;
         }
 
-        Object.keys(grouped).sort().forEach(category => {
+        const categoryOrder = ['villager', 'animal', 'bus', 'forageable', 'fish', 'insect', 'bird'];
+        Object.keys(grouped).sort((a, b) => {
+            let indexA = categoryOrder.indexOf(a);
+            let indexB = categoryOrder.indexOf(b);
+            if (indexA === -1) indexA = 99;
+            if (indexB === -1) indexB = 99;
+            return indexA - indexB;
+        }).forEach(category => {
             const pins = grouped[category];
             const config = CATEGORY_CONFIG[category] || { icon: '📍', color: '#888', label: category };
             const isCatVisible = state.categoryVisible[category] !== false;
@@ -664,16 +681,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!category || !name) return;
 
-        // 1. Info Box Categories (Fish, Insect, Bird, Animal)
-        if (['fish', 'insect', 'bird', 'animal'].includes(category)) {
+        // 1. Info Box Categories (Fish, Insect, Bird, Animal, Villager)
+        if (['fish', 'insect', 'bird', 'animal', 'villager'].includes(category)) {
             let masters = [];
             if (category === 'fish') masters = state.masterFish;
             else if (category === 'bird') masters = state.masterBirds;
             else if (category === 'insect') masters = state.masterInsects;
             else if (category === 'animal') masters = state.masterAnimals;
+            else if (category === 'villager') masters = state.masterVillagers;
 
             const master = masters.find(m => m.name === name);
             if (master) {
+                // Ensure masters are loaded before showing
                 showInfoBox(master, category);
             }
         }
@@ -693,14 +712,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const labels = {
             'location': '위치', 'weather': '날씨', 'time': '시간',
             'favoriteWeather': '선호 날씨', 'favoriteFood': '선호 음식',
-            'price1': '가격(1성)', 'price': '가격'
+            'price1': '가격(1성)', 'price': '가격',
+            'subTitle': '역할', 'unlockCondition': '해금'
         };
 
         // "-" or empty mapping to "상시"
         const formatVal = (val) => (!val || val === '-') ? '<span class="status-always">상시</span>' : val;
 
+        // Format Location display (add subLocation if exists)
+        const formatLoc = (loc, sub) => (sub && sub !== '-' && sub !== '') ? `${loc} - ${sub}` : loc;
+
         const details = [
-            { key: labels.location, val: item.location },
+            { key: labels.location, val: formatLoc(item.location, item.subLocation) },
+            { key: labels.subTitle, val: item.subTitle },
+            { key: labels.unlockCondition, val: item.unlockCondition },
             { key: labels.weather || labels.favoriteWeather, val: item.weather || item.favoriteWeather, isCondition: true },
             { key: labels.time, val: item.time, isCondition: true },
             { key: labels.price1 || labels.price, val: item.price1 || item.price }
@@ -730,7 +755,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     `).join('')}
                 </div>
                 <div class="info-box-footer">
-                    <a href="/wiki/${category}/${item.name}" class="map-popup-link" style="margin-top:0; width:100%; display:block;">상세 도감 페이지 이동</a>
+                    <a href="${(() => {
+                const urlCategory = category === 'insect' ? 'bug' : category;
+                const prefix = ['fish', 'bug', 'bird', 'animal', 'forageable'].includes(urlCategory) ? 'collections' : 'items';
+                return '/wiki/' + prefix + '/' + urlCategory + '/' + encodeURIComponent(item.name);
+            })()}" class="map-popup-link" style="margin-top:0; width:100%; display:block;">상세 도감 페이지 이동</a>
                 </div>
             </div>
         `;
