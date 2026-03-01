@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'&quot;' + ${keyword} + '&quot; 검색 결과 - Heartopia Wiki'">검색 결과 - Heartopia Wiki</title>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+
+    <style>
+        /* --- Search Results Styles --- */
+        .search-header {
+            margin-bottom: 30px;
+        }
+
+        .search-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .search-header h1 .keyword-highlight {
+            color: #ff7f9d;
+        }
+
+        .search-count {
+            font-size: 0.95rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .search-again {
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .search-again form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-again input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-again input:focus {
+            border-color: #ff7f9d;
+            box-shadow: 0 0 0 3px rgba(255, 127, 157, 0.1);
+        }
+
+        .search-again button {
+            background: #ff7f9d;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-again button:hover {
+            background: #ff5c82;
+        }
+
+        /* Category Group */
+        .search-category-group {
+            margin-bottom: 30px;
+        }
+
+        .search-category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-category-title .cat-count {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+            background: #ff7f9d;
+            border-radius: 12px;
+            padding: 2px 10px;
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .search-result-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 18px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #e0f2fe;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .result-icon.fish {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .result-icon.bug {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .result-icon.bird {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .result-icon.animal {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .result-icon.cooking {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .result-icon.flower {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .result-icon.crop {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .result-icon.forageable {
+            background: #efebe9;
+            color: #5d4037;
+        }
+
+        .result-icon.villager {
+            background: #e8eaf6;
+            color: #3f51b5;
+        }
+
+        .result-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-name {
+            font-weight: 700;
+            color: var(--link-color);
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-sub {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .result-arrow {
+            color: #ccc;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        /* No Results */
+        .no-search-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .no-search-results i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .no-search-results h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1>"<span class="keyword-highlight" th:text="${keyword}">검색어</span>" 검색 결과</h1>
+            <p class="search-count" th:text="'총 ' + ${totalCount} + '개의 결과를 찾았습니다.'">총 N개의 결과</p>
+        </div>
+
+        <!-- Search Again -->
+        <div class="search-again">
+            <form action="/wiki/search" method="get">
+                <input type="text" name="q" th:value="${keyword}" placeholder="다시 검색...">
+                <button type="submit"><i class="fas fa-search"></i> 검색</button>
+            </form>
+        </div>
+
+        <!-- No Results -->
+        <div th:if="${totalCount == 0}" class="no-search-results">
+            <i class="fas fa-search"></i>
+            <h2>"<span th:text="${keyword}">검색어</span>"에 대한 결과가 없습니다.</h2>
+            <p>다른 키워드로 검색해 보세요.</p>
+            <a href="/wiki" class="back-to-list" style="display:inline-flex; margin-top:15px;">
+                <i class="fas fa-home"></i> 메인으로 돌아가기
+            </a>
+        </div>
+
+        <!-- Grouped Results -->
+        <div th:each="entry : ${groupedResults}" class="search-category-group">
+            <div class="search-category-title">
+                <span th:text="${entry.key}">카테고리</span>
+                <span class="cat-count" th:text="${entry.value.size()}">5</span>
+            </div>
+            <div class="search-results-grid">
+                <a th:each="result : ${entry.value}" th:href="${result.detailUrl()}" class="search-result-card">
+                    <div th:class="'result-icon ' + ${result.category()}">
+                        <i th:if="${result.category() == 'fish'}" class="fas fa-fish"></i>
+                        <i th:if="${result.category() == 'bug'}" class="fas fa-bug"></i>
+                        <i th:if="${result.category() == 'bird'}" class="fas fa-dove"></i>
+                        <i th:if="${result.category() == 'animal'}" class="fas fa-paw"></i>
+                        <i th:if="${result.category() == 'cooking'}" class="fas fa-utensils"></i>
+                        <i th:if="${result.category() == 'flower'}" class="fas fa-seedling"></i>
+                        <i th:if="${result.category() == 'crop'}" class="fas fa-carrot"></i>
+                        <i th:if="${result.category() == 'forageable'}" class="fas fa-leaf"></i>
+                        <i th:if="${result.category() == 'villager'}" class="fas fa-user"></i>
+                    </div>
+                    <div class="result-text">
+                        <div class="result-name" th:text="${result.name()}">이름</div>
+                        <div class="result-sub" th:text="${result.subInfo()}">부가 정보</div>
+                    </div>
+                    <div class="result-arrow"><i class="fas fa-chevron-right"></i></div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

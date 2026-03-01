@@ -5,15 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heartopia Wiki</title>
-    <!-- Pretendard Font -->
-    <link rel="stylesheet" as="style" crossorigin
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome (Icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Common CSS -->
-    <link rel="stylesheet" href="/css/common.css">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
 
     <style>
         /* Paperlogy Font */
@@ -37,17 +29,22 @@
         /* Main Logo Styling */
         .page-main-logo {
             display: block;
-            margin: 40px auto 30px;
-            /* Reduced bottom margin to make space for search */
-            max-width: 450px;
+            margin: 60px auto 40px;
+            max-width: 650px;
+            /* Increased from 450px */
             height: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .page-main-logo:hover {
+            transform: scale(1.02);
         }
 
         /* --- Main Search Box --- */
         .main-search-container {
-            max-width: 600px;
-            margin: 0 auto 60px;
-            /* Center and add bottom spacing */
+            max-width: 700px;
+            /* Widened to match larger logo better */
+            margin: 0 auto 50px;
             position: relative;
         }
 
@@ -143,9 +140,138 @@
             font-family: 'Paperlogy', sans-serif;
             font-size: 30px;
             font-weight: 700;
-            color: #333;
+            color: var(--text-color, #333);
             margin: 0;
             line-height: 1.2;
+        }
+
+        /* --- Quick Access Menu (Geoniverse Style) --- */
+        .quick-access-section {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 80px;
+            padding: 0 15px;
+        }
+
+        .quick-card {
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #f0f0f0);
+            border-radius: 20px;
+            padding: 20px 15px;
+            /* Reduced padding */
+            width: 100%;
+            max-width: 240px;
+            /* Reduced from 320px */
+            text-align: center;
+            text-decoration: none !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(220, 100, 120, 0.08);
+            border-color: #ffe4e9;
+        }
+
+        .quick-card-icon {
+            width: 55px;
+            /* Reduced from 70px */
+            height: 55px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            /* Reduced from 32px */
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .quick-card:hover .quick-card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .quick-card.coupon .quick-card-icon {
+            background: #fff1f2;
+            color: #f43f5e;
+        }
+
+        .quick-card.map .quick-card-icon {
+            background: #f0fdf4;
+            color: #22c55e;
+        }
+
+        .quick-card-title {
+            font-family: 'Paperlogy', sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            /* Reduced from 22px */
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .quick-card.coupon .quick-card-title {
+            color: #e11d48;
+        }
+
+        .quick-card.map .quick-card-title {
+            color: #16a34a;
+        }
+
+        .quick-card-subtitle {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .quick-card-action {
+            margin-top: auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .q-action-btn {
+            width: 38px;
+            /* Reduced from 45px */
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .q-action-btn.primary {
+            background: #6366f1;
+            color: white;
+            width: auto;
+            padding: 0 18px;
+            /* Reduced padding */
+            font-weight: 600;
+            font-size: 13px;
+            /* Reduced font size */
+        }
+
+        .quick-card.coupon .q-action-btn.primary {
+            background: #f43f5e;
+        }
+
+        .quick-card.map .q-action-btn.primary {
+            background: #22c55e;
+        }
+
+        .q-action-btn:hover {
+            filter: brightness(0.9);
+            transform: scale(1.05);
         }
 
         .section-desc {
@@ -289,6 +415,134 @@
             color: #555;
             text-align: center;
         }
+
+        /* --- Autocomplete Dropdown --- */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            margin-top: 6px;
+            overflow: hidden;
+            z-index: 1000;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+            animation: dropdownFadeIn 0.2s ease;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .autocomplete-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            gap: 12px;
+            transition: background 0.15s;
+            cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background: #fff0f3;
+        }
+
+        .autocomplete-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            background: #f8f9fa;
+        }
+
+        .autocomplete-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .autocomplete-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .autocomplete-name mark {
+            background: #ffe0e6;
+            color: #333;
+            border-radius: 2px;
+            padding: 0 1px;
+        }
+
+        .autocomplete-sub {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 1px;
+        }
+
+        .autocomplete-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        .autocomplete-footer {
+            padding: 10px 20px;
+            text-align: center;
+            border-top: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .autocomplete-footer a {
+            color: #ff7f9d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .autocomplete-footer a:hover {
+            color: #ff5c82;
+        }
+
+        .autocomplete-empty {
+            padding: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 
@@ -305,12 +559,43 @@
 
         <!-- Main Search Box -->
         <div class="main-search-container">
-            <form action="/wiki/search" method="get" class="main-search-box">
-                <input type="text" name="q" class="main-search-input" placeholder="무엇을 찾고 싶으신가요? (예: 배스, 낚시)">
+            <form action="/wiki/search" method="get" class="main-search-box" id="searchForm" autocomplete="off">
+                <input type="text" name="q" id="wikiSearchInput" class="main-search-input"
+                    placeholder="무엇을 찾고 싶으신가요? (예: 배스, 낚시)">
                 <button type="submit" class="main-search-btn">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
+            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+        </div>
+
+        <!-- Quick Access Menu -->
+        <div class="quick-access-section">
+            <!-- Coupon Card -->
+            <a th:href="@{/wiki/codes}" class="quick-card coupon">
+                <div class="quick-card-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="quick-card-title">선물 코드</div>
+                <div class="quick-card-subtitle">최신 쿠폰과 보상을 확인하세요!</div>
+                <div class="quick-card-action">
+                    <div class="q-action-btn"><i class="fas fa-info-circle"></i></div>
+                    <div class="q-action-btn primary">확인하기</div>
+                </div>
+            </a>
+
+            <!-- Map Card -->
+            <a th:href="@{/wiki/map}" class="quick-card map">
+                <div class="quick-card-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="quick-card-title">마을 지도</div>
+                <div class="quick-card-subtitle">마을의 모든 장소를 찾아보세요.</div>
+                <div class="quick-card-action">
+                    <div class="q-action-btn"><i class="fas fa-info-circle"></i></div>
+                    <div class="q-action-btn primary">이동하기</div>
+                </div>
+            </a>
         </div>
 
         <!-- 1. Collections -->
@@ -403,7 +688,137 @@
     <!-- Footer (Common Fragment) -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <!-- Autocomplete Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('wikiSearchInput');
+            const dropdown = document.getElementById('autocompleteDropdown');
+            let debounceTimer = null;
+            let activeIndex = -1;
+
+            // 디바운스 검색
+            input.addEventListener('input', function () {
+                const query = this.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (query.length < 1) {
+                    hideDropdown();
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetchSuggestions(query);
+                }, 300);
+            });
+
+            // API 호출
+            async function fetchSuggestions(query) {
+                try {
+                    const res = await fetch('/wiki/search/suggest?q=' + encodeURIComponent(query));
+                    const data = await res.json();
+                    renderDropdown(data, query);
+                } catch (e) {
+                    console.error('Suggest error:', e);
+                    hideDropdown();
+                }
+            }
+
+            // 드롭다운 렌더링
+            function renderDropdown(items, query) {
+                activeIndex = -1;
+
+                if (items.length === 0) {
+                    dropdown.innerHTML = '<div class="autocomplete-empty"><i class="fas fa-search" style="margin-right:6px;"></i>검색 결과가 없습니다.</div>';
+                    dropdown.classList.add('show');
+                    return;
+                }
+
+                let html = items.map((item, idx) => {
+                    const highlightedName = highlightMatch(item.name, query);
+                    return `
+                        <a href="${item.url}" class="autocomplete-item" data-index="${idx}">
+                            <span class="autocomplete-icon">${item.icon}</span>
+                            <div class="autocomplete-text">
+                                <div class="autocomplete-name">${highlightedName}</div>
+                                <div class="autocomplete-sub">${item.sub || ''}</div>
+                            </div>
+                            <span class="autocomplete-badge">${item.label}</span>
+                        </a>
+                    `;
+                }).join('');
+
+                // 전체 결과 보기 링크
+                html += `
+                    <div class="autocomplete-footer">
+                        <a href="/wiki/search?q=${encodeURIComponent(query)}">
+                            <i class="fas fa-search" style="margin-right:4px;"></i>"${query}" 전체 검색 결과 보기
+                        </a>
+                    </div>
+                `;
+
+                dropdown.innerHTML = html;
+                dropdown.classList.add('show');
+            }
+
+            // 검색어 하이라이트
+            function highlightMatch(text, query) {
+                const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                return text.replace(regex, '<mark>$1</mark>');
+            }
+
+            // 키보드 네비게이션
+            input.addEventListener('keydown', function (e) {
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+                if (!dropdown.classList.contains('show') || items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                    updateActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = Math.max(activeIndex - 1, -1);
+                    updateActive(items);
+                } else if (e.key === 'Enter' && activeIndex >= 0) {
+                    e.preventDefault();
+                    items[activeIndex].click();
+                } else if (e.key === 'Escape') {
+                    hideDropdown();
+                }
+            });
+
+            function updateActive(items) {
+                items.forEach((item, idx) => {
+                    item.classList.toggle('active', idx === activeIndex);
+                });
+                if (activeIndex >= 0) {
+                    items[activeIndex].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            // 외부 클릭 시 드롭다운 닫기
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.main-search-container')) {
+                    hideDropdown();
+                }
+            });
+
+            // 포커스 시 이미 입력값이 있으면 다시 검색
+            input.addEventListener('focus', function () {
+                if (this.value.trim().length >= 1 && dropdown.innerHTML) {
+                    dropdown.classList.add('show');
+                }
+            });
+
+            function hideDropdown() {
+                dropdown.classList.remove('show');
+                activeIndex = -1;
+            }
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+```
