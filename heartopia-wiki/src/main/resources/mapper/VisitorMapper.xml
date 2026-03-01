@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.VisitorMapper">
+
+    <!-- Increment today's count -->
+    <update id="incrementTodayCount">
+        INSERT INTO visitor_stats (visit_date, visit_count)
+        VALUES (CURDATE(), 1)
+        ON DUPLICATE KEY UPDATE visit_count = visit_count + 1
+    </update>
+
+    <!-- Get sum of counts for the last 7 days -->
+    <select id="getWeeklyTotal" resultType="int">
+        SELECT COALESCE(SUM(visit_count), 0)
+        FROM visitor_stats
+        WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+    </select>
+
+</mapper>

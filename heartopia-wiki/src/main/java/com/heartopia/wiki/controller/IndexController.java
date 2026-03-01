@@ -8,7 +8,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String index() {
-        // localhost:8080 접속 시 wiki/index.html을 보여줌
-        return "wiki/index";
+        // localhost:8080 접속 시 /wiki로 자동 리다이렉트
+        return "redirect:/wiki";
     }
 }
