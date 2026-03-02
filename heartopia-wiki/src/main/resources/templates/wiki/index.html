@@ -5,15 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heartopia Wiki - Home</title>
-    <!-- Pretendard Font -->
-    <link rel="stylesheet" as="style" crossorigin
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Common CSS -->
-    <link rel="stylesheet" href="/css/common.css">
+    <!-- Common Head (Favicon, Fonts, Bootstrap, FontAwesome, common.css) -->
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
 
     <style>
         :root {
@@ -116,8 +109,8 @@
                     </div>
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="https://via.placeholder.com/800x400?text=Welcome+to+Heartopia"
-                                class="d-block w-100" alt="Slide 1">
+                            <img src="/images/logo/main_logo.png" class="d-block w-100" alt="두두타 도감 로고"
+                                style="height: 400px; object-fit: contain; background: #fff;">
                             <div class="carousel-caption d-none d-md-block">
                                 <h5>Heartopia에 오신 것을 환영합니다!</h5>
                                 <p>나만의 섬을 꾸미고 친구들과 함께하세요.</p>
