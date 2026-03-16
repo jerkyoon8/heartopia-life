@@ -2,10 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Cooking Items - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
+    <style>
+        /* 목록 페이지 재료 pill 태그 */
+        .ing-pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+            justify-content: center;
+        }
+        .ing-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 9px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1.5px solid #d0d0d0;
+            background: #fff;
+            color: #555;
+            white-space: nowrap;
+        }
+        .ing-pill.linked:hover {
+            border-color: #ffc107;
+            background: #fffde7;
+            color: #333;
+        }
+        .ing-pill.unlinked {
+            background: #f5f5f5;
+            color: #888;
+        }
+        .ing-pill .ing-qty {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #e67e22;
+        }
+    </style>
 </head>
 
 <body>
@@ -56,16 +92,32 @@
                 <div class="wiki-item-image">
                     <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
                         style="max-height: 100px; object-fit: contain;">
-                    <i th:if="${item.imageUrl == null}" class="fas fa-utensils fa-4x text-danger"
-                        style="opacity: 0.7;"></i>
+                    <i th:class="'fas fa-utensils fa-4x text-danger fallback-icon'"
+                        th:style="${item.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
 
                 <div class="wiki-item-info">
                     <a th:href="@{/wiki/items/cooking/{name}(name=${item.name})}" class="wiki-item-name"
                         th:text="${item.name}"></a>
-                    <!-- Ingredients as small text -->
-                    <div class="text-muted small mt-1" th:text="${item.ingredients}"
-                        style="font-size: 0.85rem; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
+                    <!-- 재료 pill 태그 -->
+                    <div class="ing-pill-list" th:if="${item.ingredientList != null and !item.ingredientList.isEmpty()}">
+                        <th:block th:each="ing : ${item.ingredientList}">
+                            <a th:if="${ing.itemType != null}"
+                               th:href="@{/wiki/{t}/{n}(t=${ing.itemType == 'crop' ? 'items/crops' : 'collections/' + ing.itemType}, n=${ing.ingredientName})}"
+                               class="ing-pill linked">
+                                <span th:text="${ing.ingredientName}"></span>
+                                <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                            </a>
+                            <span th:unless="${ing.itemType != null}" class="ing-pill unlinked">
+                                <span th:text="${ing.ingredientName}"></span>
+                                <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                            </span>
+                        </th:block>
+                    </div>
+                    <!-- 폴백: ingredientList 없으면 텍스트 -->
+                    <div th:unless="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
+                         class="text-muted small mt-1" th:text="${item.ingredients}"
+                         style="font-size: 0.85rem;">
                     </div>
                 </div>
 
@@ -75,18 +127,52 @@
                         <td class="stat-value"><span th:text="${item.level}"></span> Lv.</td>
                     </tr>
 
-                    <tr>
-                        <td class="stat-label">구매가</td>
-                        <td class="stat-value text-end text-danger">
-                            <span th:if="${item.buyPrice != null}" th:text="|${item.buyPrice} G|"></span>
-                            <span th:unless="${item.buyPrice != null}">-</span>
-                        </td>
-                    </tr>
                 </table>
 
                 <!-- Price Fragment -->
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${item.prices})}"></div>
             </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>재료</th>
+                        <th>판매가(1★)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${cookingList}" class="wiki-table-row"
+                        th:data-name="${item.name}"
+                        th:data-level="${item.level}"
+                        th:data-price="${item.prices[0]}">
+                        <td>
+                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb">
+                            <div th:unless="${item.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-utensils"></i></div>
+                        </td>
+                        <td><a th:href="@{/wiki/items/cooking/{name}(name=${item.name})}" class="table-name-link" th:text="${item.name}">이름</a></td>
+                        <td th:text="${item.level}">1</td>
+                        <td style="max-width: 220px;">
+                            <div class="ing-pill-list" th:if="${item.ingredientList != null and !item.ingredientList.isEmpty()}">
+                                <th:block th:each="ing : ${item.ingredientList}">
+                                    <span class="ing-pill" th:classappend="${ing.itemType != null ? 'linked' : 'unlinked'}">
+                                        <span th:text="${ing.ingredientName}"></span>
+                                        <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                                    </span>
+                                </th:block>
+                            </div>
+                            <span th:unless="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
+                                  style="font-size: 0.85rem; color: var(--stat-label);" th:text="${item.ingredients}"></span>
+                        </td>
+                        <td class="table-price" th:text="${item.prices[0]}">0</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -94,6 +180,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             new WikiFilter({
                 gridId: 'wikiGrid',
+                tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'levelFilter', dataKey: 'level' }

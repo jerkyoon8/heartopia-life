@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crop Collection - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
@@ -59,7 +58,10 @@
                 th:data-level="${crop.level}" th:data-price="${crop.prices[0]}">
 
                 <div class="wiki-item-image">
-                    <i class="fas fa-leaf fa-4x text-success" style="opacity: 0.7;"></i>
+                    <img th:if="${crop.imageUrl != null}" th:src="${crop.imageUrl}" th:alt="${crop.name}"
+                        style="max-height: 100px; object-fit: contain;">
+                    <i th:class="'fas fa-leaf fa-4x text-success fallback-icon'"
+                        th:style="${crop.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
 
                 <div class="wiki-item-info">
@@ -99,12 +101,56 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${crop.prices})}"></div>
             </div>
         </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>성장시간</th>
+                        <th>씨앗 구매</th>
+                        <th>씨앗 판매</th>
+                        <th>판매가(1★)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="crop : ${cropList}" class="wiki-table-row"
+                        th:data-name="${crop.name}"
+                        th:data-level="${crop.level}"
+                        th:data-price="${crop.prices[0]}">
+                        <td>
+                            <img th:if="${crop.imageUrl != null}" th:src="${crop.imageUrl}" th:alt="${crop.name}" class="table-thumb">
+                            <div th:unless="${crop.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-carrot"></i></div>
+                        </td>
+                        <td><a th:href="@{/wiki/items/crops/{name}(name=${crop.name})}" class="table-name-link" th:text="${crop.name}">이름</a></td>
+                        <td>
+                            <span th:if="${crop.level != null}" th:text="${crop.level} + ' Lv.'">1 Lv.</span>
+                            <span th:unless="${crop.level != null}">-</span>
+                        </td>
+                        <td th:text="${crop.growthTime != null ? crop.growthTime : '-'}">1일</td>
+                        <td class="text-danger">
+                            <span th:if="${crop.seedBuyPrice != null}" th:text="${crop.seedBuyPrice}">0</span>
+                            <span th:unless="${crop.seedBuyPrice != null}">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${crop.seedSellPrice != null}" th:text="${crop.seedSellPrice}">0</span>
+                            <span th:unless="${crop.seedSellPrice != null}">-</span>
+                        </td>
+                        <td class="table-price" th:text="${crop.prices[0]}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new WikiFilter({
                 gridId: 'wikiGrid',
+                tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'levelFilter', dataKey: 'level' }

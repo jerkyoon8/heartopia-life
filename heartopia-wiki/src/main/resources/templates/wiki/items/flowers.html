@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flower Collection - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
@@ -59,7 +58,10 @@
                 th:data-level="${flower.level}" th:data-price="${flower.prices[0]}">
 
                 <div class="wiki-item-image">
-                    <i class="fas fa-fan fa-4x text-danger" style="opacity: 0.7;"></i>
+                    <img th:if="${flower.imageUrl != null}" th:src="${flower.imageUrl}" th:alt="${flower.name}"
+                        style="max-height: 100px; object-fit: contain;">
+                    <i th:class="'fas fa-fan fa-4x text-danger fallback-icon'"
+                        th:style="${flower.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
 
                 <div class="wiki-item-info">
@@ -99,12 +101,56 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${flower.prices})}"></div>
             </div>
         </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>성장시간</th>
+                        <th>씨앗 구매</th>
+                        <th>씨앗 판매</th>
+                        <th>판매가(1★)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="flower : ${flowerList}" class="wiki-table-row"
+                        th:data-name="${flower.name}"
+                        th:data-level="${flower.level}"
+                        th:data-price="${flower.prices[0]}">
+                        <td>
+                            <img th:if="${flower.imageUrl != null}" th:src="${flower.imageUrl}" th:alt="${flower.name}" class="table-thumb">
+                            <div th:unless="${flower.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-seedling"></i></div>
+                        </td>
+                        <td><a th:href="@{/wiki/items/flowers/{name}(name=${flower.name})}" class="table-name-link" th:text="${flower.name}">이름</a></td>
+                        <td>
+                            <span th:if="${flower.level != null}" th:text="${flower.level} + ' Lv.'">1 Lv.</span>
+                            <span th:unless="${flower.level != null}">-</span>
+                        </td>
+                        <td th:text="${flower.growthTime != null ? flower.growthTime : '-'}">1일</td>
+                        <td class="text-danger">
+                            <span th:if="${flower.seedBuyPrice != null}" th:text="${flower.seedBuyPrice}">0</span>
+                            <span th:unless="${flower.seedBuyPrice != null}">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${flower.seedSellPrice != null}" th:text="${flower.seedSellPrice}">0</span>
+                            <span th:unless="${flower.seedSellPrice != null}">-</span>
+                        </td>
+                        <td class="table-price" th:text="${flower.prices[0]}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new WikiFilter({
                 gridId: 'wikiGrid',
+                tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'levelFilter', dataKey: 'level' }
