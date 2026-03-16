@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wild Animal Collection - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <style>
         :root {
@@ -74,8 +73,8 @@
                 <div class="fish-image-wrapper">
                     <img th:if="${animal.imageUrl != null}" th:src="${animal.imageUrl}" th:alt="${animal.name}"
                         style="width: 120px; height: 120px; object-fit: contain;">
-                    <i th:unless="${animal.imageUrl != null}" class="fas fa-paw fa-4x text-warning"
-                        style="opacity: 0.7;"></i>
+                    <i th:class="'fas fa-paw fa-4x text-warning fallback-icon'"
+                        th:style="${animal.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
                 <div class="text-center">
                     <a th:href="@{/wiki/collections/animal/{name}(name=${animal.name})}" class="wiki-item-name h5 mb-2"

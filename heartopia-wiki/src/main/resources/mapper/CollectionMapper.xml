@@ -35,7 +35,7 @@
 
     <select id="findAllAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
         SELECT 
-            id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
+            id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
         FROM animal_collections
         ORDER BY id ASC
     </select>
@@ -51,14 +51,16 @@
 
     <select id="findAllFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
+               image_url as imageUrl
         FROM flower_collections
         ORDER BY level, name
     </select>
 
     <select id="findAllGardening" resultType="com.heartopia.wiki.model.GardeningCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
+               image_url as imageUrl
         FROM crop_collections
         ORDER BY level, name
     </select>
@@ -90,7 +92,7 @@
     </select>
 
     <select id="findAnimalByName" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
+        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
         FROM animal_collections WHERE name = #{name}
     </select>
 
@@ -100,15 +102,52 @@
         FROM cooking_collections WHERE name = #{name}
     </select>
 
+    <!-- 요리 재료 목록 조회 (상세 페이지용, 이미지 JOIN 포함) -->
+    <select id="findIngredientsByCookingId" resultType="com.heartopia.wiki.model.CookingIngredient">
+        SELECT
+            ci.id,
+            ci.cooking_id      AS cookingId,
+            ci.ingredient_name AS ingredientName,
+            ci.quantity,
+            ci.item_type       AS itemType,
+            ci.item_id         AS itemId,
+            CASE ci.item_type
+                WHEN 'crop'       THEN (SELECT image_url FROM crop_collections       WHERE id = ci.item_id)
+                WHEN 'forageable' THEN (SELECT image_url FROM forageable_collections WHERE id = ci.item_id)
+                WHEN 'fish'       THEN (SELECT image_url FROM fish_collections       WHERE id = ci.item_id)
+                WHEN 'bug'        THEN (SELECT image_url FROM bug_collections        WHERE id = ci.item_id)
+                WHEN 'bird'       THEN (SELECT image_url FROM bird_collections       WHERE id = ci.item_id)
+                WHEN 'flower'     THEN (SELECT image_url FROM flower_collections     WHERE id = ci.item_id)
+                ELSE NULL
+            END AS imageUrl
+        FROM cooking_ingredients ci
+        WHERE ci.cooking_id = #{cookingId}
+        ORDER BY ci.id ASC
+    </select>
+
+    <!-- 전체 재료 일괄 조회 (목록 페이지용, 이미지 없이 가볍게) -->
+    <select id="findAllCookingIngredients" resultType="com.heartopia.wiki.model.CookingIngredient">
+        SELECT
+            ci.id,
+            ci.cooking_id      AS cookingId,
+            ci.ingredient_name AS ingredientName,
+            ci.quantity,
+            ci.item_type       AS itemType,
+            ci.item_id         AS itemId,
+            NULL               AS imageUrl
+        FROM cooking_ingredients ci
+        ORDER BY ci.cooking_id, ci.id ASC
+    </select>
+
     <select id="findFlowerByName" resultType="com.heartopia.wiki.model.FlowerCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl
         FROM flower_collections WHERE name = #{name}
     </select>
 
     <select id="findCropByName" resultType="com.heartopia.wiki.model.GardeningCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl
         FROM crop_collections WHERE name = #{name}
     </select>
 
@@ -138,7 +177,7 @@
     </select>
 
     <select id="findAnimalsByLocation" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
+        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
         FROM animal_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY id LIMIT 6
     </select>
 
@@ -168,7 +207,7 @@
     </select>
 
     <select id="searchAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
+        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl
         FROM animal_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
@@ -180,13 +219,13 @@
 
     <select id="searchFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl
         FROM flower_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
     <select id="searchCrops" resultType="com.heartopia.wiki.model.GardeningCollection">
         SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice
+               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl
         FROM crop_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
 

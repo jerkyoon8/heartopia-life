@@ -15,4 +15,5 @@ public class GardeningCollection {
     private String growthTime;
     private Integer seedBuyPrice;
     private Integer seedSellPrice;
+    private String imageUrl;
 }

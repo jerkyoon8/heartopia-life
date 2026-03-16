@@ -4,6 +4,7 @@ import com.heartopia.wiki.model.AnimalCollection;
 import com.heartopia.wiki.model.BirdCollection;
 import com.heartopia.wiki.model.BugCollection;
 import com.heartopia.wiki.model.CookingCollection;
+import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
 import com.heartopia.wiki.model.GardeningCollection;
@@ -41,6 +42,11 @@ public interface CollectionMapper {
     AnimalCollection findAnimalByName(@Param("name") String name);
 
     CookingCollection findCookingByName(@Param("name") String name);
+
+    // === 요리 재료 목록 조회 ===
+    List<CookingIngredient> findIngredientsByCookingId(@Param("cookingId") Integer cookingId);
+
+    List<CookingIngredient> findAllCookingIngredients();
 
     FlowerCollection findFlowerByName(@Param("name") String name);
 

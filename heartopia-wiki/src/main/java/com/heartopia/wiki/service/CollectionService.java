@@ -5,6 +5,7 @@ import com.heartopia.wiki.model.AnimalCollection;
 import com.heartopia.wiki.model.BirdCollection;
 import com.heartopia.wiki.model.BugCollection;
 import com.heartopia.wiki.model.CookingCollection;
+import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
 import com.heartopia.wiki.model.GardeningCollection;
@@ -72,6 +73,15 @@ public class CollectionService {
 
     public CookingCollection getCookingByName(String name) {
         return collectionMapper.findCookingByName(name);
+    }
+
+    public List<CookingIngredient> getIngredientsByCookingId(Integer cookingId) {
+        return collectionMapper.findIngredientsByCookingId(cookingId);
+    }
+
+    public java.util.Map<Integer, List<CookingIngredient>> getAllCookingIngredientMap() {
+        return collectionMapper.findAllCookingIngredients().stream()
+                .collect(java.util.stream.Collectors.groupingBy(CookingIngredient::getCookingId));
     }
 
     public FlowerCollection getFlowerByName(String name) {

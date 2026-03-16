@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish Collection - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
@@ -15,9 +14,9 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="mw-body">
         <div class="page-header"><i class="fas fa-fish fa-2x text-primary"></i>
-            <h1>생선 도감 (Fish Collection)</h1>
+            <h1>물고기 도감 (Fish Collection)</h1>
         </div>
-        <p class="text-secondary mb-4">하트피아의 강과 바다에서 낚을 수 있는 다양한 생선들에 대한 정보입니다.</p>
+        <p class="text-secondary mb-4">하트피아의 강과 바다에서 낚을 수 있는 다양한 물고기들에 대한 정보입니다.</p>
         <!-- Filter Bar -->
         <div class="filter-bar">
             <!-- Search -->
@@ -64,8 +63,8 @@
                 <div class="wiki-item-image">
                     <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}"
                         style="max-height: 100px; object-fit: contain;">
-                    <i th:if="${fish.imageUrl == null}" class="fas fa-fish fa-4x text-primary"
-                        style="opacity: 0.7;"></i>
+                    <i th:class="'fas fa-fish fa-4x text-primary fallback-icon'"
+                        th:style="${fish.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
 
                 <div class="wiki-item-info">
@@ -111,6 +110,50 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${fish.prices})}"></div>
             </div>
         </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>장소</th>
+                        <th>날씨</th>
+                        <th>시간</th>
+                        <th>사이즈</th>
+                        <th>판매가(1★)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="fish : ${fishList}" class="wiki-table-row"
+                        th:data-name="${fish.name}"
+                        th:data-level="${#strings.replace(fish.level, 'Lv.', '')}"
+                        th:data-location="${fish.location}"
+                        th:data-shadow="${fish.size}"
+                        th:data-price="${fish.prices[0]}">
+                        <td>
+                            <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" class="table-thumb">
+                            <div th:unless="${fish.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-fish"></i></div>
+                        </td>
+                        <td><a th:href="@{/wiki/collections/fish/{name}(name=${fish.name})}" class="table-name-link" th:text="${fish.name}">이름</a></td>
+                        <td th:text="${fish.level}">1</td>
+                        <td>
+                            <a th:href="@{/wiki/map(cat='fish', name=${fish.name})}" class="table-location-link">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <span th:text="${fish.location + ' - ' + fish.subLocation}">장소</span>
+                            </a>
+                        </td>
+                        <td th:text="${fish.weather}">상시</td>
+                        <td th:text="${fish.time}">상시</td>
+                        <td th:text="${fish.size}">중형</td>
+                        <td class="table-price" th:text="${fish.prices[0]}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- Footer (Common Fragment) -->
         <div th:replace="~{fragments/footer :: footer}"></div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -118,6 +161,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 new WikiFilter({
                     gridId: 'wikiGrid',
+                    tableId: 'wikiTable',
                     itemSelector: '.wiki-item-card',
                     filters: [
                         { id: 'levelFilter', dataKey: 'level' },

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bug Collection - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
@@ -56,7 +55,8 @@
                 <div class="wiki-item-image">
                     <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}"
                         style="max-height: 100px; object-fit: contain;">
-                    <i th:if="${bug.imageUrl == null}" class="fas fa-bug fa-4x text-success" style="opacity: 0.7;"></i>
+                    <i th:class="'fas fa-bug fa-4x text-success fallback-icon'"
+                        th:style="${bug.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
 
                 <div class="wiki-item-info">
@@ -101,12 +101,52 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${bug.prices})}"></div>
             </div>
         </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>장소</th>
+                        <th>날씨</th>
+                        <th>시간</th>
+                        <th>판매가(1★)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bug : ${bugList}" class="wiki-table-row"
+                        th:data-name="${bug.name}"
+                        th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
+                        th:data-price="${bug.prices[0]}">
+                        <td>
+                            <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb">
+                            <div th:unless="${bug.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-bug"></i></div>
+                        </td>
+                        <td><a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="table-name-link" th:text="${bug.name}">이름</a></td>
+                        <td th:text="${bug.level}">1</td>
+                        <td>
+                            <a th:href="@{/wiki/map(cat='insect', name=${bug.name})}" class="table-location-link">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <span th:text="${bug.location + ' - ' + bug.subLocation}">장소</span>
+                            </a>
+                        </td>
+                        <td th:text="${bug.weather}">상시</td>
+                        <td th:text="${bug.time}">상시</td>
+                        <td class="table-price" th:text="${bug.prices[0]}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new WikiFilter({
                 gridId: 'wikiGrid',
+                tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'levelFilter', dataKey: 'level' }
