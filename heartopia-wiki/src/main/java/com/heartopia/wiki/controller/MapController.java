@@ -1,5 +1,6 @@
 package com.heartopia.wiki.controller;
 
+import com.heartopia.wiki.mapper.LocationZoneMapper;
 import com.heartopia.wiki.model.*;
 import com.heartopia.wiki.service.CollectionService;
 import com.heartopia.wiki.service.MapPinService;
@@ -31,6 +32,7 @@ public class MapController {
     private final MapPinService mapPinService;
     private final CollectionService collectionService;
     private final VillagerService villagerService;
+    private final LocationZoneMapper locationZoneMapper;
 
     // 채집물.txt 기반 허용된 16개 항목 목록
     private static final List<String> ALLOWED_FORAGEABLES = Arrays.asList(
@@ -187,6 +189,30 @@ public class MapController {
     @ResponseBody
     public List<String> getCategories() {
         return mapPinService.getAllCategories();
+    }
+
+    // ===== Location Zone API =====
+
+    @GetMapping("/api/zones")
+    @ResponseBody
+    public List<LocationZone> getAllZones() {
+        return locationZoneMapper.findAll();
+    }
+
+    @GetMapping("/api/zones/{zoneKey}")
+    @ResponseBody
+    public LocationZone getZoneByKey(@PathVariable String zoneKey) {
+        return locationZoneMapper.findByZoneKey(zoneKey);
+    }
+
+    @PutMapping("/api/zones/{zoneKey}/polygon")
+    @ResponseBody
+    public Map<String, Object> updateZonePolygon(
+            @PathVariable String zoneKey,
+            @RequestBody Map<String, String> body) {
+        String polygonPoints = body.get("polygonPoints");
+        locationZoneMapper.updatePolygon(zoneKey, polygonPoints);
+        return Map.of("success", true, "zoneKey", zoneKey);
     }
 
     @PutMapping("/api/pins/{id}/position")

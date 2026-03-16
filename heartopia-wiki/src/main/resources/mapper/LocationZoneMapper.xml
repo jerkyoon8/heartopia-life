@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.heartopia.wiki.mapper.LocationZoneMapper">
+
+    <resultMap id="zoneResultMap" type="com.heartopia.wiki.model.LocationZone">
+        <id property="id" column="id"/>
+        <result property="zoneKey" column="zone_key"/>
+        <result property="displayName" column="display_name"/>
+        <result property="polygonPoints" column="polygon_points"/>
+        <result property="color" column="color"/>
+        <result property="parentZoneKey" column="parent_zone_key"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="zoneResultMap">
+        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        FROM location_zones
+        ORDER BY id ASC
+    </select>
+
+    <select id="findByZoneKey" resultMap="zoneResultMap">
+        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        FROM location_zones
+        WHERE zone_key = #{zoneKey}
+    </select>
+
+    <select id="findByZoneKeys" resultMap="zoneResultMap">
+        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        FROM location_zones
+        WHERE zone_key IN
+        <foreach item="key" collection="zoneKeys" open="(" separator="," close=")">
+            #{key}
+        </foreach>
+    </select>
+
+    <update id="updatePolygon">
+        UPDATE location_zones
+        SET polygon_points = #{polygonPoints}
+        WHERE zone_key = #{zoneKey}
+    </update>
+
+</mapper>

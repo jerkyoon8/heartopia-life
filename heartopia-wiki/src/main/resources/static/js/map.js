@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
         masterInsects: [],
         masterAnimals: [],
         masterVillagers: [],
+        allZones: [],           // 전체 zone 목록
+        activeZoneLayers: [],   // 현재 표시 중인 폴리곤 레이어들
+        zoneEditMode: {
+            active: false,
+            targetZoneKey: null,
+            points: []          // 수집 중인 좌표 배열
+        },
         markers: {}, // pinId -> marker
         categoryVisible: {},
         itemVisible: {}, // Used for forageable names to toggle all pins of that name
@@ -173,10 +180,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Fit map to bounds and set it as the view
         map.fitBounds(bounds);
 
-        // ===== Load Pins =====
-        fetch('/wiki/map/api/pins?t=' + new Date().getTime())
-            .then(res => res.json())
-            .then(pins => {
+        // ===== Load Pins + Zones =====
+        Promise.all([
+            fetch('/wiki/map/api/pins?t=' + new Date().getTime()).then(res => res.json()),
+            loadAllZones()
+        ]).then(([pins]) => {
                 state.allPins = pins;
 
                 // Group by category and init visibility
@@ -280,9 +288,168 @@ document.addEventListener('DOMContentLoaded', function () {
                             .openOn(map);
                     }
                 });
-            })
-            .catch(err => console.error('Error loading pins:', err));
+        }).catch(err => console.error('Error loading pins/zones:', err));
     };
+    // ===== Zone 관련 함수 =====
+
+    // Zone 전체 로드
+    async function loadAllZones() {
+        try {
+            const res = await fetch('/wiki/map/api/zones');
+            state.allZones = await res.json();
+        } catch (e) {
+            console.error('Zone 로드 실패:', e);
+        }
+    }
+
+    // Location/SubLocation → zoneKey 변환 매핑
+    const LOCATION_TO_ZONE = {
+        // 강 계열
+        '강 전체': '강', '강': '강', '강변': '강',
+        '거목 강': '거목강',
+        '고요한 강': '고요한강',
+        '노을 강': '노을강',
+        '얕은 강': '얕은강',
+        // 바다 계열
+        '바다 전체': '바다', '바다': '바다', '잔잔한 바다': '잔잔한바다',
+        '고래 바다': '고래바다', '고래바다 해변': '고래바다',
+        '구해': '구해', '구해 해변': '구해',
+        '동해': '동해', '동해 해변': '동해',
+        // 호수 계열
+        '호수 전체': '호수', '호수': '호수',
+        '근교 호수': '근교호수',
+        '숲속 호수': '숲속호수', '숲 호수': '숲속호수',
+        '온천산 호수': '온천산호수',
+        '초원 호수': '초원호수',
+        '도시 근교 호수': '근교도시호수', '근교 호수': '근교호수',
+        // 숲 계열
+        '숲 전체': '숲', '숲': '숲',
+        '영혼의 참나무 숲': '영혼참나무', '영혼의 참나무': '영혼참나무',
+        '순록탑': '순록탑',
+        '숲속 섬': '숲속섬',
+        '점핑 플랫폼': '점핑플랫폼',
+        '호숫가': '숲호숫가', '숲 호숫가': '숲호숫가',
+        // 꽃밭 계열
+        '꽃밭 전체': '꽃밭', '꽃밭': '꽃밭',
+        '고래산': '고래산꽃밭',
+        '보라빛 해변': '보라빛해변',
+        '풍차꽃밭': '풍차꽃밭',
+        // 어촌 계열
+        '어촌 전체': '어촌', '어촌': '어촌',
+        '부두': '어촌부두',
+        '동쪽 부두': '동쪽부두',
+        '등대': '어촌등대',
+        '어촌 광장': '어촌광장', '광장': '어촌광장',
+        // 온천산 계열
+        '온천산 전체': '온천산', '온천산': '온천산',
+        '온천': '온천',
+        '바위절벽': '바위절벽',
+        '유적': '온천산유적',
+        '화산 호수': '화산호수',
+        '온천산 호숫가': '온천산호숫가',
+        // 도시 계열
+        '도시 전체': '도시', '도시': '도시',
+        '도시 근교': '도시근교', '근교': '도시근교',
+        '도심': '도심',
+        // 기타
+        '해변': '해변',
+        '물가': '물가',
+    };
+
+    // location + subLocation → zoneKey 배열 반환
+    function resolveZoneKeys(location, subLocation) {
+        const keys = new Set();
+        if (!location) return [];
+
+        // subLocation 우선
+        if (subLocation && subLocation !== '-' && subLocation !== '') {
+            const subKey = LOCATION_TO_ZONE[subLocation];
+            if (subKey) keys.add(subKey);
+        }
+
+        // location 자체도 추가
+        const locKey = LOCATION_TO_ZONE[location];
+        if (locKey) keys.add(locKey);
+
+        // 상위 zone도 추가 (예: 거목강 → 강도 함께 표시)
+        keys.forEach(k => {
+            const zone = state.allZones.find(z => z.zoneKey === k);
+            if (zone && zone.parentZoneKey) keys.add(zone.parentZoneKey);
+        });
+
+        return [...keys];
+    }
+
+    // 폴리곤 하이라이트 표시
+    function highlightZones(zoneKeys) {
+        // 기존 폴리곤 제거
+        state.activeZoneLayers.forEach(layer => state.map.removeLayer(layer));
+        state.activeZoneLayers = [];
+
+        if (!zoneKeys || zoneKeys.length === 0) return;
+
+        zoneKeys.forEach(key => {
+            const zone = state.allZones.find(z => z.zoneKey === key);
+            if (!zone || !zone.polygonPoints) return;
+
+            let points;
+            try {
+                points = typeof zone.polygonPoints === 'string'
+                    ? JSON.parse(zone.polygonPoints)
+                    : zone.polygonPoints;
+            } catch (e) { return; }
+
+            // 픽셀 좌표 → Leaflet 좌표 변환 (y축 반전)
+            const img = new Image();
+            img.src = imageUrl;
+            const mapHeight = img.naturalHeight || 3000;
+
+            const latLngs = points.map(([px, py]) => [mapHeight - py, px]);
+            const isParent = zoneKeys.some(k => {
+                const z = state.allZones.find(z2 => z2.zoneKey === k);
+                return z && z.parentZoneKey === zone.zoneKey;
+            });
+
+            const polygon = L.polygon(latLngs, {
+                color: zone.color || '#4dabf7',
+                fillColor: zone.color || '#4dabf7',
+                fillOpacity: isParent ? 0.08 : 0.25,
+                weight: isParent ? 1.5 : 2.5,
+                dashArray: isParent ? '6, 4' : null
+            }).addTo(state.map);
+
+            polygon.bindTooltip(zone.displayName, {
+                permanent: false,
+                direction: 'center',
+                className: 'zone-tooltip'
+            });
+
+            state.activeZoneLayers.push(polygon);
+        });
+
+        // 하이라이트 영역으로 맵 이동
+        if (state.activeZoneLayers.length > 0) {
+            const group = L.featureGroup(state.activeZoneLayers);
+            state.map.fitBounds(group.getBounds().pad(0.3));
+        }
+    }
+
+    // Zone 편집 모드 (좌표 수집용)
+    function enterZoneEditMode(zoneKey) {
+        state.zoneEditMode.active = true;
+        state.zoneEditMode.targetZoneKey = zoneKey;
+        state.zoneEditMode.points = [];
+        placementBanner.classList.add('active');
+        placementText.textContent = `[Zone: ${zoneKey}] 경계 좌표 입력 중 — 지점을 클릭하세요. 완료: 더블클릭`;
+    }
+
+    function exitZoneEditMode() {
+        state.zoneEditMode.active = false;
+        state.zoneEditMode.targetZoneKey = null;
+        state.zoneEditMode.points = [];
+        placementBanner.classList.remove('active');
+    }
+
     img.src = imageUrl;
 
     // ===== Create Marker =====
@@ -411,7 +578,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!grouped[category]) grouped[category] = [];
 
                 masters.forEach(master => {
-                    const hasPin = state.allPins.some(p => p.category === category && p.name === master.name);
+                    const hasPin = state.allPins.some(p => {
+                        if (p.category !== category) return false;
+                        // 정확히 같거나, 한 이름이 다른 이름을 포함하는 경우 (예: "나니와" ↔ "나니와 (Naniwa)")
+                        return p.name === master.name
+                            || p.name.includes(master.name)
+                            || master.name.includes(p.name);
+                    });
                     if (!hasPin) {
                         grouped[category].push({
                             id: 'm-' + master.name,
@@ -510,11 +683,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </button>
                                     ` : ''}
                                     ${['fish', 'bird', 'insect'].includes(category) ? '' : (isForageable ? `
-                                        <button class="item-add-btn" data-category="${category}" data-name="${pin.name}" title="연속 배치" style="display: none;">
+                                        <button class="item-add-btn" data-category="${category}" data-name="${pin.name}" title="연속 배치" 
+                                            style="${window.isAdmin ? 'display: inline-block;' : 'display: none;'}">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     ` : `
-                                        <button class="pin-place-btn ${isPlacing ? 'active' : ''}" data-id="${pin.id}" title="위치 변경" style="display: none;">
+                                        <button class="pin-place-btn ${isPlacing ? 'active' : ''}" data-id="${pin.id}" title="위치 변경" 
+                                            style="${window.isAdmin ? 'display: inline-block;' : 'display: none;'}">
                                             <i class="fas fa-map-pin"></i>
                                         </button>
                                     `)}
@@ -678,8 +853,31 @@ document.addEventListener('DOMContentLoaded', function () {
         const params = new URLSearchParams(window.location.search);
         const category = params.get('cat') || params.get('category');
         const name = params.get('name');
+        const zoneParam = params.get('zone'); // zone 파라미터: "거목강" 또는 "강,거목강"
+
+        // zone 파라미터가 있으면 바로 하이라이트
+        if (zoneParam) {
+            const zoneKeys = zoneParam.split(',').map(k => k.trim()).filter(Boolean);
+            highlightZones(zoneKeys);
+            return;
+        }
 
         if (!category || !name) return;
+
+        // 0. 가시성 자동 전환 로직 정밀화 (요청된 특정 아이템만 활성화)
+        state.categoryVisible[category] = true;
+
+        // 해당 카테고리의 아이콘들을 순회하며 요청된 이름과 일치하는 것만 켭니다.
+        state.allPins.forEach(p => {
+            if (p.category === category) {
+                const isMatch = p.name === name || p.name.includes(name) || name.includes(p.name);
+                const key = category === 'forageable' ? `forageable:${p.name}` : p.id;
+                state.itemVisible[key] = isMatch;
+            }
+        });
+
+        updateMarkerVisibility();
+        renderCategoryList();
 
         // 1. Info Box Categories (Fish, Insect, Bird, Animal, Villager)
         if (['fish', 'insect', 'bird', 'animal', 'villager'].includes(category)) {
@@ -692,8 +890,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const master = masters.find(m => m.name === name);
             if (master) {
-                // Ensure masters are loaded before showing
                 showInfoBox(master, category);
+                // location/subLocation으로 zone 자동 하이라이트
+                if (master.location) {
+                    const zoneKeys = resolveZoneKeys(master.location, master.subLocation);
+                    highlightZones(zoneKeys);
+                }
             }
         }
 
