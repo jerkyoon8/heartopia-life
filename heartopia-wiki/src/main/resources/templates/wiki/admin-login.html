@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        body {
+            background-color: #fdfaf8;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(77, 52, 46, 0.08);
+            text-align: center;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: #4D342E;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #4D342E;
+            margin-bottom: 10px;
+        }
+
+        .login-desc {
+            color: #8D7A75;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #4D342E;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 2px solid #EFE9E8;
+            background: #F9F7F6;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #f8bbd0;
+            background: #fff;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #4D342E;
+            color: #fff;
+            padding: 14px;
+            border-radius: 15px;
+            border: none;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #3A2722;
+        }
+
+        .error-msg {
+            color: #e53935;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="login-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h1 class="login-title">관리자 인증</h1>
+        <p class="login-desc">제보 목록을 확인하려면 비밀번호를 입력해주세요.</p>
+
+        <form th:action="@{/wiki/admin/login}" method="post">
+            <div class="form-group">
+                <label class="form-label">아이디</label>
+                <input type="text" name="username" class="form-input" placeholder="아이디를 입력하세요" required autofocus>
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호</label>
+                <input type="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <button type="submit" class="login-btn">접속하기</button>
+
+            <div th:if="${param.error}" class="error-msg">
+                <i class="fas fa-exclamation-circle me-1"></i> <span>아이디 또는 비밀번호가 일치하지 않습니다.</span>
+            </div>
+            <div th:if="${param.logout}" class="success-msg" style="color: #4caf50; font-size: 0.85rem; margin-top: 15px;">
+                <i class="fas fa-check-circle me-1"></i> 로그아웃 되었습니다.
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

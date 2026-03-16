@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        body {
+            background-color: #fdfaf8;
+        }
+
+        .report-card {
+            max-width: 800px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 15px 40px rgba(77, 52, 46, 0.08);
+            border: 1px solid #eee;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .report-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #4D342E;
+            margin-bottom: 10px;
+        }
+
+        .report-subtitle {
+            color: #8D7A75;
+            font-size: 1rem;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #4D342E;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 2px solid #EFE9E8;
+            background: #F9F7F6;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #f8bbd0;
+            background: #fff;
+        }
+
+        /* Category Tabs */
+        .category-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            border-radius: 18px;
+            border: 2px solid #EFE9E8;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #8D7A75;
+        }
+
+        .category-tab i {
+            font-size: 1.4rem;
+        }
+
+        .category-tab span {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .category-tab.active {
+            border-color: #f06292;
+            color: #d81b60;
+            background: #fff3f8;
+        }
+
+        .send-btn {
+            background: #4D342E;
+            color: #fff;
+            padding: 16px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #3A2722;
+            transform: translateY(-2px);
+        }
+
+        .send-btn:disabled {
+            background: #BCB1AE;
+            cursor: not-allowed;
+        }
+
+        [data-theme='dark'] .report-card {
+            background: #2D2D2D;
+            border-color: #333;
+        }
+
+        [data-theme='dark'] .report-title {
+            color: #EEE;
+        }
+
+        [data-theme='dark'] .form-label {
+            color: #CCC;
+        }
+
+        [data-theme='dark'] .form-input,
+        [data-theme='dark'] .form-textarea {
+            background: #383838;
+            border-color: #444;
+            color: #EEE;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="report-card" id="reportFormContainer">
+            <div class="report-header">
+                <h1 class="report-title">정보 수정 제보</h1>
+                <p class="report-subtitle">잘못된 정보를 발견하셨나요? 제보해주시면 검토 후 신속히 반영하겠습니다.</p>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">성함</label>
+                        <input type="text" id="reporterName" class="form-input" placeholder="이름을 입력해주세요">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">이메일 (선택)</label>
+                        <input type="email" id="reporterEmail" class="form-input" placeholder="연락받으실 이메일">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">어떤 종류의 제보인가요?</label>
+                    <div class="category-group" id="categoryGroup">
+                        <div class="category-tab" data-cat="BUG">
+                            <i class="fas fa-bug"></i>
+                            <span>오류 제보</span>
+                        </div>
+                        <div class="category-tab active" data-cat="CONTRIBUTION">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>정보 추가</span>
+                        </div>
+                        <div class="category-tab" data-cat="HELP">
+                            <i class="fas fa-question-circle"></i>
+                            <span>이용 안내</span>
+                        </div>
+                        <div class="category-tab" data-cat="GENERAL">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>기타 문의</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">상세 내용</label>
+                    <textarea id="message" class="form-textarea" rows="8"
+                        th:placeholder="${itemName != null ? '[' + itemName + '] 정보에 대해 수정하거나 추가하고 싶은 내용을 적어주세요.' : '제보하실 내용을 입력해주세요.'}"></textarea>
+                </div>
+
+                <input type="hidden" id="sourceUrl" th:value="${sourceUrl}">
+                <input type="hidden" id="itemName" th:value="${itemName}">
+
+                <div class="privacy-notice"
+                    style="font-size: 0.8rem; color: #AC9D99; text-align: center; margin-top: 5px;">
+                    <i class="fas fa-info-circle me-1"></i> 입력하신 정보는 제보 내용 확인 및 반영을 위해서만 소중히 사용됩니다.
+                </div>
+
+                <button class="send-btn" onclick="submitReport()">
+                    보내기 <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="successMessage" style="display: none; text-align: center; padding: 120px 20px;">
+            <i class="fas fa-heart fa-5x mb-4" style="color: #f06292;"></i>
+            <h2 class="fw-bold">제보가 소중하게 전달되었습니다!</h2>
+            <p class="text-muted mt-3">보내주신 정보는 '두근두근 라이프' 위키 발전에 큰 힘이 됩니다.<br>검토 후 빠른 시일 내에 반영하도록 하겠습니다.</p>
+            <button class="btn btn-outline-dark mt-5 rounded-pill px-4" onclick="history.back()">뒤로 돌아가기</button>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:inline="javascript">
+        /**
+         * 카테고리 탭 선택 로직
+         */
+        const tabs = document.querySelectorAll('.category-tab');
+        let selectedCategory = 'CONTRIBUTION';
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 기존 활성화 제거 후 현재 탭 활성화
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                selectedCategory = tab.getAttribute('data-cat');
+            });
+        });
+
+        /**
+         * 제보 내용 서버 전송 (AJAX)
+         */
+        function submitReport() {
+            const name = document.getElementById('reporterName').value;
+            const email = document.getElementById('reporterEmail').value;
+            const msg = document.getElementById('message').value;
+            const sourceUrl = document.getElementById('sourceUrl').value;
+            const itemName = document.getElementById('itemName').value;
+            const sendBtn = document.querySelector('.send-btn');
+
+            // 필수 입력값 확인 (클라이언트측 유효성 검사)
+            if (!name.trim() || !msg.trim()) {
+                alert('이름과 제보 내용을 입력해 주세요.');
+                return;
+            }
+
+            // 중복 제출 방지: 버튼 비활성화
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '전송 중... <i class="fas fa-spinner fa-spin"></i>';
+
+            const reportData = {
+                category: selectedCategory,
+                reporterName: name,
+                reporterEmail: email,
+                message: msg,
+                sourceUrl: sourceUrl,
+                itemName: itemName
+            };
+
+            // 서버로 데이터 전송
+            fetch('/wiki/report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reportData)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'success') {
+                        // 성공 시 폼 숨기고 성공 메시지 표시
+                        document.getElementById('reportFormContainer').style.display = 'none';
+                        document.getElementById('successMessage').style.display = 'block';
+                        window.scrollTo(0, 0);
+                    } else {
+                        // 서버에서 에러 메시지 반환 시 출력
+                        alert('오류가 발생했습니다: ' + data.replace('error: ', ''));
+                        sendBtn.disabled = false;
+                        sendBtn.innerHTML = '보내기 <i class="fas fa-paper-plane ms-2"></i>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('서버 전송 중 네트워크 오류가 발생했습니다.');
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '보내기 <i class="fas fa-paper-plane ms-2"></i>';
+                });
+        }
+    </script>
+</body>
+
+</html>
