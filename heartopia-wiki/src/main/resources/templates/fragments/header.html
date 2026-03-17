@@ -4,7 +4,6 @@
     <nav th:fragment="header" class="fixed-top">
         <!-- Paperlogy Font -->
         <style>
-            @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2');
 
             @font-face {
                 font-family: 'Paperlogy';
@@ -112,6 +111,12 @@
             .nav-bar {
                 border-top: 1px solid var(--border-subtle, #f0f0f0);
                 height: 50px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-bar::-webkit-scrollbar {
+                display: none;
             }
 
             .navbar-nav {
@@ -250,8 +255,39 @@
                 }
 
                 .nav-link {
-                    padding: 0 10px !important;
+                    padding: 0 15px !important;
                     font-size: 14px;
+                    white-space: nowrap;
+                }
+
+                .header-wrapper {
+                    position: sticky;
+                    top: 0;
+                }
+
+                .nav-bar {
+                    justify-content: flex-start;
+                }
+
+                .visitor-counter {
+                    display: none;
+                    /* Hide visitor counter on small screens in the nav bar */
+                }
+
+                .brand-logo img:first-child {
+                    height: 30px !important;
+                }
+
+                .brand-logo img:last-child {
+                    height: 22px !important;
+                }
+
+                .top-bar {
+                    height: 55px;
+                }
+
+                .brand-logo span {
+                    font-size: 18px;
                 }
             }
         </style>
@@ -279,21 +315,32 @@
                     <div class="nav-bar d-flex align-items-center">
                         <ul class="navbar-nav flex-grow-1">
                             <!-- Simple Links -->
-                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki/index}">소식</a></li>
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki/codes}">쿠폰</a></li>
 
                             <!-- Trigger Links (Hovering these keeps menu open because they are in wrapper) -->
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">컬렉션</a></li>
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">아이템들</a></li>
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">기타</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki/map}">지도</a></li>
+                            <!-- 지도 link removed from here as it is already above in some cases or redundant -->
                         </ul>
 
-                        <!-- Weekly Visitor Count -->
-                        <div class="visitor-counter" th:if="${weeklyVisitors != null}">
-                            <i class="fas fa-users"></i>
-                            <span>주간 접속자: <span class="visitor-count-num"
-                                    th:text="${#numbers.formatInteger(weeklyVisitors, 0, 'COMMA')}">1,234</span>명</span>
+                        <!-- Visitor Counter (Icons only) -->
+                        <div class="visitor-counter" th:if="${totalVisitors != null}">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-1" title="전체 조회수">
+                                    <i class="fas fa-eye" style="color: #889;"></i>
+                                    <span class="visitor-count-num"
+                                        th:text="${#numbers.formatInteger(totalVisitors, 0, 'COMMA')}">1,234</span>
+                                </div>
+                                <div
+                                    style="width: 1px; height: 10px; background-color: var(--border-subtle, #ddd); margin: 0 4px;">
+                                </div>
+                                <div class="d-flex align-items-center gap-1" title="48시간 조회수">
+                                    <i class="fas fa-bolt" style="color: #ffc107;"></i>
+                                    <span class="visitor-count-num"
+                                        th:text="${#numbers.formatInteger(recent48hVisitors, 0, 'COMMA')}">56</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -305,15 +352,13 @@
                                 <h5>컬렉션</h5>
                                 <ul>
                                     <li><a th:href="@{/wiki/collections/fish}" class="mega-link"><i
-                                                class="fas fa-fish"></i> 생선</a></li>
+                                                class="fas fa-fish"></i> 물고기</a></li>
                                     <li><a th:href="@{/wiki/collections/bug}" class="mega-link"><i
                                                 class="fas fa-bug"></i> 벌레</a></li>
                                     <li><a th:href="@{/wiki/collections/bird}" class="mega-link"><i
                                                 class="fas fa-crow"></i> 새</a></li>
                                     <li><a th:href="@{/wiki/collections/animal}" class="mega-link"><i
                                                 class="fas fa-paw"></i> 동물</a></li>
-                                    <li><a th:href="@{/wiki/collections/forageable}" class="mega-link"><i
-                                                class="fas fa-leaf"></i> 채집물</a></li>
                                 </ul>
                             </div>
 
@@ -321,16 +366,17 @@
                             <div class="mega-column">
                                 <h5>아이템들</h5>
                                 <ul>
-                                    <li><a href="#" class="mega-link"><i class="fas fa-tools"></i> 도구</a>
-                                    </li>
+                                    <li><a th:href="@{/wiki/items/cooking}" class="mega-link"><i
+                                                class="fas fa-utensils"></i>
+                                            요리</a></li>
                                     <li><a th:href="@{/wiki/items/crops}" class="mega-link"><i
                                                 class="fas fa-carrot"></i>
                                             작물</a></li>
-                                    <li><a th:href="@{/wiki/items/cooking}" class="mega-link"><i
-                                                class="fas fa-utensils"></i>
-                                            음식</a></li>
-                                    <li><a href="#" class="mega-link"><i class="fas fa-box-open"></i> 재료</a>
-                                    </li>
+                                    <li><a th:href="@{/wiki/items/flowers}" class="mega-link"><i
+                                                class="fas fa-seedling"></i>
+                                            꽃</a></li>
+                                    <li><a th:href="@{/wiki/collections/forageable}" class="mega-link"><i
+                                                class="fas fa-leaf"></i> 채집물</a></li>
                                 </ul>
                             </div>
 
@@ -340,9 +386,6 @@
                                 <ul>
                                     <li><a th:href="@{/wiki/others/villagers}" class="mega-link"><i
                                                 class="fas fa-user-group"></i> 주민들</a></li>
-                                    <li><a href="#" class="mega-link"><i class="fas fa-trophy"></i> 업적</a></li>
-                                    <li><a th:href="@{/wiki/map}" class="mega-link"><i class="fas fa-map"></i> 지도</a>
-                                    </li>
                                 </ul>
                             </div>
                         </div>

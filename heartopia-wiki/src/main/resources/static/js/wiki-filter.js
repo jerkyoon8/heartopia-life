@@ -1,24 +1,29 @@
 /**
  * WikiFilter.js
- * Generic Class for Client-Side Filtering and Sorting in Heartopia Wiki
+ * Generic Class for Client-Side Filtering, Sorting, and View Toggle in Heartopia Wiki
  */
 class WikiFilter {
     constructor(config) {
         this.config = Object.assign({
             gridId: 'wikiGrid',
+            tableId: 'wikiTable',
             itemSelector: '.wiki-item-card',
+            tableRowSelector: '.wiki-table-row',
             searchId: 'searchInput',
-            sortGroupId: 'sortGroup', // Changed from sortId
+            sortGroupId: 'sortGroup',
+            viewToggleId: 'viewToggle',
             resetId: 'resetBtn',
             noResultsId: 'noResults',
-            filters: [] // Array of { id: '...', dataKey: '...', autoPopulate: false }
+            viewStorageKey: 'wikiViewMode',
+            filters: []
         }, config);
 
-        // Default Sort State
         this.currentSort = {
             key: 'name',
             order: 'asc'
         };
+
+        this.currentView = 'card';
 
         this.init();
     }
@@ -29,6 +34,14 @@ class WikiFilter {
 
         this.items = Array.from(this.grid.querySelectorAll(this.config.itemSelector));
         this.noResults = document.getElementById(this.config.noResultsId);
+
+        // Table elements
+        this.tableContainer = document.getElementById(this.config.tableId);
+        if (this.tableContainer) {
+            this.tableRows = Array.from(this.tableContainer.querySelectorAll(this.config.tableRowSelector));
+        } else {
+            this.tableRows = [];
+        }
 
         // Inputs
         this.searchInput = document.getElementById(this.config.searchId);
@@ -46,7 +59,6 @@ class WikiFilter {
                     this.populateOptions(el, f.dataKey);
                 }
 
-                // Add Event Listener
                 el.addEventListener('change', () => this.applyFilter());
             }
         });
@@ -66,6 +78,52 @@ class WikiFilter {
         if (this.resetBtn) {
             this.resetBtn.addEventListener('click', () => this.reset());
         }
+
+        // View Toggle
+        this.initViewToggle();
+    }
+
+    initViewToggle() {
+        const viewToggle = document.getElementById(this.config.viewToggleId);
+        if (!viewToggle) return;
+
+        this.viewButtons = viewToggle.querySelectorAll('.view-toggle-btn');
+
+        // Restore saved view preference
+        const savedView = localStorage.getItem(this.config.viewStorageKey);
+        if (savedView && (savedView === 'card' || savedView === 'table')) {
+            this.switchView(savedView);
+        }
+
+        this.viewButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const viewMode = btn.dataset.view;
+                this.switchView(viewMode);
+            });
+        });
+    }
+
+    switchView(mode) {
+        this.currentView = mode;
+        localStorage.setItem(this.config.viewStorageKey, mode);
+
+        // Update button states
+        if (this.viewButtons) {
+            this.viewButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === mode);
+            });
+        }
+
+        // Toggle grid/table visibility
+        if (mode === 'table' && this.tableContainer) {
+            this.grid.classList.add('hidden');
+            this.tableContainer.classList.add('active');
+        } else {
+            this.grid.classList.remove('hidden');
+            if (this.tableContainer) {
+                this.tableContainer.classList.remove('active');
+            }
+        }
     }
 
     populateOptions(selectElement, dataKey) {
@@ -77,10 +135,7 @@ class WikiFilter {
             }
         });
 
-        const sortedValues = Array.from(values).sort(); // Basic sort for options
-
-        // Custom sort for numeric strings if needed?
-        // But usually locations/shadows are just strings. 
+        const sortedValues = Array.from(values).sort();
 
         while (selectElement.options.length > 1) {
             selectElement.remove(1);
@@ -98,14 +153,9 @@ class WikiFilter {
         const sortKey = clickedBtn.dataset.sort;
         let newOrder = 'asc';
 
-        // Toggle order if clicking the same key
         if (this.currentSort.key === sortKey) {
             newOrder = this.currentSort.order === 'asc' ? 'desc' : 'asc';
         } else {
-            // Default order for new key
-            // Price is usually high-to-low (desc) by default? Or low-to-high? 
-            // User likely expects "High Price" first? 
-            // Let's stick to 'desc' default for price, 'asc' for others.
             if (sortKey === 'price') {
                 newOrder = 'desc';
             } else {
@@ -124,12 +174,10 @@ class WikiFilter {
         this.sortButtons.forEach(btn => {
             const key = btn.dataset.sort;
 
-            // Remove active class and icon
             btn.classList.remove('active');
             const icon = btn.querySelector('i');
             if (icon) icon.remove();
 
-            // Set Active State
             if (key === this.currentSort.key) {
                 btn.classList.add('active');
 
@@ -146,37 +194,9 @@ class WikiFilter {
         const searchText = this.searchInput ? this.searchInput.value.toLowerCase() : '';
         let visibleCount = 0;
 
+        // Filter cards
         this.items.forEach(item => {
-            let isMatch = true;
-
-            // 1. Search Text (Name)
-            if (searchText) {
-                const name = item.dataset.name ? item.dataset.name.toLowerCase() : '';
-                if (!name.includes(searchText)) {
-                    isMatch = false;
-                }
-            }
-
-            // 2. Custom Filters
-            if (isMatch) {
-                for (const f of this.filterElements) {
-                    const selectedValue = f.element.value;
-                    if (selectedValue === 'all') continue;
-
-                    const itemValue = item.dataset[f.key];
-
-                    if (f.key === 'level' && selectedValue === '10') {
-                        if (parseInt(itemValue) < 10) isMatch = false;
-                    }
-                    else {
-                        const values = itemValue ? String(itemValue).split(/\s+/) : [];
-                        if (!values.includes(selectedValue)) isMatch = false;
-                    }
-
-                    if (!isMatch) break;
-                }
-            }
-
+            const isMatch = this._matchesFilters(item, searchText);
             if (isMatch) {
                 item.style.display = 'flex';
                 visibleCount++;
@@ -185,47 +205,89 @@ class WikiFilter {
             }
         });
 
+        // Filter table rows (sync with cards)
+        this.tableRows.forEach(row => {
+            const isMatch = this._matchesFilters(row, searchText);
+            row.style.display = isMatch ? '' : 'none';
+        });
+
         if (this.noResults) {
             this.noResults.style.display = visibleCount === 0 ? 'block' : 'none';
         }
 
-        // Re-apply sort because filtering might show hidden items, 
-        // but DOM order is preserved so applySort isn't strictly needed unless we remove/add items.
-        // However, applySort uses 'visibleItems' logic? No, it sorts everything or just reorders DOM.
-        // Let's just re-sort to be safe/consistent.
         this.applySort();
+    }
+
+    _matchesFilters(element, searchText) {
+        let isMatch = true;
+
+        // 1. Search Text (Name)
+        if (searchText) {
+            const name = element.dataset.name ? element.dataset.name.toLowerCase() : '';
+            if (!name.includes(searchText)) {
+                isMatch = false;
+            }
+        }
+
+        // 2. Custom Filters
+        if (isMatch) {
+            for (const f of this.filterElements) {
+                const selectedValue = f.element.value;
+                if (selectedValue === 'all') continue;
+
+                const itemValue = element.dataset[f.key];
+
+                if (f.key === 'level' && selectedValue === '10') {
+                    if (parseInt(itemValue) < 10) isMatch = false;
+                }
+                else {
+                    const values = itemValue ? String(itemValue).split(/\s+/) : [];
+                    if (!values.includes(selectedValue)) isMatch = false;
+                }
+
+                if (!isMatch) break;
+            }
+        }
+
+        return isMatch;
     }
 
     applySort() {
         const { key, order } = this.currentSort;
 
-        // We sort ALL items (to keep DOM consistent) but only visible ones matter for display
-        // Actually sorting all items is better.
-
-        this.items.sort((a, b) => {
+        const sortFn = (a, b) => {
             let valA = a.dataset[key];
             let valB = b.dataset[key];
 
-            // Handle Numerics
             if (key === 'level' || key === 'price') {
                 valA = parseInt(valA) || 0;
                 valB = parseInt(valB) || 0;
                 return order === 'asc' ? valA - valB : valB - valA;
             }
 
-            // Handle Strings
             valA = valA || '';
             valB = valB || '';
             return order === 'asc'
                 ? valA.localeCompare(valB, 'ko')
                 : valB.localeCompare(valA, 'ko');
-        });
+        };
 
-        // Re-append to Grid
-        // Appending moves them in DOM.
+        // Sort cards
+        this.items.sort(sortFn);
         this.items.forEach(item => {
             this.grid.insertBefore(item, this.noResults);
         });
+
+        // Sort table rows
+        if (this.tableRows.length > 0 && this.tableContainer) {
+            const tbody = this.tableContainer.querySelector('tbody');
+            if (tbody) {
+                this.tableRows.sort(sortFn);
+                this.tableRows.forEach(row => {
+                    tbody.appendChild(row);
+                });
+            }
+        }
     }
 
     reset() {
@@ -238,6 +300,6 @@ class WikiFilter {
         this.currentSort = { key: 'name', order: 'asc' };
         this.updateSortUI();
 
-        this.applyFilter(); // This calls applySort at the end
+        this.applyFilter();
     }
 }

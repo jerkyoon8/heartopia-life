@@ -6,12 +6,12 @@
 :root {
     --main-bg-color: #FFFCFD;
     /* Soft pink tint */
-    --bg-gradient-start: #FFF8FA;
-    --bg-gradient-end: #FFF3F6;
+    --bg-gradient-start: #FFFDFB;
+    --bg-gradient-end: #FFF7F2;
     --content-bg: rgba(255, 255, 255, 0.95);
     /* Slightly brighter content bg */
     --text-color: #202122;
-    --header-height: 160px;
+    --header-height: 120px;
     /* Standardized padding-top for body */
     --border-color: #a7d7f9;
     --link-color: #0645ad;
@@ -45,7 +45,6 @@
 
 body {
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-    zoom: 1.17;
     background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     background-attachment: fixed;
     margin: 0;
@@ -67,6 +66,24 @@ body {
     min-height: calc(100vh - var(--header-height));
     box-shadow: none;
     /* Removed shadow */
+}
+
+@media (max-width: 991px) {
+    :root {
+        --header-height: 70px;
+    }
+
+    .mw-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
 }
 
 /* Common Page Header Style */
@@ -810,5 +827,185 @@ body {
 @media (max-width: 450px) {
     .gift-section {
         grid-template-columns: 1fr;
+    }
+}
+
+/* --- View Toggle Buttons --- */
+.view-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--nav-hover);
+    border-radius: 10px;
+    padding: 3px;
+}
+
+.view-toggle-btn {
+    border: none;
+    background: transparent;
+    color: #999;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-toggle-btn:hover {
+    color: #666;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.view-toggle-btn.active {
+    background: var(--card-bg);
+    color: var(--link-color);
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+[data-theme='dark'] .view-toggle-btn.active {
+    background: #555;
+    color: #a0cfff;
+}
+
+/* --- Wiki Table View --- */
+.wiki-table-container {
+    display: none;
+    margin-bottom: 40px;
+}
+
+.wiki-table-container.active {
+    display: block;
+}
+
+.wiki-grid-layout.hidden {
+    display: none !important;
+}
+
+.wiki-table-layout {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px var(--shadow);
+    border: 1px solid var(--border-subtle);
+}
+
+.wiki-table-layout thead th {
+    background: var(--nav-hover);
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--stat-label);
+    text-align: left;
+    border-bottom: 2px solid var(--border-subtle);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.wiki-table-layout tbody tr {
+    transition: background 0.15s;
+}
+
+.wiki-table-layout tbody tr:hover {
+    background: var(--nav-hover);
+}
+
+.wiki-table-layout tbody td {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+}
+
+.wiki-table-layout tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.wiki-table-layout .table-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: var(--nav-hover);
+    padding: 2px;
+}
+
+.wiki-table-layout .table-thumb-placeholder {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--nav-hover);
+    color: #ccc;
+    font-size: 1.2rem;
+}
+
+.wiki-table-layout .table-name-link {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.wiki-table-layout .table-name-link:hover {
+    text-decoration: underline;
+}
+
+.wiki-table-layout .table-location-link {
+    color: #00796b;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.wiki-table-layout .table-location-link:hover {
+    text-decoration: underline;
+    color: #004d40;
+}
+
+.wiki-table-layout .table-price {
+    font-weight: 600;
+    color: var(--stat-value);
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .wiki-table-layout {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .wiki-table-layout thead th,
+    .wiki-table-layout tbody td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .wiki-table-layout .table-thumb {
+        width: 32px;
+        height: 32px;
+    }
+
+    .wiki-table-layout .table-thumb-placeholder {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .view-toggle {
+        align-self: center;
     }
 }
