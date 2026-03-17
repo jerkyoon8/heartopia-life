@@ -13,15 +13,20 @@ public class GlobalControllerAdvice {
     private final VisitorService visitorService;
 
     @ModelAttribute
-    public void addWeeklyVisitorsToModel(org.springframework.ui.Model model, jakarta.servlet.http.HttpSession session) {
+    public void addGlobalAttributes(org.springframework.ui.Model model,
+            jakarta.servlet.http.HttpSession session,
+            jakarta.servlet.http.HttpServletRequest request) {
         // Track the visit only once per session
         if (session.getAttribute("visited") == null) {
             visitorService.trackVisitor();
             session.setAttribute("visited", true);
         }
 
-        // Add the weekly count to every page
-        int count = visitorService.getWeeklyVisitorCount();
-        model.addAttribute("weeklyVisitors", count);
+        // Add current URI for report links, etc.
+        model.addAttribute("currentUri", request.getRequestURI());
+
+        // Add visitor counts to every page
+        model.addAttribute("totalVisitors", visitorService.getTotalVisitorCount());
+        model.addAttribute("recent48hVisitors", visitorService.getRecent48hVisitorCount());
     }
 }

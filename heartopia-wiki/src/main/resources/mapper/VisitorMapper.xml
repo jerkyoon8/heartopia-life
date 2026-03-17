@@ -16,4 +16,16 @@
         WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
     </select>
 
+    <!-- Get total sum of all time -->
+    <select id="getTotalTotal" resultType="int">
+        SELECT COALESCE(SUM(visit_count), 0) FROM visitor_stats
+    </select>
+
+    <!-- Get sum of last 48 hours (today + yesterday) -->
+    <select id="getRecent48hTotal" resultType="int">
+        SELECT COALESCE(SUM(visit_count), 0)
+        FROM visitor_stats
+        WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+    </select>
+
 </mapper>

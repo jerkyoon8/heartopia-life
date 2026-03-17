@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${item.name + ' - Heartopia Wiki'}">상세보기 - Heartopia Wiki</title>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
 
     <style>
@@ -348,9 +347,10 @@
             color: #555;
             text-decoration: none;
             font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.2s;
             margin-top: 20px;
+            display: inline-flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .back-to-list:hover {
@@ -358,11 +358,86 @@
             color: #333;
         }
 
+        .report-info-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: #fff3e0;
+            color: #e65100;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 20px;
+            border: 1px solid #ffe0b2;
+        }
+
+        .report-info-btn:hover {
+            background: #ffe0b2;
+            color: #bf360c;
+            transform: translateY(-2px);
+        }
+
         .no-related {
             color: #aaa;
             font-size: 0.9rem;
             text-align: center;
             padding: 20px;
+        }
+
+        /* === 요리 재료 섹션 === */
+        .ingredient-section {
+            margin-bottom: 25px;
+        }
+
+        .ingredient-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        /* 공통 pill 태그 */
+        .ingredient-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1.5px solid #d0d0d0;
+            background: #fff;
+            color: #444;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        /* 연결된 재료 (클릭 가능) */
+        .ingredient-tag.linked:hover {
+            background: #fffde7;
+            border-color: #ffc107;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* 미연결 재료 (클릭 불가) */
+        .ingredient-tag.unlinked {
+            background: #f5f5f5;
+            color: #888;
+            cursor: default;
+        }
+
+        /* 수량 표시 (×2 이상만) */
+        .ing-qty {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #e67e22;
+            margin-left: 1px;
         }
     </style>
 </head>
@@ -392,8 +467,8 @@
                     <img th:if="${item.imageUrl == null and category == 'animal' and animalImageUrl != null}"
                         th:src="${animalImageUrl}" alt="동물 이미지">
                     <!-- Default Icon (Fallback) -->
-                    <i th:if="${item.imageUrl == null and (category != 'animal' or animalImageUrl == null)}"
-                        th:class="${categoryIcon + ' text-muted'}" style="font-size: 5rem; opacity: 0.6;"></i>
+                    <i th:class="${categoryIcon + ' text-muted fallback-icon'}"
+                        th:style="${(item.imageUrl != null or (category == 'animal' and animalImageUrl != null)) ? 'display: none; font-size: 5rem; opacity: 0.6;' : 'display: flex; font-size: 5rem; opacity: 0.6;'}"></i>
                 </div>
 
                 <h1 class="detail-item-name" th:text="${item.name}">아이템 이름</h1>
@@ -409,6 +484,7 @@
                         <span
                             th:if="${category != 'animal' and category != 'forageable' and item.subLocation != null and item.subLocation != ''}"
                             th:text="' - ' + ${item.subLocation}"></span>
+                        <i class="fas fa-external-link-alt" style="font-size:0.75rem; opacity:0.7;"></i>
                     </a>
                 </div>
             </div>
@@ -428,9 +504,14 @@
                     <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
                         <td class="info-label"><i class="fas fa-map-marker-alt me-1"></i>서식지</td>
                         <td class="info-value">
-                            <span th:text="${item.location}">장소</span>
-                            <span th:if="${item.subLocation != null and item.subLocation != ''}"
-                                th:text="' - ' + ${item.subLocation}" class="text-muted"></span>
+                            <a th:href="@{/wiki/map(cat=${category}, name=${item.name})}"
+                               style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
+                               title="지도에서 보기">
+                                <span th:text="${item.location}">장소</span>
+                                <span th:if="${item.subLocation != null and item.subLocation != ''}"
+                                    th:text="' - ' + ${item.subLocation}" class="text-muted"></span>
+                                <i class="fas fa-map-marked-alt" style="font-size: 0.8rem; color: #00796b; margin-left: 4px;"></i>
+                            </a>
                         </td>
                     </tr>
                     <tr th:if="${category == 'fish' or category == 'bug' or category == 'bird'}">
@@ -471,18 +552,10 @@
                         <td class="info-label"><i class="fas fa-cloud me-1"></i>좋아하는 날씨</td>
                         <td class="info-value" th:text="${item.favoriteWeather ?: '-'}">날씨</td>
                     </tr>
-                    <!-- Cooking: Level, Ingredients, Buy Price -->
+                    <!-- Cooking: Level, Buy Price -->
                     <tr th:if="${category == 'cooking'}">
                         <td class="info-label"><i class="fas fa-layer-group me-1"></i>필요 레벨</td>
                         <td class="info-value"><span th:text="${item.level}">1</span> Lv</td>
-                    </tr>
-                    <tr th:if="${category == 'cooking'}">
-                        <td class="info-label"><i class="fas fa-list me-1"></i>재료</td>
-                        <td class="info-value" th:text="${item.ingredients ?: '-'}">재료</td>
-                    </tr>
-                    <tr th:if="${category == 'cooking' and item.buyPrice != null}">
-                        <td class="info-label"><i class="fas fa-store me-1"></i>구매가</td>
-                        <td class="info-value"><span th:text="${item.buyPrice}">100</span> 골드</td>
                     </tr>
                     <!-- Flower / Crop: Level, Growth, Seed Prices -->
                     <tr th:if="${category == 'flower' or category == 'crop'}">
@@ -527,6 +600,44 @@
                     </tr>
                 </table>
 
+                <!-- 요리 재료 태그 섹션 (cooking 카테고리 전용) -->
+                <div th:if="${category == 'cooking'}" class="ingredient-section">
+                    <div class="detail-section-title">
+                        <i class="fas fa-utensils"></i> 필요 재료
+                    </div>
+
+                    <!-- 관계형 재료 목록이 있을 때 -->
+                    <div th:if="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
+                         class="ingredient-list">
+                        <th:block th:each="ing : ${item.ingredientList}">
+
+                            <!-- 연결된 재료 (클릭 가능) -->
+                            <a th:if="${ing.itemType != null}"
+                               th:href="@{/wiki/{typePrefix}/{name}(typePrefix=${ing.itemType == 'crop' ? 'items/crops' : (ing.itemType == 'flower' ? 'items/flowers' : 'collections/' + ing.itemType)}, name=${ing.ingredientName})}"
+                               class="ingredient-tag linked">
+                                <span th:text="${ing.ingredientName}"></span>
+                                <span th:if="${ing.quantity != null and ing.quantity > 1}"
+                                      class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                            </a>
+
+                            <!-- 미연결 재료 (클릭 불가) -->
+                            <div th:unless="${ing.itemType != null}"
+                                 class="ingredient-tag unlinked">
+                                <span th:text="${ing.ingredientName}"></span>
+                                <span th:if="${ing.quantity != null and ing.quantity > 1}"
+                                      class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                            </div>
+
+                        </th:block>
+                    </div>
+
+                    <!-- 관계형 재료 목록이 없을 때: 기존 텍스트 폴백 -->
+                    <div th:unless="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
+                         style="color: #888; font-size: 0.9rem; padding: 8px 0;"
+                         th:text="${item.ingredients ?: '-'}">
+                    </div>
+                </div>
+
                 <!-- Price by Grade (5-star system) -->
                 <div th:if="${prices != null}">
                     <div class="detail-section-title">
@@ -543,6 +654,9 @@
                 <!-- Back to List -->
                 <a th:href="${listUrl}" class="back-to-list">
                     <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
+                </a>
+                <a th:href="@{/wiki/report(itemName=${item.name}, sourceUrl=${currentUri})}" class="report-info-btn">
+                    <i class="fas fa-edit"></i> 정보 수정 제보
                 </a>
             </div>
         </div>

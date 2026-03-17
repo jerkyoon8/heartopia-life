@@ -18,4 +18,12 @@ public class VisitorService {
     public int getWeeklyVisitorCount() {
         return visitorMapper.getWeeklyTotal();
     }
+
+    public int getTotalVisitorCount() {
+        return visitorMapper.getTotalTotal();
+    }
+
+    public int getRecent48hVisitorCount() {
+        return visitorMapper.getRecent48hTotal();
+    }
 }

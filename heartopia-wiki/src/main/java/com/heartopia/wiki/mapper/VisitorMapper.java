@@ -7,4 +7,8 @@ public interface VisitorMapper {
     void incrementTodayCount();
 
     int getWeeklyTotal();
+
+    int getTotalTotal();
+
+    int getRecent48hTotal();
 }

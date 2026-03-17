@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <title th:text="${errorTitle} + ' - 두근두근라이프 위키'"></title>
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .error-icon {
+            font-size: 4rem;
+            color: #ff8787;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 1.8rem;
+            color: #4D342E;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #8D7A75;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #4D342E;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            transition: background 0.2s;
+        }
+        .btn-home:hover {
+            background: #3A2722;
+        }
+    </style>
+</head>
+<body style="background-color: #fdfaf8;">
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="error-title" th:text="${errorTitle}">시스템 오류</h1>
+        <p class="error-message" th:text="${errorMessage}">문제가 발생했습니다. 잠시 후 다시 시도해 주세요.</p>
+        <a href="/wiki" class="btn-home">홈으로 돌아가기</a>
+    </div>
+</body>
+</html>

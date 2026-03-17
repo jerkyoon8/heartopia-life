@@ -76,7 +76,7 @@ public class WikiController {
         public String index(Model model) {
                 // 1. 컬렉션 (Collections)
                 List<CategoryItem> basics = new ArrayList<>();
-                basics.add(new CategoryItem("생선", "🐟", "/wiki/collections/fish",
+                basics.add(new CategoryItem("물고기", "🐟", "/wiki/collections/fish",
                                 "/images/collections/fish_collection.png", collectionService.getFishCount()));
                 basics.add(new CategoryItem("벌레", "🦋", "/wiki/collections/bug",
                                 "/images/collections/insect_collection.png", collectionService.getBugCount()));
@@ -98,9 +98,7 @@ public class WikiController {
 
                 // 3. 기타 (Others)
                 List<CategoryItem> others = new ArrayList<>();
-                others.add(new CategoryItem("주민", "👤", "/wiki/others/villagers", "/images/others/villagers.png", 21));
-                others.add(new CategoryItem("업적", "🏆", "/wiki/others/achievements", "/images/others/achievements.png",
-                                50));
+                others.add(new CategoryItem("주민", "👤", "/wiki/others/villagers", "/images/others/villages_icon.png", 21));
 
                 model.addAttribute("basics", basics);
                 model.addAttribute("creative", creative);
@@ -202,15 +200,15 @@ public class WikiController {
 
         @GetMapping("/items/cooking")
         public String cookingList(Model model) {
-                List<Cooking> list = collectionService.getAllCookings().stream()
-                                .map(c -> new Cooking(
-                                                c.getName(),
-                                                c.getImageUrl(), // Image
-                                                c.getLevel(),
-                                                c.getIngredients(),
-                                                c.getBuyPrice(),
-                                                c.getPrices()))
-                                .toList();
+                List<CookingCollection> list = collectionService.getAllCookings();
+
+                // 전체 재료를 한번에 조회 후 cooking_id로 그룹핑해 각 요리에 첨부
+                java.util.Map<Integer, List<com.heartopia.wiki.model.CookingIngredient>> ingredientMap =
+                        collectionService.getAllCookingIngredientMap();
+                list.forEach(c -> c.setIngredientList(
+                        ingredientMap.getOrDefault(c.getId(), List.of())
+                ));
+
                 model.addAttribute("cookingList", list);
                 return "wiki/items/cooking";
         }
@@ -220,7 +218,7 @@ public class WikiController {
                 List<Flower> list = collectionService.getAllFlowers().stream()
                                 .map(f -> new Flower(
                                                 f.getName(),
-                                                null, // Image
+                                                f.getImageUrl(),
                                                 f.getLevel(),
                                                 f.getGrowthTime(),
                                                 f.getSeedBuyPrice(),
@@ -241,7 +239,7 @@ public class WikiController {
                 List<Crop> list = collectionService.getAllCrops().stream()
                                 .map(c -> new Crop(
                                                 c.getName(),
-                                                null, // Image
+                                                c.getImageUrl(),
                                                 c.getLevel(),
                                                 c.getGrowthTime(),
                                                 c.getSeedBuyPrice(),
@@ -288,7 +286,7 @@ public class WikiController {
 
                 model.addAttribute("item", item);
                 model.addAttribute("category", "fish");
-                model.addAttribute("categoryLabel", "생선");
+                model.addAttribute("categoryLabel", "물고기");
                 model.addAttribute("categoryIcon", "fas fa-fish");
                 model.addAttribute("listUrl", "/wiki/collections/fish");
                 model.addAttribute("prices", item.getPrices());
@@ -296,7 +294,7 @@ public class WikiController {
                 // 관련정보: 같은 장소의 다른 생선
                 List<FishCollection> related = collectionService.getFishByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
-                                .map(f -> new SearchResult(f.getName(), "fish", "생선",
+                                .map(f -> new SearchResult(f.getName(), "fish", "물고기",
                                                 "/wiki/collections/fish/" + URLEncoder.encode(f.getName(),
                                                                 StandardCharsets.UTF_8),
                                                 f.getLocation() + " · " + f.getLevel() + " Lv"))
@@ -408,6 +406,11 @@ public class WikiController {
                 if (item == null)
                         return "redirect:/wiki/items/cooking";
 
+                // 관계형 재료 목록 조회
+                List<com.heartopia.wiki.model.CookingIngredient> ingredientList =
+                        collectionService.getIngredientsByCookingId(item.getId());
+                item.setIngredientList(ingredientList);
+
                 model.addAttribute("item", item);
                 model.addAttribute("category", "cooking");
                 model.addAttribute("categoryLabel", "요리");
@@ -480,7 +483,7 @@ public class WikiController {
 
                 // 8개 테이블 통합 검색
                 collectionService.searchFish(searchKeyword)
-                                .forEach(f -> allResults.add(new SearchResult(f.getName(), "fish", "생선",
+                                .forEach(f -> allResults.add(new SearchResult(f.getName(), "fish", "물고기",
                                                 "/wiki/collections/fish/" + URLEncoder.encode(f.getName(),
                                                                 StandardCharsets.UTF_8),
                                                 f.getLocation() + " · " + f.getLevel() + " Lv")));
@@ -566,7 +569,7 @@ public class WikiController {
                 List<Map<String, String>> results = new ArrayList<>();
 
                 collectionService.searchFish(q).forEach(f -> results.add(Map.of(
-                                "name", f.getName(), "category", "fish", "label", "생선",
+                                "name", f.getName(), "category", "fish", "label", "물고기",
                                 "url",
                                 "/wiki/collections/fish/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
                                 "sub", f.getLocation() + " · " + f.getLevel() + " Lv", "icon", "🐟")));
