@@ -242,7 +242,7 @@ CREATE TABLE `wiki_reports` (
   `category` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reporter_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reporter_email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message" text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `source_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `item_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
