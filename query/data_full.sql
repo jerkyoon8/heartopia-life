@@ -1,318 +1,263 @@
--- Heartopia Wiki - Master Integrated Data Script
--- Version: 1.0 (2026-03-18)
--- Purpose: Complete data synchronization with correct image URLs and validated attributes.
-
-USE heartopia_db;
-
--- [Phase 0] Global Settings & Truncation
-SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+--
+-- Host: localhost    Database: heartopia_db
+-- ------------------------------------------------------
+-- Server version	8.0.41
 
-TRUNCATE TABLE location_zones;
-TRUNCATE TABLE gift_code;
-TRUNCATE TABLE role_items;
-TRUNCATE TABLE villager_gifts;
-TRUNCATE TABLE villager_roles;
-TRUNCATE TABLE map_pins;
-TRUNCATE TABLE villagers;
-TRUNCATE TABLE wiki_reports;
-TRUNCATE TABLE cooking_ingredients;
-TRUNCATE TABLE cooking_collections;
-TRUNCATE TABLE forageable_collections;
-TRUNCATE TABLE crop_collections;
-TRUNCATE TABLE flower_collections;
-TRUNCATE TABLE animal_collections;
-TRUNCATE TABLE bug_collections;
-TRUNCATE TABLE bird_collections;
-TRUNCATE TABLE fish_collections;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+--
+-- Dumping data for table `villagers`
+--
+
+LOCK TABLES `villagers` WRITE;
+/*!40000 ALTER TABLE `villagers` DISABLE KEYS */;
+INSERT INTO `villagers` VALUES (1,'블랑코 (Blanc)','원예 멘토 & 상점 주인','/images/npc/NPC_icon_블랑코.png','원예 상점','튜토리얼 진행'),(2,'바냐 (Vanya)','낚시 멘토','/images/npc/vanya.png','가든 스트리트','튜토리얼 진행'),(3,'마시모 (Massimo)','요리 멘토','/images/npc/NPC_icon_마시모.png','카페','Lv.6 + 취미 티켓'),(4,'조안 여사 (Mrs. Joanne)','펫 멘토','/images/npc/NPC_icon_조안_여사.png','펫 하우스','Lv.12 + 취미 티켓'),(5,'베일리 (Bailey)','새 관찰 멘토','/images/npc/NPC_icon_베일리.png','펫 하우스 2층','Lv.6 + 취미 티켓'),(6,'나니와 (Naniwa)','곤충 채집 멘토','/images/npc/NPC_icon_나니와.png','가든 스트리트','Lv.6 + 취미 티켓'),(7,'앤드류 (Andrew)','탈것 상인','/images/npc/NPC_icon_앤드류.png','카 센터',NULL),(8,'알버트 2세 (Albert II)','골드 상인','/images/npc/NPC_icon_알버트_2세.png','교외에서 순회',NULL),(9,'밥 아저씨 (Uncle Bob)','인테리어 상인','/images/npc/NPC_icon_밥_아저씨.png','가구점',NULL),(10,'도로시 (Dorothy)','의상 디자이너','/images/npc/NPC_icon_도로시.png','옷 가게',NULL),(11,'애니 (Annie)','프렌즈 상점 주인','/images/npc/NPC_icon_애니.png','마을 중앙',NULL),(12,'카칭 (Kaching)','잡화 상인','/images/npc/NPC_icon_카칭.png','거주 거리 바깥','도시 방문'),(13,'아타라 (Atara)','퀘스트 매니저','/images/npc/NPC_icon_아타라.png','광장 게시판',NULL),(14,'애쥬어 (Azure)','트렌드 상인','/images/npc/NPC_icon_애쥬어.png','광장',NULL),(15,'에릭 (Eric)','주민','/images/npc/NPC_icon_에릭.png','마을',NULL),(16,'수집가 (Collector)','수집가','/images/npc/NPC_icon_수집가.png','커피마당',NULL),(17,'패티 (Patty)','주민','/images/npc/NPC_icon_패티.png','순록탑',NULL),(18,'버니 (Bunny)','주민','/images/npc/NPC_icon_버니.png','풍차 꽃밭',NULL),(19,'윌 (Will)','주민','/images/npc/NPC_icon_윌.png','마을',NULL),(20,'장난꾸러기 (Prankster)','주민','/images/npc/NPC_icon_장난꾸러기.png','마을 골목',NULL),(21,'해리 (Harry)','주민','/images/npc/NPC_icon_해리.png','마을',NULL),(22,'빌 (Bill)','이벤트 NPC','/images/npc/NPC_icon_빌.png','부두',NULL);
+/*!40000 ALTER TABLE `villagers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `villager_roles`
+--
+
+LOCK TABLES `villager_roles` WRITE;
+/*!40000 ALTER TABLE `villager_roles` DISABLE KEYS */;
+INSERT INTO `villager_roles` VALUES (1,1,'GUIDE','원예','희귀 꽃, 씨앗, 작물, 곤충'),(2,1,'SHOP','원예 상점',NULL),(3,2,'GUIDE','낚시','모든 물고기, 해산물, 낚시 용품'),(4,2,'SHOP','낚시 상점',NULL),(5,2,'EVENT','얼음 낚시','이벤트 진행 가능'),(7,3,'GUIDE','요리','요리된 음식, 희귀 식재료'),(8,3,'SHOP','레스토랑 상점',NULL),(9,4,'GUIDE','펫 케어','해산물 부케'),(10,4,'SHOP','펫 샵',NULL),(11,5,'GUIDE','새 관찰','고품질 새 사진'),(12,5,'EVENT','새들의 복귀 사건','이벤트 무작위 발생'),(13,6,'GUIDE','곤충 채집',NULL),(14,6,'SHOP','곤충 상점',NULL),(15,6,'EVENT','곤충 떼 사건','이벤트 무작위 발생'),(16,7,'SHOP','탈것 상점',NULL),(17,8,'SHOP','판매 가능','아이템 판매 상점'),(18,9,'SHOP','인테리어 샵','판매 물품 변경 : 토요일 6시'),(19,10,'SHOP','부띠끄','판매 물품 변경 : 매일 6시'),(20,11,'SHOP','프렌즈 & 뮤직',NULL),(21,12,'SHOP','잡화점',NULL),(22,13,'QUEST','주간 퀘스트',NULL),(23,14,'SHOP','트렌드 상점',NULL),(24,14,'EVENT','트렌드 이벤트','시즌별 이벤트 진행'),(25,22,'EVENT','바다 낚시 사건','이벤트 진행');
+/*!40000 ALTER TABLE `villager_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `role_items`
+--
+
+LOCK TABLES `role_items` WRITE;
+/*!40000 ALTER TABLE `role_items` DISABLE KEYS */;
+INSERT INTO `role_items` VALUES (1,2,'꽃 씨앗'),(2,2,'작물 씨앗'),(3,2,'재배 상자'),(4,2,'비료'),(5,2,'성장 촉진제'),(6,4,'낚시대'),(7,4,'미끼'),(8,4,'어항'),(9,4,'특수 아이템'),(10,8,'식재료'),(11,8,'레시피'),(12,8,'주방용품 도면'),(13,10,'펫'),(14,10,'펫 먹이'),(15,10,'펫 의상'),(16,10,'펫 용품'),(17,10,'자동 급식기'),(18,14,'채집통'),(19,14,'포충망'),(20,14,'특수 아이템'),(21,16,'자전거'),(22,16,'오토바이'),(23,16,'승용차'),(24,17,'골드 거래'),(25,17,'희귀 아이템'),(26,18,'가구'),(27,18,'카페트'),(28,18,'벽지'),(29,18,'건축 자재'),(30,19,'의류'),(31,19,'장신구'),(32,19,'메이크업'),(33,20,'이모티콘'),(34,20,'악기'),(35,20,'녹음기'),(36,21,'다양한 잡화'),(37,23,'눈조각'),(38,23,'계절 아이템');
+/*!40000 ALTER TABLE `role_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `villager_gifts`
+--
+
+LOCK TABLES `villager_gifts` WRITE;
+/*!40000 ALTER TABLE `villager_gifts` DISABLE KEYS */;
+INSERT INTO `villager_gifts` VALUES (1,1,'희귀 꽃',1),(2,1,'씨앗',1),(3,1,'작물',1),(4,1,'곤충',1),(5,2,'모든 물고기',1),(6,2,'해산물',1),(7,2,'낚시 용품',1),(8,2,'쓰레기',0),(9,2,'광석',0),(10,3,'요리된 음식',1),(11,3,'희귀 식재료',1),(12,4,'해산물 부케',1),(13,4,'쓰레기',0),(14,5,'고품질 새 사진',1);
+/*!40000 ALTER TABLE `villager_gifts` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-18  3:45:37
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+--
+-- Host: localhost    Database: heartopia_db
+-- ------------------------------------------------------
+-- Server version	8.0.41
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `fish_collections`
+--
+
+LOCK TABLES `fish_collections` WRITE;
+/*!40000 ALTER TABLE `fish_collections` DISABLE KEYS */;
+INSERT INTO `fish_collections` VALUES (1,'강','강 전체','민물배스',1,NULL,NULL,75,112,150,300,600,'M','/images/collections/fish/민물배스.png'),(2,'강','강 전체','왕새우',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/왕새우.png'),(3,'강','강 전체','틸라피아',1,NULL,NULL,320,480,640,1280,2560,'Blue','/images/collections/fish/틸라피아.png'),(4,'강','거목 강','하늘종개',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/하늘종개.png'),(5,'강','거목 강','민물잰더',3,'해/무지개',NULL,230,345,460,920,1840,'M','/images/collections/fish/민물잰더.png'),(6,'강','거목 강','레드벨리피라냐',4,NULL,NULL,230,345,460,920,1840,'M','/images/collections/fish/레드벨리피라냐.png'),(7,'강','거목 강','후첸',9,'무지개','0~6 / 12~24',380,570,760,1520,3040,'M','/images/collections/fish/후첸.png'),(8,'강','고요한 강','미노우',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/미노우.png'),(9,'강','고요한 강','민물대구',4,NULL,'18~24 / 6~18',230,345,460,920,1840,'L','/images/collections/fish/민물대구.png'),(10,'강','고요한 강','첨연어',6,'무지개',NULL,150,225,300,600,1200,'S','/images/collections/fish/첨연어.png'),(11,'강','노을 강','큰얼룩배스',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/큰얼룩배스.png'),(12,'강','노을 강','유럽잉어',4,'해/무지개','18~24 / 6~18',230,345,460,920,1840,'M','/images/collections/fish/유럽잉어.png'),(13,'강','노을 강','민물베도라치',5,NULL,NULL,150,225,300,600,1200,'S','/images/collections/fish/민물베도라치.png'),(14,'강','얕은 강','바벨',1,NULL,NULL,75,112,150,300,600,'M','/images/collections/fish/바벨.png'),(15,'강','얕은 강','큰가시고기',7,'비/무지개',NULL,150,225,300,600,1200,'S','/images/collections/fish/큰가시고기.png'),(16,'바다','고래 바다','전갱이',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/전갱이.png'),(17,'바다','고래 바다','해마',3,NULL,'0~18',100,150,200,400,800,'S','/images/collections/fish/해마.png'),(18,'바다','고래 바다','대서양연어',4,NULL,'0~6 / 12~24',155,232,310,620,1240,'M','/images/collections/fish/대서양연어.png'),(19,'바다','고래 바다','대서양고등어',5,'해/무지개','18~24 / 6~18',150,225,300,600,1200,'S','/images/collections/fish/대서양고등어.png'),(20,'바다','고래 바다','킹크랩',8,'무지개',NULL,535,802,1070,2140,4280,'L','/images/collections/fish/킹크랩.png'),(21,'바다','고래 바다','황새치',10,'무지개','6~18',850,1275,1700,3400,6800,'L','/images/collections/fish/황새치.png'),(22,'바다','구해','바다가시고기',2,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/바다가시고기.png'),(23,'바다','구해','흰동가리',3,NULL,NULL,100,150,200,400,800,'S','/images/collections/fish/흰동가리.png'),(24,'바다','구해','유럽가자미',4,NULL,'0~6 / 18~24',230,345,460,920,1840,'M','/images/collections/fish/유럽가자미.png'),(25,'바다','구해','복어',6,NULL,'18~24 / 6~18',230,345,460,920,1840,'M','/images/collections/fish/복어.png'),(26,'바다','구해','유럽장어',7,'무지개',NULL,380,570,760,1520,3040,'M','/images/collections/fish/유럽장어.png'),(27,'바다','구해','귀상어',10,'무지개','0~6 / 18~24',850,1275,1700,3400,6800,'L','/images/collections/fish/귀상어.png'),(28,'바다','동해','바다새우',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/바다새우.png'),(29,'바다','동해','소라게',3,NULL,NULL,100,150,200,400,800,'S','/images/collections/fish/소라게.png'),(30,'바다','동해','망둥어',4,NULL,'0~6 / 6~18',150,225,300,600,1200,'S','/images/collections/fish/망둥어.png'),(31,'바다','동해','등불성대',6,'무지개',NULL,380,570,760,1520,3040,'M','/images/collections/fish/등불성대.png'),(32,'바다','동해','해덕대구',8,'해/무지개','0~6 / 12~24',230,345,460,920,1840,'M','/images/collections/fish/해덕대구.png'),(33,'바다','동해','개복치',9,NULL,'0~12',850,1275,1700,3400,6800,'L','/images/collections/fish/개복치.png'),(34,'바다','바다 전체','정어리',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/정어리.png'),(35,'바다','바다 전체','배스',1,NULL,NULL,75,112,150,300,600,'M','/images/collections/fish/배스.png'),(36,'바다','바다 전체','가다랑어',1,NULL,NULL,210,315,420,840,1680,'L','/images/collections/fish/가다랑어.png'),(37,'바다','바다 전체','대문짝넙치',4,NULL,NULL,320,480,640,1280,2560,'Blue','/images/collections/fish/대문짝넙치.png'),(38,'바다','바다 전체','대서양은상어',2,NULL,NULL,320,480,640,1280,2560,'Blue','/images/collections/fish/대서양은상어.png'),(39,'바다','바다낚시 사건','노랑촉수',2,NULL,NULL,320,480,640,1280,2560,'Golden','/images/collections/fish/노랑촉수.png'),(40,'바다','바다낚시 사건','아귀',3,NULL,NULL,320,480,640,1280,2560,'Golden','/images/collections/fish/아귀.png'),(41,'바다','바다낚시 사건','참문어',4,NULL,NULL,320,480,640,1280,2560,'M, Golden','/images/collections/fish/참문어.png'),(42,'바다','바다낚시 사건','유럽날오징어',5,NULL,NULL,320,480,640,1280,2560,'Golden','/images/collections/fish/유럽날오징어.png'),(43,'바다','바다낚시 사건','두툽상어',6,NULL,NULL,535,802,1070,2140,4280,NULL,'/images/collections/fish/두툽상어.png'),(44,'바다','바다낚시 사건','산갈치',7,NULL,'6~18',535,802,1070,2140,4280,'Golden','/images/collections/fish/산갈치.png'),(45,'바다','바다낚시 사건','황금 킹크랩',8,'무지개',NULL,850,1275,1700,3400,6800,'Golden','/images/collections/fish/황금킹크랩.png'),(46,'바다','바다낚시 사건','붉은개복치',9,NULL,'0~6 / 18~24',850,1275,1700,3400,6800,'Golden','/images/collections/fish/붉은개복치.png'),(47,'바다','바다낚시 사건','청상아리',10,'무지개','6~18',850,1275,1700,3400,6800,'L','/images/collections/fish/청상아리.png'),(48,'바다','잔잔한 바다','갈치',1,NULL,NULL,105,157,210,420,840,'L','/images/collections/fish/갈치.png'),(49,'바다','잔잔한 바다','대서양난쟁이문어',4,NULL,NULL,150,225,300,600,1200,'S','/images/collections/fish/대서양난쟁이문어.png'),(50,'바다','잔잔한 바다','노란전갱이',3,NULL,NULL,155,232,310,620,1240,'M','/images/collections/fish/노란전갱이.png'),(51,'바다','잔잔한 바다','유럽가재',5,NULL,'0~6 / 18~24',230,345,460,920,1840,'M','/images/collections/fish/유럽가재.png'),(52,'바다','잔잔한 바다','검은점돔',7,'비/무지개','0~6 / 18~24',230,345,460,920,1840,'M','/images/collections/fish/검은점돔.png'),(53,'바다','잔잔한 바다','참다랑어',9,'무지개','6~18',850,1275,1700,3400,6800,'L','/images/collections/fish/참다랑어.png'),(54,'호수','근교 호수','붕어',1,NULL,NULL,75,112,150,300,600,'M','/images/collections/fish/붕어.png'),(55,'호수','근교 호수','백조어',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/백조어.png'),(56,'호수','근교 호수','돌마자',2,NULL,NULL,100,150,200,400,800,'S','/images/collections/fish/돌마자.png'),(57,'호수','근교 호수','홍합',3,'비/무지개',NULL,100,150,200,400,800,'S','/images/collections/fish/홍합.png'),(58,'호수','근교 호수','민물게',4,NULL,NULL,100,150,200,400,800,'S','/images/collections/fish/민물게.png'),(59,'호수','근교 호수','루드',5,NULL,NULL,150,225,300,600,1200,'M','/images/collections/fish/루드.png'),(60,'호수','근교 호수','사루기',6,NULL,NULL,230,345,460,920,1840,'S','/images/collections/fish/사루기.png'),(61,'호수','근교 호수','줄무늬송사리',7,'해/무지개','0~6 / 12~24',150,225,300,600,1200,'S','/images/collections/fish/줄무늬송사리.png'),(62,'호수','근교 호수','펄고기',8,'해/무지개','0~12',250,375,500,1000,2000,'S','/images/collections/fish/펄고기.png'),(63,'호수','근교 호수','강꼬치고기',9,'비/무지개','0~6 / 18~24',610,915,1220,2440,4880,'M','/images/collections/fish/강꼬치고기.png'),(64,'호수','숲속 호수','텐치',1,NULL,NULL,50,75,100,200,400,'S','/images/collections/fish/텐치.png'),(65,'호수','숲속 호수','큰입배스',4,'해/무지개',NULL,230,345,460,920,1840,'M','/images/collections/fish/큰입배스.png'),(66,'호수','숲속 호수','유럽민물가재',3,NULL,'0~12 / 18~24',100,150,200,400,800,'S','/images/collections/fish/유럽민물가재.png'),(67,'호수','숲속 호수','머드개복치',2,NULL,'6~24',100,150,200,400,800,'S','/images/collections/fish/머드개복치.png'),(68,'호수','숲속 호수','큰진주조개',6,'무지개',NULL,380,570,760,1520,3040,'M','/images/collections/fish/큰진주조개.png'),(69,'호수','숲속 호수','북유럽파란가재',8,NULL,'0~6 / 18~24',250,375,500,1000,2000,'S','/images/collections/fish/북유럽파란가재.png'),(70,'호수','숲속 호수','북극곤들매기',10,'비/무지개','12~24',610,915,1220,2440,4880,'M','/images/collections/fish/북극곤들매기.png'),(71,'호수','온천산 호수','극지연어',1,NULL,NULL,105,157,210,420,840,'M','/images/collections/fish/극지연어.png'),(72,'호수','온천산 호수','매화농어',2,NULL,'12~24',100,150,200,400,800,'S','/images/collections/fish/매화농어.png'),(73,'호수','온천산 호수','올챙이',3,'비/무지개',NULL,100,150,200,400,800,'S','/images/collections/fish/올챙이.png'),(74,'호수','온천산 호수','둑중개',7,'비/무지개','6~24',150,225,300,600,1200,'S','/images/collections/fish/둑중개.png'),(75,'호수','온천산 호수','펌프킨시드',9,'해/무지개','6~24',250,375,500,1000,2000,'S','/images/collections/fish/펌프킨시드.png'),(76,'호수','온천산 호수','블루길',10,'해/무지개','0~6 / 18~24',395,592,790,1580,3160,'S','/images/collections/fish/블루길.png'),(77,'호수','초원 호수','바다빙어',2,NULL,NULL,100,150,200,400,800,'S','/images/collections/fish/바다빙어.png'),(78,'호수','초원 호수','나비잉어',4,'비/무지개',NULL,320,480,640,1280,2560,'L','/images/collections/fish/나비잉어.png'),(79,'호수','초원 호수','송어',5,'해/무지개','0~6 / 18~24',230,345,460,920,1840,'M','/images/collections/fish/송어.png'),(80,'호수','초원 호수','금붕어',8,'비/무지개','6~24',250,375,500,1000,2000,'S','/images/collections/fish/금붕어.png'),(81,'호수','초원 호수','유럽메기',10,'해/무지개','0~6 / 18~24',610,915,1220,2440,4880,'M','/images/collections/fish/유럽메기.png'),(82,'호수','호수 전체','유럽백조어',1,NULL,NULL,50,75,100,200,400,NULL,'/images/collections/fish/유럽백조어.png'),(83,'호수','호수 전체','유럽처브',1,NULL,NULL,75,112,150,300,600,'M','/images/collections/fish/유럽처브.png'),(84,'호수','호수 전체','유럽참개구리',1,NULL,NULL,320,480,640,1280,2560,'Blue','/images/collections/fish/유럽참개구리.png');
+/*!40000 ALTER TABLE `fish_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `bird_collections`
+--
+
+LOCK TABLES `bird_collections` WRITE;
+/*!40000 ALTER TABLE `bird_collections` DISABLE KEYS */;
+INSERT INTO `bird_collections` VALUES (1,'블랑코 머리 위',NULL,'오목눈이',1,NULL,NULL,2,8,16,32,64,'소형','/images/collections/bird/오목눈이.png'),(2,'숲',NULL,'굴뚝새',1,NULL,NULL,7,30,60,120,240,'소형','/images/collections/bird/굴뚝새.png'),(3,'도심',NULL,'꼬까울새',1,NULL,NULL,7,30,60,120,240,'소형','/images/collections/bird/꼬까울새.png'),(4,'온천산',NULL,'노랑배박새',1,NULL,NULL,7,30,60,120,240,'소형','/images/collections/bird/노랑배박새.png'),(5,'도시 근교',NULL,'멋쟁이새',1,NULL,NULL,7,30,60,120,240,'소형','/images/collections/bird/멋쟁이새.png'),(6,'꽃밭',NULL,'푸른머리되새',1,NULL,NULL,7,30,60,120,240,'소형','/images/collections/bird/푸른머리되새.png'),(7,'도심',NULL,'분홍가슴비둘기',1,NULL,NULL,10,40,80,160,320,'비둘기','/images/collections/bird/분홍가슴비둘기.png'),(8,'어촌',NULL,'얼룩비둘기',1,NULL,NULL,10,40,80,160,320,'비둘기','/images/collections/bird/얼룩비둘기.png'),(9,'홈 근처',NULL,'염주비둘기',1,NULL,NULL,10,40,80,160,320,'비둘기','/images/collections/bird/염주비둘기.png'),(10,'새들의 복귀',NULL,'청금강앵무',1,NULL,NULL,7,30,60,120,240,'앵무','/images/collections/bird/청금강앵무.png'),(11,'새들의 복귀',NULL,'청공작',1,NULL,NULL,10,40,80,160,320,'공작','/images/collections/bird/청공작.png'),(12,'호수',NULL,'청둥오리',1,NULL,NULL,12,50,100,200,400,'오리','/images/collections/bird/청둥오리.png'),(13,'물가',NULL,'큰홍학',1,NULL,NULL,15,60,120,240,480,'홍학','/images/collections/bird/큰홍학.png'),(14,'어촌',NULL,'동고비',2,NULL,NULL,10,40,80,160,320,'소형','/images/collections/bird/동고비.png'),(15,'도시 근교',NULL,'빨간머리때까치',2,NULL,NULL,10,40,80,160,320,'소형','/images/collections/bird/빨간머리때까치.png'),(16,'온천산',NULL,'수염오목눈이',2,NULL,NULL,10,40,80,160,320,'소형','/images/collections/bird/수염오목눈이.png'),(17,'꽃밭',NULL,'분홍목녹색비둘기',2,NULL,NULL,15,60,120,240,480,'비둘기','/images/collections/bird/분홍목녹색비둘기.png'),(18,'숲',NULL,'웡가비둘기',2,NULL,NULL,15,60,120,240,480,'비둘기','/images/collections/bird/웡가비둘기.png'),(19,'해변',NULL,'바다갈매기',2,NULL,NULL,17,70,140,280,560,'갈매기','/images/collections/bird/바다갈매기.png'),(20,'강',NULL,'홍머리오리',2,NULL,NULL,17,70,140,280,560,'오리','/images/collections/bird/홍머리오리.png'),(21,'숲','점핑 플랫폼','검은턱오목눈이',3,NULL,NULL,10,40,80,160,320,'소형','/images/collections/bird/검은턱오목눈이.png'),(22,'어촌','등대','녹자작',3,NULL,NULL,10,40,80,160,320,'소형','/images/collections/bird/녹자작.png'),(23,'홈 근처',NULL,'유럽꾀꼬리',3,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/유럽꾀꼬리.png'),(24,'새들의 복귀',NULL,'홍금강앵무',3,NULL,NULL,10,40,80,160,320,'앵무','/images/collections/bird/홍금강앵무.png'),(25,'고래바다 해변',NULL,'오두앵갈매기',3,NULL,NULL,17,70,140,280,560,'갈매기','/images/collections/bird/오두앵갈매기.png'),(26,'바다',NULL,'유럽가마우지',3,NULL,NULL,17,70,140,280,560,'가마우지','/images/collections/bird/유럽가마우지.png'),(27,'강',NULL,'호사북방오리',3,NULL,NULL,17,70,140,280,560,'오리','/images/collections/bird/호사북방오리.png'),(28,'근교 호수',NULL,'황오리',3,NULL,NULL,17,70,140,280,560,'오리','/images/collections/bird/황오리.png'),(29,'숲','영혼의 참나무','노란머리바우어새',4,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/노란머리바우어새.png'),(30,'숲','숲속 섬','솔양진이',4,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/솔양진이.png'),(31,'꽃밭','보라빛 해변','알락할미새',4,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/알락할미새.png'),(32,'어촌','광장','회색머리붉은참새',4,'해/무지개',NULL,15,60,120,240,480,'소형','/images/collections/bird/회색머리붉은참새.png'),(33,'꽃밭','풍차꽃밭','황금과일비둘기',4,NULL,NULL,17,70,140,280,560,'비둘기','/images/collections/bird/황금과일비둘기.png'),(34,'온천산','유적','은계',4,NULL,NULL,17,70,140,280,560,'중형','/images/collections/bird/은계.png'),(35,'숲','호수','흰비오리',4,NULL,NULL,22,90,180,360,720,'오리','/images/collections/bird/흰비오리.png'),(36,'어촌','부두','노랑배딱새',5,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/노랑배딱새.png'),(37,'온천산','호숫가','유럽벌잡이새',5,'비/무지개',NULL,22,90,180,360,720,'소형','/images/collections/bird/유럽벌잡이새.png'),(38,'온천산','온천','올리브비둘기',5,NULL,NULL,27,110,220,440,880,'비둘기','/images/collections/bird/올리브비둘기.png'),(39,'새들의 복귀',NULL,'초록금강앵무',5,'해/무지개',NULL,15,60,120,240,480,'앵무','/images/collections/bird/초록금강앵무.png'),(40,'구해','해변','검정제비갈매기',5,NULL,NULL,22,90,180,360,720,'갈매기','/images/collections/bird/검정제비갈매기.png'),(41,'숲','호숫가','작은홍학',5,'비/무지개',NULL,27,110,220,440,880,'홍학','/images/collections/bird/작은홍학.png'),(42,'온천산','화산 호수','콩새',6,NULL,NULL,15,60,120,240,480,'소형','/images/collections/bird/콩새.png'),(43,'어촌','동쪽 부두','황금가슴비둘기',6,NULL,NULL,27,110,220,440,880,'비둘기','/images/collections/bird/황금가슴비둘기.png'),(44,'구해, 고래바다',NULL,'붉은뺨가마우지',6,NULL,NULL,22,90,180,360,720,'가마우지','/images/collections/bird/붉은뺨가마우지.png'),(45,'온천산','바위절벽','칡부엉이',6,'해/무지개',NULL,47,190,380,760,1520,'부엉이','/images/collections/bird/칡부엉이.png'),(46,'꽃밭','풍차꽃밭','푸른박새',7,NULL,NULL,22,90,180,360,720,'소형','/images/collections/bird/푸른박새.png'),(47,'도시 근교',NULL,'잠부과일비둘기',7,NULL,NULL,27,110,220,440,880,'비둘기','/images/collections/bird/잠부과일비둘기.png'),(48,'동해','해변','제비갈매기',7,'무지개',NULL,35,140,280,560,1120,'갈매기','/images/collections/bird/제비갈매기.png'),(49,'숲','순록탑','황조롱이',7,'해/무지개',NULL,47,190,380,760,1520,'매','/images/collections/bird/황조롱이.png'),(50,'새들의 복귀',NULL,'히아신스금강앵무',7,'비/무지개',NULL,22,90,180,360,720,'앵무','/images/collections/bird/히아신스금강앵무.png'),(51,'도시 근교',NULL,'동부 파랑새',8,'비/무지개',NULL,30,120,240,480,960,'소형','/images/collections/bird/동부 파랑새.png'),(52,'숲','영혼의 참나무','홍방울새',8,NULL,NULL,22,90,180,360,720,'소형','/images/collections/bird/홍방울새.png'),(53,'꽃밭','고래산','분홍비둘기',8,NULL,NULL,27,110,220,440,880,'비둘기','/images/collections/bird/분홍비둘기.png'),(54,'온천산','온천','매',8,'비/무지개',NULL,65,260,520,1040,2080,'매','/images/collections/bird/매.png'),(55,'도시 근교',NULL,'극락풍금조',9,'무지개',NULL,30,120,240,480,960,'소형','/images/collections/bird/극락풍금조.png'),(56,'온천산','호수','흰머리오리',9,'비/무지개',NULL,45,180,360,720,1440,'오리','/images/collections/bird/흰머리오리.png'),(57,'동해, 잔잔한 바다',NULL,'황제가마우지',9,NULL,NULL,45,180,360,720,1440,'가마우지','/images/collections/bird/황제가마우지.png'),(58,'새들의 복귀','보너스 스테이지','녹공작',9,NULL,NULL,37,150,300,600,1200,'공작','/images/collections/bird/녹공작.png'),(59,'꽃밭','보라빛 해변','아메리카홍학',9,'무지개',NULL,55,220,440,880,1760,'홍학','/images/collections/bird/아메리카홍학.png'),(60,'어촌','등대','아조레스멋쟁이새',10,'무지개',NULL,30,120,240,480,960,'소형','/images/collections/bird/아조레스멋쟁이새.png'),(61,'숲','점핑 플랫폼','파랑딱새',10,'무지개',NULL,30,120,240,480,960,'소형','/images/collections/bird/파랑딱새.png'),(62,'온천산','유적','비둘기조롱이',10,NULL,NULL,65,260,520,1040,2080,'매','/images/collections/bird/비둘기조롱이.png'),(63,'숲','순록탑','수리부엉이',10,'무지개',NULL,65,260,520,1040,2080,'부엉이','/images/collections/bird/수리부엉이.png');
+/*!40000 ALTER TABLE `bird_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `bug_collections`
+--
+
+LOCK TABLES `bug_collections` WRITE;
+/*!40000 ALTER TABLE `bug_collections` DISABLE KEYS */;
+INSERT INTO `bug_collections` VALUES (1,'숲','전체','호랑나비',1,NULL,NULL,30,45,60,120,240,'/images/collections/bug/호랑나비.png'),(2,'도시','도심','유럽갈고리나비',1,NULL,NULL,30,45,60,120,240,'/images/collections/bug/유럽갈고리 나비.png'),(3,'도시','근교','멧노랑나비',1,NULL,NULL,30,45,60,120,240,'/images/collections/bug/멧노랑나비.png'),(4,'어촌','전체','배추흰나비',1,NULL,NULL,30,45,60,120,240,'/images/collections/bug/배추흰나비.png'),(5,'아이템','곤충 유인사건','아폴로모시나비',1,NULL,NULL,45,67,90,180,360,'/images/collections/bug/아폴로모시나비.png'),(6,'아이템','곤충 유인사건','붉은고리호랑나비',1,NULL,NULL,30,45,60,120,240,'/images/collections/bug/붉은고리호랑나비.png'),(7,'에어 꿀벌 유인기 특산품',NULL,'슬코스키몰포나비',1,NULL,NULL,90,135,180,360,720,'/images/collections/bug/슬코스키몰포나비.png'),(8,'꽃밭','전체','아스파라거스벌레',1,NULL,NULL,55,82,110,220,440,'/images/collections/bug/아스파라거스벌레.png'),(9,'온천산','전체','오아시스 메뚜기',1,NULL,NULL,45,67,90,180,360,'/images/collections/bug/오아시스메뚜기.png'),(10,'홈',NULL,'별노린재',1,NULL,NULL,35,52,70,140,280,'/images/collections/bug/별노린재.png'),(11,'물가',NULL,'큰고추잠자리',1,NULL,NULL,35,52,70,140,280,'/images/collections/bug/큰고추잠자리.png'),(12,'도시','전체','연푸른부전나비',2,NULL,NULL,105,157,210,420,840,'/images/collections/bug/연푸른부전나비.png'),(13,'온천산','전체','녹색호랑풍뎅이',2,NULL,NULL,110,165,220,440,880,'/images/collections/bug/녹색호랑풍뎅이.png'),(14,'숲','전체','말벌호랑하늘소',2,NULL,NULL,110,165,220,440,880,'/images/collections/bug/말벌호랑하늘소.png'),(15,'홈',NULL,'파란꽃풍뎅이',2,'비/무지개',NULL,165,247,330,660,1320,'/images/collections/bug/파란꽃풍뎅이.png'),(16,'어촌','전체','망치다리메뚜기',2,NULL,NULL,45,67,90,180,360,'/images/collections/bug/망치다리메뚜기.png'),(17,'도시','근교','칠성 무당벌레',2,'비/무지개',NULL,110,165,220,440,880,'/images/collections/bug/칠성 무당벌레.png'),(18,'도시','근교 호수','넉점박이잠자리',2,'비/무지개',NULL,75,112,150,300,600,'/images/collections/bug/넉점박이잠자리.png'),(19,'꽃밭','전체','호박벌',2,NULL,NULL,110,165,220,440,880,'/images/collections/bug/호박벌.png'),(20,'홈',NULL,'붉은목제비나비',3,NULL,'0~6 / 18~24',90,135,180,360,720,'/images/collections/bug/붉은목제비나비.png'),(21,'온천산','온천','홍날개',3,NULL,NULL,110,165,220,440,880,'/images/collections/bug/홍날개.png'),(22,'아이템','곤충 유인사건','분홍색 철써기',3,NULL,NULL,90,135,180,360,720,'/images/collections/bug/분홍색 철써기.png'),(23,'꽃밭','보라빛 해변','여치',3,NULL,NULL,180,270,360,720,1440,'/images/collections/bug/여치.png'),(24,'숲','순록탑','흰점꼬리털벌',3,NULL,'6~24',165,247,330,660,1320,'/images/collections/bug/흰점꼬리털벌.png'),(25,'어촌','어촌 광장','개미',3,NULL,NULL,220,330,440,880,1760,'/images/collections/bug/개미.png'),(26,'꽃밭','고래산','보라네발나비',3,'해/무지개','0~6 / 12~24',90,135,180,360,720,'/images/collections/bug/보라네발나비.png'),(27,'도시','근교','긴꼬리산누에나방',3,'해/무지개','6~24',105,157,210,420,840,'/images/collections/bug/긴꼬리산누에나방.png'),(28,'어촌','부두','표범무늬네발나비',4,'비/무지개','0~12 / 18~24',90,135,180,360,720,'/images/collections/bug/표범무늬네발나비.png'),(29,'도시','근교','큰줄무늬메뚜기',4,'해/무지개','0~6 / 12~24',140,210,280,560,1120,'/images/collections/bug/큰줄무늬메뚜기.png'),(30,'온천산','화산 호수','사성 무당벌레',4,'비/무지개',NULL,165,247,330,660,1320,'/images/collections/bug/사성 무당벌레.png'),(31,'숲','영혼의 참나무 숲','매미',4,NULL,'0~6 / 12~24',220,330,440,880,1760,'/images/collections/bug/매미.png'),(32,'강변',NULL,'밀잠자리',4,'비/무지개',NULL,75,112,150,300,600,'/images/collections/bug/밀잠자리.png'),(33,'온천산','바위절벽','무지개사마귀',4,'해/무지개','0~6 / 12~24',195,292,390,780,1560,'/images/collections/bug/무지개사마귀.png'),(34,'꽃밭','풍차꽃밭','공작나비',5,NULL,NULL,90,135,180,360,720,'/images/collections/bug/공작나비.png'),(35,'온천산','온천','신선나비',5,'해/무지개','0~18',90,135,180,360,720,'/images/collections/bug/신선나비.png'),(36,'아이템','곤충 유인사건','흰마녀밤나방',5,'해/무지개',NULL,90,135,180,360,720,'/images/collections/bug/흰마녀밤나방.png'),(37,'숲','숲속 섬','고산수염하늘소',5,'무지개',NULL,165,247,330,660,1320,'/images/collections/bug/고산수염하늘소.png'),(38,'숲','순록탑','이색무당벌레',5,'비/무지개','0~6 / 12~24',165,247,330,660,1320,'/images/collections/bug/이색무당벌레.png'),(39,'온천산','유적','파푸아사마귀',5,'해/무지개',NULL,390,585,780,1560,3120,'/images/collections/bug/파푸아사마귀.png'),(40,'꽃밭','고래산','보라벌',5,'해/무지개',NULL,165,247,330,660,1320,'/images/collections/bug/보라벌.png'),(41,'도시','근교','녹색날개호랑나비',6,NULL,'0~6 / 18~24',150,225,300,600,1200,'/images/collections/bug/녹색날개호랑나비.png'),(42,'숲','점핑 플랫폼','산악사슴벌레',6,'비/무지개','6~24',275,412,550,1100,2200,'/images/collections/bug/산악사슴벌레.png'),(43,'온천산','바위절벽','은빛보석풍뎅이',6,'해/무지개','0~18',165,247,330,660,1320,'/images/collections/bug/은빛보석풍뎅이.png'),(44,'어촌','등대','파란노린재',6,NULL,'6~18',110,165,220,440,880,'/images/collections/bug/파란노린재.png'),(45,'숲','숲속 호수','물잠자리',6,'비/무지개',NULL,110,165,220,440,880,'/images/collections/bug/물잠자리.png'),(46,'숲','영혼의 참나무 숲','메넬라우스나비',7,'해/무지개','6~24',150,225,300,600,1200,'/images/collections/bug/메넬라우스나비.png'),(47,'아이템','곤충 유인사건','왕나비',7,'비/무지개',NULL,150,225,300,600,1200,'/images/collections/bug/왕나비.png'),(48,'온천산','유적','티폰쇠똥구리',7,NULL,'0~18',275,412,550,1100,2200,'/images/collections/bug/티폰쇠똥구리.png'),(49,'꽃밭','고래산','보석꽃풍뎅이',7,'비/무지개','6~18',275,412,550,1100,2200,'/images/collections/bug/보석꽃풍뎅이.png'),(50,'숲','점핑 플랫폼','황금보석풍뎅이',7,'해/무지개','12~24',275,412,550,1100,2200,'/images/collections/bug/황금보석풍뎅이.png'),(51,'온천산','온천산 호수','찔레잠자리',7,'무지개','0~6 / 12~24',185,277,370,740,1480,'/images/collections/bug/찔레잠자리.png'),(52,'숲','영혼의 참나무 숲','이사벨라나방',8,'해/무지개','12~24',150,225,300,600,1200,'/images/collections/bug/이사벨라나방.png'),(53,'도시','근교','혜성꼬리나방',8,'해/무지개','0~6 / 18~24',240,360,480,960,1920,'/images/collections/bug/혜성꼬리나방.png'),(54,'어촌','동쪽 부두','장수풍뎅이',8,'해/무지개','0~6 / 18~24',275,412,550,1100,2200,'/images/collections/bug/장수풍뎅이.png'),(55,'꽃밭','보라빛 해변','피카소노린재',8,'해/무지개','0~6 / 18~24',185,277,370,740,1480,'/images/collections/bug/피카소노린재.png'),(56,'꽃밭','풍차꽃밭','진주네발나비',9,'비/무지개','0~12',240,360,480,960,1920,'/images/collections/bug/진주네발나비.png'),(57,'숲','영혼의 참나무 숲','황금귀신사슴벌레',9,'비/무지개','0~6 / 18~24',440,660,880,1760,3520,'/images/collections/bug/황금귀신사슴벌레.png'),(58,'아이템','곤충 유인사건','무지개사슴벌레',9,NULL,NULL,440,660,880,1760,3520,'/images/collections/bug/무지개사슴벌레.png'),(59,'온천산','유적','악마꽃사마귀',9,'비/무지개','12~24',515,772,1030,2060,4120,'/images/collections/bug/악마꽃사마귀.png'),(60,'어촌','어촌 광장','푸른목수벌',9,'무지개','0~6 / 18~24',440,660,880,1760,3520,'/images/collections/bug/푸른목수벌.png'),(61,'꽃밭','보라빛 해변','헬레나몰포나비',10,'무지개','6~18',240,360,480,960,1920,'/images/collections/bug/헬레나몰포나비.png'),(62,'숲','순록탑','헤쿠바몰포나비',10,'무지개','6~18',240,360,480,960,1920,'/images/collections/bug/헤쿠바몰포나비.png'),(63,'온천산','화산 호수','헤라클레스풍뎅이',10,'해/무지개','12~24',660,990,1320,2640,5280,'/images/collections/bug/헤라클레스풍뎅이.png'),(64,'숲','순록탑','사선주머니나방',10,'해/무지개','0~6 / 18~24',440,660,880,1760,3520,'/images/collections/bug/사선주머니나방.png');
+/*!40000 ALTER TABLE `bug_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `animal_collections`
+--
+
+LOCK TABLES `animal_collections` WRITE;
+/*!40000 ALTER TABLE `animal_collections` DISABLE KEYS */;
+INSERT INTO `animal_collections` VALUES (1,'판다','세갈래길 주변','대나무, 사과, 옥수수','비','/images/collections/animals/판다.png','세갈래길 근처'),(2,'카피바라','유적 주변','토마토, 포도, 라즈베리','비','/images/collections/animals/카피바라.png','유적 오른쪽'),(3,'토끼','버스 정류장 주변','잡초, 딸기, 당근','맑음','/images/collections/animals/토끼.png','2번 ~ 3번 홈 주변 버스 오른쪽 길'),(4,'여우','초원 호수 주변','고기, 민물배스, 큰입배스','무지개','/images/collections/animals/여우.png','9시 방향 초원 호수 아래 꽃밭 가는 길'),(5,'해달','어촌 주변','홍합, 바다새우, 왕새우','비','/images/collections/animals/해달.png','6시 방향 잔잔한 바다, 바위 위 (지도 확대 시 어촌 광장 텍스트 아래)'),(6,'담비','홈 4 주변','계란, 망둥어, 배스','무지개','/images/collections/animals/담비.png','4번 홈 위쪽'),(7,'꽃사슴','숲 주변','상추, 관목가지, 베지샐러드','맑음','/images/collections/animals/꽃사슴.png','3시 방향 숲 버스 위쪽'),(8,'알파카','등대 주변','블루베리, 파인애플, 밀','맑음','/images/collections/animals/알파카.png','보라빛 해변에서 등대로 가는 다리 주변');
+/*!40000 ALTER TABLE `animal_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `cooking_collections`
+--
+
+LOCK TABLES `cooking_collections` WRITE;
+/*!40000 ALTER TABLE `cooking_collections` DISABLE KEYS */;
+INSERT INTO `cooking_collections` VALUES (1,'베지 샐러드',1,'아무 채소 (2)',NULL,90,135,180,360,720,'/images/collections/cook/베지 샐러드.png'),(2,'믹스 잼',1,'혼합 과일 (4)',NULL,160,240,320,640,1280,'/images/collections/cook/믹스 잼.png'),(3,'라즈베리 잼',1,'라즈베리 (4)',NULL,250,375,500,1000,2000,'/images/collections/cook/라즈베리 잼.png'),(4,'케첩',1,'토마토 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/케첩.png'),(5,'블루베리 잼',1,'블루베리 (4)',NULL,170,255,340,680,1360,'/images/collections/cook/블루베리 잼.png'),(6,'사과 잼',1,'사과 (4)',NULL,270,405,540,1080,2160,'/images/collections/cook/사과 잼.png'),(7,'오렌지 잼',1,'오렌지 (4)',NULL,270,405,540,1080,2160,'/images/collections/cook/오렌지 잼.png'),(8,'괴상한 음식',1,'아무 음식 (1)',NULL,30,NULL,NULL,NULL,NULL,'/images/collections/cook/괴상한 음식.png'),(9,'괴상한 음료',1,'아무 음료 (1)',NULL,30,NULL,NULL,NULL,NULL,'/images/collections/cook/괴상한 음료.png'),(10,'딸기 잼',1,'딸기 (4)',NULL,1580,2370,3160,6320,12640,'/images/collections/cook/딸기 잼.png'),(11,'파인애플 잼',1,'파인애플 (4)',NULL,380,570,760,1520,3040,'/images/collections/cook/파인애플 잼.png'),(12,'포도 잼',1,'포도 (4)',NULL,2020,3030,4040,8080,16160,'/images/collections/cook/포도 잼.png'),(13,'초콜릿 소스',1,'코코아 (4)',NULL,NULL,NULL,NULL,NULL,NULL,'/images/collections/cook/초콜릿 소스.png'),(14,'피시 앤 칩스',1,'아무 생선 (2), 감자 (2)',NULL,310,465,620,1240,2480,'/images/collections/cook/피시 앤 칩스.png'),(15,'치즈케이크',1,'치즈 (1), 우유 (1), 밀 (1)',NULL,480,720,960,1920,3840,'/images/collections/cook/치즈케이크.png'),(16,'오리지널 롤케이크',1,'달걀 (1), 우유 (1), 아무 설탕 (2)',NULL,NULL,NULL,NULL,NULL,NULL,'/images/collections/cook/오리지널 롤케이크.png'),(17,'퍼플 롤케이크',1,'달걀 (1), 우유 (1), 보라 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/퍼플 롤케이크.png'),(18,'레드 롤케이크',1,'달걀 (1), 우유 (1), 빨간 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/레드 롤케이크.png'),(19,'오렌지 롤케이크',1,'달걀 (1), 우유 (1), 주황 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/오렌지 롤케이크.png'),(20,'옐로우 롤케이크',1,'달걀 (1), 우유 (1), 노란 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/옐로우 롤케이크.png'),(21,'그린 롤케이크',1,'달걀 (1), 우유 (1), 초록 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/그린 롤케이크.png'),(22,'스카이 롤케이크',1,'달걀 (1), 우유 (1), 파란 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/스카이 롤케이크.png'),(23,'블루 롤케이크',1,'달걀 (1), 우유 (1), 남색 설탕 (2)',NULL,570,855,1140,2280,4560,'/images/collections/cook/블루 롤케이크.png'),(24,'버섯 파이',1,'아무 버섯 (2), 밀 (1), 달걀 (1)',NULL,500,750,1000,2000,4000,'/images/collections/cook/버섯 파이.png'),(25,'느타리버섯 파이',1,'느타리버섯 (2), 밀 (1), 달걀 (1)',NULL,500,750,1000,2000,4000,'/images/collections/cook/느타리버섯 파이.png'),(26,'표고버섯 파이',1,'표고버섯 (2), 밀 (1), 달걀 (1)',NULL,500,750,1000,2000,4000,'/images/collections/cook/표고버섯 파이.png'),(27,'양송이버섯 파이',1,'양송이버섯 (2), 밀 (1), 달걀 (1)',NULL,500,750,1000,2000,4000,'/images/collections/cook/양송이버섯 파이.png'),(28,'그물버섯 파이',1,'그물버섯 (2), 밀 (1), 달걀 (1)',NULL,500,750,1000,2000,4000,'/images/collections/cook/그물버섯 파이.png'),(29,'검은 트러플 파이',1,'블랙 트러플 (2), 밀 (1), 달걀 (1)',NULL,830,1245,1660,3320,6640,'/images/collections/cook/검은 트러플 파이.png'),(30,'구운 버섯',1,'아무 버섯 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/구운 버섯.png'),(31,'구운 느타리버섯',1,'느타리버섯 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/구운 느타리버섯.png'),(32,'구운 표고버섯',1,'표고버섯 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/구운 표고버섯.png'),(33,'구운 양송이버섯',1,'양송이버섯 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/구운 양송이버섯.png'),(34,'구운 그물버섯',1,'그물버섯 (4)',NULL,180,270,360,720,1440,'/images/collections/cook/구운 그물버섯.png'),(35,'커피',2,'커피 콩 (4)',NULL,290,435,580,1160,2320,'/images/collections/cook/커피.png'),(36,'카페라떼',2,'커피 콩 (2), 우유 (2)',NULL,300,450,600,1200,2400,'/images/collections/cook/카페라떼.png'),(37,'훈제 연어 베이글',2,'아무 생선 (1), 치즈 (1), 아무 채소 (1), 밀 (1)',NULL,520,780,1040,2080,4160,'/images/collections/cook/훈제 연어 베이글.png'),(38,'씨푸드 덮밥',3,'아무 조개류 (2), 밀 (1), 토마토 (1)',NULL,490,735,980,1960,3920,'/images/collections/cook/씨푸드 덮밥.png'),(39,'컨트리 스튜',3,'토마토 (1), 감자 (1), 상추 (1)',NULL,640,960,1280,2560,5120,'/images/collections/cook/컨트리 스튜.png'),(40,'검은 트러플 크림 파스타',3,'블랙 트러플 (1), 밀 (2), 우유 (1)',NULL,900,1350,1800,3600,7200,'/images/collections/cook/검은 트러플 크림 파스타.png'),(41,'씨푸드 피자',4,'치즈 (1), 케첩 (1), 밀 (1), 아무 생선 (1)',NULL,780,1170,1560,3120,6240,'/images/collections/cook/씨푸드 피자.png'),(42,'미트소스 파스타',4,'고기 (1), 밀 (1), 토마토 (1), 치즈 (1)',NULL,670,1005,1340,2680,5360,'/images/collections/cook/미트소스 파스타.png'),(43,'애플파이',5,'사과 (1), 밀 (1), 달걀 (1), 버터 (1)',NULL,730,1095,1460,2920,5840,'/images/collections/cook/애플파이.png'),(44,'당근 케이크',5,'달걀 (1), 밀 (1), 당근 (2)',NULL,840,1260,1680,3360,6720,'/images/collections/cook/당근 케이크.png'),(45,'콘수프',5,'우유 (1), 버터 (1), 옥수수 (2)',NULL,1340,2010,2680,5360,10720,'/images/collections/cook/콘수프.png'),(46,'럭셔리 씨푸드 플래터',6,'유럽민물가재 (2), 아무 생선 (2)',NULL,410,615,820,1640,3280,'/images/collections/cook/럭셔리 씨푸드 플래터.png'),(47,'티라미수',6,'커피 원두 (1), 달걀 (1), 우유 (1), 치즈 (1)',NULL,530,795,1060,2120,4240,'/images/collections/cook/티라미수.png'),(48,'캠핑 세트',7,'아무 커피 (1), 씨푸드 피자 (1), 애플파이 (1), 피시 앤 칩스 (1)',NULL,2260,3390,4520,9040,18080,'/images/collections/cook/캠핑 세트.png'),(49,'잉글리시 애프터눈 티',7,'티라미수 (1), 아무 잼재료 (1)',NULL,710,1065,1420,2840,5680,'/images/collections/cook/잉글리시 애프터눈 티.png'),(50,'미트버거',8,'밀 (1), 상추 (1), 고기 (1), 케첩 (1)',NULL,1350,2025,2700,5400,10800,'/images/collections/cook/미트버거.png'),(51,'랍스터 냉채',8,'아무 랍스터 (3), 상추 (1)',NULL,850,1275,1700,3400,6800,'/images/collections/cook/랍스터 냉채.png'),(52,'미트소스 가지 그라탱',9,'가지 (1), 고기 (1), 식용유 (1), (1) 케첩 (1)',NULL,1230,1845,2460,4920,9840,'/images/collections/cook/미트소스 가지 그라탱.png'),(53,'캔들라이트 디너',9,'베지 샐러드 (1), 훈재 연어 베이글 (1), 씨푸드 덮밥 (1), 티라미수 (1)',NULL,1760,2640,3520,7040,14080,'/images/collections/cook/캔들라이트 디너.png'),(54,'킹크랩 찜',10,'아무 킹크랩 (3), 버터 (1)',NULL,1987,2980,3974,7948,15896,'/images/collections/cook/킹크랩 찜.png');
+/*!40000 ALTER TABLE `cooking_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `cooking_ingredients`
+--
+
+LOCK TABLES `cooking_ingredients` WRITE;
+/*!40000 ALTER TABLE `cooking_ingredients` DISABLE KEYS */;
+INSERT INTO `cooking_ingredients` VALUES (1,1,'아무 채소',2,NULL,NULL),(2,2,'혼합 과일',4,NULL,NULL),(3,3,'라즈베리',4,NULL,NULL),(4,4,'토마토',4,NULL,NULL),(5,5,'블루베리',4,NULL,NULL),(6,6,'사과',4,NULL,NULL),(7,7,'오렌지',4,NULL,NULL),(8,8,'아무 음식',1,NULL,NULL),(9,9,'아무 음료',1,NULL,NULL),(10,10,'딸기',4,NULL,NULL),(11,11,'파인애플',4,NULL,NULL),(12,12,'포도',4,NULL,NULL),(13,13,'코코아',4,NULL,NULL),(14,14,'아무 생선',2,NULL,NULL),(15,14,'감자',2,NULL,NULL),(16,15,'치즈',1,NULL,NULL),(17,15,'우유',1,NULL,NULL),(18,15,'밀',1,NULL,NULL),(19,16,'달걀',1,NULL,NULL),(20,16,'우유',1,NULL,NULL),(21,16,'아무 설탕',2,NULL,NULL),(22,17,'달걀',1,NULL,NULL),(23,17,'우유',1,NULL,NULL),(24,17,'보라 설탕',2,NULL,NULL),(25,18,'달걀',1,NULL,NULL),(26,18,'우유',1,NULL,NULL),(27,18,'빨간 설탕',2,NULL,NULL),(28,19,'달걀',1,NULL,NULL),(29,19,'우유',1,NULL,NULL),(30,19,'주황 설탕',2,NULL,NULL),(31,20,'달걀',1,NULL,NULL),(32,20,'우유',1,NULL,NULL),(33,20,'노란 설탕',2,NULL,NULL),(34,21,'달걀',1,NULL,NULL),(35,21,'우유',1,NULL,NULL),(36,21,'초록 설탕',2,NULL,NULL),(37,22,'달걀',1,NULL,NULL),(38,22,'우유',1,NULL,NULL),(39,22,'파란 설탕',2,NULL,NULL),(40,23,'달걀',1,NULL,NULL),(41,23,'우유',1,NULL,NULL),(42,23,'남색 설탕',2,NULL,NULL),(43,24,'아무 버섯',2,NULL,NULL),(44,24,'밀',1,NULL,NULL),(45,24,'달걀',1,NULL,NULL),(46,25,'느타리버섯',2,NULL,NULL),(47,25,'밀',1,NULL,NULL),(48,25,'달걀',1,NULL,NULL),(49,26,'표고버섯',2,NULL,NULL),(50,26,'밀',1,NULL,NULL),(51,26,'달걀',1,NULL,NULL),(52,27,'양송이버섯',2,NULL,NULL),(53,27,'밀',1,NULL,NULL),(54,27,'달걀',1,NULL,NULL),(55,28,'그물버섯',2,NULL,NULL),(56,28,'밀',1,NULL,NULL),(57,28,'달걀',1,NULL,NULL),(58,29,'블랙 트러플',2,NULL,NULL),(59,29,'밀',1,NULL,NULL),(60,29,'달걀',1,NULL,NULL),(61,30,'아무 버섯',4,NULL,NULL),(62,31,'느타리버섯',4,NULL,NULL),(63,32,'표고버섯',4,NULL,NULL),(64,33,'양송이버섯',4,NULL,NULL),(65,34,'그물버섯',4,NULL,NULL),(66,35,'커피 콩',4,NULL,NULL),(67,36,'커피 콩',2,NULL,NULL),(68,36,'우유',2,NULL,NULL),(69,37,'아무 생선',1,NULL,NULL),(70,37,'치즈',1,NULL,NULL),(71,37,'아무 채소',1,NULL,NULL),(72,37,'밀',1,NULL,NULL),(73,38,'아무 조개류',2,NULL,NULL),(74,38,'밀',1,NULL,NULL),(75,38,'토마토',1,NULL,NULL),(76,39,'토마토',1,NULL,NULL),(77,39,'감자',1,NULL,NULL),(78,39,'상추',1,NULL,NULL),(79,40,'블랙 트러플',1,NULL,NULL),(80,40,'밀',2,NULL,NULL),(81,40,'우유',1,NULL,NULL),(82,41,'치즈',1,NULL,NULL),(83,41,'케첩',1,NULL,NULL),(84,41,'밀',1,NULL,NULL),(85,41,'아무 생선',1,NULL,NULL),(86,42,'고기',1,NULL,NULL),(87,42,'밀',1,NULL,NULL),(88,42,'토마토',1,NULL,NULL),(89,42,'치즈',1,NULL,NULL),(90,43,'사과',1,NULL,NULL),(91,43,'밀',1,NULL,NULL),(92,43,'달걀',1,NULL,NULL),(93,43,'버터',1,NULL,NULL),(94,44,'달걀',1,NULL,NULL),(95,44,'밀',1,NULL,NULL),(96,44,'당근',2,NULL,NULL),(97,45,'우유',1,NULL,NULL),(98,45,'버터',1,NULL,NULL),(99,45,'옥수수',2,NULL,NULL),(100,46,'유럽민물가재',2,NULL,NULL),(101,46,'아무 생선',2,NULL,NULL),(102,47,'커피 원두',1,NULL,NULL),(103,47,'달걀',1,NULL,NULL),(104,47,'우유',1,NULL,NULL),(105,47,'치즈',1,NULL,NULL),(106,48,'아무 커피',1,NULL,NULL),(107,48,'씨푸드 피자',1,NULL,NULL),(108,48,'애플파이',1,NULL,NULL),(109,48,'피시 앤 칩스',1,NULL,NULL),(110,49,'티라미수',1,NULL,NULL),(111,49,'아무 잼재료',1,NULL,NULL),(112,50,'밀',1,NULL,NULL),(113,50,'상추',1,NULL,NULL),(114,50,'고기',1,NULL,NULL),(115,50,'케첩',1,NULL,NULL),(116,51,'아무 랍스터',3,NULL,NULL),(117,51,'상추',1,NULL,NULL),(118,52,'가지',1,NULL,NULL),(119,52,'고기',1,NULL,NULL),(120,52,'식용유',1,NULL,NULL),(121,52,'케첩',1,NULL,NULL),(122,53,'베지 샐러드',1,NULL,NULL),(123,53,'훈제 연어 베이글',1,NULL,NULL),(124,53,'씨푸드 덮밥',1,NULL,NULL),(125,53,'티라미수',1,NULL,NULL),(126,54,'아무 킹크랩',3,NULL,NULL),(127,54,'버터',1,NULL,NULL);
+/*!40000 ALTER TABLE `cooking_ingredients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `crop_collections`
+--
+
+LOCK TABLES `crop_collections` WRITE;
+/*!40000 ALTER TABLE `crop_collections` DISABLE KEYS */;
+INSERT INTO `crop_collections` VALUES (1,'토마토',NULL,30,40,50,60,90,1,'15 min',10,5,NULL),(2,'감자',NULL,90,120,150,180,270,1,'60 min',30,15,NULL),(3,'밀',NULL,285,381,475,570,855,2,'4 hours',95,47,NULL),(4,'상추',NULL,435,582,726,870,1305,3,'8 hours',145,72,NULL),(5,'파인애플',NULL,52,69,86,104,156,4,'30 min',15,7,NULL),(6,'당근',NULL,155,207,258,310,465,5,'2 hours',50,25,NULL),(7,'딸기',NULL,375,502,626,750,1125,6,'6 hours',125,NULL,NULL),(8,'옥수수',NULL,515,690,860,1030,1545,6,'12 hours',170,NULL,NULL),(9,'포도',NULL,480,643,801,960,1440,7,'10 hours',160,NULL,NULL),(10,'가지',NULL,406,544,678,812,1218,8,'7 hours',135,NULL,NULL),(11,'티트리',NULL,NULL,NULL,NULL,NULL,NULL,11,NULL,25,NULL,NULL),(12,'카카오 나무',NULL,NULL,NULL,NULL,NULL,NULL,12,NULL,110,NULL,NULL),(13,'아보카도',NULL,NULL,NULL,NULL,NULL,NULL,13,NULL,180,NULL,NULL);
+/*!40000 ALTER TABLE `crop_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `flower_collections`
+--
+
+LOCK TABLES `flower_collections` WRITE;
+/*!40000 ALTER TABLE `flower_collections` DISABLE KEYS */;
+INSERT INTO `flower_collections` VALUES (1,'데이지',NULL,100,150,200,400,800,3,'18 hours',30,15,NULL),(2,'팬지',NULL,100,150,200,400,800,4,'18 hours',30,15,NULL),(3,'안스리움',NULL,185,278,370,740,1480,5,'1 day',60,NULL,NULL),(4,'꽃양귀비',NULL,185,278,370,740,1480,5,'1 day',60,30,NULL),(5,'칼라',NULL,250,375,500,1000,2000,6,'1 day 6 hours',90,NULL,NULL),(6,'나팔꽃',NULL,250,375,500,1000,2000,6,'1 day 6 hours',90,NULL,NULL),(7,'카네이션',NULL,305,458,610,1220,2440,7,'1 day 6 hours',120,NULL,NULL),(8,'튤립',NULL,NULL,NULL,NULL,NULL,NULL,8,'2 days',150,NULL,NULL),(9,'백합',NULL,NULL,NULL,NULL,NULL,NULL,9,'2 days',200,NULL,NULL),(10,'장미',NULL,NULL,NULL,NULL,NULL,NULL,10,'3 days',300,NULL,NULL),(11,'히아신스',NULL,NULL,NULL,NULL,NULL,NULL,11,NULL,300,NULL,NULL),(12,'호접란',NULL,NULL,NULL,NULL,NULL,NULL,12,NULL,300,NULL,NULL),(13,'쥐손이풀',NULL,NULL,NULL,NULL,NULL,NULL,13,NULL,300,NULL,NULL);
+/*!40000 ALTER TABLE `flower_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `forageable_collections`
+--
+
+LOCK TABLES `forageable_collections` WRITE;
+/*!40000 ALTER TABLE `forageable_collections` DISABLE KEYS */;
+INSERT INTO `forageable_collections` VALUES (1,'송이버섯','숲',0,'+5',NULL),(2,'관목 가지','홈',5,NULL,'/images/collections/forage/관목 가지.png'),(3,'목재','홈',6,NULL,'/images/collections/forage/목재.png'),(4,'대나무','홈',7,NULL,'/images/collections/forage/대나무.png'),(5,'돌','홈',8,NULL,'/images/collections/forage/돌.png'),(6,'고급 목재','홈',12,NULL,'/images/collections/forage/고급 목재.png'),(7,'광석','홈',14,NULL,'/images/collections/forage/광석.png'),(8,'블루베리','홈',16,'+5','/images/collections/forage/블루베리.png'),(9,'표고버섯','어촌',16,'+5','/images/collections/forage/표고버섯.png'),(10,'이상한 표고버섯 (검정)','어촌',16,NULL,'/images/collections/forage/이상한 표고버섯(회색).png'),(11,'이상한 표고버섯 (빨강)','어촌',16,NULL,'/images/collections/forage/이상한 표고버섯(빨강).png'),(12,'이상한 표고버섯 (파랑)','어촌',16,NULL,'/images/collections/forage/이상한 표고버섯(하늘).png'),(13,'양송이버섯','꽃밭',16,'+5','/images/collections/forage/양송이버섯.png'),(14,'이상한 양송이버섯 (파랑)','꽃밭',16,NULL,'/images/collections/forage/이상한 양송이 버섯(파랑).png'),(15,'이상한 양송이버섯 (핑크)','꽃밭',16,NULL,'/images/collections/forage/이상한 양송이 버섯(핑크).png'),(16,'이상한 양송이버섯 (초록)','꽃밭',16,NULL,'/images/collections/forage/이상한 양송이 버섯(초록).png'),(17,'그물버섯','숲',16,'+5','/images/collections/forage/그물버섯.png'),(18,'이상한 그물버섯 (보라)','숲',16,NULL,'/images/collections/forage/이상한 그물버섯(파랑).png'),(19,'이상한 그물버섯 (빨강)','숲',16,NULL,'/images/collections/forage/이상한 그물버섯(빨강).png'),(20,'이상한 그물버섯 (핑크)','숲',16,NULL,'/images/collections/forage/이상한 그물버섯(핑크).png'),(21,'느타리버섯','온천산',16,'+5','/images/collections/forage/느타리버섯.png'),(22,'이상한 느타리버섯 (핑크)','온천산',16,NULL,'/images/collections/forage/이상한 느타리버섯(핑크).png'),(23,'이상한 느타리버섯 (보라)','온천산',16,NULL,'/images/collections/forage/이상한 느타리버섯(파랑).png'),(24,'이상한 느타리버섯 (주황)','온천산',16,NULL,'/images/collections/forage/이상한 느타리버섯(주황).png'),(25,'라즈베리','홈',26,'+7','/images/collections/forage/라즈베리.png'),(26,'사과','홈',28,'+8','/images/collections/forage/사과.png'),(27,'귤 (오렌지)','홈',28,'+8','/images/collections/forage/오렌지.png'),(28,'희귀 목재','도시 근교',50,NULL,'/images/collections/forage/희귀 목재.png'),(29,'검은 트러플','숲',99,'+25','/images/collections/forage/검은 트러플.png'),(30,'그 자리 참나무','방랑하는 오크오크',150,NULL,NULL),(31,'완벽한 형광석','형석 광산',150,NULL,NULL),(32,'별똥별 조각','운석우',150,NULL,NULL);
+/*!40000 ALTER TABLE `forageable_collections` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-18  3:45:40
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+--
+-- Host: localhost    Database: heartopia_db
+-- ------------------------------------------------------
+-- Server version	8.0.41
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `map_pins`
+--
+
+LOCK TABLES `map_pins` WRITE;
+/*!40000 ALTER TABLE `map_pins` DISABLE KEYS */;
+INSERT INTO `map_pins` VALUES (24,'villager','앤드류','/images/npc/NPC_icon_앤드류.png',1178,794,'/wiki/others/villagers','공방 & 제작 멘토'),(25,'villager','에릭','/images/npc/NPC_icon_에릭.png',877,274,'/wiki/others/villagers','시청 직원'),(26,'villager','도로시','/images/npc/NPC_icon_도로시.png',975,939,'/wiki/others/villagers','패션 상점'),(27,'villager','카칭','/images/npc/NPC_icon_카칭.png',841,820,'/wiki/others/villagers','잡화점'),(28,'villager','수집가','/images/npc/NPC_icon_수집가.png',753,951,'/wiki/others/villagers','박물관'),(30,'villager','조안 여사','/images/npc/NPC_icon_조안_여사.png',1050,992,'/wiki/others/villagers','펫 멘토'),(31,'villager','베일리','/images/npc/NPC_icon_베일리.png',1055,1002,'/wiki/others/villagers','새 관찰 멘토'),(33,'villager','알버트 2세','/images/npc/NPC_icon_알버트_2세.png',676,920,'/wiki/others/villagers','골드 상인'),(34,'villager','밥 아저씨','/images/npc/NPC_icon_밥_아저씨.png',1001,941,'/wiki/others/villagers','인테리어 상인'),(38,'villager','패티','/images/npc/NPC_icon_패티.png',1611,715,'/wiki/others/villagers','순록탑 주변'),(39,'villager','버니','/images/npc/NPC_icon_버니.png',453,1303,'/wiki/others/villagers','풍차 꽃밭'),(40,'villager','윌','/images/npc/NPC_icon_윌.png',830,1611,'/wiki/others/villagers','마을'),(41,'villager','장난꾸러기','/images/npc/NPC_icon_장난꾸러기.png',3600,2600,'/wiki/others/villagers','마을 골목'),(42,'villager','해리','/images/npc/NPC_icon_해리.png',3700,2700,'/wiki/others/villagers','마을'),(43,'villager','빌','/images/npc/NPC_icon_빌.png',896,1458,'/wiki/others/villagers','부두 이벤트 NPC'),(46,'animal','토끼','/images/collections/animals/wild_animal_토끼.png',1500,5000,'/wiki/collections/animal','좋아하는 날씨: 맑음'),(66,'bus','마을 서쪽 교외','/images/map/bus_icon.png',683,1061,NULL,'정류장 위치 정보 준비 중'),(67,'bus','꽃밭','/images/map/bus_icon.png',431,1061,NULL,'정류장 위치 정보 준비 중'),(68,'bus','어촌','/images/map/bus_icon.png',959,1307,NULL,'정류장 위치 정보 준비 중'),(69,'bus','주앙 광장','/images/map/bus_icon.png',965,993,NULL,'정류장 위치 정보 준비 중'),(70,'bus','마을 동쪽 교외','/images/map/bus_icon.png',1276,1033,NULL,'정류장 위치 정보 준비 중'),(71,'bus','마을 북쪽 교외','/images/map/bus_icon.png',959,742,NULL,'정류장 위치 정보 준비 중'),(72,'bus','온천산','/images/map/bus_icon.png',1023,445,NULL,'정류장 위치 정보 준비 중'),(73,'bus','숲','/images/map/bus_icon.png',1597,996,NULL,'정류장 위치 정보 준비 중'),(74,'animal','알파카','/images/collections/animals/wild_animal_알파카.png',549,1400,'/wiki/collections/animal','좋아하는 날씨: 맑음'),(75,'animal','여우','/images/collections/animals/wild_animal_여우.png',381,1146,'/wiki/collections/animal','좋아하는 날씨: 무지개'),(77,'animal','해달','/images/collections/animals/wild_animal_해달.png',1024,1441,'/wiki/collections/animal','좋아하는 날씨: 비'),(78,'animal','판다','/images/collections/animals/wild_animal_판다.png',1521,1363,'/wiki/collections/animal','좋아하는 날씨: 비'),(79,'animal','꽃사슴','/images/collections/animals/wild_animal_꽃사슴.png',1587,1057,'/wiki/collections/animal','좋아하는 날씨: 맑음'),(80,'animal','카피바라','/images/collections/animals/wild_animal_카피바라.png',578,367,'/wiki/collections/animal','좋아하는 날씨: 비'),(81,'animal','담비','/images/collections/animals/wild_animal_담비.png',527,754,'/wiki/collections/animal','좋아하는 날씨: 무지개'),(82,'forageable','라즈베리','/images/collections/forage/라즈베리.png',699,1346,NULL,NULL),(83,'forageable','라즈베리','/images/collections/forage/라즈베리.png',661,1362,NULL,NULL),(84,'forageable','라즈베리','/images/collections/forage/라즈베리.png',533,1335,NULL,NULL),(85,'forageable','라즈베리','/images/collections/forage/라즈베리.png',578,1294,NULL,NULL),(86,'forageable','라즈베리','/images/collections/forage/라즈베리.png',642,1221,NULL,NULL),(87,'forageable','라즈베리','/images/collections/forage/라즈베리.png',542,1204,NULL,NULL),(88,'forageable','라즈베리','/images/collections/forage/라즈베리.png',424,1230,NULL,NULL),(89,'forageable','라즈베리','/images/collections/forage/라즈베리.png',507,1126,NULL,NULL),(90,'forageable','라즈베리','/images/collections/forage/라즈베리.png',414,1078,NULL,NULL),(91,'forageable','라즈베리','/images/collections/forage/라즈베리.png',500,1052,NULL,NULL),(92,'forageable','라즈베리','/images/collections/forage/라즈베리.png',587,1067,NULL,NULL),(94,'forageable','라즈베리','/images/collections/forage/라즈베리.png',490,1002,NULL,NULL),(95,'forageable','라즈베리','/images/collections/forage/라즈베리.png',442,986,NULL,NULL),(96,'forageable','라즈베리','/images/collections/forage/라즈베리.png',447,912,NULL,NULL),(97,'forageable','라즈베리','/images/collections/forage/라즈베리.png',490,884,NULL,NULL),(98,'forageable','라즈베리','/images/collections/forage/라즈베리.png',499,795,NULL,NULL),(99,'forageable','라즈베리','/images/collections/forage/라즈베리.png',543,775,NULL,NULL),(100,'forageable','블루베리','/images/collections/forage/블루베리.png',743,1280,NULL,NULL),(101,'forageable','블루베리','/images/collections/forage/블루베리.png',738,1259,NULL,NULL),(102,'forageable','블루베리','/images/collections/forage/블루베리.png',730,1251,NULL,NULL),(103,'forageable','블루베리','/images/collections/forage/블루베리.png',698,1210,NULL,NULL),(104,'forageable','블루베리','/images/collections/forage/블루베리.png',679,1204,NULL,NULL),(105,'forageable','블루베리','/images/collections/forage/블루베리.png',668,1182,NULL,NULL),(106,'forageable','블루베리','/images/collections/forage/블루베리.png',665,1154,NULL,NULL),(107,'forageable','블루베리','/images/collections/forage/블루베리.png',659,1122,NULL,NULL),(108,'forageable','블루베리','/images/collections/forage/블루베리.png',650,1084,NULL,NULL),(109,'forageable','블루베리','/images/collections/forage/블루베리.png',640,1033,NULL,NULL),(110,'forageable','블루베리','/images/collections/forage/블루베리.png',642,999,NULL,NULL),(111,'forageable','블루베리','/images/collections/forage/블루베리.png',661,959,NULL,NULL),(112,'forageable','블루베리','/images/collections/forage/블루베리.png',639,934,NULL,NULL),(113,'forageable','블루베리','/images/collections/forage/블루베리.png',627,869,NULL,NULL),(114,'forageable','블루베리','/images/collections/forage/블루베리.png',623,812,NULL,NULL),(115,'forageable','블루베리','/images/collections/forage/블루베리.png',624,793,NULL,NULL),(116,'forageable','블루베리','/images/collections/forage/블루베리.png',608,757,NULL,NULL),(117,'forageable','블루베리','/images/collections/forage/블루베리.png',681,625,NULL,NULL),(118,'forageable','블루베리','/images/collections/forage/블루베리.png',707,656,NULL,NULL),(119,'forageable','블루베리','/images/collections/forage/블루베리.png',748,658,NULL,NULL),(120,'forageable','블루베리','/images/collections/forage/블루베리.png',783,647,NULL,NULL),(122,'forageable','블루베리','/images/collections/forage/블루베리.png',825,640,NULL,NULL),(123,'forageable','블루베리','/images/collections/forage/블루베리.png',843,660,NULL,NULL),(124,'forageable','블루베리','/images/collections/forage/블루베리.png',897,668,NULL,NULL),(125,'forageable','블루베리','/images/collections/forage/블루베리.png',940,682,NULL,NULL),(126,'forageable','블루베리','/images/collections/forage/블루베리.png',966,598,NULL,NULL),(127,'forageable','블루베리','/images/collections/forage/블루베리.png',981,702,NULL,NULL),(128,'forageable','블루베리','/images/collections/forage/블루베리.png',1000,720,NULL,NULL),(129,'forageable','블루베리','/images/collections/forage/블루베리.png',1056,727,NULL,NULL),(130,'forageable','블루베리','/images/collections/forage/블루베리.png',1090,715,NULL,NULL),(131,'forageable','블루베리','/images/collections/forage/블루베리.png',1115,631,NULL,NULL),(132,'forageable','블루베리','/images/collections/forage/블루베리.png',1134,704,NULL,NULL),(133,'forageable','블루베리','/images/collections/forage/블루베리.png',1160,729,NULL,NULL),(134,'forageable','블루베리','/images/collections/forage/블루베리.png',1220,732,NULL,NULL),(135,'forageable','블루베리','/images/collections/forage/블루베리.png',1257,724,NULL,NULL),(136,'forageable','블루베리','/images/collections/forage/블루베리.png',1267,685,NULL,NULL),(137,'forageable','블루베리','/images/collections/forage/블루베리.png',1310,774,NULL,NULL),(138,'forageable','블루베리','/images/collections/forage/블루베리.png',1306,805,NULL,NULL),(139,'forageable','블루베리','/images/collections/forage/블루베리.png',1309,844,NULL,NULL),(140,'forageable','블루베리','/images/collections/forage/블루베리.png',1342,886,NULL,NULL),(141,'forageable','블루베리','/images/collections/forage/블루베리.png',1309,921,NULL,NULL),(142,'forageable','블루베리','/images/collections/forage/블루베리.png',1309,955,NULL,NULL),(143,'forageable','블루베리','/images/collections/forage/블루베리.png',1313,987,NULL,NULL),(144,'forageable','블루베리','/images/collections/forage/블루베리.png',1345,1013,NULL,NULL),(146,'forageable','블루베리','/images/collections/forage/블루베리.png',1298,1078,NULL,NULL),(147,'forageable','블루베리','/images/collections/forage/블루베리.png',1291,1126,NULL,NULL),(148,'forageable','블루베리','/images/collections/forage/블루베리.png',1303,1151,NULL,NULL),(150,'forageable','블루베리','/images/collections/forage/블루베리.png',1261,1222,NULL,NULL),(153,'forageable','블루베리','/images/collections/forage/블루베리.png',1299,1195,NULL,NULL),(154,'forageable','블루베리','/images/collections/forage/블루베리.png',1272,1200,NULL,NULL),(155,'forageable','블루베리','/images/collections/forage/블루베리.png',1248,1293,NULL,NULL),(156,'forageable','블루베리','/images/collections/forage/블루베리.png',1288,1336,NULL,NULL),(157,'forageable','블루베리','/images/collections/forage/블루베리.png',1354,1350,NULL,NULL),(158,'forageable','블루베리','/images/collections/forage/블루베리.png',1418,1269,NULL,NULL),(159,'forageable','블루베리','/images/collections/forage/블루베리.png',1363,1205,NULL,NULL),(160,'forageable','블루베리','/images/collections/forage/블루베리.png',1406,1200,NULL,NULL),(161,'forageable','블루베리','/images/collections/forage/블루베리.png',1370,1041,NULL,NULL),(162,'forageable','블루베리','/images/collections/forage/블루베리.png',1405,1030,NULL,NULL),(163,'forageable','블루베리','/images/collections/forage/블루베리.png',1454,982,NULL,NULL),(164,'forageable','블루베리','/images/collections/forage/블루베리.png',1447,936,NULL,NULL),(165,'forageable','블루베리','/images/collections/forage/블루베리.png',1404,883,NULL,NULL),(166,'forageable','블루베리','/images/collections/forage/블루베리.png',1456,820,NULL,NULL),(167,'forageable','블루베리','/images/collections/forage/블루베리.png',1424,763,NULL,NULL),(168,'forageable','블루베리','/images/collections/forage/블루베리.png',1397,754,NULL,NULL),(169,'forageable','블루베리','/images/collections/forage/블루베리.png',1256,612,NULL,NULL),(170,'forageable','블루베리','/images/collections/forage/블루베리.png',1154,589,NULL,NULL),(171,'forageable','블루베리','/images/collections/forage/블루베리.png',1095,584,NULL,NULL),(172,'forageable','블루베리','/images/collections/forage/블루베리.png',1044,578,NULL,NULL),(173,'forageable','블루베리','/images/collections/forage/블루베리.png',944,552,NULL,NULL),(174,'forageable','블루베리','/images/collections/forage/블루베리.png',886,521,NULL,NULL),(175,'forageable','블루베리','/images/collections/forage/블루베리.png',746,512,NULL,NULL),(176,'forageable','블루베리','/images/collections/forage/블루베리.png',772,517,NULL,NULL),(177,'forageable','블루베리','/images/collections/forage/블루베리.png',806,585,NULL,NULL),(178,'forageable','블루베리','/images/collections/forage/블루베리.png',674,566,NULL,NULL),(184,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1915,688,NULL,NULL),(185,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1920,727,NULL,NULL),(186,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1838,715,NULL,NULL),(187,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1805,728,NULL,NULL),(188,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1792,705,NULL,NULL),(189,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1832,691,NULL,NULL),(190,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1867,663,NULL,NULL),(191,'forageable','검은 트러플','/images/collections/forage/검은 트러플.png',1908,649,NULL,NULL),(194,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',754,1255,NULL,NULL),(195,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',817,1230,NULL,NULL),(196,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',1198,1237,NULL,NULL),(197,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',1240,1319,NULL,NULL),(199,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',1192,786,NULL,NULL),(200,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',717,835,NULL,NULL),(201,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',676,703,NULL,NULL),(202,'forageable','희귀 목재','/images/collections/forage/희귀 목재.png',1247,752,NULL,NULL),(204,'forageable','돌','/images/collections/forage/돌.png',727,1253,NULL,NULL),(205,'forageable','돌','/images/collections/forage/돌.png',687,1202,NULL,NULL),(206,'forageable','돌','/images/collections/forage/돌.png',574,1293,NULL,NULL),(207,'forageable','돌','/images/collections/forage/돌.png',669,1141,NULL,NULL),(209,'forageable','돌','/images/collections/forage/돌.png',514,1159,NULL,NULL),(210,'forageable','돌','/images/collections/forage/돌.png',641,1045,NULL,NULL),(211,'forageable','돌','/images/collections/forage/돌.png',650,1002,NULL,NULL),(212,'forageable','돌','/images/collections/forage/돌.png',494,995,NULL,NULL),(213,'forageable','돌','/images/collections/forage/돌.png',632,888,NULL,NULL),(214,'forageable','돌','/images/collections/forage/돌.png',500,855,NULL,NULL),(215,'forageable','돌','/images/collections/forage/돌.png',620,803,NULL,NULL),(216,'forageable','돌','/images/collections/forage/돌.png',1257,1246,NULL,NULL),(217,'forageable','돌','/images/collections/forage/돌.png',1405,1315,NULL,NULL),(219,'forageable','돌','/images/collections/forage/돌.png',1455,1103,NULL,NULL),(220,'forageable','돌','/images/collections/forage/돌.png',1300,1117,NULL,NULL),(221,'forageable','돌','/images/collections/forage/돌.png',1306,1060,NULL,NULL),(222,'forageable','돌','/images/collections/forage/돌.png',1312,973,NULL,NULL),(223,'forageable','돌','/images/collections/forage/돌.png',1449,953,NULL,NULL),(224,'forageable','돌','/images/collections/forage/돌.png',1313,920,NULL,NULL),(225,'forageable','돌','/images/collections/forage/돌.png',1316,866,NULL,NULL),(226,'forageable','돌','/images/collections/forage/돌.png',1450,816,NULL,NULL),(227,'forageable','돌','/images/collections/forage/돌.png',1313,785,NULL,NULL),(228,'forageable','돌','/images/collections/forage/돌.png',726,659,NULL,NULL),(229,'forageable','돌','/images/collections/forage/돌.png',780,651,NULL,NULL),(230,'forageable','돌','/images/collections/forage/돌.png',870,658,NULL,NULL),(231,'forageable','돌','/images/collections/forage/돌.png',933,663,NULL,NULL),(232,'forageable','돌','/images/collections/forage/돌.png',984,675,NULL,NULL),(233,'forageable','돌','/images/collections/forage/돌.png',1072,714,NULL,NULL),(234,'forageable','돌','/images/collections/forage/돌.png',1072,581,NULL,NULL),(235,'forageable','돌','/images/collections/forage/돌.png',691,531,NULL,NULL),(236,'forageable','돌','/images/collections/forage/돌.png',871,522,NULL,NULL),(237,'forageable','돌','/images/collections/forage/돌.png',1173,731,NULL,NULL),(238,'forageable','돌','/images/collections/forage/돌.png',1223,593,NULL,NULL),(239,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',733,447,NULL,NULL),(240,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',708,407,NULL,NULL),(241,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',643,410,NULL,NULL),(242,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',617,394,NULL,NULL),(243,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',592,374,NULL,NULL),(244,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',596,322,NULL,NULL),(245,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',605,292,NULL,NULL),(246,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',683,277,NULL,NULL),(247,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',782,347,NULL,NULL),(248,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',809,357,NULL,NULL),(249,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',850,343,NULL,NULL),(250,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',857,387,NULL,NULL),(251,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',847,431,NULL,NULL),(252,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',954,405,NULL,NULL),(253,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1000,479,NULL,NULL),(254,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1025,459,NULL,NULL),(255,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1033,413,NULL,NULL),(256,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1053,381,NULL,NULL),(257,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',938,221,NULL,NULL),(258,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',966,282,NULL,NULL),(259,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1018,328,NULL,NULL),(260,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1069,341,NULL,NULL),(261,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1087,376,NULL,NULL),(262,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1110,380,NULL,NULL),(263,'forageable','느타리버섯','/images/collections/forage/느타리버섯.png',1225,415,NULL,NULL),(264,'forageable','표고버섯','/images/collections/forage/표고버섯.png',802,1577,NULL,NULL),(265,'forageable','표고버섯','/images/collections/forage/표고버섯.png',828,1564,NULL,NULL),(266,'forageable','표고버섯','/images/collections/forage/표고버섯.png',822,1539,NULL,NULL),(267,'forageable','표고버섯','/images/collections/forage/표고버섯.png',806,1509,NULL,NULL),(268,'forageable','표고버섯','/images/collections/forage/표고버섯.png',830,1480,NULL,NULL),(269,'forageable','표고버섯','/images/collections/forage/표고버섯.png',869,1433,NULL,NULL),(270,'forageable','표고버섯','/images/collections/forage/표고버섯.png',832,1412,NULL,NULL),(271,'forageable','표고버섯','/images/collections/forage/표고버섯.png',784,1422,NULL,NULL),(272,'forageable','표고버섯','/images/collections/forage/표고버섯.png',954,1391,NULL,NULL),(273,'forageable','표고버섯','/images/collections/forage/표고버섯.png',990,1389,NULL,NULL),(274,'forageable','표고버섯','/images/collections/forage/표고버섯.png',984,1365,NULL,NULL),(275,'forageable','표고버섯','/images/collections/forage/표고버섯.png',938,1319,NULL,NULL),(276,'forageable','표고버섯','/images/collections/forage/표고버섯.png',916,1297,NULL,NULL),(277,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1003,1298,NULL,NULL),(278,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1048,1418,NULL,NULL),(279,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1078,1414,NULL,NULL),(280,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1080,1436,NULL,NULL),(281,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1105,1437,NULL,NULL),(282,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1168,1400,NULL,NULL),(283,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1190,1419,NULL,NULL),(284,'forageable','표고버섯','/images/collections/forage/표고버섯.png',1248,1390,NULL,NULL),(285,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',356,1367,NULL,NULL),(286,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',384,1381,NULL,NULL),(287,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',420,1395,NULL,NULL),(288,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',478,1399,NULL,NULL),(289,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',502,1424,NULL,NULL),(290,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',522,1381,NULL,NULL),(291,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',574,1400,NULL,NULL),(292,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',549,1346,NULL,NULL),(293,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',516,1337,NULL,NULL),(294,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',499,1285,NULL,NULL),(295,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',490,1259,NULL,NULL),(296,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',453,1198,NULL,NULL),(297,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',490,1192,NULL,NULL),(298,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',486,1104,NULL,NULL),(299,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',445,1040,NULL,NULL),(300,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',297,1015,NULL,NULL),(301,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',363,1015,NULL,NULL),(302,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',382,995,NULL,NULL),(303,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',334,925,NULL,NULL),(304,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',454,899,NULL,NULL),(305,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',473,848,NULL,NULL),(306,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',395,816,NULL,NULL),(307,'forageable','양송이버섯','/images/collections/forage/양송이버섯.png',362,815,NULL,NULL),(309,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1563,811,NULL,NULL),(318,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1636,966,NULL,NULL),(320,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1536,1055,NULL,NULL),(321,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1623,1055,NULL,NULL),(322,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1561,1084,NULL,NULL),(325,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1546,1247,NULL,NULL),(326,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1577,1243,NULL,NULL),(333,'forageable','광석','/images/collections/forage/광석.png',629,1232,NULL,NULL),(334,'forageable','광석','/images/collections/forage/광석.png',565,1284,NULL,NULL),(335,'forageable','광석','/images/collections/forage/광석.png',578,1060,NULL,NULL),(336,'forageable','광석','/images/collections/forage/광석.png',509,1114,NULL,NULL),(337,'forageable','광석','/images/collections/forage/광석.png',475,1000,NULL,NULL),(338,'forageable','광석','/images/collections/forage/광석.png',581,929,NULL,NULL),(339,'forageable','광석','/images/collections/forage/광석.png',480,781,NULL,NULL),(341,'forageable','광석','/images/collections/forage/광석.png',730,512,NULL,NULL),(342,'forageable','광석','/images/collections/forage/광석.png',803,572,NULL,NULL),(343,'forageable','광석','/images/collections/forage/광석.png',939,529,NULL,NULL),(344,'forageable','광석','/images/collections/forage/광석.png',957,612,NULL,NULL),(345,'forageable','광석','/images/collections/forage/광석.png',1082,576,NULL,NULL),(346,'forageable','광석','/images/collections/forage/광석.png',1147,625,NULL,NULL),(347,'forageable','광석','/images/collections/forage/광석.png',1245,595,NULL,NULL),(348,'forageable','광석','/images/collections/forage/광석.png',1448,755,NULL,NULL),(349,'forageable','광석','/images/collections/forage/광석.png',1382,882,NULL,NULL),(350,'forageable','광석','/images/collections/forage/광석.png',1461,939,NULL,NULL),(351,'forageable','광석','/images/collections/forage/광석.png',1419,1034,NULL,NULL),(352,'forageable','광석','/images/collections/forage/광석.png',1458,1149,NULL,NULL),(353,'forageable','광석','/images/collections/forage/광석.png',1354,1216,NULL,NULL),(354,'forageable','광석','/images/collections/forage/광석.png',1369,1355,NULL,NULL),(355,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1565,1296,NULL,NULL),(357,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1566,1223,NULL,NULL),(358,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1593,1223,NULL,NULL),(359,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1531,1214,NULL,NULL),(360,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1607,944,NULL,NULL),(361,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1570,959,NULL,NULL),(362,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1558,935,NULL,NULL),(363,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1581,877,NULL,NULL),(366,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1603,842,NULL,NULL),(367,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1590,794,NULL,NULL),(368,'forageable','그물버섯','/images/collections/forage/그물버섯.png',1634,1130,NULL,NULL),(369,'forageable','대나무','/images/collections/forage/대나무.png',1573,1258,NULL,NULL),(370,'forageable','대나무','/images/collections/forage/대나무.png',1599,1254,NULL,NULL),(371,'forageable','대나무','/images/collections/forage/대나무.png',1600,1268,NULL,NULL),(372,'forageable','대나무','/images/collections/forage/대나무.png',1597,1280,NULL,NULL),(373,'forageable','대나무','/images/collections/forage/대나무.png',1580,1278,NULL,NULL),(374,'forageable','대나무','/images/collections/forage/대나무.png',1558,1268,NULL,NULL),(375,'forageable','대나무','/images/collections/forage/대나무.png',1557,1280,NULL,NULL),(376,'forageable','대나무','/images/collections/forage/대나무.png',1548,1294,NULL,NULL),(377,'forageable','대나무','/images/collections/forage/대나무.png',1550,1308,NULL,NULL),(378,'forageable','대나무','/images/collections/forage/대나무.png',1578,1322,NULL,NULL),(379,'forageable','대나무','/images/collections/forage/대나무.png',1565,1330,NULL,NULL),(380,'forageable','대나무','/images/collections/forage/대나무.png',1554,1336,NULL,NULL),(381,'forageable','대나무','/images/collections/forage/대나무.png',1529,1350,NULL,NULL),(382,'forageable','대나무','/images/collections/forage/대나무.png',1529,1331,NULL,NULL),(383,'forageable','대나무','/images/collections/forage/대나무.png',1507,1330,NULL,NULL),(384,'forageable','대나무','/images/collections/forage/대나무.png',1511,1315,NULL,NULL),(385,'forageable','대나무','/images/collections/forage/대나무.png',1523,1312,NULL,NULL),(386,'forageable','대나무','/images/collections/forage/대나무.png',1500,1309,NULL,NULL),(387,'forageable','대나무','/images/collections/forage/대나무.png',1489,1310,NULL,NULL),(388,'forageable','대나무','/images/collections/forage/대나무.png',1475,1299,NULL,NULL),(389,'forageable','대나무','/images/collections/forage/대나무.png',1464,1302,NULL,NULL),(390,'forageable','대나무','/images/collections/forage/대나무.png',1455,1299,NULL,NULL),(391,'forageable','대나무','/images/collections/forage/대나무.png',1463,1319,NULL,NULL),(392,'forageable','대나무','/images/collections/forage/대나무.png',1462,1336,NULL,NULL),(393,'forageable','대나무','/images/collections/forage/대나무.png',1460,1351,NULL,NULL),(394,'forageable','대나무','/images/collections/forage/대나무.png',1474,1351,NULL,NULL),(395,'forageable','대나무','/images/collections/forage/대나무.png',1460,1370,NULL,NULL),(396,'forageable','대나무','/images/collections/forage/대나무.png',1489,1376,NULL,NULL),(397,'forageable','대나무','/images/collections/forage/대나무.png',1507,1365,NULL,NULL),(398,'forageable','대나무','/images/collections/forage/대나무.png',1549,1351,NULL,NULL),(399,'forageable','사과','/images/collections/forage/사과.png',1396,1296,NULL,NULL),(400,'forageable','사과','/images/collections/forage/사과.png',1250,1298,NULL,NULL),(401,'forageable','사과','/images/collections/forage/사과.png',1241,1234,NULL,NULL),(402,'forageable','사과','/images/collections/forage/사과.png',1284,1198,NULL,NULL),(403,'forageable','사과','/images/collections/forage/사과.png',1359,1178,NULL,NULL),(404,'forageable','사과','/images/collections/forage/사과.png',1298,1140,NULL,NULL),(405,'forageable','사과','/images/collections/forage/사과.png',1423,1144,NULL,NULL),(406,'forageable','사과','/images/collections/forage/사과.png',1296,1070,NULL,NULL),(407,'forageable','사과','/images/collections/forage/사과.png',1363,1044,NULL,NULL),(408,'forageable','사과','/images/collections/forage/사과.png',1347,1011,NULL,NULL),(409,'forageable','사과','/images/collections/forage/사과.png',1302,990,NULL,NULL),(410,'forageable','사과','/images/collections/forage/사과.png',1454,949,NULL,NULL),(411,'forageable','사과','/images/collections/forage/사과.png',1309,921,NULL,NULL),(412,'forageable','사과','/images/collections/forage/사과.png',1322,873,NULL,NULL),(413,'forageable','사과','/images/collections/forage/사과.png',1389,882,NULL,NULL),(414,'forageable','사과','/images/collections/forage/사과.png',1314,815,NULL,NULL),(415,'forageable','사과','/images/collections/forage/사과.png',1321,766,NULL,NULL),(416,'forageable','사과','/images/collections/forage/사과.png',1447,797,NULL,NULL),(417,'forageable','사과','/images/collections/forage/사과.png',1255,721,NULL,NULL),(418,'forageable','사과','/images/collections/forage/사과.png',1227,738,NULL,NULL),(419,'forageable','사과','/images/collections/forage/사과.png',1156,722,NULL,NULL),(420,'forageable','사과','/images/collections/forage/사과.png',1115,733,NULL,NULL),(421,'forageable','사과','/images/collections/forage/사과.png',1131,669,NULL,NULL),(422,'forageable','사과','/images/collections/forage/사과.png',1212,594,NULL,NULL),(423,'forageable','사과','/images/collections/forage/사과.png',1057,577,NULL,NULL),(424,'forageable','사과','/images/collections/forage/사과.png',1046,709,NULL,NULL),(425,'forageable','사과','/images/collections/forage/사과.png',969,695,NULL,NULL),(426,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',605,1315,NULL,NULL),(427,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',743,1298,NULL,NULL),(428,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',731,1268,NULL,NULL),(429,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',688,1208,NULL,NULL),(430,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',677,1173,NULL,NULL),(431,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',578,1209,NULL,NULL),(433,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',521,1207,NULL,NULL),(434,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',660,1087,NULL,NULL),(435,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',645,1062,NULL,NULL),(436,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',648,1023,NULL,NULL),(437,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',670,1010,NULL,NULL),(438,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',647,940,NULL,NULL),(439,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',498,973,NULL,NULL),(440,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',561,917,NULL,NULL),(441,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',481,888,NULL,NULL),(442,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',646,889,NULL,NULL),(443,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',626,793,NULL,NULL),(444,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',636,760,NULL,NULL),(445,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',643,625,NULL,NULL),(446,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',734,655,NULL,NULL),(447,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',775,657,NULL,NULL),(448,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',810,659,NULL,NULL),(449,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',857,662,NULL,NULL),(450,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',824,591,NULL,NULL),(451,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',771,514,NULL,NULL),(452,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',935,532,NULL,NULL),(453,'forageable','귤 (오렌지)','/images/collections/forage/오렌지.png',917,677,NULL,NULL),(454,'bus','겨울 놀이공원','/images/map/bus_icon.png',922,337,NULL,'겨울 놀이공원 정류장'),(455,'villager','바냐','/images/npc/vanya.png',1100,906,'/wiki/others/villagers','낚시 멘토'),(456,'villager','나니와','/images/npc/NPC_icon_나니와.png',1175,986,'/wiki/others/villagers','곤충 채집 멘토'),(457,'villager','블랑코','/images/npc/NPC_icon_블랑코.png',1127,1077,'/wiki/others/villagers','원예 멘토 & 상점 주인'),(458,'villager','아타라','/images/npc/NPC_icon_아타라.png',1024,1023,'/wiki/others/villagers','퀘스트 매니저'),(459,'villager','애니','/images/npc/NPC_icon_애니.png',990,999,'/wiki/others/villagers','프렌즈 상점 주인'),(460,'villager','애쥬어','/images/npc/NPC_icon_애쥬어.png',933,969,'/wiki/others/villagers','트렌드 상인'),(461,'villager','마시모','/images/npc/NPC_icon_마시모.png',988,881,'/wiki/others/villagers','요리 멘토');
+/*!40000 ALTER TABLE `map_pins` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `location_zones`
+--
+
+LOCK TABLES `location_zones` WRITE;
+/*!40000 ALTER TABLE `location_zones` DISABLE KEYS */;
+INSERT INTO `location_zones` VALUES (1,'강','강 전체',NULL,'#60a5fa',NULL),(2,'거목강','거목 강',NULL,'#3b82f6','강'),(3,'고요한강','고요한 강',NULL,'#3b82f6','강'),(4,'노을강','노을 강',NULL,'#3b82f6','강'),(5,'얕은강','얕은 강',NULL,'#3b82f6','강'),(6,'바다','바다 전체',NULL,'#0ea5e9',NULL),(7,'고래바다','고래바다',NULL,'#0284c7','바다'),(8,'구해','구해',NULL,'#0284c7','바다'),(9,'동해','동해',NULL,'#0284c7','바다'),(10,'잔잔한바다','잔잔한 바다',NULL,'0284c7','바다'),(11,'호수','호수 전체',NULL,'#38bdf8',NULL),(12,'근교호수','근교 호수',NULL,'#0ea5e9','호수'),(13,'숲속호수','숲속 호수',NULL,'#0ea5e9','호수'),(14,'온천산호수','온천산 호수',NULL,'0ea5e9','호수'),(15,'초원호수','초원 호수',NULL,'#0ea5e9','호수'),(16,'근교도시호수','도시 근교 호수',NULL,'#0ea5e9','호수'),(17,'숲','숲 전체',NULL,'#4ade80',NULL),(18,'영혼참나무','영혼의 참나무 숲',NULL,'#16a34a','숲'),(19,'순록탑','순록탑',NULL,'#16a34a','숲'),(20,'숲속섬','숲속 섬',NULL,'#16a34a','숲'),(21,'점핑플랫폼','점핑 플랫폼',NULL,'#16a34a','숲'),(22,'숲호숫가','숲 호숫가',NULL,'#16a34a','숲'),(23,'꽃밭','꽃밭 전체',NULL,'#f472b6',NULL),(24,'고래산꽃밭','고래산 꽃밭',NULL,'#ec4899','꽃밭'),(25,'보라빛해변','보라빛 해변',NULL,'#ec4899','꽃밭'),(26,'풍차꽃밭','풍차꽃밭',NULL,'#ec4899','꽃밭'),(27,'어촌','어촌 전체',NULL,'#fb923c',NULL),(28,'어촌부두','부두',NULL,'#ea580c','어촌'),(29,'동쪽부두','동쪽 부두',NULL,'#ea580c','어촌'),(30,'어촌등대','등대',NULL,'#ea580c','어촌'),(31,'어촌광장','어촌 광장',NULL,'#ea580c','어촌'),(32,'온천산','온천산 전체',NULL,'#fb7185',NULL),(33,'온천','온천',NULL,'#f43f5e','온천산'),(34,'바위절벽','바위절벽',NULL,'#f43f5e','온천산'),(35,'온천산유적','유적',NULL,'#f43f5e','온천산'),(36,'화산호수','화산 호수',NULL,'#f43f5e','온천산'),(37,'온천산호숫가','온천산 호숫가',NULL,'#f43f5e','온천산'),(38,'도시','도시 전체',NULL,'#a78bfa',NULL),(39,'도시근교','도시 근교',NULL,'#7c3aed','도시'),(40,'도심','도심',NULL,'#7c3aed','도시'),(41,'해변','해변',NULL,'#fbbf24',NULL),(42,'물가','물가',NULL,'#34d399',NULL),(43,'강변','강변',NULL,'#60a5fa','강');
+/*!40000 ALTER TABLE `location_zones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `wiki_reports`
+--
+
+LOCK TABLES `wiki_reports` WRITE;
+/*!40000 ALTER TABLE `wiki_reports` DISABLE KEYS */;
+INSERT INTO `wiki_reports` VALUES (1,'CONTRIBUTION','aaa','kazan098@naver.com','이거 무거ㅔddd','/wiki/collections/fish/%EB%AF%BC%EB%AC%BC%EB%B0%B0%EC%8A%A4','민물배스','2026-03-10 12:52:31');
+/*!40000 ALTER TABLE `wiki_reports` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `gift_code`
+--
+
+LOCK TABLES `gift_code` WRITE;
+/*!40000 ALTER TABLE `gift_code` DISABLE KEYS */;
+INSERT INTO `gift_code` VALUES (26,'r4p8n6m2q9','10x 소원별, 3x 인어 집어기, 10x 비료','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(27,'heartopia10m','10x 소원별','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(28,'lifewithline','10x 소원별','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(29,'happy2026','10x 달빛 크리스탈, 8888 골드','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(30,'k7m9q2a8l5','5x 소원별, 3x 인어 집어기, 10x 비료','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(31,'heartopia5m','10x 소원별','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(32,'top1thanks','5x 소원별, 2x 인어향수, 10x 오렌지','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(33,'r4a8x2n','5x 소원별, 10x 성장 촉진제, 10x 오렌지','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(34,'true5mthks','10x 고급목재, 2x 셰프 특선 샐러드, 20x 관목가지','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(35,'letsparty','15x 소원별, 5000 골드, 3x 수리도구','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(36,'b8n2k5l','2x 완벽한 형광석, 6x 희귀목재, 10x 돌','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(37,'dcthx4u','10x 소원별','ACTIVE','2026-06-30','2026-02-06 12:08:38','2026-02-06 12:08:38'),(38,'m7r9q4a','2x 인어향수, 10000 골드, 10x 달걀','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(39,'x2l8k6p','5x 소원별, 10x 비료, 10x 사과','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(40,'h9q3a7m5','2x 그 자리 참나무, 10x 우유, 10x 목재','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(41,'letsbuild','15x 소원별, 5000 골드, 10x 비료','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(42,'letsdressup','15x 소원별, 5000 골드, 10x 성장 촉진제','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(43,'a7k9m2q8l','5x 소원별, 3x 수리도구, 10x 블루베리','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(44,'z4p6n8r2','10x 고급목재, 2x 셰프 특선 샐러드, 20x 관목가지','ACTIVE','2026-03-31','2026-02-06 12:08:38','2026-02-06 12:08:38'),(45,'specialgift0103','100x 달빛 크리스탈','SOON','2026-02-07','2026-02-06 12:08:38','2026-02-06 12:08:38'),(46,'heartopia0108','100x 달빛 크리스탈','SOON','2026-02-07','2026-02-06 12:08:38','2026-02-06 12:08:38'),(47,'mylittlepony','100x 달빛 크리스탈','SOON','2026-02-07','2026-02-06 12:08:38','2026-02-06 12:08:38'),(48,'Crystals','100x 달빛 크리스탈','EXPIRED',NULL,'2026-02-06 12:08:42','2026-02-06 12:08:42'),(49,'officialstream','Unknown','EXPIRED',NULL,'2026-02-06 12:08:42','2026-02-06 12:08:42'),(50,'finaltest','Unknown','EXPIRED',NULL,'2026-02-06 12:08:42','2026-02-06 12:08:42');
+/*!40000 ALTER TABLE `gift_code` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `visitor_stats`
+--
+
+LOCK TABLES `visitor_stats` WRITE;
+/*!40000 ALTER TABLE `visitor_stats` DISABLE KEYS */;
+INSERT INTO `visitor_stats` VALUES ('2026-02-24',14),('2026-02-25',14),('2026-02-26',14),('2026-02-27',14),('2026-02-28',14),('2026-03-01',14),('2026-03-02',92),('2026-03-09',1),('2026-03-10',11),('2026-03-11',16),('2026-03-12',4),('2026-03-13',4),('2026-03-14',6),('2026-03-15',14),('2026-03-16',11),('2026-03-17',9);
+/*!40000 ALTER TABLE `visitor_stats` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-03-18  3:45:42
 SET FOREIGN_KEY_CHECKS = 1;
-
--- [Phase 1] Basic Infrastructure Data
--- 1-1. Location Zones
-INSERT INTO location_zones (zone_key, display_name, color, parent_zone_key) VALUES
-('강', '강 전체', '#60a5fa', NULL), ('거목강', '거목 강', '#3b82f6', '강'), ('고요한강', '고요한 강', '#3b82f6', '강'), ('노을강', '노을 강', '#3b82f6', '강'), ('얕은강', '얕은 강', '#3b82f6', '강'),
-('바다', '바다 전체', '#0ea5e9', NULL), ('고래바다', '고래바다', '#0284c7', '바다'), ('구해', '구해', '#0284c7', '바다'), ('동해', '동해', '#0284c7', '바다'), ('잔잔한바다', '잔잔한 바다', '#0284c7', '바다'),
-('호수', '호수 전체', '#38bdf8', NULL), ('근교호수', '근교 호수', '#0ea5e9', '호수'), ('숲속호수', '숲속 호수', '#0ea5e9', '호수'), ('온천산호수', '온천산 호수', '#0ea5e9', '호수'), ('초원호수', '초원 호수', '#0ea5e9', '호수'), ('근교도시호수', '도시 근교 호수', '#0ea5e9', '호수'),
-('숲', '숲 전체', '#4ade80', NULL), ('영혼참나무', '영혼의 참나무 숲', '#16a34a', '숲'), ('순록탑', '순록탑', '#16a34a', '숲'), ('숲속섬', '숲속 섬', '#16a34a', '숲'), ('점핑플랫폼', '점핑 플랫폼', '#16a34a', '숲'), ('숲호숫가', '숲 호숫가', '#16a34a', '숲'),
-('꽃밭', '꽃밭 전체', '#f472b6', NULL), ('고래산꽃밭', '고래산 꽃밭', '#ec4899', '꽃밭'), ('보라빛해변', '보라빛 해변', '#ec4899', '꽃밭'), ('풍차꽃밭', '풍차꽃밭', '#ec4899', '꽃밭'),
-('어촌', '어촌 전체', '#fb923c', NULL), ('어촌부두', '부두', '#ea580c', '어촌'), ('동쪽부두', '동쪽 부두', '#ea580c', '어촌'), ('어촌등대', '등대', '#ea580c', '어촌'), ('어촌광장', '어촌 광장', '#ea580c', '어촌'),
-('온천산', '온천산 전체', '#fb7185', NULL), ('온천', '온천', '#f43f5e', '온천산'), ('바위절벽', '바위절벽', '#f43f5e', '온천산'), ('온천산유적', '유적', '#f43f5e', '온천산'), ('화산호수', '화산 호수', '#f43f5e', '온천산'), ('온천산호숫가', '온천산 호숫가', '#f43f5e', '온천산'),
-('도시', '도시 전체', '#a78bfa', NULL), ('도시근교', '도시 근교', '#7c3aed', '도시'), ('도심', '도심', '#7c3aed', '도시'),
-('해변', '해변', '#fbbf24', NULL), ('물가', '물가', '#34d399', NULL), ('강변', '강변', '#60a5fa', '강');
-
--- 1-2. Gift Codes
-INSERT INTO gift_code (code_name, rewards, status, expiration_date) VALUES 
-('r4p8n6m2q9', '10x 소원별, 3x 인어 집어기, 10x 비료', 'ACTIVE', '2026-03-31'), ('heartopia10m', '10x 소원별', 'ACTIVE', '2026-03-31'),
-('lifewithline', '10x 소원별', 'ACTIVE', '2026-03-31'), ('happy2026', '10x 달빛 크리스탈, 8888 골드', 'ACTIVE', '2026-03-31'),
-('k7m9q2a8l5', '5x 소원별, 3x 인어 집어기, 10x 비료', 'ACTIVE', '2026-03-31'), ('heartopia5m', '10x 소원별', 'ACTIVE', '2026-03-31'),
-('top1thanks', '5x 소원별, 2x 인어향수, 10x 오렌지', 'ACTIVE', '2026-03-31'), ('r4a8x2n', '5x 소원별, 10x 성장 촉진제, 10x 오렌지', 'ACTIVE', '2026-03-31'),
-('true5mthks', '10x 고급목재, 2x 셰프 특선 샐러드, 20x 관목가지', 'ACTIVE', '2026-03-31'), ('letsparty', '15x 소원별, 5000 골드, 3x 수리도구', 'ACTIVE', '2026-03-31'),
-('b8n2k5l', '2x 완벽한 형광석, 6x 희귀목재, 10x 돌', 'ACTIVE', '2026-03-31'), ('dcthx4u', '10x 소원별', 'ACTIVE', '2026-06-30'),
-('m7r9q4a', '2x 인어향수, 10000 골드, 10x 달걀', 'ACTIVE', '2026-03-31'), ('x2l8k6p', '5x 소원별, 10x 비료, 10x 사과', 'ACTIVE', '2026-03-31'),
-('h9q3a7m5', '2x 그 자리 참나무, 10x 우유, 10x 목재', 'ACTIVE', '2026-03-31'), ('letsbuild', '15x 소원별, 5000 골드, 10x 비료', 'ACTIVE', '2026-03-31'),
-('letsdressup', '15x 소원별, 5000 골드, 10x 성장 촉진제', 'ACTIVE', '2026-03-31'), ('a7k9m2q8l', '5x 소원별, 3x 수리도구, 10x 블루베리', 'ACTIVE', '2026-03-31'),
-('z4p6n8r2', '10x 고급목재, 2x 셰프 특선 샐러드, 20x 관목가지', 'ACTIVE', '2026-03-31');
-
--- [Phase 2] Biological & Collection Data
--- 2-1. Fish Collections
-INSERT INTO fish_collections (location, sub_location, name, level, weather, time, price_1, price_2, price_3, price_4, price_5, size, image_url) VALUES 
-('강', '전체', '민물배스', 1, NULL, NULL, 75, 112, 150, 300, 600, NULL, '/images/collections/fish/민물배스.png'),
-('강', '전체', '왕새우', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/왕새우.png'),
-('강', '전체', '틸라피아', 1, NULL, NULL, 320, 480, 640, 1280, 2560, NULL, '/images/collections/fish/틸라피아.png'),
-('강', '얕은 강', '바벨', 1, NULL, NULL, 75, 112, 150, 300, 600, NULL, '/images/collections/fish/바벨.png'),
-('강', '얕은 강', '큰가시고기', 7, '비/무지개', NULL, 150, 225, 300, 600, 1200, NULL, '/images/collections/fish/큰가시고기.png'),
-('강', '고요한 강', '미노우', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/미노우.png'),
-('강', '고요한 강', '민물대구', 4, NULL, '12~24', 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/민물대구.png'),
-('강', '고요한 강', '첨연어', 6, '무지개', NULL, 150, 225, 300, 600, 1200, NULL, '/images/collections/fish/첨연어.png'),
-('강', '거목 강', '하늘종개', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/하늘종개.png'),
-('강', '거목 강', '민물잰더', 3, '해/무지개', NULL, 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/민물잰더.png'),
-('강', '거목 강', '레드벨리피라냐', 4, NULL, NULL, 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/레드벨리피라냐.png'),
-('강', '거목 강', '후첸', 9, '무지개', '0~6 / 12~24', 380, 570, 760, 1520, 3040, NULL, '/images/collections/fish/후첸.png'),
-('강', '노을 강', '큰얼룩배스', 1, NULL, NULL, 50, 0, 0, 0, 0, NULL, '/images/collections/fish/큰얼룩배스.png'),
-('강', '노을 강', '유럽잉어', 4, '해/무지개', '12~24', 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/유럽잉어.png'),
-('호수', '전체', '유럽처브', 1, NULL, NULL, 75, 0, 0, 0, 0, NULL, '/images/collections/fish/유럽처브.png'),
-('호수', '전체', '유럽백조어', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/유럽백조어.png'),
-('호수', '전체', '유럽참개구리', 1, NULL, NULL, 320, 480, 640, 1280, 2560, NULL, '/images/collections/fish/유럽참개구리.png'),
-('호수', '숲속 호수', '텐치', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/텐치.png'),
-('호수', '숲속 호수', '머드개복치', 2, NULL, '6~24', 100, 150, 200, 400, 800, NULL, '/images/collections/fish/머드개복치.png'),
-('호수', '숲속 호수', '유럽민물가재', 3, NULL, '0~12 / 18~24', 100, 150, 200, 400, 800, NULL, '/images/collections/fish/유럽민물가재.png'),
-('호수', '숲속 호수', '큰입배스', 4, '해/무지개', NULL, 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/큰입배스.png'),
-('호수', '숲속 호수', '큰진주조개', 6, '무지개', NULL, 380, 570, 760, 1520, 3040, NULL, '/images/collections/fish/큰진주조개.png'),
-('호수', '숲속 호수', '북유럽파란가재', 8, NULL, '0~6  / 18~24', 250, 375, 500, 1000, 2000, NULL, '/images/collections/fish/북유럽파란가재.png'),
-('호수', '숲속 호수', '북극곤들매기', 10, '비/무지개', '12~24', 610, 915, 1220, 2440, 4880, NULL, '/images/collections/fish/북극곤들매기.png'),
-('호수', '근교 호수', '붕어', 1, NULL, NULL, 75, 112, 150, 300, 600, NULL, '/images/collections/fish/붕어.png'),
-('호수', '근교 호수', '백조어', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/백조어.png'),
-('호수', '근교 호수', '돌마자', 2, NULL, NULL, 100, 150, 200, 400, 800, NULL, '/images/collections/fish/돌마자.png'),
-('호수', '근교 호수', '홍합', 3, '비/무지개', NULL, 100, 150, 200, 400, 800, NULL, '/images/collections/fish/홍합.png'),
-('호수', '근교 호수', '민물게', 4, NULL, NULL, 100, 150, 200, 400, 800, NULL, '/images/collections/fish/민물게.png'),
-('호수', '근교 호수', '루드', 5, NULL, NULL, 150, 225, 300, 600, 1200, NULL, '/images/collections/fish/루드.png'),
-('호수', '근교 호수', '사루기', 6, NULL, NULL, 230, 345, 460, 920, 1840, NULL, '/images/collections/fish/사루기.png'),
-('호수', '근교 호수', '줄무늬송사리', 7, '해/무지개', '0~6 / 12~24', 150, 225, 300, 600, 1200, NULL, '/images/collections/fish/줄무늬송사리.png'),
-('호수', '근교 호수', '강꼬치고기', 9, '비/무지개', '0~6  / 18~24', 610, 915, 1220, 2440, 4880, NULL, '/images/collections/fish/강꼬치고기.png'),
-('바다', '전체', '정어리', 1, NULL, NULL, 50, 75, 100, 200, 400, NULL, '/images/collections/fish/정어리.png'),
-('바다', '전체', '배스', 1, NULL, NULL, 75, 112, 150, 300, 600, NULL, '/images/collections/fish/배스.png'),
-('바다', '잔잔한 바다', '노란전갱이', 3, NULL, NULL, 155, 232, 310, 620, 1240, NULL, '/images/collections/fish/노란전갱이.png'),
-('바다', '잔잔한 바다', '참다랑어', 9, '무지개', '6~18', 850, 1275, 1700, 3400, 6800, NULL, '/images/collections/fish/참다랑어.png'),
-('바다', '동해', '바다새우', 1, NULL, NULL, 50, 0, 0, 0, 0, NULL, '/images/collections/fish/바다새우.png'),
-('바다', '고래바다', '황새치', 10, '무지개', '6~18', 850, 1275, 1700, 3400, 6800, NULL, '/images/collections/fish/황새치.png'),
-('바다', '구해', '귀상어', 10, '무지개', '0~6 / 18~24', 850, 1275, 1700, 3400, 6800, NULL, '/images/collections/fish/귀상어.png'),
-('바다', '바다낚시 사건', '황금킹크랩', 8, '무지개', NULL, 850, 1275, 1700, 3400, 6800, NULL, '/images/collections/fish/황금킹크랩.png');
-
--- 2-2. Bird Collections
-INSERT INTO bird_collections (location, sub_location, name, level, weather, time, price_1, price_2, price_3, price_4, price_5, image_url) VALUES 
-('물가', NULL, '큰홍학', 1, NULL, NULL, 10, 40, 80, 160, 320, '/images/collections/bird/큰홍학.png'),
-('호수', NULL, '청둥오리', 1, NULL, NULL, 10, 40, 80, 160, 320, '/images/collections/bird/청둥오리.png'),
-('강', NULL, '홍머리오리', 2, NULL, NULL, 17, 68, 136, 272, 544, '/images/collections/bird/홍머리오리.png'),
-('강', NULL, '호사북방오리', 3, NULL, NULL, 17, 68, 136, 272, 544, '/images/collections/bird/호사북방오리.png'),
-('해변', NULL, '바다갈매기', 2, NULL, NULL, 17, 68, 136, 272, 544, '/images/collections/bird/바다갈매기.png'),
-('바다', NULL, '유럽가마우지', 3, NULL, NULL, 17, 68, 136, 272, 544, '/images/collections/bird/유럽가마우지.png'),
-('새들의 복귀 사건', NULL, '청금강앵무', 1, NULL, NULL, 10, 40, 80, 160, 320, '/images/collections/bird/청금강앵무.png'),
-('새들의 복귀 사건', NULL, '청공작', 1, NULL, NULL, 10, 40, 80, 160, 320, '/images/collections/bird/청공작.png'),
-('어촌', '등대', '아조레스멋쟁이새', 10, '무지개', NULL, 47, 190, 380, 760, 1520, '/images/collections/bird/아조레스멋쟁이새.png'),
-('꽃밭', '보라빛해변', '아메리카홍학', 9, '무지개', NULL, 47, 190, 380, 760, 1520, '/images/collections/bird/아메리카홍학.png'),
-('온천산', '온천', '매', 8, '비/무지개', NULL, 65, 260, 520, 1040, 2080, '/images/collections/bird/매.png');
-
--- 2-3. Bug Collections
-INSERT INTO bug_collections (location, sub_location, name, level, weather, time, max_stars, price_1, price_2, price_3, price_4, price_5, image_url) VALUES 
-('예외', '유인기 필요', '슬코스키몰포나비', 1, '-', '-', 5, 300, 1200, 2400, 4800, 9600, '/images/collections/bug/슬코스키몰포나비.png'),
-('물가', '-', '큰고추잠자리', 1, '-', '-', 5, 63, 252, 504, 1008, 2016, '/images/collections/bug/큰고추잠자리.png'),
-('강변', '-', '밀잠자리', 4, '비/무지개', '-', 5, 93, 372, 744, 1488, 2976, '/images/collections/bug/밀잠자리.png'),
-('이벤트', '유인사건', '아폴로모시나비', 1, '-', '-', 5, 265, 1060, 2120, 4240, 8480, '/images/collections/bug/아폴로모시나비.png'),
-('홈', '-', '별노린재', 1, '-', '-', 5, 55, 220, 440, 880, 1760, '/images/collections/bug/별노린재.png'),
-('숲', '전체', '호랑나비', 1, '-', '-', 5, 40, 160, 320, 640, 1280, '/images/collections/bug/호랑나비.png'),
-('도시', '도심', '유럽갈고리나비', 1, '-', '-', 5, 40, 160, 320, 640, 1280, '/images/collections/bug/유럽갈고리나비.png'),
-('어촌', '전체', '배추흰나비', 1, '-', '-', 5, 40, 160, 320, 640, 1280, '/images/collections/bug/배추흰나비.png'),
-('꽃밭', '전체', '아스파라거스벌레', 1, '-', '-', 5, 55, 220, 440, 880, 1760, '/images/collections/bug/아스파라거스벌레.png'),
-('숲', '순록탑', '헤쿠바몰포나비', 10, '무지개', '6~18', 5, 300, 1200, 2400, 4800, 9600, '/images/collections/bug/헤쿠바몰포나비.png'),
-('숲', '영혼참나무', '메넬라우스나비', 7, '해/무지개', '6~24', 5, 415, 1660, 3320, 6640, 13280, '/images/collections/bug/메넬라우스나비.png'),
-('꽃밭', '보라해변', '헬레나몰포나비', 10, '무지개', '6~18', 5, 300, 1200, 2400, 4800, 9600, '/images/collections/bug/헬레나몰포나비.png');
-
--- 2-4. Animal Collections
-INSERT INTO animal_collections (name, location, favorite_food, favorite_weather, image_url) VALUES 
-('판다', '세갈래길 근처', '대나무, 사과, 옥수수', '비', '/images/collections/animals/wild_animal_판다.png'),
-('카피바라', '유적 오른쪽', '토마토, 포도, 라즈베리', '비', '/images/collections/animals/wild_animal_카피바라.png'),
-('토끼', '2번 ~ 3번 홈 주변 버스 오른쪽 길', '잡초, 딸기, 당근', '맑음', '/images/collections/animals/wild_animal_토끼.png'),
-('여우', '9시 방향 초원 호수 아래 꽃밭 가는 길', '고기, 민물배스, 큰입배스', '무지개', '/images/collections/animals/wild_animal_여우.png'),
-('해달', '6시 방향 잔잔한 바다, 바위 위', '홍합, 바다새우, 왕새우', '비', '/images/collections/animals/wild_animal_해달.png'),
-('담비', '4번 홈 위쪽', '계란, 망둥어, 배스', '무지개', '/images/collections/animals/wild_animal_담비.png'),
-('꽃사슴', '3시 방향 숲 버스 위쪽', '상추, 관목가지, 베지샐러드', '맑음', '/images/collections/animals/wild_animal_꽃사슴.png'),
-('알파카', '보라빛 해변에서 등대로 가는 다리 주변', '블루베리, 파인애플, 밀', '맑음', '/images/collections/animals/wild_animal_알파카.png');
-
--- 2-5. Cooking Collections
-INSERT INTO cooking_collections (name, description, difficulty, energy_gain, sell_price, image_url) VALUES 
-('베지 샐러드', '신선한 채소로 만든 기본 샐러드', 1, 20, 150, '/images/collections/cook/베지 샐러드.png'),
-('토마토 수프', '따뜻하고 부드러운 토마토 수프', 1, 25, 180, '/images/collections/cook/토마토 수프.png'),
-('미트소스 파스타', '고소한 고기 소스가 듬뿍 들어간 파스타', 2, 45, 350, '/images/collections/cook/미트소스 파스타.png'),
-('생선 구이', '노릇노릇하게 구운 신선한 생선', 1, 30, 220, '/images/collections/cook/생선 구이.png'),
-('버섯 리조또', '향긋한 버섯과 부드러운 크림의 조화', 3, 55, 420, '/images/collections/cook/버섯 리조또.png'),
-('과일 타르트', '달콤한 과일이 올라간 바삭한 타르트', 3, 40, 380, '/images/collections/cook/과일 타르트.png');
-
--- 2-5-1. Cooking Ingredients
--- 베지 샐러드 (ID: 1)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (1, '상추', 2), (1, '토마토', 1);
--- 토마토 수프 (ID: 2)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (2, '토마토', 3), (2, '우유', 1);
--- 미트소스 파스타 (ID: 3)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (3, '밀', 2), (3, '고기', 1), (3, '토마토', 1);
--- 생선 구이 (ID: 4)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (4, '민물배스', 1), (4, '소금', 1);
--- 버섯 리조또 (ID: 5)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (5, '쌀', 1), (5, '표고버섯', 2), (5, '우유', 1);
--- 과일 타르트 (ID: 6)
-INSERT INTO cooking_ingredients (cooking_id, ingredient_name, quantity) VALUES (6, '밀', 1), (6, '딸기', 2), (6, '블루베리', 1);
-
--- 2-6. Crop Collections
-INSERT INTO crop_collections (name, level, growth_time, seed_buy_price, seed_sell_price, price_1, price_2, price_3, price_4, price_5, image_url) VALUES 
-('토마토', 1, '15 min', 10, 5, 30, 40, 50, 60, 70, '/images/items/crops/토마토.png'),
-('감자', 1, '60 min', 30, 15, 90, 120, 150, 180, 220, '/images/items/crops/감자.png'),
-('밀', 2, '4 hours', 95, 47, 285, 381, 475, 570, 855, '/images/items/crops/밀.png'),
-('상추', 3, '8 hours', 145, 72, 435, 582, 726, 870, 1305, '/images/items/crops/상추.png'),
-('당근', 5, '2 hours', 50, 25, 155, 207, 258, 310, 460, '/images/items/crops/당근.png'),
-('딸기', 6, '6 hours', 125, 0, 375, 502, 626, 750, 1125, '/images/items/crops/딸기.png'),
-('옥수수', 6, '12 hours', 170, 0, 515, 690, 860, 1030, 1545, '/images/items/crops/옥수수.png');
-
--- 2-7. Flower Collections
-INSERT INTO flower_collections (name, level, growth_time, seed_buy_price, seed_sell_price, price_1, price_2, price_3, price_4, price_5, image_url) VALUES 
-('데이지', 3, '18 hours', 30, 15, 100, 150, 200, 250, 400, '/images/items/flowers/데이지.png'),
-('팬지', 4, '18 hours', 30, 15, 100, 150, 200, 250, 400, '/images/items/flowers/팬지.png'),
-('꽃양귀비', 5, '1 day', 60, 30, 185, 280, 370, 460, 740, '/images/items/flowers/꽃양귀비.png'),
-('안스리움', '5 day', '1 day', 60, 30, 185, 280, 370, 460, 740, '/images/items/flowers/안스리움.png'),
-('장미', 10, '3 days', 300, 0, 850, 1275, 1700, 3400, 6800, '/images/items/flowers/장미.png');
-
--- 2-8. Forageable Collections
-INSERT INTO forageable_collections (name, location, price, energy, image_url) VALUES
-('송이버섯', '숲', 0, '+5', NULL),
-('관목 가지', '홈', 5, NULL, '/images/collections/forage/관목 가지.png'),
-('목재', '홈', 6, NULL, '/images/collections/forage/목재.png'),
-('대나무', '홈', 7, NULL, '/images/collections/forage/대나무.png'),
-('돌', '홈', 8, NULL, '/images/collections/forage/돌.png'),
-('고급 목재', '홈', 12, NULL, '/images/collections/forage/고급 목재.png'),
-('광석', '홈', 14, NULL, '/images/collections/forage/광석.png'),
-('블루베리', '홈', 16, '+5', '/images/collections/forage/블루베리.png'),
-('표고버섯', '어촌', 16, '+5', '/images/collections/forage/표고버섯.png'),
-('이상한 표고버섯 (검정)', '어촌', 16, NULL, '/images/collections/forage/이상한 표고버섯(회색).png'),
-('이상한 표고버섯 (빨강)', '어촌', 16, NULL, '/images/collections/forage/이상한 표고버섯(빨강).png'),
-('이상한 표고버섯 (파랑)', '어촌', 16, NULL, '/images/collections/forage/이상한 표고버섯(하늘).png'),
-('양송이버섯', '꽃밭', 16, '+5', '/images/collections/forage/양송이버섯.png'),
-('이상한 양송이버섯 (파랑)', '꽃밭', 16, NULL, '/images/collections/forage/이상한 양송이 버섯(파랑).png'),
-('이상한 양송이버섯 (핑크)', '꽃밭', 16, NULL, '/images/collections/forage/이상한 양송이 버섯(핑크).png'),
-('이상한 양송이버섯 (초록)', '꽃밭', 16, NULL, '/images/collections/forage/이상한 양송이 버섯(초록).png'),
-('그물버섯', '숲', 16, '+5', '/images/collections/forage/그물버섯.png'),
-('이상한 그물버섯 (보라)', '숲', 16, NULL, '/images/collections/forage/이상한 그물버섯(파랑).png'),
-('이상한 그물버섯 (빨강)', '숲', 16, NULL, '/images/collections/forage/이상한 그물버섯(빨강).png'),
-('이상한 그물버섯 (핑크)', '숲', 16, NULL, '/images/collections/forage/이상한 그물버섯(핑크).png'),
-('느타리버섯', '온천산', 16, '+5', '/images/collections/forage/느타리버섯.png'),
-('이상한 느타리버섯 (핑크)', '온천산', 16, NULL, '/images/collections/forage/이상한 느타리버섯(핑크).png'),
-('이상한 느타리버섯 (보라)', '온천산', 16, NULL, '/images/collections/forage/이상한 느타리버섯(파랑).png'),
-('이상한 느타리버섯 (주황)', '온천산', 16, NULL, '/images/collections/forage/이상한 느타리버섯(주황).png'),
-('라즈베리', '홈', 26, '+7', '/images/collections/forage/라즈베리.png'),
-('사과', '홈', 28, '+8', '/images/collections/forage/사과.png'),
-('귤 (오렌지)', '홈', 28, '+8', '/images/collections/forage/오렌지.png'),
-('희귀 목재', '도시 근교', 50, NULL, '/images/collections/forage/희귀 목재.png'),
-('검은 트러플', '숲', 99, '+25', '/images/collections/forage/검은 트러플.png'),
-('방랑하는 오크 목재', '방랑하는 오크오크', 150, NULL, NULL),
-('완벽한 형석', '형석 광산', 150, NULL, NULL),
-('별똥별 조각', '운석우', 150, NULL, NULL);
-
--- [Phase 3] Social & System Data
--- 3-1. Villagers
-INSERT INTO villagers (id, name, sub_title, image_url, location, unlock_condition) VALUES 
-(1, '블랑코 (Blanc)', '원예 멘토 & 상점 주인', '/images/npc/NPC_icon_블랑코.png', '원예 상점', '튜토리얼 진행'),
-(2, '바냐 (Vanya)', '낚시 멘토', '/images/npc/NPC_icon_바냐.png', '가든 스트리트', '튜토리얼 진행'),
-(3, '마시모 (Massimo)', '요리 멘토', '/images/npc/NPC_icon_마시모.png', '카페', 'Lv.6 + 취미 티켓'),
-(4, '조안 여사 (Mrs. Joanne)', '펫 멘토', '/images/npc/NPC_icon_조안_여사.png', '펫 하우스', 'Lv.12 + 취미 티켓'),
-(5, '베일리 (Bailey)', '새 관찰 멘토', '/images/npc/NPC_icon_베일리.png', '펫 하우스 2층', 'Lv.6 + 취미 티켓'),
-(6, '나니와 (Naniwa)', '곤충 채집 멘토', '/images/npc/NPC_icon_나니와.png', '가든 스트리트', 'Lv.6 + 취미 티켓'),
-(7, '앤드류 (Andrew)', '탈것 상인', '/images/npc/NPC_icon_앤드류.png', '카 센터', NULL),
-(8, '알버트 2세 (Albert II)', '골드 상인', '/images/npc/NPC_icon_알버트_2세.png', '교외에서 순회', NULL),
-(9, '밥 아저씨 (Uncle Bob)', '인테리어 상인', '/images/npc/NPC_icon_밥_아저씨.png', '가구점', NULL),
-(10, '도로시 (Dorothy)', '의상 디자이너', '/images/npc/NPC_icon_도로시.png', '옷 가게', NULL),
-(11, '애니 (Annie)', '프렌즈 상점 주인', '/images/npc/NPC_icon_애니.png', '마을 중앙', NULL),
-(12, '카칭 (Kaching)', '잡화 상인', '/images/npc/NPC_icon_카칭.png', '거주 거리 바깥', '도시 방문'),
-(13, '아타라 (Atara)', '퀘스트 매니저', '/images/npc/NPC_icon_아타라.png', '광장 게시판', NULL),
-(14, '애쥬어 (Azure)', '트랜드 상인', '/images/npc/NPC_icon_애쥬어.png', '광장', NULL),
-(15, '에릭 (Eric)', '주민', '/images/npc/NPC_icon_에릭.png', '마을', NULL),
-(16, '수집가 (Collector)', '수집가', '/images/npc/NPC_icon_수집가.png', '커피마당', NULL),
-(17, '패티 (Patty)', '주민', '/images/npc/NPC_icon_패티.png', '순록탑', NULL),
-(18, '버니 (Bunny)', '주민', '/images/npc/NPC_icon_버니.png', '풍차 꽃밭', NULL),
-(19, '윌 (Will)', '주민', '/images/npc/NPC_icon_윌.png', '마을', NULL),
-(20, '장난꾸러기 (Prankster)', '주민', '/images/npc/NPC_icon_장난꾸러기.png', '마을 골목', NULL),
-(21, '해리 (Harry)', '주민', '/images/npc/NPC_icon_해리.png', '마을', NULL),
-(22, '빌 (Bill)', '이벤트 NPC', '/images/npc/NPC_icon_빌.png', '부두', NULL);
-
--- 3-2. Villager Roles
-INSERT INTO villager_roles (id, villager_id, role_type, title, description) VALUES 
-(1, 1, 'GUIDE', '원예', '희귀 꽃, 씨앗, 작물, 곤충'), (2, 1, 'SHOP', '원예 상점', NULL),
-(3, 2, 'GUIDE', '낚시', '모든 물고기, 해산물, 낚시 용품'), (4, 2, 'SHOP', '낚시 상점', NULL),
-(5, 2, 'EVENT', '얼음 낚시', '이벤트 진행 가능'), (7, 3, 'GUIDE', '요리', '요리된 음식, 희귀 식재료'),
-(8, 3, 'SHOP', '레스토랑 상점', NULL), (9, 4, 'GUIDE', '펫 케어', '해산물 부케'),
-(10, 4, 'SHOP', '펫 샵', NULL), (11, 5, 'GUIDE', '새 관찰', '고품질 새 사진'),
-(12, 5, 'EVENT', '새들의 복귀 사건', '이벤트 무작위 발생'), (13, 6, 'GUIDE', '곤충 채집', NULL),
-(14, 6, 'SHOP', '곤충 상점', NULL), (15, 6, 'EVENT', '곤충 떼 사건', '이벤트 무작위 발생'),
-(16, 7, 'SHOP', '탈것 상점', NULL), (17, 8, 'SHOP', '판매 가능', '아이템 판매 상점'),
-(18, 9, 'SHOP', '인테리어 샵', '판매 물품 변경 : 토요일 6시'), (19, 10, 'SHOP', '부띠끄', '판매 물품 변경 : 매일 6시'),
-(20, 11, 'SHOP', '프렌즈 & 뮤직', NULL), (21, 12, 'SHOP', '잡화점', NULL),
-(22, 13, 'QUEST', '주간 퀘스트', NULL), (23, 14, 'SHOP', '트렌드 상점', NULL),
-(24, 14, 'EVENT', '트렌드 이벤트', '시즌별 이벤트 진행'), (25, 22, 'EVENT', '바바 낚시 사건', '이벤트 진행');
-
--- 3-3. Role Items
-INSERT INTO role_items (role_id, item_name) VALUES 
-(2, '꽃 씨앗'), (2, '작물 씨앗'), (2, '재배 상자'), (2, '비료'), (2, '성장 촉진제'),
-(4, '낚시대'), (4, '미끼'), (4, '어항'), (4, '특수 아이템'),
-(8, '식재료'), (8, '레시피'), (8, '주방용품 도면'),
-(10, '펫'), (10, '펫 먹이'), (10, '펫 의상'), (10, '펫 용품'), (10, '자동 급식기'),
-(14, '채집통'), (14, '포충망'), (14, '특수 아이템'),
-(16, '자전거'), (16, '오토바이'), (16, '승용차'),
-(17, '골드 거래'), (17, '희귀 아이템'),
-(18, '가구'), (18, '카페트'), (18, '벽지'), (18, '건축 자재'),
-(19, '의류'), (19, '장신구'), (19, '메이크업'),
-(20, '이모티콘'), (20, '악기'), (20, '녹음기'),
-(21, '다양한 잡화'),
-(23, '눈조각'), (23, '계절 아이템');
-
--- 3-4. Villager Gifts
-INSERT INTO villager_gifts (villager_id, item_name, is_loved) VALUES 
-(1, '희귀 꽃', TRUE), (1, '씨앗', TRUE), (1, '작물', TRUE), (1, '곤충', TRUE),
-(2, '모든 물고기', TRUE), (2, '해산물', TRUE), (2, '낚시 용품', TRUE), (2, '쓰레기', FALSE), (2, '광석', FALSE),
-(3, '요리된 음식', TRUE), (3, '희귀 식재료', TRUE),
-(4, '해산물 부케', TRUE), (4, '쓰레기', FALSE),
-(5, '고품질 새 사진', TRUE);
-
--- [Phase 4] Geographic Data
--- 4-1. Map Pins
-INSERT INTO map_pins (category, name, icon_url, map_x, map_y, link_url, description) VALUES 
-('villager', '블랑코', '/images/npc/NPC_icon_블랑코.png', 5800, 3900, '/wiki/others/villagers', '원예 멘토 & 상점 주인'),
-('villager', '바냐', '/images/npc/NPC_icon_바냐.png', 6200, 3500, '/wiki/others/villagers', '낚시 멘토'),
-('villager', '마시모', '/images/npc/NPC_icon_마시모.png', 5600, 3500, '/wiki/others/villagers', '요리 멘토'),
-('villager', '앤드류', '/images/npc/NPC_icon_앤드류.png', 5500, 4200, '/wiki/others/villagers', '공방 & 제작 멘토'),
-('villager', '에릭', '/images/npc/NPC_icon_에릭.png', 6000, 4500, '/wiki/others/villagers', '시청 직원'),
-('villager', '도로시', '/images/npc/NPC_icon_도로시.png', 5000, 3800, '/wiki/others/villagers', '패션 상점'),
-('villager', '카칭', '/images/npc/NPC_icon_카칭.png', 5200, 3400, '/wiki/others/villagers', '잡화점'),
-('villager', '수집가', '/images/npc/NPC_icon_수집가.png', 6500, 3000, '/wiki/others/villagers', '박물관'),
-('villager', '버블', '/images/npc/NPC_icon_버블.png', 4800, 4000, '/wiki/others/villagers', '미용실'),
-('villager', '조안 여사', '/images/npc/NPC_icon_조안_여사.png', 4500, 2500, '/wiki/others/villagers', '펫 멘토'),
-('villager', '베일리', '/images/npc/NPC_icon_베일리.png', 4500, 2600, '/wiki/others/villagers', '새 관찰 멘토'),
-('villager', '나니와', '/images/npc/NPC_icon_나니와.png', 5300, 3300, '/wiki/others/villagers', '곤충 채집 멘토'),
-('villager', '알버트 2세', '/images/npc/NPC_icon_알버트_2세.png', 2000, 4000, '/wiki/others/villagers', '골드 상인'),
-('villager', '밥 아저씨', '/images/npc/NPC_icon_밥_아저씨.png', 4900, 3700, '/wiki/others/villagers', '인테리어 상인'),
-('villager', '애니', '/images/npc/NPC_icon_애니.png', 3000, 3000, '/wiki/others/villagers', '프렌즈 상점 주인'),
-('villager', '아타라', '/images/npc/NPC_icon_아타라.png', 3200, 3200, '/wiki/others/villagers', '퀘스트 매니저'),
-('villager', '애쥬어', '/images/npc/NPC_icon_애쥬어.png', 3100, 3300, '/wiki/others/villagers', '트랜드 상인'),
-('villager', '패티', '/images/npc/NPC_icon_패티.png', 2500, 5000, '/wiki/others/villagers', '순록탑 주변'),
-('villager', '버니', '/images/npc/NPC_icon_버니.png', 4000, 5500, '/wiki/others/villagers', '풍차 꽃밭'),
-('villager', '윌', '/images/npc/NPC_icon_윌.png', 3500, 2500, '/wiki/others/villagers', '마을'),
-('villager', '장난꾸러기', '/images/npc/NPC_icon_장난꾸러기.png', 3600, 2600, '/wiki/others/villagers', '마을 골목'),
-('villager', '해리', '/images/npc/NPC_icon_해리.png', 3700, 2700, '/wiki/others/villagers', '마을'),
-('villager', '빌', '/images/npc/NPC_icon_빌.png', 6800, 2000, '/wiki/others/villagers', '부두 이벤트 NPC'),
-('animal', '판다', '/images/collections/animals/wild_animal_판다.png', 3000, 3000, '/wiki/collections/animal', '좋아하는 날씨: 비'),
-('animal', '카피바라', '/images/collections/animals/wild_animal_카피바라.png', 5000, 1500, '/wiki/collections/animal', '좋아하는 날씨: 비'),
-('animal', '토끼', '/images/collections/animals/wild_animal_토끼.png', 1500, 5000, '/wiki/collections/animal', '좋아하는 날씨: 맑음'),
-('animal', '여우', '/images/collections/animals/wild_animal_여우.png', 500, 3000, '/wiki/collections/animal', '좋아하는 날씨: 무지개'),
-('animal', '해달', '/images/collections/animals/wild_animal_해달.png', 3000, 500, '/wiki/collections/animal', '좋아하는 날씨: 비'),
-('animal', '담비', '/images/collections/animals/wild_animal_담비.png', 5000, 5000, '/wiki/collections/animal', '좋아하는 날씨: 무지개'),
-('animal', '꽃사슴', '/images/collections/animals/wild_animal_꽃사슴.png', 5500, 3000, '/wiki/collections/animal', '좋아하는 날씨: 맑음'),
-('animal', '알파카', '/images/collections/animals/wild_animal_알파카.png', 1000, 1000, '/wiki/collections/animal', '좋아하는 날씨: 맑음');
-
--- [Phase 5] Post-processing
-COMMIT;
