@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://heartopia-life.me/wiki</loc>
+    <loc>https://heartopia-life.me/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://heartopia-life.me/wiki</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url><loc>https://heartopia-life.me/wiki/collections/fish</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/collections/bug</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/collections/bird</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/collections/animal</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/items/cooking</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/items/flowers</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/items/crops</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/collections/forageable</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/others/villagers</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
