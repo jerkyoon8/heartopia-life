@@ -1,0 +1,75 @@
+
+--- BUG MISMATCHES ---
+Exact Matches: 60
+Space/Minor Mismatches (2):
+  DB:'유럽갈고리나비' vs IMG:'유럽갈고리 나비'
+  DB:'오아시스 메뚜기' vs IMG:'오아시스메뚜기'
+Missing in Images (2):
+  DB:'넉점박이잠자리'
+  DB:'이색무당벌레'
+    (Potential match? IMG: '이색무방벌레')
+
+--- FISH MISMATCHES ---
+Exact Matches: 69
+Space/Minor Mismatches (1):
+  DB:'황금 킹크랩' vs IMG:'황금킹크랩'
+Missing in Images (14):
+  DB:'틸라피아'
+  DB:'하늘종개'
+  DB:'민물잰더'
+    (Potential match? IMG: '민물게')
+    (Potential match? IMG: '민물대구')
+    (Potential match? IMG: '민물배스')
+    (Potential match? IMG: '민물베도라치')
+  DB:'큰얼룩배스'
+  DB:'전갱이'
+  DB:'해마'
+  DB:'대서양연어'
+    (Potential match? IMG: '대서양고등어')
+    (Potential match? IMG: '대서양난쟁이문어')
+    (Potential match? IMG: '대서양은상어')
+  DB:'귀상어'
+  DB:'개복치'
+  DB:'유럽민물가재'
+    (Potential match? IMG: '유럽가자미')
+    (Potential match? IMG: '유럽가재')
+    (Potential match? IMG: '유럽날오징어')
+    (Potential match? IMG: '유럽메기')
+    (Potential match? IMG: '유럽백조어')
+    (Potential match? IMG: '유럽잉어')
+    (Potential match? IMG: '유럽장어')
+    (Potential match? IMG: '유럽처브')
+  DB:'머드개복치'
+  DB:'북극곤들매기'
+    (Potential match? IMG: '북극곤들메기')
+  DB:'바다빙어'
+    (Potential match? IMG: '바다가시고기')
+    (Potential match? IMG: '바다새우')
+  DB:'유럽참개구리'
+    (Potential match? IMG: '유럽가자미')
+    (Potential match? IMG: '유럽가재')
+    (Potential match? IMG: '유럽날오징어')
+    (Potential match? IMG: '유럽메기')
+    (Potential match? IMG: '유럽백조어')
+    (Potential match? IMG: '유럽잉어')
+    (Potential match? IMG: '유럽장어')
+    (Potential match? IMG: '유럽처브')
+
+--- COOK MISMATCHES ---
+Exact Matches: 42
+Missing in Images (12):
+  DB:'믹스 잼'
+    (Potential match? IMG: '믹스드 잼')
+  DB:'초콜릿 소스'
+  DB:'레드 롤케이크'
+  DB:'옐로우 롤케이크'
+  DB:'그린 롤케이크'
+  DB:'캠핑 세트'
+  DB:'잉글리시 애프터눈 티'
+  DB:'미트버거'
+    (Potential match? IMG: '미트소스 파스타')
+  DB:'랍스터 냉채'
+  DB:'미트소스 가지 그라탱'
+    (Potential match? IMG: '미트소스 파스타')
+  DB:'캔들라이트 디너'
+  DB:'킹크랩 찜'

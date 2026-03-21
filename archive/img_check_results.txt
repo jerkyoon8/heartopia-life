@@ -1,0 +1,40 @@
+
+--- Checking BUG ---
+DB names with NO exact image match (4):
+  - '유럽갈고리나비' (DB) vs ['유럽갈고리 나비'] (File) -> [SPACE MISMATCH]
+  - '오아시스 메뚜기' (DB) vs ['오아시스메뚜기'] (File) -> [SPACE MISMATCH]
+  - '넉점박이잠자리' (DB) -> [NO FILE AT ALL]
+  - '이색무당벌레' (DB) -> [NO FILE AT ALL]
+
+--- Checking FISH ---
+DB names with NO exact image match (15):
+  - '틸라피아' (DB) -> [NO FILE AT ALL]
+  - '하늘종개' (DB) -> [NO FILE AT ALL]
+  - '민물잰더' (DB) -> [NO FILE AT ALL]
+  - '큰얼룩배스' (DB) -> [NO FILE AT ALL]
+  - '전갱이' (DB) -> [NO FILE AT ALL]
+  - '해마' (DB) -> [NO FILE AT ALL]
+  - '대서양연어' (DB) -> [NO FILE AT ALL]
+  - '귀상어' (DB) -> [NO FILE AT ALL]
+  - '개복치' (DB) -> [NO FILE AT ALL]
+  - '황금 킹크랩' (DB) vs ['황금킹크랩'] (File) -> [SPACE MISMATCH]
+  - '유럽민물가재' (DB) -> [NO FILE AT ALL]
+  - '머드개복치' (DB) -> [NO FILE AT ALL]
+  - '북극곤들매기' (DB) -> [NO FILE AT ALL]
+  - '바다빙어' (DB) -> [NO FILE AT ALL]
+  - '유럽참개구리' (DB) -> [NO FILE AT ALL]
+
+--- Checking COOK ---
+DB names with NO exact image match (12):
+  - '믹스 잼' (DB) -> [NO FILE AT ALL]
+  - '초콜릿 소스' (DB) -> [NO FILE AT ALL]
+  - '레드 롤케이크' (DB) -> [NO FILE AT ALL]
+  - '옐로우 롤케이크' (DB) -> [NO FILE AT ALL]
+  - '그린 롤케이크' (DB) -> [NO FILE AT ALL]
+  - '캠핑 세트' (DB) -> [NO FILE AT ALL]
+  - '잉글리시 애프터눈 티' (DB) -> [NO FILE AT ALL]
+  - '미트버거' (DB) -> [NO FILE AT ALL]
+  - '랍스터 냉채' (DB) -> [NO FILE AT ALL]
+  - '미트소스 가지 그라탱' (DB) -> [NO FILE AT ALL]
+  - '캔들라이트 디너' (DB) -> [NO FILE AT ALL]
+  - '킹크랩 찜' (DB) -> [NO FILE AT ALL]

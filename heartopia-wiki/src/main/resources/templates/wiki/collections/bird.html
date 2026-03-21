@@ -24,6 +24,17 @@
                 <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
             </div>
 
+            <!-- Event Button -->
+            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
+                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
+            </button>
+
+            <!-- Hidden Event Filter -->
+            <select id="eventFilter" class="filter-select" style="display: none;">
+                <option value="all">모든 이벤트</option>
+                <option value="꿈의 명암">꿈의 명암</option>
+            </select>
+
             <!-- Custom Filters -->
             <select id="levelFilter" class="filter-select">
                 <option value="all">모든 레벨</option>
@@ -64,7 +75,7 @@
 
             <div th:each="bird : ${birdList}" class="wiki-item-card" th:data-name="${bird.name}"
                 th:data-level="${#strings.replace(bird.level, 'Lv.', '')}" th:data-price="${bird.prices[0]}"
-                th:data-type="${bird.type}">
+                th:data-type="${bird.type}" th:data-event="${bird.eventName != null ? bird.eventName : ''}">
 
                 <div class="wiki-item-image">
                     <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}"
@@ -79,8 +90,10 @@
                             <i class="fas fa-camera text-info" style="font-size: 0.9rem;"></i>
                         </span>
                         <span class="wiki-item-tag mb-0" th:text="${bird.type}">종류</span>
-                        <a th:href="@{/wiki/collections/bird/{name}(name=${bird.name})}" class="wiki-item-name mb-0"
-                            th:text="${bird.name}"></a>
+                        <a th:href="@{/wiki/collections/bird/{name}(name=${bird.name})}" class="wiki-item-name mb-0">
+                            <span th:text="${bird.name}"></span>
+                            <span th:if="${bird.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${bird.eventName}"></span>
+                        </a>
                     </div>
                     <div>
                         <a th:href="@{/wiki/map(cat='bird', name=${bird.name})}" class="wiki-item-tag location-link">
@@ -139,12 +152,18 @@
                         th:data-name="${bird.name}"
                         th:data-level="${#strings.replace(bird.level, 'Lv.', '')}"
                         th:data-price="${bird.prices[0]}"
-                        th:data-type="${bird.type}">
+                        th:data-type="${bird.type}"
+                        th:data-event="${bird.eventName != null ? bird.eventName : ''}">
                         <td>
                             <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}" class="table-thumb">
                             <div th:unless="${bird.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-dove"></i></div>
                         </td>
-                        <td><a th:href="@{/wiki/collections/bird/{name}(name=${bird.name})}" class="table-name-link" th:text="${bird.name}">이름</a></td>
+                        <td>
+                            <a th:href="@{/wiki/collections/bird/{name}(name=${bird.name})}" class="table-name-link">
+                                <span th:text="${bird.name}">이름</span>
+                                <span th:if="${bird.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.7em;" th:text="${bird.eventName}"></span>
+                            </a>
+                        </td>
                         <td><span class="wiki-item-tag mb-0" th:text="${bird.type}" style="font-size:0.8rem; padding:2px 8px;">종류</span></td>
                         <td th:text="${bird.level}">1</td>
                         <td>
@@ -164,11 +183,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const btnDream = document.getElementById('btn-dream-event');
+            const eventFilter = document.getElementById('eventFilter');
+            let isDreamOnly = false;
+
+            if (btnDream && eventFilter) {
+                btnDream.addEventListener('click', function() {
+                    isDreamOnly = !isDreamOnly;
+                    if(isDreamOnly) {
+                        eventFilter.value = '꿈의 명암';
+                        btnDream.classList.remove('btn-outline-dark');
+                        btnDream.classList.add('btn-dark');
+                    } else {
+                        eventFilter.value = 'all';
+                        btnDream.classList.remove('btn-dark');
+                        btnDream.classList.add('btn-outline-dark');
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+            }
+
             new WikiFilter({
                 gridId: 'wikiGrid',
                 tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
+                    { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                     { id: 'levelFilter', dataKey: 'level' },
                     { id: 'typeFilter', dataKey: 'type' }
                 ]

@@ -24,7 +24,16 @@
                 <i class="fas fa-search text-secondary"></i>
                 <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
             </div>
-            <!-- Filters -->
+            <!-- Event Button -->
+            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
+                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
+            </button>
+
+            <!-- Hidden Event Filter -->
+            <select id="eventFilter" class="filter-select" style="display: none;">
+                <option value="all">모든 이벤트</option>
+                <option value="꿈의 명암">꿈의 명암</option>
+            </select>
             <select id="levelFilter" class="filter-select">
                 <option value="all">모든 레벨</option>
                 <option value="1">Lv.1</option>
@@ -58,7 +67,8 @@
             <!-- Fish Card Loop -->
             <div th:each="fish : ${fishList}" class="wiki-item-card" th:data-name="${fish.name}"
                 th:data-level="${#strings.replace(fish.level, 'Lv.', '')}" th:data-location="${fish.location}"
-                th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}">
+                th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}"
+                th:data-event="${fish.eventName != null ? fish.eventName : ''}">
 
                 <div class="wiki-item-image">
                     <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}"
@@ -68,8 +78,10 @@
                 </div>
 
                 <div class="wiki-item-info">
-                    <a th:href="@{/wiki/collections/fish/{name}(name=${fish.name})}" class="wiki-item-name"
-                        th:text="${fish.name}">생선 이름</a>
+                    <a th:href="@{/wiki/collections/fish/{name}(name=${fish.name})}" class="wiki-item-name">
+                        <span th:text="${fish.name}">생선 이름</span>
+                        <span th:if="${fish.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${fish.eventName}"></span>
+                    </a>
                     <div>
                         <a th:href="@{/wiki/map(cat='fish', name=${fish.name})}" class="wiki-item-tag location-link">
                             <i class="fas fa-map-marker-alt me-1"></i>
@@ -132,12 +144,18 @@
                         th:data-level="${#strings.replace(fish.level, 'Lv.', '')}"
                         th:data-location="${fish.location}"
                         th:data-shadow="${fish.size}"
-                        th:data-price="${fish.prices[0]}">
+                        th:data-price="${fish.prices[0]}"
+                        th:data-event="${fish.eventName != null ? fish.eventName : ''}">
                         <td>
                             <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" class="table-thumb">
                             <div th:unless="${fish.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-fish"></i></div>
                         </td>
-                        <td><a th:href="@{/wiki/collections/fish/{name}(name=${fish.name})}" class="table-name-link" th:text="${fish.name}">이름</a></td>
+                        <td>
+                            <a th:href="@{/wiki/collections/fish/{name}(name=${fish.name})}" class="table-name-link">
+                                <span th:text="${fish.name}">이름</span>
+                                <span th:if="${fish.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.7em;" th:text="${fish.eventName}"></span>
+                            </a>
+                        </td>
                         <td th:text="${fish.level}">1</td>
                         <td>
                             <a th:href="@{/wiki/map(cat='fish', name=${fish.name})}" class="table-location-link">
@@ -159,11 +177,32 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                new WikiFilter({
+            const btnDream = document.getElementById('btn-dream-event');
+            const eventFilter = document.getElementById('eventFilter');
+            let isDreamOnly = false;
+
+            if (btnDream && eventFilter) {
+                btnDream.addEventListener('click', function() {
+                    isDreamOnly = !isDreamOnly;
+                    if(isDreamOnly) {
+                        eventFilter.value = '꿈의 명암';
+                        btnDream.classList.remove('btn-outline-dark');
+                        btnDream.classList.add('btn-dark');
+                    } else {
+                        eventFilter.value = 'all';
+                        btnDream.classList.remove('btn-dark');
+                        btnDream.classList.add('btn-outline-dark');
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+            }
+
+            new WikiFilter({
                     gridId: 'wikiGrid',
                     tableId: 'wikiTable',
                     itemSelector: '.wiki-item-card',
                     filters: [
+                        { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                         { id: 'levelFilter', dataKey: 'level' },
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
                         { id: 'shadowFilter', dataKey: 'shadow', autoPopulate: true }

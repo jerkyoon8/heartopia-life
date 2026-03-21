@@ -1,0 +1,23 @@
+name	image_url
+블랑코 (Blanc)	/images/npc/NPC_icon_블랑코.png
+바냐 (Vanya)	/images/npc/vanya.png
+마시모 (Massimo)	/images/npc/NPC_icon_마시모.png
+조안 여사 (Mrs. Joanne)	/images/npc/NPC_icon_조안_여사.png
+베일리 (Bailey)	/images/npc/NPC_icon_베일리.png
+나니와 (Naniwa)	/images/npc/NPC_icon_나니와.png
+앤드류 (Andrew)	/images/npc/NPC_icon_앤드류.png
+알버트 2세 (Albert II)	/images/npc/NPC_icon_알버트_2세.png
+밥 아저씨 (Uncle Bob)	/images/npc/NPC_icon_밥_아저씨.png
+도로시 (Dorothy)	/images/npc/NPC_icon_도로시.png
+애니 (Annie)	/images/npc/NPC_icon_애니.png
+카칭 (Kaching)	/images/npc/NPC_icon_카칭.png
+아타라 (Atara)	/images/npc/NPC_icon_아타라.png
+애쥬어 (Azure)	/images/npc/NPC_icon_애쥬어.png
+에릭 (Eric)	/images/npc/NPC_icon_에릭.png
+수집가 (Collector)	/images/npc/NPC_icon_수집가.png
+패티 (Patty)	/images/npc/NPC_icon_패티.png
+버니 (Bunny)	/images/npc/NPC_icon_버니.png
+윌 (Will)	/images/npc/NPC_icon_윌.png
+장난꾸러기 (Prankster)	/images/npc/NPC_icon_장난꾸러기.png
+해리 (Harry)	/images/npc/NPC_icon_해리.png
+빌 (Bill)	/images/npc/NPC_icon_빌.png

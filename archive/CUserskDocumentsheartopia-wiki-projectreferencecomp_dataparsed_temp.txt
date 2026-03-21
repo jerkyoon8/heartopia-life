@@ -1,0 +1,84 @@
+파싱 완료: 83마리
+강|강 전체|민물배스|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|75/112/150/300/600|European Perch
+강|강 전체|왕새우|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Oriental Shrimp
+강|강 전체|틸라피아|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Blue|320/480/640/1280/2560|Tilapia
+강|거목 강|하늘종개|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Spined Loach
+강|거목 강|민물잰더|Lv.3|Sunny,Rainbow|Night,Dawn,Day,Dusk|M|230/345/460/920/1840|Zander
+강|거목 강|레드벨리피라냐|Lv.4|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|230/345/460/920/1840|Red-Bellied Piranha
+강|거목 강|후첸|Lv.9|Rainbow|Night,Day,Dusk|M|380/570/760/1520|Huchen
+강|고요한 강|미노우|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Minnow
+강|고요한 강|민물대구|Lv.4|Sunny,Rainy,Rainbow|Day,Dusk|L|230/345/460/920/1840|Burbot
+강|고요한 강|첨연어|Lv.6|Rainbow|Night,Dawn,Day,Dusk|S|150/225/300/600/1200|Chum Salmon
+강|노을 강|큰얼룩배스|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Streber
+강|노을 강|유럽잉어|Lv.4|Sunny,Rainbow|Day,Dusk|M|230/345/460/920/1840|Common Carp
+강|노을 강|민물베도라치|Lv.5|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|150/225/300/600/1200|Freshwater Blenny
+강|얕은 강|바벨|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|75/112/150/300/600|Common Barbel
+강|얕은 강|큰가시고기|Lv.7|Rainy,Rainbow|Night,Dawn,Day,Dusk|S|150/225/300/600/1200|Three-Spined Stickleback
+바다|고래 바다|전갱이|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Horse Mackerel
+바다|고래 바다|해마|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day|S|100/150/200/400/800|Seahorse
+바다|고래 바다|대서양연어|Lv.3|Sunny,Rainy,Rainbow|Night,Day,Dusk|M|155/232/310/620/1240|Atlantic Salmon
+바다|고래 바다|대서양고등어|Lv.5|Sunny,Rainbow|Day,Dusk|S|150/225/300/600/1200|Atlantic Mackerel
+바다|고래 바다|킹크랩|Lv.8|Rainbow|Dawn,Day,Dusk|L|535/802/1070/2140/4280|King Crab
+바다|구해 (옛 바다)|바다가시고기|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Sea Stickleback
+바다|구해 (옛 바다)|흰동가리|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|Clownfish
+바다|구해 (옛 바다)|유럽가자미|Lv.4|Sunny,Rainy,Rainbow|Night,Dawn,Dusk|M|230/345/460/920/1840|European Plaice
+바다|구해 (옛 바다)|복어|Lv.6|Sunny,Rainy,Rainbow|Day,Dusk|M|230/345/460/920/1840|Puffer Fish
+바다|구해 (옛 바다)|유럽장어|Lv.7|Rainbow|Dawn,Day,Dusk|M|380/570/760/1520|European Eel
+바다|구해 (옛 바다)|망치머리상어|Lv.10|Rainbow|Night,Dusk,Dawn,Day|L|850/1275/1700/3400|Smooth Hammerhead
+바다|동해|바다새우|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Common Shrimp
+바다|동해|소라게|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|Hermit Crab
+바다|동해|망둥어|Lv.4|Sunny,Rainy,Rainbow|Dawn,Day|S|150/225/300/600/1200|Goby
+바다|동해|등불성대|Lv.6|Rainbow|Night,Dawn,Day,Dusk|M|380/570/760/1520|Tub Gurnard
+바다|동해|해덕대구|Lv.8|Sunny,Rainbow|Night,Day,Dusk|M|230/345/460/920/1840|Haddock
+바다|동해|개복치|Lv.9|Sunny,Rainy,Rainbow|Night,Dawn|L|850/1275/1700/3400|Ocean Sunfish
+바다|바다 전체|정어리|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Sardine
+바다|바다 전체|배스|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|75/112/150/300/600|Sea Bass
+바다|바다 전체|가다랑어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|L|210/315/420/840/1680|Skipjack Tuna
+바다|바다 전체|대문짝넙치|Lv.4|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Blue|320/480/640/1280/2560|Rabbit Fish
+바다|바다낚시 사건|노랑촉수|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Golden|320/480/640/1280/2560|Striped Red Mullet
+바다|바다낚시 사건|아귀|Lv.2|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Golden|320/480/640/1280/2560|Anglerfish
+바다|바다낚시 사건|참문어|Lv.2|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M, Golden|320/480/640/1280/2560|Common Octopus
+바다|바다낚시 사건|돌가자미|Lv.4|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|320/480/640/1280/2560|Turbot
+바다|바다낚시 사건|유럽날오징어|Lv.5|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Golden|320/480/640/1280/2560|European Flying Squid
+바다|바다낚시 사건|두툽상어|Lv.6|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk||535/802/1070/2140/4280|Nursehound
+바다|바다낚시 사건|산갈치|Lv.7|Sunny,Rainy,Rainbow|Dawn,Day|Golden|535/802/1070/2140/4280|Giant Oarfish
+바다|바다낚시 사건|황금 킹크랩|Lv.8|Rainbow|Night,Dawn,Day,Dusk|Golden|850/1275/1700/3400|Golden King Crab
+바다|바다낚시 사건|달고기|Lv.9|Sunny,Rainy,Rainbow|Night,Dusk|Golden|850/1275/1700/3400|Moonfish
+바다|잔잔한 바다|갈치|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|L|105/157/210/420/840|Beltfish
+바다|잔잔한 바다|대서양난쟁이문어|Lv.2|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|150/225/300/600/1200|Atlantic Pygmy Octopus
+바다|잔잔한 바다|노란전갱이|Lv.2|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|155/232/310/620/1240|False Scad
+바다|잔잔한 바다|유럽가재|Lv.5|Sunny,Rainy,Rainbow|Night,Dusk|M|230/345/460/920/1840|European Lobster
+바다|잔잔한 바다|검은점돔|Lv.7|Rainy,Rainbow|Night,Dusk|M|230/345/460/920/1840|Blackspot Seabream
+바다|잔잔한 바다|참다랑어|Lv.9|Rainbow|Dawn,Day|L|850/1275/1700/3400|Bluefin Tuna
+바다|잔잔한 바다|저고리파랑돔|Lv.10|Rainy,Rainbow|Night,Dusk,Dawn,Day||850/1275/1700/3400|Seabream
+호수|근교 호수|붕어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|75/112/150/300/600|Crucian Carp
+호수|근교 호수|백조어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Schneider
+호수|근교 호수|돌마자|Lv.2|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|Stone Loach
+호수|근교 호수|홍합|Lv.3|Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|Mussel
+호수|근교 호수|민물게|Lv.4|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|River Crab
+호수|근교 호수|루드|Lv.5|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|150/225/300/600/1200|Common Rudd
+호수|근교 호수|사루기|Lv.6|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|230/345/460/920/1840|Grayling
+호수|근교 호수|줄무늬송사리|Lv.7|Sunny,Rainbow|Night,Day,Dusk|S|150/225/300/600/1200|Mediterranean Killifish
+호수|근교 호수|펄고기|Lv.8|Sunny,Rainbow|Night,Dawn|S|250/375/500/1000|European Mudminnow
+호수|근교 호수|강꼬치고기|Lv.9|Rainy,Rainbow|Night,Dusk|M|610/915/1220/2440|Northern Pike
+호수|숲속 호수|텐치|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|50/75/100/200/400|Tench
+호수|숲속 호수|큰입배스|Lv.2|Sunny,Rainbow|Night,Dawn,Day,Dusk|M|230/345/460/920/1840|Largemouth Bass
+호수|숲속 호수|유럽민물가재|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Dusk|S|100/150/200/400/800|European Crayfish
+호수|숲속 호수|머드개복치|Lv.3|Sunny,Rainy,Rainbow|Dawn,Day,Dusk|S|100/150/200/400/800|Mud Sunfish
+호수|숲속 호수|큰진주조개|Lv.6|Rainbow|Night,Dawn,Day,Dusk|M|380/570/760/1520|Large Pearl Mussel
+호수|숲속 호수|북유럽파란가재|Lv.8|Sunny,Rainy,Rainbow|Night,Dusk|S|250/375/500/1000|Blue Ero Crayfish
+호수|숲속 호수|북극송어|Lv.10|Rainy,Rainbow|Day,Dusk|M|610/915/1220/2440|Arctic Char
+호수|온천산 호수|극지연어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|105/157/210/420/840|Common Whitefish
+호수|온천산 호수|매화농어|Lv.3|Sunny,Rainy,Rainbow|Day,Dusk|S|100/150/200/400/800|Ruffe
+호수|온천산 호수|올챙이|Lv.3|Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|Tadpole
+호수|온천산 호수|독중개|Lv.7|Rainy,Rainbow|Dawn,Day,Dusk|S|150/225/300/600/1200|Mottled Sculpin
+호수|온천산 호수|펌프킨시드|Lv.9|Sunny,Rainbow|Dawn,Day,Dusk|S|250/375/500/1000|Pumpkinseed
+호수|온천산 호수|블루길|Lv.10|Sunny,Rainbow|Night,Dusk|S|395/790|Bluegill
+호수|초원 호수|바다빙어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|S|100/150/200/400/800|European Smelt
+호수|초원 호수|나비잉어|Lv.4|Rainy,Rainbow|Night,Dawn,Day,Dusk|L|320/480/640/1280/2560|Butterfly Koi
+호수|초원 호수|송어|Lv.5|Sunny,Rainbow|Night,Dusk|M|230/345/460/920/1840|Trout
+호수|초원 호수|사자머리금붕어|Lv.8|Rainy,Rainbow|Dawn,Day,Dusk|S|250/375/500/1000|Goldfish
+호수|초원 호수|유럽메기|Lv.10|Sunny,Rainbow|Night,Dusk|M|610/915/1220/2440|Wels Catfish
+호수|호수 전체|유럽백조어|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk||50/75/100/200/400|Common Bleak
+호수|호수 전체|유럽처브|Lv.1|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|M|75/112/150/300/600|Common Chub
+호수|호수 전체|유럽참개구리|Lv.3|Sunny,Rainy,Rainbow|Night,Dawn,Day,Dusk|Blue|320/480/640/1280/2560|Edible Frog

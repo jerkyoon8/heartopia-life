@@ -15,6 +15,7 @@ public class GourmetCollection {
     private String price3;
     private String price4;
     private String price5;
+    private String eventName;
 
     public List<String> getPrices() {
         return Arrays.asList(price1, price2, price3, price4, price5);

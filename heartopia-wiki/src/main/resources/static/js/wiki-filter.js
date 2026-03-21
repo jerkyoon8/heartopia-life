@@ -241,8 +241,9 @@ class WikiFilter {
                     if (parseInt(itemValue) < 10) isMatch = false;
                 }
                 else {
-                    const values = itemValue ? String(itemValue).split(/\s+/) : [];
-                    if (!values.includes(selectedValue)) isMatch = false;
+                    if (!itemValue || !String(itemValue).includes(selectedValue)) {
+                        isMatch = false;
+                    }
                 }
 
                 if (!isMatch) break;

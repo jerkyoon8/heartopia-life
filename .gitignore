@@ -69,5 +69,8 @@ rebuild_git.sh
 
 # --- Temp Root Files ---
 /*.txt
-/*.py
+*.py
 /fix_image_urls.sql
+nul
+*/nul
+**/nul

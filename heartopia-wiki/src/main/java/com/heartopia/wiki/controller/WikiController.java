@@ -38,19 +38,19 @@ public class WikiController {
 
         // 데이터 구조 정의
         record Fish(String name, String imageUrl, String location, String subLocation, String level, String weather,
-                        String time, List<Integer> prices, String size) {
+                        String time, List<Integer> prices, String size, String eventName) {
         }
 
         record Bug(String name, String imageUrl, String location, String subLocation, String level, String weather,
-                        String time, List<Integer> prices) {
+                        String time, List<Integer> prices, String eventName) {
         }
 
         record Bird(String name, String imageUrl, String location, String subLocation, String level, String weather,
-                        String time, List<Integer> prices, String type) {
+                        String time, List<Integer> prices, String type, String eventName) {
         }
 
         record WildAnimal(String name, String imageUrl, String description, String location, String favoriteFood,
-                        String favoriteWeather) {
+                        String favoriteWeather, String eventName) {
         }
 
         record Cooking(String name, String imageUrl, Integer level, String ingredients, Integer buyPrice,
@@ -58,14 +58,14 @@ public class WikiController {
         }
 
         record Flower(String name, String imageUrl, Integer level, String growthTime, Integer seedBuyPrice,
-                        Integer seedSellPrice, List<Integer> prices) {
+                        Integer seedSellPrice, List<Integer> prices, String eventName) {
         }
 
         record Crop(String name, String imageUrl, Integer level, String growthTime, Integer seedBuyPrice,
-                        Integer seedSellPrice, List<Integer> prices) {
+                        Integer seedSellPrice, List<Integer> prices, String eventName) {
         }
 
-        record Forageable(String name, String imageUrl, String location, Integer price, String energy) {
+        record Forageable(String name, String imageUrl, String location, Integer price, String energy, String eventName) {
         }
 
         // 검색 결과용 통합 record
@@ -127,7 +127,8 @@ public class WikiController {
                                                                 f.getPrice3() != null ? f.getPrice3() : 0,
                                                                 f.getPrice4() != null ? f.getPrice4() : 0,
                                                                 f.getPrice5() != null ? f.getPrice5() : 0),
-                                                f.getSize() != null ? f.getSize() : "-"))
+                                                f.getSize() != null ? f.getSize() : "-",
+                                                f.getEventName()))
                                 .toList();
                 model.addAttribute("fishList", list);
 
@@ -153,7 +154,8 @@ public class WikiController {
                                                                 b.getPrice2() != null ? b.getPrice2() : 0,
                                                                 b.getPrice3() != null ? b.getPrice3() : 0,
                                                                 b.getPrice4() != null ? b.getPrice4() : 0,
-                                                                b.getPrice5() != null ? b.getPrice5() : 0)))
+                                                                b.getPrice5() != null ? b.getPrice5() : 0),
+                                                b.getEventName()))
                                 .toList();
                 model.addAttribute("bugList", list);
                 return "wiki/collections/bug";
@@ -177,7 +179,8 @@ public class WikiController {
                                                                 b.getPrice3() != null ? b.getPrice3() : 0,
                                                                 b.getPrice4() != null ? b.getPrice4() : 0,
                                                                 b.getPrice5() != null ? b.getPrice5() : 0),
-                                                b.getType()))
+                                                b.getType(),
+                                                b.getEventName()))
                                 .toList();
                 model.addAttribute("birdList", list);
                 return "wiki/collections/bird";
@@ -192,7 +195,8 @@ public class WikiController {
                                                 "",
                                                 a.getLocation(),
                                                 a.getFavoriteFood(),
-                                                a.getFavoriteWeather() != null ? a.getFavoriteWeather() : ""))
+                                                a.getFavoriteWeather() != null ? a.getFavoriteWeather() : "",
+                                                a.getEventName()))
                                 .toList();
                 model.addAttribute("animalList", list);
                 return "wiki/collections/animal";
@@ -228,7 +232,8 @@ public class WikiController {
                                                                 f.getPrice2() != null ? f.getPrice2() : 0,
                                                                 f.getPrice3() != null ? f.getPrice3() : 0,
                                                                 f.getPrice4() != null ? f.getPrice4() : 0,
-                                                                f.getPrice5() != null ? f.getPrice5() : 0)))
+                                                                f.getPrice5() != null ? f.getPrice5() : 0),
+                                                f.getEventName()))
                                 .toList();
                 model.addAttribute("flowerList", list);
                 return "wiki/items/flowers";
@@ -249,7 +254,8 @@ public class WikiController {
                                                                 c.getPrice2() != null ? c.getPrice2() : 0,
                                                                 c.getPrice3() != null ? c.getPrice3() : 0,
                                                                 c.getPrice4() != null ? c.getPrice4() : 0,
-                                                                c.getPrice5() != null ? c.getPrice5() : 0)))
+                                                                c.getPrice5() != null ? c.getPrice5() : 0),
+                                                c.getEventName()))
                                 .toList();
                 model.addAttribute("cropList", list);
                 return "wiki/items/crops";
@@ -263,7 +269,8 @@ public class WikiController {
                                                 f.getImageUrl(),
                                                 f.getLocation(),
                                                 f.getPrice(),
-                                                f.getEnergy() != null ? f.getEnergy() : "-"))
+                                                f.getEnergy() != null ? f.getEnergy() : "-",
+                                                f.getEventName()))
                                 .toList();
                 model.addAttribute("forageableList", list);
                 return "wiki/collections/forageable";

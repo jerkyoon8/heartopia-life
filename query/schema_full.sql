@@ -200,6 +200,7 @@ CREATE TABLE `forageable_collections` (
   `price` int DEFAULT '0',
   `energy` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `show_on_map` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

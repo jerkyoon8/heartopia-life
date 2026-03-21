@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <!-- Wiki Filter JS -->
+    <script src="/js/wiki-filter.js" defer></script>
     <style>
         :root {
             --content-bg: var(--content-bg, rgba(251, 251, 251, 0.95));
@@ -68,8 +70,26 @@
         <div class="page-header"><i class="fas fa-paw fa-2x text-warning"></i>
             <h1>야생 동물 도감 (Wild Animal Collection)</h1>
         </div>
-        <div class="wiki-grid-layout">
-            <div th:each="animal : ${animalList}" class="wiki-item-card">
+        
+        <div class="filter-bar border-0 shadow-none pb-0">
+            <!-- Event Button -->
+            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap; margin-left: auto;">
+                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
+            </button>
+            <select id="eventFilter" class="filter-select" style="display: none;">
+                <option value="all">모든 이벤트</option>
+                <option value="꿈의 명암">꿈의 명암</option>
+            </select>
+        </div>
+
+        <div class="wiki-grid-layout" id="wikiGrid">
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <div th:each="animal : ${animalList}" class="wiki-item-card"
+                 th:data-event="${animal.eventName != null ? animal.eventName : ''}">
                 <div class="fish-image-wrapper">
                     <img th:if="${animal.imageUrl != null}" th:src="${animal.imageUrl}" th:alt="${animal.name}"
                         style="width: 120px; height: 120px; object-fit: contain;">
@@ -77,8 +97,10 @@
                         th:style="${animal.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
                 </div>
                 <div class="text-center">
-                    <a th:href="@{/wiki/collections/animal/{name}(name=${animal.name})}" class="wiki-item-name h5 mb-2"
-                        th:text="${animal.name}"></a>
+                    <a th:href="@{/wiki/collections/animal/{name}(name=${animal.name})}" class="wiki-item-name h5 mb-2">
+                        <span th:text="${animal.name}"></span>
+                        <span th:if="${animal.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${animal.eventName}"></span>
+                    </a>
                     <a th:href="@{/wiki/map(cat='animal', name=${animal.name})}" class="wiki-item-tag location-link">
                         <i class="fas fa-map-marker-alt me-1"></i>
                         <span th:text="${animal.location}"></span>
@@ -107,6 +129,39 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnDream = document.getElementById('btn-dream-event');
+            const eventFilter = document.getElementById('eventFilter');
+            let isDreamOnly = false;
+
+            if (btnDream && eventFilter) {
+                btnDream.addEventListener('click', function() {
+                    isDreamOnly = !isDreamOnly;
+                    if(isDreamOnly) {
+                        eventFilter.value = '꿈의 명암';
+                        btnDream.classList.remove('btn-outline-dark');
+                        btnDream.classList.add('btn-dark');
+                    } else {
+                        eventFilter.value = 'all';
+                        btnDream.classList.remove('btn-dark');
+                        btnDream.classList.add('btn-outline-dark');
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+            }
+
+            // Note: animal.html doesn't have table view, only grid view
+            new WikiFilter({
+                gridId: 'wikiGrid',
+                itemSelector: '.wiki-item-card',
+                filters: [
+                    { id: 'eventFilter', dataKey: 'event', autoPopulate: true }
+                ]
+            });
+        });
+    </script>
+    
     <!-- Footer (Common Fragment) -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 

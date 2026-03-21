@@ -1,0 +1,105 @@
+Initialized native services in: C:\Users\k\.gradle\native
+Initialized jansi services in: C:\Users\k\.gradle\native
+Received JVM installation metadata from 'C:\Program Files\Microsoft\jdk-21.0.9.10-hotspot': {JAVA_HOME=C:\Program Files\Microsoft\jdk-21.0.9.10-hotspot, JAVA_VERSION=21.0.9, JAVA_VENDOR=Microsoft, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.9+10-LTS, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.9+10-LTS, VM_VENDOR=Microsoft, OS_ARCH=amd64}
+The client will now receive all logging from the daemon (pid: 6192). The daemon log file: C:\Users\k\.gradle\daemon\8.5\daemon-6192.out.log
+Starting 6th build in daemon [uptime: 2 mins 56.629 secs, performance: 100%, GC rate: 0.00/s, heap usage: 2% of 512 MiB, non-heap usage: 16% of 384 MiB]
+Using 16 worker leases.
+Now considering [C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file 'C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki\settings.gradle'.
+Projects loaded. Root project using build file 'C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki\build.gradle'.
+Included projects: [root project 'heartopia-wiki']
+
+> Configure project :
+Evaluating root project 'heartopia-wiki' using build file 'C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki\build.gradle'.
+Applying dependency management to configuration 'annotationProcessor' in project 'heartopia-wiki'
+Applying dependency management to configuration 'apiElements' in project 'heartopia-wiki'
+Applying dependency management to configuration 'archives' in project 'heartopia-wiki'
+Applying dependency management to configuration 'bootArchives' in project 'heartopia-wiki'
+Applying dependency management to configuration 'compileClasspath' in project 'heartopia-wiki'
+Applying dependency management to configuration 'compileOnly' in project 'heartopia-wiki'
+Applying dependency management to configuration 'default' in project 'heartopia-wiki'
+Applying dependency management to configuration 'developmentOnly' in project 'heartopia-wiki'
+Applying dependency management to configuration 'implementation' in project 'heartopia-wiki'
+Applying dependency management to configuration 'mainSourceElements' in project 'heartopia-wiki'
+Applying dependency management to configuration 'productionRuntimeClasspath' in project 'heartopia-wiki'
+Applying dependency management to configuration 'runtimeClasspath' in project 'heartopia-wiki'
+Applying dependency management to configuration 'runtimeElements' in project 'heartopia-wiki'
+Applying dependency management to configuration 'runtimeOnly' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testAndDevelopmentOnly' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testCompileClasspath' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testCompileOnly' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testImplementation' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'heartopia-wiki'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'heartopia-wiki'
+All projects evaluated.
+Task name matched 'clean'
+Task name matched 'build'
+Selected primary task 'clean' from project :
+Selected primary task 'build' from project :
+Resolving global dependency management for project 'heartopia-wiki'
+Excluding [com.google.protobuf:protobuf-java]
+Excluding []
+Excluding []
+Excluding []
+Excluding []
+Excluding [com.google.protobuf:protobuf-java]
+Excluding []
+Tasks to be executed: [task ':clean', task ':compileJava', task ':processResources', task ':classes', task ':resolveMainClassName', task ':bootJar', task ':jar', task ':assemble', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test', task ':check', task ':build']
+Tasks that were excluded: []
+Resolve mutations for :clean (Thread[#1239,Execution worker,5,main]) started.
+:clean (Thread[#1239,Execution worker,5,main]) started.
+destroyer locations for task group 0 (Thread[#1243,Execution worker Thread 5,5,main]) started.
+
+> Task :clean
+Caching disabled for task ':clean' because:
+  Build cache is disabled
+Task ':clean' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Resolve mutations for :compileJava (Thread[#1239,Execution worker,5,main]) started.
+:compileJava (Thread[#1239,Execution worker,5,main]) started.
+This JVM does not support getting OS memory, so no OS memory status updates will be broadcast
+
+> Task :compileJava
+Caching disabled for task ':compileJava' because:
+  Build cache is disabled
+Task ':compileJava' is not up-to-date because:
+  Task has failed previously.
+The input changes require a full rebuild for incremental task ':compileJava'.
+Full recompilation is required because no incremental change information is available. This is usually caused by clean builds or changing compiler arguments.
+Compiling with toolchain 'C:\Program Files\Java\jdk-17'.
+Log level has changed, stopping idle worker daemon with out-of-date log level.
+Starting process 'Gradle Worker Daemon 5'. Working directory: C:\Users\k\.gradle\workers Command: C:\Program Files\Java\jdk-17\bin\java.exe @C:\Users\k\.gradle\.tmp\gradle-worker-classpath3161166309187263605txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 5'
+Successfully started process 'Gradle Worker Daemon 5'
+Started Gradle worker daemon (0.335 secs) with fork options DaemonForkOptions{executable=C:\Program Files\Java\jdk-17\bin\java.exe, minHeapSize=null, maxHeapSize=null, jvmArgs=[], keepAliveMode=DAEMON}.
+Compiling with JDK Java compiler API.
+C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki\src\main\java\com\heartopia\wiki\service\CollectionService.java:43: error: cannot find symbol
+        return collectionMapper.findAllFlowers();
+                               ^
+  symbol:   method findAllFlowers()
+  location: variable collectionMapper of type CollectionMapper
+C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki\src\main\java\com\heartopia\wiki\service\CollectionService.java:47: error: cannot find symbol
+        return collectionMapper.findAllGardening();
+                               ^
+  symbol:   method findAllGardening()
+  location: variable collectionMapper of type CollectionMapper
+2 errors
+
+> Task :compileJava FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 4s
+2 actionable tasks: 2 executed
+Watched directory hierarchies: [C:\Users\k\Documents\heartopia-wiki-project\heartopia-wiki]

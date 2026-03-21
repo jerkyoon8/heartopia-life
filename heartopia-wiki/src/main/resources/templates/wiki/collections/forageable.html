@@ -30,6 +30,16 @@
                 <i class="fas fa-search text-secondary"></i>
                 <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
             </div>
+            <!-- Event Button -->
+            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
+                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
+            </button>
+
+            <!-- Hidden Event Filter -->
+            <select id="eventFilter" class="filter-select" style="display: none;">
+                <option value="all">모든 이벤트</option>
+                <option value="꿈의 명암">꿈의 명암</option>
+            </select>
             <!-- Filters -->
             <select id="locationFilter" class="filter-select">
                 <option value="all">모든 장소</option>
@@ -47,7 +57,8 @@
 
             <!-- Forageable Card Loop -->
             <div th:each="item : ${forageableList}" class="wiki-item-card" th:data-name="${item.name}"
-                th:data-location="${item.location}" th:data-price="${item.price}">
+                th:data-location="${item.location}" th:data-price="${item.price}"
+                th:data-event="${item.eventName != null ? item.eventName : ''}">
 
                 <div class="wiki-item-image">
                     <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
@@ -57,8 +68,10 @@
                 </div>
 
                 <div class="wiki-item-info">
-                    <a th:href="@{/wiki/collections/forageable/{name}(name=${item.name})}" class="wiki-item-name"
-                        th:text="${item.name}">채집물 이름</a>
+                    <a th:href="@{/wiki/collections/forageable/{name}(name=${item.name})}" class="wiki-item-name">
+                        <span th:text="${item.name}">채집물 이름</span>
+                        <span th:if="${item.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${item.eventName}"></span>
+                    </a>
                     <div class="mt-2 text-center">
                         <a th:href="@{/wiki/map(cat='forageable', name=${item.name})}"
                             class="wiki-item-tag location-link">
@@ -103,12 +116,18 @@
                     <tr th:each="item : ${forageableList}" class="wiki-table-row"
                         th:data-name="${item.name}"
                         th:data-location="${item.location}"
-                        th:data-price="${item.price}">
+                        th:data-price="${item.price}"
+                        th:data-event="${item.eventName != null ? item.eventName : ''}">
                         <td>
                             <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb">
                             <div th:unless="${item.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-seedling"></i></div>
                         </td>
-                        <td><a th:href="@{/wiki/collections/forageable/{name}(name=${item.name})}" class="table-name-link" th:text="${item.name}">이름</a></td>
+                        <td>
+                            <a th:href="@{/wiki/collections/forageable/{name}(name=${item.name})}" class="table-name-link">
+                                <span th:text="${item.name}">이름</span>
+                                <span th:if="${item.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.7em;" th:text="${item.eventName}"></span>
+                            </a>
+                        </td>
                         <td>
                             <a th:href="@{/wiki/map(cat='forageable', name=${item.name})}" class="table-location-link">
                                 <i class="fas fa-map-marker-alt me-1"></i>
@@ -133,11 +152,32 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                const btnDream = document.getElementById('btn-dream-event');
+                const eventFilter = document.getElementById('eventFilter');
+                let isDreamOnly = false;
+
+                if (btnDream && eventFilter) {
+                    btnDream.addEventListener('click', function() {
+                        isDreamOnly = !isDreamOnly;
+                        if(isDreamOnly) {
+                            eventFilter.value = '꿈의 명암';
+                            btnDream.classList.remove('btn-outline-dark');
+                            btnDream.classList.add('btn-dark');
+                        } else {
+                            eventFilter.value = 'all';
+                            btnDream.classList.remove('btn-dark');
+                            btnDream.classList.add('btn-outline-dark');
+                        }
+                        eventFilter.dispatchEvent(new Event('change'));
+                    });
+                }
+
                 new WikiFilter({
                     gridId: 'wikiGrid',
                     tableId: 'wikiTable',
                     itemSelector: '.wiki-item-card',
                     filters: [
+                        { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true }
                     ]
                 });

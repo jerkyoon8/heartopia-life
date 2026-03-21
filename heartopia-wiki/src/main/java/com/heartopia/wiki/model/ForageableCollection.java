@@ -10,4 +10,6 @@ public class ForageableCollection {
     private Integer price;
     private String energy;
     private String imageUrl;
+    private String eventName;
+    private Boolean showOnMap;
 }

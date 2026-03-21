@@ -18,6 +18,15 @@ public class FishCollection {
     private Integer price5;
     private String size;
     private String imageUrl;
+    private String eventName;
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
     public java.util.List<Integer> getPrices() {
         return java.util.Arrays.asList(price1, price2, price3, price4, price5);

@@ -24,6 +24,17 @@
                 <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
             </div>
 
+            <!-- Event Button -->
+            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
+                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
+            </button>
+
+            <!-- Hidden Event Filter -->
+            <select id="eventFilter" class="filter-select" style="display: none;">
+                <option value="all">모든 이벤트</option>
+                <option value="꿈의 명암">꿈의 명암</option>
+            </select>
+
             <!-- Custom Filters -->
             <select id="levelFilter" class="filter-select">
                 <option value="all">모든 레벨</option>
@@ -50,7 +61,8 @@
             </div>
 
             <div th:each="bug : ${bugList}" class="wiki-item-card" th:data-name="${bug.name}"
-                th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}">
+                th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}"
+                th:data-event="${bug.eventName != null ? bug.eventName : ''}">
 
                 <div class="wiki-item-image">
                     <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}"
@@ -61,9 +73,11 @@
 
                 <div class="wiki-item-info">
                     <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-                        <span class="wiki-item-tag mb-0">곤충</span>
-                        <a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="wiki-item-name mb-0"
-                            th:text="${bug.name}"></a>
+
+                        <a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="wiki-item-name mb-0">
+                            <span th:text="${bug.name}"></span>
+                            <span th:if="${bug.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${bug.eventName}"></span>
+                        </a>
                     </div>
                     <div>
                         <a th:href="@{/wiki/map(cat='insect', name=${bug.name})}" class="wiki-item-tag location-link">
@@ -120,12 +134,18 @@
                     <tr th:each="bug : ${bugList}" class="wiki-table-row"
                         th:data-name="${bug.name}"
                         th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
-                        th:data-price="${bug.prices[0]}">
+                        th:data-price="${bug.prices[0]}"
+                        th:data-event="${bug.eventName != null ? bug.eventName : ''}">
                         <td>
                             <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb">
                             <div th:unless="${bug.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-bug"></i></div>
                         </td>
-                        <td><a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="table-name-link" th:text="${bug.name}">이름</a></td>
+                        <td>
+                            <a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="table-name-link">
+                                <span th:text="${bug.name}">이름</span>
+                                <span th:if="${bug.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.7em;" th:text="${bug.eventName}"></span>
+                            </a>
+                        </td>
                         <td th:text="${bug.level}">1</td>
                         <td>
                             <a th:href="@{/wiki/map(cat='insect', name=${bug.name})}" class="table-location-link">
@@ -144,11 +164,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const btnDream = document.getElementById('btn-dream-event');
+            const eventFilter = document.getElementById('eventFilter');
+            let isDreamOnly = false;
+
+            if (btnDream && eventFilter) {
+                btnDream.addEventListener('click', function() {
+                    isDreamOnly = !isDreamOnly;
+                    if(isDreamOnly) {
+                        eventFilter.value = '꿈의 명암';
+                        btnDream.classList.remove('btn-outline-dark');
+                        btnDream.classList.add('btn-dark');
+                    } else {
+                        eventFilter.value = 'all';
+                        btnDream.classList.remove('btn-dark');
+                        btnDream.classList.add('btn-outline-dark');
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+            }
+
             new WikiFilter({
                 gridId: 'wikiGrid',
                 tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
+                    { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                     { id: 'levelFilter', dataKey: 'level' }
                 ]
             });

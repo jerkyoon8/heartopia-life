@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
@@ -34,11 +34,7 @@ public class MapController {
     private final VillagerService villagerService;
     private final LocationZoneMapper locationZoneMapper;
 
-    // 채집물.txt 기반 허용된 16개 항목 목록
-    private static final List<String> ALLOWED_FORAGEABLES = Arrays.asList(
-            "검은 트러플", "광석", "그물버섯", "느타리버섯",
-            "대나무", "돌", "라즈베리", "블루베리", "사과",
-            "양송이버섯", "귤 (오렌지)", "표고버섯", "희귀 목재");
+    // 채집물 필터는 더 이상 하드코딩 배열을 쓰지 않고 DB 필드 f.getShowOnMap()에 의존합니다.
 
     @GetMapping
     public String mapPage(Model model) {
@@ -53,7 +49,7 @@ public class MapController {
     public List<ForageableCollection> getForageableMasterList() {
         List<ForageableCollection> all = collectionService.getAllForageables();
         return all.stream()
-                .filter(f -> ALLOWED_FORAGEABLES.contains(f.getName()))
+                .filter(f -> Boolean.TRUE.equals(f.getShowOnMap()))
                 .collect(Collectors.toList());
     }
 
@@ -100,9 +96,14 @@ public class MapController {
         // 카테고리별 상세 정보 채우기
         pins.forEach(this::enrichPinDetails);
 
-        // 채집물 카테고리의 경우 허용된 16종만 필터링하여 반환
+        // 채집물 카테고리의 경우 DB 설정(showOnMap)이 켜진 종만 필터링하여 반환
+        List<String> validForageables = collectionService.getAllForageables().stream()
+                .filter(f -> Boolean.TRUE.equals(f.getShowOnMap()))
+                .map(ForageableCollection::getName)
+                .collect(Collectors.toList());
+
         return pins.stream()
-                .filter(pin -> !"forageable".equals(pin.getCategory()) || ALLOWED_FORAGEABLES.contains(pin.getName()))
+                .filter(pin -> !"forageable".equals(pin.getCategory()) || validForageables.contains(pin.getName()))
                 .collect(Collectors.toList());
     }
 

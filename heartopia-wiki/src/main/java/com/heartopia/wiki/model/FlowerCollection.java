@@ -16,4 +16,5 @@ public class FlowerCollection {
     private Integer seedBuyPrice;
     private Integer seedSellPrice;
     private String imageUrl;
+    private String eventName;
 }

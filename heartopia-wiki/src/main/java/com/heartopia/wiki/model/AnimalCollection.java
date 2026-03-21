@@ -11,4 +11,5 @@ public class AnimalCollection {
     private String favoriteFood;
     private String favoriteWeather;
     private String imageUrl;
+    private String eventName;
 }

@@ -1,0 +1,13 @@
+Field	Type	Null	Key	Default	Extra
+id	int	NO	PRI	NULL	auto_increment
+name	varchar(50)	NO	MUL	NULL	
+location	varchar(255)	YES	MUL	NULL	
+price_1	int	YES		NULL	
+price_2	int	YES		NULL	
+price_3	int	YES		NULL	
+price_4	int	YES		NULL	
+price_5	int	YES		NULL	
+level	int	YES		NULL	
+growth_time	varchar(50)	YES		NULL	
+seed_buy_price	int	YES		NULL	
+seed_sell_price	int	YES		NULL	

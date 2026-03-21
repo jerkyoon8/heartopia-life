@@ -1,0 +1,8 @@
+90a764f|||fix: Google SEO 인증 파일명 오타 수정 (e 4개 -> 3개)
+635bfc3|||feat: add google seo verification and update sitemap
+a8a5214|||chore: database scripts synchronization (v6.1) - fix schema syntax errors
+9ade974|||chore: database scripts synchronization with local master (v6)
+081865f|||feat: Consolidate SQL scripts and sync database image URLs
+a969e70|||chore: SEO 리소스 추가 및 위키 메인·공통 UI 개선
+058e833|||refactor: 에러 처리 개선 및 위키 UI 공통 컴포넌트 정비
+4d5369a|||feat: Spring Security 설정 및 관리자 인증 구현

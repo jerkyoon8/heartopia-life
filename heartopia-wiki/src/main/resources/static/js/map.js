@@ -58,25 +58,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoBoxContent = document.getElementById('infoBoxContent');
     const infoBoxClose = document.getElementById('infoBoxClose');
 
-    // Show All All
-    showAllBtn.addEventListener('click', () => {
+    // Helper function for Show All / Hide All
+    function setAllVisibility(isVisible) {
+        Object.keys(CATEGORY_CONFIG).forEach(cat => state.categoryVisible[cat] = isVisible);
         state.allPins.forEach(pin => {
-            state.categoryVisible[pin.category] = true;
-            state.itemVisible[pin.id] = true;
+            const key = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+            state.itemVisible[key] = isVisible;
+        });
+        const masterMap = {
+            'forageable': state.masterForageables, 'fish': state.masterFish,
+            'bird': state.masterBirds, 'insect': state.masterInsects,
+            'animal': state.masterAnimals, 'villager': state.masterVillagers
+        };
+        Object.entries(masterMap).forEach(([cat, masters]) => {
+            if (masters) {
+                masters.forEach(m => {
+                    const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                    state.itemVisible[key] = isVisible;
+                });
+            }
         });
         updateMarkerVisibility();
         renderCategoryList();
-    });
+    }
+
+    // Show All All
+    showAllBtn.addEventListener('click', () => setAllVisibility(true));
 
     // Hide All All
-    hideAllBtn.addEventListener('click', () => {
-        state.allPins.forEach(pin => {
-            state.categoryVisible[pin.category] = false;
-            state.itemVisible[pin.id] = false;
-        });
-        updateMarkerVisibility();
-        renderCategoryList();
-    });
+    hideAllBtn.addEventListener('click', () => setAllVisibility(false));
 
     pinSearch.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
@@ -194,8 +204,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         const defaultVisible = ['villager', 'animal', 'bus'];
                         state.categoryVisible[pin.category] = defaultVisible.includes(pin.category);
                     }
-                    if (state.itemVisible[pin.id] === undefined) {
-                        state.itemVisible[pin.id] = true;
+                    const key = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+                    if (state.itemVisible[key] === undefined) {
+                        state.itemVisible[key] = state.categoryVisible[pin.category];
                     }
                 });
 
@@ -225,6 +236,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     state.masterInsects = insects;
                     state.masterAnimals = animals;
                     state.masterVillagers = villagers;
+
+                    const masterMapInit = {
+                        'forageable': state.masterForageables, 'fish': state.masterFish,
+                        'bird': state.masterBirds, 'insect': state.masterInsects,
+                        'animal': state.masterAnimals, 'villager': state.masterVillagers
+                    };
+                    Object.entries(masterMapInit).forEach(([cat, masters]) => {
+                        if (state.categoryVisible[cat] === undefined) {
+                            const defaultVisible = ['villager', 'animal', 'bus'];
+                            state.categoryVisible[cat] = defaultVisible.includes(cat);
+                        }
+                        if (masters) {
+                            masters.forEach(m => {
+                                const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                                if (state.itemVisible[key] === undefined) {
+                                    state.itemVisible[key] = state.categoryVisible[cat];
+                                }
+                            });
+                        }
+                    });
+
                     renderCategoryList();
 
                     // Deep link handling (Master lists are now ready)
@@ -513,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Multi-pin specific delete button in popup
-        if (pin.category === 'forageable') {
+        if (pin.category === 'forageable' && window.isAdmin) {
             popupHtml += `
                 <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px;">
                     <button class="popup-delete-btn" onclick="document.dispatchEvent(new CustomEvent('delete-pin', {detail: ${pin.id}}))"
@@ -727,6 +759,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
+                // ALSO sync master items (unplaced items)
+                const masterMap = {
+                    'forageable': state.masterForageables, 'fish': state.masterFish,
+                    'bird': state.masterBirds, 'insect': state.masterInsects,
+                    'animal': state.masterAnimals, 'villager': state.masterVillagers
+                };
+                if (masterMap[cat]) {
+                    masterMap[cat].forEach(m => {
+                        const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                        state.itemVisible[key] = nextVisible;
+                    });
+                }
+
                 updateMarkerVisibility();
                 renderCategoryList();
             });
@@ -741,7 +786,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const name = btn.dataset.name;
 
                 const key = cat === 'forageable' ? `forageable:${name}` : id;
-                state.itemVisible[key] = state.itemVisible[key] === false ? true : false;
+                const nextVisible = state.itemVisible[key] === false ? true : false;
+                state.itemVisible[key] = nextVisible;
+
+                // If child is turned ON, turn ON parent automatically
+                if (nextVisible) {
+                    state.categoryVisible[cat] = true;
+                }
 
                 updateMarkerVisibility();
                 renderCategoryList();

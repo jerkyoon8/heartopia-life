@@ -17,6 +17,7 @@ public class CookingCollection {
     private Integer price4;
     private Integer price5;
     private String imageUrl;
+    private String eventName;
 
     // 신규: 관계형 재료 목록 (cooking_ingredients 테이블)
     private List<CookingIngredient> ingredientList;
