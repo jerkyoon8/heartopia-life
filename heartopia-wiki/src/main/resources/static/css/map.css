@@ -17,7 +17,52 @@
     display: flex;
     flex-direction: column;
     font-family: 'Paperlogy', sans-serif;
-    transition: background 0.3s ease;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+    margin-left: 0;
+}
+
+.map-side-panel.collapsed {
+    margin-left: -280px;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 80px;
+    left: 15px;
+    z-index: 1002;
+    background: var(--card-bg, white);
+    border: 1px solid var(--border-subtle, #e8e8e8);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    color: var(--text-color, #333);
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+    background: #f1f3f5;
+    color: #0d6efd;
+}
+
+@media (max-width: 768px) {
+    .map-layout {
+        position: relative;
+    }
+    .map-side-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1003;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+    }
 }
 
 .side-panel-header {

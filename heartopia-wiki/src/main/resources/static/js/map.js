@@ -57,6 +57,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapInfoBox = document.getElementById('mapInfoBox');
     const infoBoxContent = document.getElementById('infoBoxContent');
     const infoBoxClose = document.getElementById('infoBoxClose');
+    
+    // Sidebar Elements
+    const mapSidePanel = document.getElementById('mapSidePanel');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+
+    // Sidebar Toggle Logic
+    if (sidebarToggleBtn && mapSidePanel) {
+        sidebarToggleBtn.addEventListener('click', () => {
+            mapSidePanel.classList.toggle('collapsed');
+            
+            // Re-calculate map size so tiles don't stretch
+            if (state.map) {
+                setTimeout(() => {
+                    state.map.invalidateSize();
+                }, 300); // 300ms matches CSS transition duration
+            }
+        });
+
+        // Auto-collapse on mobile initially
+        if (window.innerWidth <= 768) {
+            mapSidePanel.classList.add('collapsed');
+        }
+    }
 
     // Helper function for Show All / Hide All
     function setAllVisibility(isVisible) {
