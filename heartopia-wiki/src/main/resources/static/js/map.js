@@ -160,11 +160,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }, duration);
     }
 
+    // CSRF Token Setup
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
     async function saveNewPin(pinData) {
         try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
             const response = await fetch(`/wiki/map/api/pins`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify(pinData)
             });
             if (!response.ok) throw new Error('등록 실패');
@@ -177,8 +184,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function deletePin(pinId) {
         try {
+            const headers = {};
+            if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
             const response = await fetch(`/wiki/map/api/pins/${pinId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: headers
             });
             if (!response.ok) throw new Error('삭제 실패');
             return await response.json();

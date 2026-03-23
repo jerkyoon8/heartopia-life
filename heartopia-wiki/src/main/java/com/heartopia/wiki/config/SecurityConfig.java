@@ -20,9 +20,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/wiki/map/api/**") // API는 CSRF 일단 제외 (필요시 토큰 연동)
-                )
                 .authorizeHttpRequests(auth -> auth
                         // 지도 데이터 조회(GET) 및 일반 페이지는 모두 허용
                         .requestMatchers(AntPathRequestMatcher.antMatcher(org.springframework.http.HttpMethod.GET,
