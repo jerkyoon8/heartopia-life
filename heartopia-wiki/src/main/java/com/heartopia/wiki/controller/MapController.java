@@ -6,8 +6,11 @@ import com.heartopia.wiki.service.CollectionService;
 import com.heartopia.wiki.service.MapPinService;
 import com.heartopia.wiki.service.VillagerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/wiki/map")
 @RequiredArgsConstructor
@@ -229,7 +232,8 @@ public class MapController {
 
     @PostMapping("/api/pins")
     @ResponseBody
-    public MapPin addPin(@RequestBody MapPin pin) {
+    public MapPin addPin(@Valid @RequestBody MapPin pin) {
+        log.info("새로운 핀 추가 API 호출됨: {}", pin.getName());
         MapPin saved = mapPinService.addPin(pin);
         enrichPinDetails(saved); // 새 핀에도 도감 상세 정보 즉시 연동
         return saved;

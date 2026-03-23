@@ -2,8 +2,14 @@ package com.heartopia.wiki.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 @Slf4j
@@ -11,19 +17,39 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
     public void handleNoResourceFoundException(org.springframework.web.servlet.resource.NoResourceFoundException e) {
-        // 정적 리소스(아이콘 등)가 없는 경우 에러 로그를 남기지 않고 조용히 넘아감
-        // 브라우저에서는 404가 발생하며, 프론트엔드의 onerror 로직이 처리함
-        log.warn("Resource not found: {}", e.getResourcePath());
+        // 이미지가 없어서 발생하는 404 에러는 프론트엔드의 onerror 로직이 
+        // 대체 아이콘으로 알아서 덮어씌워주므로, 굳이 백엔드 단에서 시끄럽게 에러 로그(WARN)를 남길 필요가 없습니다.
+        // log.warn("Resource not found: {}", e.getResourcePath());
+    }
+
+    // API JSON 파라미터 검증 실패 처리 (@Valid 실패 로직)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        String errorMsg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        
+        errorResponse.put("success", false);
+        errorResponse.put("message", "데이터 검증 실패: " + errorMsg);
+        
+        log.warn("API 데이터 검증 에러 차단됨: {}", errorMsg);
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
-        log.error("Unhandled exception occurred: ", e);
+    public Object handleException(Exception e, Model model, org.springframework.web.context.request.WebRequest request) {
+        log.error("Unhandled exception occurred! URL: {}", request.getDescription(false), e);
         
-        // 브라우저에는 최소한의 정보만 노출
-        model.addAttribute("errorTitle", "시스템 오류가 발생했습니다.");
-        model.addAttribute("errorMessage", "잠시 후 다시 시도해 주세요. 문제가 지속되면 관리자에게 문의 바랍니다.");
-        
-        return "error/default-error";
+        String acceptHeader = request.getHeader("Accept");
+        if (acceptHeader != null && acceptHeader.contains("application/json")) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "일시적인 서버 오류가 발생했습니다. 관리자에게 문의하세요.");
+            return ResponseEntity.internalServerError().body(errorResponse);
+        } else {
+            model.addAttribute("errorTitle", "시스템 오류가 발생했습니다.");
+            model.addAttribute("errorMessage", "잠시 후 다시 시도해 주세요. 문제가 지속되면 관리자에게 문의 바랍니다.");
+            return new org.springframework.web.servlet.ModelAndView("error/default-error", model.asMap());
+        }
     }
 }
