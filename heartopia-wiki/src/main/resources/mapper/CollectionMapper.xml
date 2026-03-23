@@ -4,113 +4,100 @@
 
 <mapper namespace="com.heartopia.wiki.mapper.CollectionMapper">
 
-    <!-- ========== 전체 조회 (기존) ========== -->
+    <!-- ========== 리팩토링: 공통 SQL 컬럼 조각 (코드 재사용) ========== -->
+    <sql id="fishColumns">
+        id, location, sub_location as subLocation, name, level, weather, time, 
+        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+        size, image_url as imageUrl, event_name as eventName
+    </sql>
 
+    <sql id="birdColumns">
+        id, location, sub_location as subLocation, name, level, weather, time, 
+        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+        type, image_url as imageUrl, event_name as eventName
+    </sql>
+
+    <sql id="bugColumns">
+        id, location, sub_location as subLocation, name, level, weather, time, 
+        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+        image_url as imageUrl, event_name as eventName
+    </sql>
+
+    <sql id="animalColumns">
+        id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
+    </sql>
+
+    <sql id="cookingColumns">
+        id, name, level, ingredients, buy_price as buyPrice,
+        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+        image_url as imageUrl, event_name as eventName
+    </sql>
+
+    <sql id="flowerAndCropColumns">
+        id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
+        level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
+        image_url as imageUrl, event_name as eventName
+    </sql>
+
+    <sql id="forageableColumns">
+        id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
+    </sql>
+
+    <!-- ========== 전체 조회 ========== -->
     <select id="findAllFish" resultType="com.heartopia.wiki.model.FishCollection">
-        SELECT 
-            id, location, sub_location as subLocation, name, level, weather, time, 
-            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-            size, image_url as imageUrl, event_name as eventName
-        FROM fish_collections
-        ORDER BY id ASC
+        SELECT <include refid="fishColumns"/> FROM fish_collections ORDER BY id ASC
     </select>
-
     <select id="findAllBirds" resultType="com.heartopia.wiki.model.BirdCollection">
-        SELECT 
-            id, location, sub_location as subLocation, name, level, weather, time, 
-            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-            type, image_url as imageUrl, event_name as eventName
-        FROM bird_collections
-        ORDER BY id ASC
+        SELECT <include refid="birdColumns"/> FROM bird_collections ORDER BY id ASC
     </select>
-
     <select id="findAllBugs" resultType="com.heartopia.wiki.model.BugCollection">
-        SELECT 
-            id, location, sub_location as subLocation, name, level, weather, time, 
-            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-            image_url as imageUrl, event_name as eventName
-        FROM bug_collections
-        ORDER BY id ASC
+        SELECT <include refid="bugColumns"/> FROM bug_collections ORDER BY id ASC
     </select>
-
     <select id="findAllAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT 
-            id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
-        FROM animal_collections
-        ORDER BY id ASC
+        SELECT <include refid="animalColumns"/> FROM animal_collections ORDER BY id ASC
     </select>
-
     <select id="findAllCookings" resultType="com.heartopia.wiki.model.CookingCollection">
-        SELECT 
-            id, name, level, ingredients, buy_price as buyPrice,
-            price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-            image_url as imageUrl, event_name as eventName
-        FROM cooking_collections
-        ORDER BY id ASC
+        SELECT <include refid="cookingColumns"/> FROM cooking_collections ORDER BY id ASC
     </select>
-
     <select id="findAllFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
-               image_url as imageUrl, event_name as eventName
-        FROM flower_collections
-        ORDER BY level, name
+        SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections ORDER BY level, name
     </select>
-
     <select id="findAllGardening" resultType="com.heartopia.wiki.model.GardeningCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
-               image_url as imageUrl, event_name as eventName
-        FROM crop_collections
-        ORDER BY level, name
+        SELECT <include refid="flowerAndCropColumns"/> FROM crop_collections ORDER BY level, name
     </select>
-
     <select id="findAllForageables" resultType="com.heartopia.wiki.model.ForageableCollection">
-        SELECT id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
-        FROM forageable_collections
-        ORDER BY id ASC
+        SELECT <include refid="forageableColumns"/> FROM forageable_collections ORDER BY id ASC
     </select>
 
     <!-- ========== 이름으로 개별 조회 (상세보기) ========== -->
-
     <select id="findFishByName" resultType="com.heartopia.wiki.model.FishCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time, 
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, size, image_url as imageUrl, event_name as eventName
-        FROM fish_collections WHERE name = #{name}
+        SELECT <include refid="fishColumns"/> FROM fish_collections WHERE name = #{name}
     </select>
-
     <select id="findBugByName" resultType="com.heartopia.wiki.model.BugCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time, 
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, image_url as imageUrl, event_name as eventName
-        FROM bug_collections WHERE name = #{name}
+        SELECT <include refid="bugColumns"/> FROM bug_collections WHERE name = #{name}
     </select>
-
     <select id="findBirdByName" resultType="com.heartopia.wiki.model.BirdCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time, 
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, type, image_url as imageUrl, event_name as eventName
-        FROM bird_collections WHERE name = #{name}
+        SELECT <include refid="birdColumns"/> FROM bird_collections WHERE name = #{name}
     </select>
-
     <select id="findAnimalByName" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
-        FROM animal_collections WHERE name = #{name}
+        SELECT <include refid="animalColumns"/> FROM animal_collections WHERE name = #{name}
     </select>
-
     <select id="findCookingByName" resultType="com.heartopia.wiki.model.CookingCollection">
-        SELECT id, name, level, ingredients, buy_price as buyPrice,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, image_url as imageUrl, event_name as eventName
-        FROM cooking_collections WHERE name = #{name}
+        SELECT <include refid="cookingColumns"/> FROM cooking_collections WHERE name = #{name}
+    </select>
+    <select id="findFlowerByName" resultType="com.heartopia.wiki.model.FlowerCollection">
+        SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections WHERE name = #{name}
+    </select>
+    <select id="findCropByName" resultType="com.heartopia.wiki.model.GardeningCollection">
+        SELECT <include refid="flowerAndCropColumns"/> FROM crop_collections WHERE name = #{name}
+    </select>
+    <select id="findForageableByName" resultType="com.heartopia.wiki.model.ForageableCollection">
+        SELECT <include refid="forageableColumns"/> FROM forageable_collections WHERE name = #{name}
     </select>
 
-    <!-- 요리 재료 목록 조회 (상세 페이지용, 이미지 JOIN 포함) -->
+    <!-- ========== 요리 재료 특수 조회 ========== -->
     <select id="findIngredientsByCookingId" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT
-            ci.id,
-            ci.cooking_id      AS cookingId,
-            ci.ingredient_name AS ingredientName,
-            ci.quantity,
-            ci.item_type       AS itemType,
-            ci.item_id         AS itemId,
+        SELECT ci.id, ci.cooking_id AS cookingId, ci.ingredient_name AS ingredientName, ci.quantity, ci.item_type AS itemType, ci.item_id AS itemId,
             CASE ci.item_type
                 WHEN 'crop'       THEN (SELECT image_url FROM crop_collections       WHERE id = ci.item_id)
                 WHEN 'forageable' THEN (SELECT image_url FROM forageable_collections WHERE id = ci.item_id)
@@ -120,152 +107,64 @@
                 WHEN 'flower'     THEN (SELECT image_url FROM flower_collections     WHERE id = ci.item_id)
                 ELSE NULL
             END AS imageUrl
-        FROM cooking_ingredients ci
-        WHERE ci.cooking_id = #{cookingId}
-        ORDER BY ci.id ASC
+        FROM cooking_ingredients ci WHERE ci.cooking_id = #{cookingId} ORDER BY ci.id ASC
     </select>
-
-    <!-- 전체 재료 일괄 조회 (목록 페이지용, 이미지 없이 가볍게) -->
     <select id="findAllCookingIngredients" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT
-            ci.id,
-            ci.cooking_id      AS cookingId,
-            ci.ingredient_name AS ingredientName,
-            ci.quantity,
-            ci.item_type       AS itemType,
-            ci.item_id         AS itemId,
-            NULL               AS imageUrl
-        FROM cooking_ingredients ci
-        ORDER BY ci.cooking_id, ci.id ASC
+        SELECT ci.id, ci.cooking_id AS cookingId, ci.ingredient_name AS ingredientName, ci.quantity, ci.item_type AS itemType, ci.item_id AS itemId, NULL AS imageUrl
+        FROM cooking_ingredients ci ORDER BY ci.cooking_id, ci.id ASC
     </select>
 
-    <select id="findFlowerByName" resultType="com.heartopia.wiki.model.FlowerCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl, event_name as eventName
-        FROM flower_collections WHERE name = #{name}
-    </select>
-
-    <select id="findCropByName" resultType="com.heartopia.wiki.model.GardeningCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl, event_name as eventName
-        FROM crop_collections WHERE name = #{name}
-    </select>
-
-    <select id="findForageableByName" resultType="com.heartopia.wiki.model.ForageableCollection">
-        SELECT id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
-        FROM forageable_collections WHERE name = #{name}
-    </select>
-
-    <!-- ========== 같은 장소 관련 아이템 조회 (관련정보) ========== -->
-
+    <!-- ========== 같은 장소 관련 아이템 조회 ========== -->
     <select id="findFishByLocation" resultType="com.heartopia.wiki.model.FishCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, size, image_url as imageUrl, event_name as eventName
-        FROM fish_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
+        SELECT <include refid="fishColumns"/> FROM fish_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
     </select>
-
     <select id="findBugsByByLocation" resultType="com.heartopia.wiki.model.BugCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, image_url as imageUrl, event_name as eventName
-        FROM bug_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
+        SELECT <include refid="bugColumns"/> FROM bug_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
     </select>
-
     <select id="findBirdsByLocation" resultType="com.heartopia.wiki.model.BirdCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, type, image_url as imageUrl, event_name as eventName
-        FROM bird_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
+        SELECT <include refid="birdColumns"/> FROM bird_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6
     </select>
-
     <select id="findAnimalsByLocation" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
-        FROM animal_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY id LIMIT 6
+        SELECT <include refid="animalColumns"/> FROM animal_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY id LIMIT 6
     </select>
-
     <select id="findForageablesByLocation" resultType="com.heartopia.wiki.model.ForageableCollection">
-        SELECT id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
-        FROM forageable_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY id LIMIT 6
+        SELECT <include refid="forageableColumns"/> FROM forageable_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY id LIMIT 6
     </select>
 
     <!-- ========== 키워드 검색 ========== -->
-
     <select id="searchFish" resultType="com.heartopia.wiki.model.FishCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, size, image_url as imageUrl, event_name as eventName
-        FROM fish_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="fishColumns"/> FROM fish_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchBugs" resultType="com.heartopia.wiki.model.BugCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, image_url as imageUrl, event_name as eventName
-        FROM bug_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="bugColumns"/> FROM bug_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchBirds" resultType="com.heartopia.wiki.model.BirdCollection">
-        SELECT id, location, sub_location as subLocation, name, level, weather, time,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, type, image_url as imageUrl, event_name as eventName
-        FROM bird_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="birdColumns"/> FROM bird_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchAnimals" resultType="com.heartopia.wiki.model.AnimalCollection">
-        SELECT id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
-        FROM animal_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="animalColumns"/> FROM animal_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchCookings" resultType="com.heartopia.wiki.model.CookingCollection">
-        SELECT id, name, level, ingredients, buy_price as buyPrice,
-               price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5, image_url as imageUrl, event_name as eventName
-        FROM cooking_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="cookingColumns"/> FROM cooking_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl, event_name as eventName
-        FROM flower_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchCrops" resultType="com.heartopia.wiki.model.GardeningCollection">
-        SELECT id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-               level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice, image_url as imageUrl, event_name as eventName
-        FROM crop_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="flowerAndCropColumns"/> FROM crop_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
     <select id="searchForageables" resultType="com.heartopia.wiki.model.ForageableCollection">
-        SELECT id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
-        FROM forageable_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        SELECT <include refid="forageableColumns"/> FROM forageable_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
-    <!-- ========== 카운트 (기존) ========== -->
-
-    <select id="countAllFish" resultType="int">
-        SELECT count(*) FROM fish_collections
-    </select>
-
-    <select id="countAllBirds" resultType="int">
-        SELECT count(*) FROM bird_collections
-    </select>
-
-    <select id="countAllBugs" resultType="int">
-        SELECT count(*) FROM bug_collections
-    </select>
-
-    <select id="countAllAnimals" resultType="int">
-        SELECT count(*) FROM animal_collections
-    </select>
-
-    <select id="countAllCookings" resultType="int">
-        SELECT count(*) FROM cooking_collections
-    </select>
-
-    <select id="countAllFlowers" resultType="int">
-        SELECT count(*) FROM flower_collections
-    </select>
-
-    <select id="countAllGardening" resultType="int">
-        SELECT count(*) FROM crop_collections
-    </select>
-
-    <select id="countAllForageables" resultType="int">
-        SELECT count(*) FROM forageable_collections
-    </select>
+    <!-- ========== 카운트 ========== -->
+    <select id="countAllFish" resultType="int">SELECT count(*) FROM fish_collections</select>
+    <select id="countAllBirds" resultType="int">SELECT count(*) FROM bird_collections</select>
+    <select id="countAllBugs" resultType="int">SELECT count(*) FROM bug_collections</select>
+    <select id="countAllAnimals" resultType="int">SELECT count(*) FROM animal_collections</select>
+    <select id="countAllCookings" resultType="int">SELECT count(*) FROM cooking_collections</select>
+    <select id="countAllFlowers" resultType="int">SELECT count(*) FROM flower_collections</select>
+    <select id="countAllGardening" resultType="int">SELECT count(*) FROM crop_collections</select>
+    <select id="countAllForageables" resultType="int">SELECT count(*) FROM forageable_collections</select>
 
 </mapper>
