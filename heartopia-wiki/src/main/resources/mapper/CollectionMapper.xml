@@ -6,41 +6,41 @@
 
     <!-- ========== 리팩토링: 공통 SQL 컬럼 조각 (코드 재사용) ========== -->
     <sql id="fishColumns">
-        id, location, sub_location as subLocation, name, level, weather, time, 
-        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-        size, image_url as imageUrl, event_name as eventName
+        id, location, sub_location, name, level, weather, time, 
+        price_1, price_2, price_3, price_4, price_5,
+        size, image_url, event_name
     </sql>
 
     <sql id="birdColumns">
-        id, location, sub_location as subLocation, name, level, weather, time, 
-        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-        type, image_url as imageUrl, event_name as eventName
+        id, location, sub_location, name, level, weather, time, 
+        price_1, price_2, price_3, price_4, price_5,
+        type, image_url, event_name
     </sql>
 
     <sql id="bugColumns">
-        id, location, sub_location as subLocation, name, level, weather, time, 
-        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-        image_url as imageUrl, event_name as eventName
+        id, location, sub_location, name, level, weather, time, 
+        price_1, price_2, price_3, price_4, price_5,
+        image_url, event_name
     </sql>
 
     <sql id="animalColumns">
-        id, name, location, description, favorite_food as favoriteFood, favorite_weather as favoriteWeather, image_url as imageUrl, event_name as eventName
+        id, name, location, description, favorite_food, favorite_weather, image_url, event_name
     </sql>
 
     <sql id="cookingColumns">
-        id, name, level, ingredients, buy_price as buyPrice,
-        price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-        image_url as imageUrl, event_name as eventName
+        id, name, level, ingredients, buy_price,
+        price_1, price_2, price_3, price_4, price_5,
+        image_url, event_name
     </sql>
 
     <sql id="flowerAndCropColumns">
-        id, name, price_1 as price1, price_2 as price2, price_3 as price3, price_4 as price4, price_5 as price5,
-        level, growth_time as growthTime, seed_buy_price as seedBuyPrice, seed_sell_price as seedSellPrice,
-        image_url as imageUrl, event_name as eventName
+        id, name, price_1, price_2, price_3, price_4, price_5,
+        level, growth_time, seed_buy_price, seed_sell_price,
+        image_url, event_name
     </sql>
 
     <sql id="forageableColumns">
-        id, name, location, price, energy, image_url as imageUrl, event_name as eventName, show_on_map as showOnMap
+        id, name, location, price, energy, image_url, event_name, show_on_map
     </sql>
 
     <!-- ========== 전체 조회 ========== -->
@@ -97,7 +97,7 @@
 
     <!-- ========== 요리 재료 특수 조회 ========== -->
     <select id="findIngredientsByCookingId" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT ci.id, ci.cooking_id AS cookingId, ci.ingredient_name AS ingredientName, ci.quantity, ci.item_type AS itemType, ci.item_id AS itemId,
+        SELECT ci.id, ci.cooking_id, ci.ingredient_name, ci.quantity, ci.item_type, ci.item_id,
             CASE ci.item_type
                 WHEN 'crop'       THEN (SELECT image_url FROM crop_collections       WHERE id = ci.item_id)
                 WHEN 'forageable' THEN (SELECT image_url FROM forageable_collections WHERE id = ci.item_id)
@@ -110,7 +110,7 @@
         FROM cooking_ingredients ci WHERE ci.cooking_id = #{cookingId} ORDER BY ci.id ASC
     </select>
     <select id="findAllCookingIngredients" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT ci.id, ci.cooking_id AS cookingId, ci.ingredient_name AS ingredientName, ci.quantity, ci.item_type AS itemType, ci.item_id AS itemId, NULL AS imageUrl
+        SELECT ci.id, ci.cooking_id, ci.ingredient_name, ci.quantity, ci.item_type, ci.item_id, NULL AS imageUrl
         FROM cooking_ingredients ci ORDER BY ci.cooking_id, ci.id ASC
     </select>
 
