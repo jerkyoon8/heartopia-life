@@ -188,7 +188,12 @@
         window.isAdmin = /*[[${#authorization.expression('hasRole("ADMIN")')}]]*/ false;
         /*]]>*/
     </script>
-    <script th:src="@{/js/map.js(v=1.12)}"></script>
+    <!-- Map Modules -->
+    <script th:src="@{/js/map/map-state.js(v=1.12)}"></script>
+    <script th:src="@{/js/map/map-api.js(v=1.12)}"></script>
+    <script th:src="@{/js/map/map-zone.js(v=1.12)}"></script>
+    <script th:src="@{/js/map/map-ui.js(v=1.12)}"></script>
+    <script th:src="@{/js/map/map-core.js(v=1.12)}"></script>
 </body>
 
 </html>
