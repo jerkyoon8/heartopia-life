@@ -123,6 +123,21 @@
             color: #41464b;
         }
 
+        /* 신규 쿠폰 펄스 애니메이션 */
+        @keyframes pulseBadge {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+        
+        .badge-new {
+            background-color: #ff4757;
+            color: white;
+            animation: pulseBadge 2s infinite;
+            margin-right: 5px;
+            border: 1px solid #ff4757;
+        }
+
         .code-rewards {
             margin-bottom: 12px;
             font-size: 0.95rem;
@@ -251,8 +266,12 @@
                 <div class="copy-overlay"><i class="fas fa-copy me-2"></i> 복사됨!</div>
                 <div class="code-header">
                     <span class="code-name" th:text="${code.codeName}">CODE123</span>
-                    <span class="code-badge" th:classappend="${code.status == 'SOON' ? 'badge-soon' : 'badge-active'}"
-                        th:text="${code.status == 'SOON' ? '마감임박!' : '사용 가능'}">Active</span>
+                    <div>
+                        <!-- 특별 하드코딩: 4월 1일 신규 쿠폰 뱃지 -->
+                        <span th:if="${code.codeName == 'a4k9m7q2r6'}" class="code-badge badge-new">신규!</span>
+                        <span class="code-badge" th:classappend="${code.status == 'SOON' ? 'badge-soon' : 'badge-active'}"
+                            th:text="${code.status == 'SOON' ? '마감임박!' : '사용 가능'}">Active</span>
+                    </div>
                 </div>
                 <div class="code-rewards">
                     <i class="fas fa-gem reward-icon"></i>

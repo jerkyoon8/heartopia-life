@@ -16,11 +16,10 @@
         FROM gift_code
         ORDER BY 
             CASE status
-                WHEN 'ACTIVE' THEN 1
-                WHEN 'SOON' THEN 2
-                ELSE 3
+                WHEN 'EXPIRED' THEN 2
+                ELSE 1
             END,
-            expiration_date ASC
+            created_at DESC
     </select>
 
     <select id="findByStatus" resultType="com.heartopia.wiki.model.GiftCode">
@@ -34,7 +33,7 @@
             updated_at
         FROM gift_code
         WHERE status = #{status}
-        ORDER BY expiration_date ASC
+        ORDER BY created_at DESC
     </select>
 
 </mapper>

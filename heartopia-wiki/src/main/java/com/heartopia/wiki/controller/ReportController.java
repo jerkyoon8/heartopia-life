@@ -50,7 +50,7 @@ public class ReportController {
      * @return 처리 결과 메시지 (success/error)
      */
     @PostMapping("/report")
-    @ResponseBody
+    @ResponseBody   
     public String submitReport(@Valid @RequestBody WikiReport report, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getAllErrors().stream()

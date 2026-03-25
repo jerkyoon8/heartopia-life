@@ -641,6 +641,58 @@
     <!-- Main Body -->
     <div class="mw-body">
 
+        <!-- Notice Ticker -->
+        <div class="notice-ticker-container" th:if="${not #lists.isEmpty(notices)}" style="max-width: 650px; margin: 0 auto 12px; padding: 0 10px; position: relative; z-index: 10;">
+            <div class="notice-ticker" style="background: white; border-radius: 50px; padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;">
+                <div style="display: flex; align-items: center; flex: 1; overflow: hidden; cursor: pointer;" onclick="location.href='/wiki/notices'">
+                    <span style="background: #ff5722; color: white; padding: 3px 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; margin-right: 15px; flex-shrink: 0; display: inline-block;">NOTICE</span>
+                    <div style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center;">
+                        <span id="noticeTickerText" th:text="${notices[0].title}" style="font-size: 0.95rem; color: #333; font-weight: 500; transition: opacity 0.2s;">공지사항 불러오는 중...</span>
+                    </div>
+                </div>
+                <!-- Controls -->
+                <div style="display: flex; align-items: center; gap: 8px; color: #888; font-size: 0.85rem; flex-shrink: 0; margin-left: 15px; font-weight: 600;">
+                    <i class="fas fa-chevron-left" style="cursor: pointer; padding: 5px;" onclick="prevNoticeTicker()"></i>
+                    <span id="noticeTickerCount">1 / <span th:text="${#lists.size(notices)}">1</span></span>
+                    <i class="fas fa-chevron-right" style="cursor: pointer; padding: 5px;" onclick="nextNoticeTicker()"></i>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const tickerData = /*[[${notices}]]*/ [];
+                if (!tickerData || tickerData.length === 0) return;
+                
+                let currentTickerIdx = 0;
+                const txtEl = document.getElementById('noticeTickerText');
+                const countEl = document.getElementById('noticeTickerCount');
+
+                window.updateTickerUI = function() {
+                    txtEl.style.opacity = 0;
+                    setTimeout(() => {
+                        txtEl.innerText = tickerData[currentTickerIdx].title;
+                        countEl.innerHTML = `${currentTickerIdx + 1} / ${tickerData.length}`;
+                        txtEl.style.opacity = 1;
+                    }, 200);
+                }
+
+                window.nextNoticeTicker = function() {
+                    currentTickerIdx = (currentTickerIdx + 1) % tickerData.length;
+                    updateTickerUI();
+                }
+
+                window.prevNoticeTicker = function() {
+                    currentTickerIdx = (currentTickerIdx - 1 + tickerData.length) % tickerData.length;
+                    updateTickerUI();
+                }
+
+                if(tickerData.length > 1) {
+                    setInterval(nextNoticeTicker, 4000);
+                }
+            });
+        </script>
+
         <!-- Main Search Box -->
         <div class="main-search-container">
             <form action="/wiki/search" method="get" class="main-search-box" id="searchForm" autocomplete="off">
@@ -657,11 +709,20 @@
         <div class="quick-access-section">
             <!-- Coupon Card -->
             <a th:href="@{/wiki/codes}" class="quick-card coupon">
+                <style>
+                    @keyframes blinkRed {
+                        0% { opacity: 1; color: #e11d48; }
+                        50% { opacity: 0.6; color: #ff7f9d; }
+                        100% { opacity: 1; color: #e11d48; }
+                    }
+                </style>
                 <div class="quick-card-icon">
                     <i class="fas fa-ticket-alt"></i>
                 </div>
                 <div class="quick-card-title">선물 코드</div>
-                <div class="quick-card-subtitle">최신 쿠폰과 보상을 확인하세요!</div>
+                <div class="quick-card-subtitle" style="font-weight: bold; animation: blinkRed 1.5s infinite;">
+                    🔥 신규 코드가 있습니다!
+                </div>
                 <div class="quick-card-action">
                     <div class="q-action-btn"><i class="fas fa-info-circle"></i></div>
                     <div class="q-action-btn primary">확인하기</div>
