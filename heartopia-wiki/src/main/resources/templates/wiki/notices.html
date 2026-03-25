@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        .notice-container {
+            max-width: 800px;
+            margin: 120px auto 50px;
+            padding: 0 20px;
+            min-height: 60vh;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-family: 'Paperlogy-4Regular', sans-serif;
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .notice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .notice-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .notice-item:hover {
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border-color: #ff7f9d;
+            transform: translateY(-2px);
+        }
+        .notice-badge {
+            display: inline-block;
+            background: #ff4757;
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .notice-title {
+            font-family: 'Paperlogy', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 10px;
+        }
+        .notice-content {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .notice-date {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-align: right;
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+        }
+    </style>
+</head>
+<body class="mw-body">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="notice-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-bullhorn" style="color:#ff7f9d;"></i> 소식 및 업데이트</h1>
+            <p style="color:#666;">두근두근 타운 위키의 최신 변경사항을 확인하세요.</p>
+        </div>
+
+        <div class="notice-list" th:if="${not #lists.isEmpty(notices)}">
+            <div th:each="notice : ${notices}" class="notice-item" th:if="${notice.isActive}">
+                <div><span class="notice-badge">공지</span></div>
+                <div class="notice-title" th:text="${notice.title}">공지사항 제목</div>
+                <div class="notice-content" th:utext="${#strings.replace(notice.content, '&#10;', '&lt;br/&gt;')}">공지사항 내용</div>
+                <div class="notice-date" th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2026-03-25 12:00</div>
+            </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(notices)}" class="empty-state">
+            <i class="fas fa-inbox fa-3x" style="color:#ddd; margin-bottom:15px;"></i>
+            <p>아직 등록된 소식이 없습니다.</p>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

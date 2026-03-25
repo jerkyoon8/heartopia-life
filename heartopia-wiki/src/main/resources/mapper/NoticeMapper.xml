@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.NoticeMapper">
+
+    <select id="findAll" resultType="com.heartopia.wiki.model.Notice">
+        SELECT id, title, content, is_active, created_at, updated_at
+        FROM notice
+        ORDER BY id DESC
+    </select>
+
+    <select id="findActiveNotices" resultType="com.heartopia.wiki.model.Notice">
+        SELECT id, title, content, is_active, created_at, updated_at
+        FROM notice
+        WHERE is_active = true
+        ORDER BY id DESC
+    </select>
+
+    <select id="findById" resultType="com.heartopia.wiki.model.Notice">
+        SELECT id, title, content, is_active, created_at, updated_at
+        FROM notice
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notice (title, content, is_active, created_at, updated_at)
+        VALUES (#{title}, #{content}, #{isActive}, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE notice
+        SET title = #{title},
+            content = #{content},
+            is_active = #{isActive},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM notice WHERE id = #{id}
+    </delete>
+
+    <select id="countActiveNotices" resultType="int">
+        SELECT COUNT(*) FROM notice WHERE is_active = true
+    </select>
+</mapper>
