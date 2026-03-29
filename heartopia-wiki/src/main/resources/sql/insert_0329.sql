@@ -19,7 +19,7 @@ INSERT INTO bird_collections (name, level, type, location, sub_location, weather
 -- 1성=165, 2성=247, 3성~5성 1.5배 패턴 적용
 -- =====================================================
 INSERT INTO bug_collections (name, level, location, sub_location, weather, time, price_1, price_2, price_3, price_4, price_5, image_url, event_name) VALUES
-('스크립터 금색 호박벌', 1, '이벤트', '스크립터 벌 사건', NULL, NULL, 165, 247, 370, 555, 832, '/images/collections/bug/스크립터 금색 호박벌.png', '스크립터 벌 사건');
+('스크립터 금색 호박벌', 1, '이벤트', '스크립터 벌 사건', NULL, NULL, 165, 247, 370, 555, 832, '/images/collections/bug/스크립터 금색 호박벌.png', '꿈의 명암');
 
 -- =====================================================
 -- 3. crop_collections — 로메인
