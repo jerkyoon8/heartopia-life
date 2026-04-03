@@ -457,15 +457,15 @@
         </div>
 
         <!-- Detail Content -->
-        <div class="detail-container">
+        <main class="detail-container">
             <!-- Left: Image Card -->
             <div class="detail-image-card">
                 <div th:class="'detail-image-area ' + ${category}">
                     <!-- Universal Image Display -->
-                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name + ' 이미지'}">
+                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="'두근두근라이프 ' + ${item.name} + ' 정보 - 두두타 도감'">
                     <!-- Special Case for Animal (legacy variable) -->
                     <img th:if="${item.imageUrl == null and category == 'animal' and animalImageUrl != null}"
-                        th:src="${animalImageUrl}" alt="동물 이미지">
+                        th:src="${animalImageUrl}" th:alt="'두근두근라이프 ' + ${item.name} + ' 동물 정보 - 두두타 도감'">
                     <!-- Default Icon (Fallback) -->
                     <i th:class="${categoryIcon + ' text-muted fallback-icon'}"
                         th:style="${(item.imageUrl != null or (category == 'animal' and animalImageUrl != null)) ? 'display: none; font-size: 5rem; opacity: 0.6;' : 'display: flex; font-size: 5rem; opacity: 0.6;'}"></i>
@@ -487,10 +487,10 @@
                         <i class="fas fa-external-link-alt" style="font-size:0.75rem; opacity:0.7;"></i>
                     </a>
                 </div>
-            </div>
+            </article>
 
             <!-- Right: Info Card -->
-            <div class="detail-info-card">
+            <section class="detail-info-card">
                 <div class="detail-section-title">
                     <i class="fas fa-info-circle"></i> 기본 정보
                 </div>
@@ -658,8 +658,8 @@
                 <a th:href="@{/wiki/report(itemName=${item.name}, sourceUrl=${currentUri})}" class="report-info-btn">
                     <i class="fas fa-edit"></i> 정보 수정 제보
                 </a>
-            </div>
-        </div>
+            </section>
+        </main>
 
         <!-- Related Items Section -->
         <div th:if="${relatedItems != null and !relatedItems.isEmpty()}" class="related-section">

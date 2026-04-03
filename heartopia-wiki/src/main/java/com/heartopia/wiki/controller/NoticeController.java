@@ -17,6 +17,7 @@ public class NoticeController {
     @GetMapping("/wiki/notices")
     public String getPublicNotices(Model model) {
         model.addAttribute("notices", noticeService.getAllNotices());
+        model.addAttribute("pageTitle", "공지사항");
         return "wiki/notices";
     }
 

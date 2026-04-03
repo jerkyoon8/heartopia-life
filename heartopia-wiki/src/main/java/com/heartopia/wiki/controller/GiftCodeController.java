@@ -26,6 +26,8 @@ public class GiftCodeController {
         
         model.addAttribute("activeCodes", codes.get("active"));
         model.addAttribute("expiredCodes", codes.get("expired"));
+        model.addAttribute("pageTitle", "기프트코드");
+        model.addAttribute("pageDescription", "두근두근라이프 최신 기프트코드(쿠폰) 목록 - 사용 가능한 코드와 만료된 코드를 확인하세요.");
         
         return "wiki/codes"; // HTML 파일 경로
     }

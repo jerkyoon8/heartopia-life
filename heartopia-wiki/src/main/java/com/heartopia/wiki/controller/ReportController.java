@@ -40,6 +40,7 @@ public class ReportController {
         log.debug("제보 양식 요청됨. 아이템: {}, URL: {}", itemName, sourceUrl);
         model.addAttribute("itemName", itemName);
         model.addAttribute("sourceUrl", sourceUrl);
+        model.addAttribute("pageTitle", "정보 수정 제보");
         return "wiki/report-form";
     }
 

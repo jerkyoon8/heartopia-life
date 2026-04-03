@@ -76,6 +76,8 @@ public class WikiController {
                                 .map(FishDto::from)
                                 .toList();
                 model.addAttribute("fishList", list);
+                model.addAttribute("pageTitle", "물고기 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 물고기 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/fish";
         }
 
@@ -85,6 +87,8 @@ public class WikiController {
                                 .map(BugDto::from)
                                 .toList();
                 model.addAttribute("bugList", list);
+                model.addAttribute("pageTitle", "벌레 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 벌레 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/bug";
         }
 
@@ -94,6 +98,8 @@ public class WikiController {
                                 .map(BirdDto::from)
                                 .toList();
                 model.addAttribute("birdList", list);
+                model.addAttribute("pageTitle", "새 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 새 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/bird";
         }
 
@@ -103,6 +109,8 @@ public class WikiController {
                                 .map(AnimalDto::from)
                                 .toList();
                 model.addAttribute("animalList", list);
+                model.addAttribute("pageTitle", "동물 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 동물 전체 목록 - 서식지, 좋아하는 음식, 날씨 정보를 확인하세요.");
                 return "wiki/collections/animal";
         }
 
@@ -117,6 +125,8 @@ public class WikiController {
                 ));
 
                 model.addAttribute("cookingList", list);
+                model.addAttribute("pageTitle", "요리 레시피");
+                model.addAttribute("pageDescription", "두근두근라이프 요리 전체 목록 - 필요 재료, 레벨, 판매 가격 정보를 확인하세요.");
                 return "wiki/items/cooking";
         }
 
@@ -126,6 +136,8 @@ public class WikiController {
                                 .map(FlowerDto::from)
                                 .toList();
                 model.addAttribute("flowerList", list);
+                model.addAttribute("pageTitle", "꽃 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 꽃 전체 목록 - 성장 시간, 씨앗 가격, 등급별 판매가 정보를 확인하세요.");
                 return "wiki/items/flowers";
         }
 
@@ -135,6 +147,8 @@ public class WikiController {
                                 .map(CropDto::from)
                                 .toList();
                 model.addAttribute("cropList", list);
+                model.addAttribute("pageTitle", "작물 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 작물 전체 목록 - 성장 시간, 씨앗 가격, 등급별 판매가 정보를 확인하세요.");
                 return "wiki/items/crops";
         }
 
@@ -144,6 +158,8 @@ public class WikiController {
                                 .map(ForageableDto::from)
                                 .toList();
                 model.addAttribute("forageableList", list);
+                model.addAttribute("pageTitle", "채집물 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 채집물 전체 목록 - 채집 장소, 판매가, 에너지 정보를 확인하세요.");
                 return "wiki/collections/forageable";
         }
 
@@ -151,6 +167,8 @@ public class WikiController {
         public String villagers(Model model) {
                 List<Villager> villagers = villagerService.getAllVillagers();
                 model.addAttribute("villagers", villagers);
+                model.addAttribute("pageTitle", "주민 정보");
+                model.addAttribute("pageDescription", "두근두근라이프 전체 주민 목록 - 이름, 역할, 선물 취향 정보를 확인하세요.");
                 return "wiki/others/villagers";
         }
 
@@ -167,6 +185,8 @@ public class WikiController {
                 model.addAttribute("categoryIcon", "fas fa-fish");
                 model.addAttribute("listUrl", "/wiki/collections/fish");
                 model.addAttribute("prices", item.getPrices());
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 서식지, 시간, 날씨, 등급별 가격 공략 정보");
 
                 List<FishCollection> related = collectionService.getFishByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
@@ -189,6 +209,8 @@ public class WikiController {
                 model.addAttribute("categoryIcon", "fas fa-bug");
                 model.addAttribute("listUrl", "/wiki/collections/bug");
                 model.addAttribute("prices", item.getPrices());
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 서식지, 시간, 날씨, 등급별 가격 공략 정보");
 
                 List<BugCollection> related = collectionService.getBugsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
@@ -211,6 +233,8 @@ public class WikiController {
                 model.addAttribute("categoryIcon", "fas fa-dove");
                 model.addAttribute("listUrl", "/wiki/collections/bird");
                 model.addAttribute("prices", item.getPrices());
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 서식지, 시간, 날씨, 등급별 가격 공략 정보");
 
                 List<BirdCollection> related = collectionService.getBirdsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
@@ -234,6 +258,8 @@ public class WikiController {
                 model.addAttribute("categoryLabel", "동물");
                 model.addAttribute("categoryIcon", "fas fa-paw");
                 model.addAttribute("listUrl", "/wiki/collections/animal");
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 서식지, 좋아하는 음식, 날씨 공략 정보");
 
                 List<AnimalCollection> related = collectionService.getAnimalsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
@@ -255,6 +281,8 @@ public class WikiController {
                 model.addAttribute("categoryLabel", "채집");
                 model.addAttribute("categoryIcon", "fas fa-leaf");
                 model.addAttribute("listUrl", "/wiki/collections/forageable");
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 채집 장소, 판매가, 에너지 공략 정보");
 
                 List<ForageableCollection> related = collectionService.getForageablesByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
@@ -281,6 +309,8 @@ public class WikiController {
                 model.addAttribute("categoryIcon", "fas fa-utensils");
                 model.addAttribute("listUrl", "/wiki/items/cooking");
                 model.addAttribute("prices", item.getPrices());
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 필요 재료, 레벨, 등급별 가격 공략 정보");
 
                 model.addAttribute("relatedItems", List.of());
 
@@ -297,6 +327,8 @@ public class WikiController {
                 model.addAttribute("categoryLabel", "꽃");
                 model.addAttribute("categoryIcon", "fas fa-seedling");
                 model.addAttribute("listUrl", "/wiki/items/flowers");
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 성장 시간, 씨앗 가격, 등급별 판매가 공략 정보");
                 model.addAttribute("prices", List.of(
                                 item.getPrice1() != null ? item.getPrice1() : 0,
                                 item.getPrice2() != null ? item.getPrice2() : 0,
@@ -318,6 +350,8 @@ public class WikiController {
                 model.addAttribute("categoryLabel", "작물");
                 model.addAttribute("categoryIcon", "fas fa-carrot");
                 model.addAttribute("listUrl", "/wiki/items/crops");
+                model.addAttribute("pageTitle", item.getName());
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 성장 시간, 씨앗 가격, 등급별 판매가 공략 정보");
                 model.addAttribute("prices", List.of(
                                 item.getPrice1() != null ? item.getPrice1() : 0,
                                 item.getPrice2() != null ? item.getPrice2() : 0,
@@ -398,6 +432,8 @@ public class WikiController {
                 model.addAttribute("keyword", searchKeyword);
                 model.addAttribute("totalCount", allResults.size());
                 model.addAttribute("groupedResults", groupedResults);
+                model.addAttribute("pageTitle", "'" + searchKeyword + "' 검색 결과");
+                model.addAttribute("pageDescription", "두근두근라이프에서 '" + searchKeyword + "' 관련 도감 검색 결과입니다.");
 
                 return "wiki/search-results";
         }

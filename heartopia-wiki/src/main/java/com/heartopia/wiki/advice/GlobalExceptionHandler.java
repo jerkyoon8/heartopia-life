@@ -38,7 +38,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleException(Exception e, Model model, org.springframework.web.context.request.WebRequest request) {
-        log.error("Unhandled exception occurred! URL: {}", request.getDescription(false), e);
+        // 에러 역추적을 위한 클라이언트 정보 수집
+        String clientInfo = request.getDescription(false);
+        String userAgent = request.getHeader("User-Agent");
+        log.error("[ERROR] URL: {} | User-Agent: {} | 에러: {}", clientInfo, userAgent, e.getMessage(), e);
         
         String acceptHeader = request.getHeader("Accept");
         if (acceptHeader != null && acceptHeader.contains("application/json")) {
