@@ -19,4 +19,7 @@
   <url><loc>https://heartopia-life.me/wiki/items/crops</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heartopia-life.me/wiki/collections/forageable</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heartopia-life.me/wiki/others/villagers</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/map</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/codes</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://heartopia-life.me/wiki/notices</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
 </urlset>
