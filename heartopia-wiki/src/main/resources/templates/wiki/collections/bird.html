@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +8,7 @@
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
     <script src="/js/wiki-filter.js" defer></script>
+    <script src="/js/admin-data.js" defer></script>
 </head>
 
 <body>
@@ -14,7 +16,9 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="mw-body">
         <div class="page-header"><i class="fas fa-dove fa-2x text-info"></i>
-            <h1>새 도감 (Bird Collection)</h1>
+            <h1>새 도감 (Bird Collection)
+                <span sec:authorize="hasRole('ADMIN')"><button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addBirdModal" style="font-size:0.5em;vertical-align:middle;"><i class="fas fa-plus me-1"></i>새 추가</button></span>
+            </h1>
         </div>
         <!-- Filter Bar -->
         <div class="filter-bar">
@@ -129,6 +133,12 @@
 
                 <!-- Price Fragment -->
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${bird.prices})}"></div>
+                <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addBirdModal" data-edit-title="새 수정"
+                        th:data-item="${'{&quot;id&quot;:' + bird.id + ',&quot;name&quot;:&quot;' + bird.name + '&quot;,&quot;level&quot;:' + bird.level + ',&quot;location&quot;:&quot;' + bird.location + '&quot;,&quot;subLocation&quot;:&quot;' + (bird.subLocation != null ? bird.subLocation : '') + '&quot;,&quot;weather&quot;:&quot;' + (bird.weather != null ? bird.weather : '') + '&quot;,&quot;time&quot;:&quot;' + (bird.time != null ? bird.time : '') + '&quot;,&quot;type&quot;:&quot;' + (bird.type != null ? bird.type : '') + '&quot;,&quot;price1&quot;:' + (bird.price1 != null ? bird.price1 : 'null') + ',&quot;price2&quot;:' + (bird.price2 != null ? bird.price2 : 'null') + ',&quot;price3&quot;:' + (bird.price3 != null ? bird.price3 : 'null') + ',&quot;price4&quot;:' + (bird.price4 != null ? bird.price4 : 'null') + ',&quot;price5&quot;:' + (bird.price5 != null ? bird.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (bird.imageUrl != null ? bird.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (bird.eventName != null ? bird.eventName : '') + '&quot;}'}">
+                        <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${bird.name}" th:data-delete-url="${'/wiki/admin/data/bird/delete/' + bird.id}"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
         </div>
 
@@ -215,6 +225,28 @@
             });
         });
     </script>
+
+    <!-- 관리자 전용: 새 추가 모달 -->
+    <div sec:authorize="hasRole('ADMIN')">
+        <div class="modal fade" id="addBirdModal" tabindex="-1" data-add-title="새 추가"><div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background:linear-gradient(135deg,#4D342E,#795548);color:#fff;border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
+            <form action="/wiki/admin/data/bird/add" method="post" data-add-action="/wiki/admin/data/bird/add" data-update-action="/wiki/admin/data/bird/update" data-img-base="/images/bird/"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
+                <div class="modal-body" style="padding:24px;"><div class="row g-3">
+                    <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="col-md-3"><label class="form-label fw-bold">레벨 *</label><input type="number" name="level" class="form-control" required></div>
+                    <div class="col-md-3"><label class="form-label fw-bold">종류(type)</label><input type="text" name="type" class="form-control" placeholder="소형"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">장소 *</label><input type="text" name="location" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">세부 장소</label><input type="text" name="subLocation" class="form-control"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">날씨</label><input type="text" name="weather" class="form-control" placeholder="상시"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">시간</label><input type="text" name="time" class="form-control" placeholder="상시"></div>
+                    <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
+                    <div class="col-md-8"><label class="form-label fw-bold">이미지</label><div class="input-group"><span class="input-group-text" style="font-size:0.85rem;">/images/bird/</span><input type="text" class="form-control img-filename" placeholder="파일명.png"></div><input type="hidden" name="imageUrl" /></div>
+                    <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
+                </div></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button type="submit" class="btn btn-admin-submit text-white" style="background:linear-gradient(135deg,#4D342E,#795548);">추가하기</button></div>
+            </form>
+        </div></div></div>
+    </div>
 
     <!-- Footer (Common Fragment) -->
     <div th:replace="~{fragments/footer :: footer}"></div>

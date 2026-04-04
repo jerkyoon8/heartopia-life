@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -68,7 +69,9 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="mw-body">
         <div class="page-header"><i class="fas fa-paw fa-2x text-warning"></i>
-            <h1>야생 동물 도감 (Wild Animal Collection)</h1>
+            <h1>야생 동물 도감 (Wild Animal Collection)
+                <span sec:authorize="hasRole('ADMIN')"><button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addAnimalModal" style="font-size:0.5em;vertical-align:middle;"><i class="fas fa-plus me-1"></i>동물 추가</button></span>
+            </h1>
         </div>
         
         <div class="filter-bar border-0 shadow-none pb-0">
@@ -125,6 +128,12 @@
                         </td>
                     </tr>
                 </table>
+                <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addAnimalModal" data-edit-title="동물 수정"
+                        th:data-item="${'{&quot;id&quot;:' + animal.id + ',&quot;name&quot;:&quot;' + animal.name + '&quot;,&quot;location&quot;:&quot;' + animal.location + '&quot;,&quot;description&quot;:&quot;' + (animal.description != null ? animal.description : '') + '&quot;,&quot;favoriteFood&quot;:&quot;' + (animal.favoriteFood != null ? animal.favoriteFood : '') + '&quot;,&quot;favoriteWeather&quot;:&quot;' + (animal.favoriteWeather != null ? animal.favoriteWeather : '') + '&quot;,&quot;imageUrl&quot;:&quot;' + (animal.imageUrl != null ? animal.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (animal.eventName != null ? animal.eventName : '') + '&quot;}'}">
+                        <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${animal.name}" th:data-delete-url="${'/wiki/admin/data/animal/delete/' + animal.id}"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -162,6 +171,27 @@
         });
     </script>
     
+    <!-- 관리자 전용: 동물 추가 모달 -->
+    <div sec:authorize="hasRole('ADMIN')">
+        <div class="modal fade" id="addAnimalModal" tabindex="-1" data-add-title="새 동물 추가"><div class="modal-dialog"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background:linear-gradient(135deg,#4D342E,#795548);color:#fff;border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 동물 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
+            <form action="/wiki/admin/data/animal/add" method="post" data-add-action="/wiki/admin/data/animal/add" data-update-action="/wiki/admin/data/animal/update" data-img-base="/images/animal/"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
+                <div class="modal-body" style="padding:24px;"><div class="row g-3">
+                    <div class="col-12"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">장소 *</label><input type="text" name="location" class="form-control" required></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">좋아하는 음식</label><input type="text" name="favoriteFood" class="form-control"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">좋아하는 날씨</label><input type="text" name="favoriteWeather" class="form-control"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">이미지</label><div class="input-group"><span class="input-group-text" style="font-size:0.85rem;">/images/animal/</span><input type="text" class="form-control img-filename" placeholder="파일명.png"></div><input type="hidden" name="imageUrl" /></div>
+                    <div class="col-12"><label class="form-label fw-bold">설명</label><textarea name="description" class="form-control" rows="2"></textarea></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
+                </div></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button type="submit" class="btn btn-admin-submit text-white" style="background:linear-gradient(135deg,#4D342E,#795548);">추가하기</button></div>
+            </form>
+        </div></div></div>
+    </div>
+
+    <script src="/js/admin-data.js" defer></script>
+
     <!-- Footer (Common Fragment) -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 

@@ -1,0 +1,79 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- 관리자 추가 버튼 (sec:authorize로 ADMIN에게만 노출) -->
+<div th:fragment="adminAddButton(modalId, label)" sec:authorize="hasRole('ADMIN')"
+     style="display: inline-block; margin-left: 15px;">
+    <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm"
+            th:attr="data-bs-toggle='modal', data-bs-target='#' + ${modalId}">
+        <i class="fas fa-plus me-1"></i> <span th:text="${label}">추가</span>
+    </button>
+</div>
+
+<!-- 모달 공통 스타일 -->
+<style th:fragment="adminModalStyle">
+    .admin-modal .modal-content {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .admin-modal .modal-header {
+        background: linear-gradient(135deg, #4D342E 0%, #795548 100%);
+        color: #fff;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 24px;
+    }
+    .admin-modal .modal-header .btn-close {
+        filter: invert(1);
+    }
+    .admin-modal .modal-body {
+        padding: 24px;
+    }
+    .admin-modal .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    .admin-modal .form-control {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+    }
+    .admin-modal .form-control:focus {
+        border-color: #795548;
+        box-shadow: 0 0 0 3px rgba(121, 85, 72, 0.15);
+    }
+    .admin-modal .form-text {
+        font-size: 0.78rem;
+    }
+    .admin-modal .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #eee;
+    }
+    .admin-modal .btn-admin-submit {
+        background: linear-gradient(135deg, #4D342E 0%, #795548 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 30px;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .admin-modal .btn-admin-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(77, 52, 46, 0.3);
+    }
+    .admin-modal .price-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+    .admin-modal .price-grid .form-control {
+        text-align: center;
+        padding: 8px;
+    }
+</style>
+
+</html>
