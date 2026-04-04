@@ -36,4 +36,17 @@
         ORDER BY created_at DESC
     </select>
 
+    <insert id="insertGiftCode" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO gift_code (code_name, rewards, status, expiration_date, created_at, updated_at)
+        VALUES (#{codeName}, #{rewards}, #{status}, #{expirationDate}, NOW(), NOW())
+    </insert>
+
+    <update id="updateGiftCode">
+        UPDATE gift_code SET code_name=#{codeName}, rewards=#{rewards}, status=#{status},
+            expiration_date=#{expirationDate}, updated_at=NOW()
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteGiftCode">DELETE FROM gift_code WHERE id=#{id}</delete>
+
 </mapper>

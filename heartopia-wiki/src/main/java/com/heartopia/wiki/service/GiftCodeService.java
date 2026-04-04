@@ -68,4 +68,19 @@ public class GiftCodeService {
         
         return groupedCodes;
     }
+
+    public void addGiftCode(GiftCode giftCode) {
+        if (giftCode.getStatus() == null || giftCode.getStatus().isBlank()) {
+            giftCode.setStatus("ACTIVE");
+        }
+        giftCodeMapper.insertGiftCode(giftCode);
+    }
+
+    public void updateGiftCode(GiftCode giftCode) {
+        giftCodeMapper.updateGiftCode(giftCode);
+    }
+
+    public void deleteGiftCode(Long id) {
+        giftCodeMapper.deleteGiftCode(id);
+    }
 }

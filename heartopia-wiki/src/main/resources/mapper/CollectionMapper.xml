@@ -167,4 +167,115 @@
     <select id="countAllGardening" resultType="int">SELECT count(*) FROM crop_collections</select>
     <select id="countAllForageables" resultType="int">SELECT count(*) FROM forageable_collections</select>
 
+    <!-- ========== INSERT (관리자 데이터 추가) ========== -->
+    <insert id="insertFish" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fish_collections (location, sub_location, name, level, weather, time,
+            price_1, price_2, price_3, price_4, price_5, size, image_url, event_name)
+        VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{size}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertBug" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO bug_collections (location, sub_location, name, level, weather, time,
+            price_1, price_2, price_3, price_4, price_5, image_url, event_name)
+        VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertBird" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO bird_collections (location, sub_location, name, level, weather, time,
+            price_1, price_2, price_3, price_4, price_5, type, image_url, event_name)
+        VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{type}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertAnimal" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO animal_collections (name, location, description, favorite_food, favorite_weather, image_url, event_name)
+        VALUES (#{name}, #{location}, #{description}, #{favoriteFood}, #{favoriteWeather}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertCooking" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cooking_collections (name, level, ingredients, buy_price,
+            price_1, price_2, price_3, price_4, price_5, image_url, event_name)
+        VALUES (#{name}, #{level}, #{ingredients}, #{buyPrice},
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertFlower" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO flower_collections (name, price_1, price_2, price_3, price_4, price_5,
+            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name)
+        VALUES (#{name}, #{price1}, #{price2}, #{price3}, #{price4}, #{price5},
+            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertCrop" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO crop_collections (name, price_1, price_2, price_3, price_4, price_5,
+            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name)
+        VALUES (#{name}, #{price1}, #{price2}, #{price3}, #{price4}, #{price5},
+            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName})
+    </insert>
+
+    <insert id="insertForageable" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO forageable_collections (name, location, price, energy, image_url, event_name, show_on_map)
+        VALUES (#{name}, #{location}, #{price}, #{energy}, #{imageUrl}, #{eventName}, #{showOnMap})
+    </insert>
+
+    <!-- ========== UPDATE (관리자 데이터 수정) ========== -->
+    <update id="updateFish">
+        UPDATE fish_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
+            weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
+            price_4=#{price4}, price_5=#{price5}, size=#{size}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateBug">
+        UPDATE bug_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
+            weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
+            price_4=#{price4}, price_5=#{price5}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateBird">
+        UPDATE bird_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
+            weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
+            price_4=#{price4}, price_5=#{price5}, type=#{type}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateAnimal">
+        UPDATE animal_collections SET name=#{name}, location=#{location}, description=#{description},
+            favorite_food=#{favoriteFood}, favorite_weather=#{favoriteWeather}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateCooking">
+        UPDATE cooking_collections SET name=#{name}, level=#{level}, ingredients=#{ingredients}, buy_price=#{buyPrice},
+            price_1=#{price1}, price_2=#{price2}, price_3=#{price3}, price_4=#{price4}, price_5=#{price5},
+            image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateFlower">
+        UPDATE flower_collections SET name=#{name}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
+            price_4=#{price4}, price_5=#{price5}, level=#{level}, growth_time=#{growthTime},
+            seed_buy_price=#{seedBuyPrice}, seed_sell_price=#{seedSellPrice}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateCrop">
+        UPDATE crop_collections SET name=#{name}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
+            price_4=#{price4}, price_5=#{price5}, level=#{level}, growth_time=#{growthTime},
+            seed_buy_price=#{seedBuyPrice}, seed_sell_price=#{seedSellPrice}, image_url=#{imageUrl}, event_name=#{eventName}
+        WHERE id=#{id}
+    </update>
+    <update id="updateForageable">
+        UPDATE forageable_collections SET name=#{name}, location=#{location}, price=#{price},
+            energy=#{energy}, image_url=#{imageUrl}, event_name=#{eventName}, show_on_map=#{showOnMap}
+        WHERE id=#{id}
+    </update>
+
+    <!-- ========== DELETE (관리자 데이터 삭제) ========== -->
+    <delete id="deleteFish">DELETE FROM fish_collections WHERE id=#{id}</delete>
+    <delete id="deleteBug">DELETE FROM bug_collections WHERE id=#{id}</delete>
+    <delete id="deleteBird">DELETE FROM bird_collections WHERE id=#{id}</delete>
+    <delete id="deleteAnimal">DELETE FROM animal_collections WHERE id=#{id}</delete>
+    <delete id="deleteCooking">DELETE FROM cooking_collections WHERE id=#{id}</delete>
+    <delete id="deleteFlower">DELETE FROM flower_collections WHERE id=#{id}</delete>
+    <delete id="deleteCrop">DELETE FROM crop_collections WHERE id=#{id}</delete>
+    <delete id="deleteForageable">DELETE FROM forageable_collections WHERE id=#{id}</delete>
+
 </mapper>

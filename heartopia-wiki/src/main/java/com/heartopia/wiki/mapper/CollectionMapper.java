@@ -103,4 +103,34 @@ public interface CollectionMapper {
     int countAllGardening();
 
     int countAllForageables();
+
+    // === INSERT (관리자 데이터 추가) ===
+    void insertFish(FishCollection fish);
+    void insertBug(BugCollection bug);
+    void insertBird(BirdCollection bird);
+    void insertAnimal(AnimalCollection animal);
+    void insertCooking(CookingCollection cooking);
+    void insertFlower(FlowerCollection flower);
+    void insertCrop(GardeningCollection crop);
+    void insertForageable(ForageableCollection forageable);
+
+    // === UPDATE (관리자 데이터 수정) ===
+    void updateFish(FishCollection fish);
+    void updateBug(BugCollection bug);
+    void updateBird(BirdCollection bird);
+    void updateAnimal(AnimalCollection animal);
+    void updateCooking(CookingCollection cooking);
+    void updateFlower(FlowerCollection flower);
+    void updateCrop(GardeningCollection crop);
+    void updateForageable(ForageableCollection forageable);
+
+    // === DELETE (관리자 데이터 삭제) ===
+    void deleteFish(Integer id);
+    void deleteBug(Integer id);
+    void deleteBird(Integer id);
+    void deleteAnimal(Integer id);
+    void deleteCooking(Integer id);
+    void deleteFlower(Long id);
+    void deleteCrop(Long id);
+    void deleteForageable(Integer id);
 }

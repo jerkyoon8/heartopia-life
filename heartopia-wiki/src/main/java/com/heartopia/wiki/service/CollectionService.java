@@ -240,4 +240,102 @@ public class CollectionService {
     public int getForageableCount() {
         return collectionMapper.countAllForageables();
     }
+
+    // ===================================================================
+    // INSERT (관리자 데이터 추가) - @CacheEvict로 관련 캐시 무효화
+    // ===================================================================
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFish", "countFish", "searchFish"}, allEntries = true)
+    public void addFish(FishCollection fish) {
+        collectionMapper.insertFish(fish);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBugs", "countBugs", "searchBugs"}, allEntries = true)
+    public void addBug(BugCollection bug) {
+        collectionMapper.insertBug(bug);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBirds", "countBirds", "searchBirds"}, allEntries = true)
+    public void addBird(BirdCollection bird) {
+        collectionMapper.insertBird(bird);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAnimals", "countAnimals", "searchAnimals"}, allEntries = true)
+    public void addAnimal(AnimalCollection animal) {
+        collectionMapper.insertAnimal(animal);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    public void addCooking(CookingCollection cooking) {
+        collectionMapper.insertCooking(cooking);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
+    public void addFlower(FlowerCollection flower) {
+        collectionMapper.insertFlower(flower);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCrops", "countCrops", "searchCrops"}, allEntries = true)
+    public void addCrop(GardeningCollection crop) {
+        collectionMapper.insertCrop(crop);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
+    public void addForageable(ForageableCollection forageable) {
+        collectionMapper.insertForageable(forageable);
+    }
+
+    // ===================================================================
+    // UPDATE (관리자 데이터 수정) - @CacheEvict로 관련 캐시 무효화
+    // ===================================================================
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFish", "countFish", "searchFish"}, allEntries = true)
+    public void updateFish(FishCollection fish) { collectionMapper.updateFish(fish); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBugs", "countBugs", "searchBugs"}, allEntries = true)
+    public void updateBug(BugCollection bug) { collectionMapper.updateBug(bug); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBirds", "countBirds", "searchBirds"}, allEntries = true)
+    public void updateBird(BirdCollection bird) { collectionMapper.updateBird(bird); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAnimals", "countAnimals", "searchAnimals"}, allEntries = true)
+    public void updateAnimal(AnimalCollection animal) { collectionMapper.updateAnimal(animal); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    public void updateCooking(CookingCollection cooking) { collectionMapper.updateCooking(cooking); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
+    public void updateFlower(FlowerCollection flower) { collectionMapper.updateFlower(flower); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCrops", "countCrops", "searchCrops"}, allEntries = true)
+    public void updateCrop(GardeningCollection crop) { collectionMapper.updateCrop(crop); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
+    public void updateForageable(ForageableCollection forageable) { collectionMapper.updateForageable(forageable); }
+
+    // ===================================================================
+    // DELETE (관리자 데이터 삭제) - @CacheEvict로 관련 캐시 무효화
+    // ===================================================================
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFish", "countFish", "searchFish"}, allEntries = true)
+    public void deleteFish(Integer id) { collectionMapper.deleteFish(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBugs", "countBugs", "searchBugs"}, allEntries = true)
+    public void deleteBug(Integer id) { collectionMapper.deleteBug(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allBirds", "countBirds", "searchBirds"}, allEntries = true)
+    public void deleteBird(Integer id) { collectionMapper.deleteBird(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAnimals", "countAnimals", "searchAnimals"}, allEntries = true)
+    public void deleteAnimal(Integer id) { collectionMapper.deleteAnimal(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    public void deleteCooking(Integer id) { collectionMapper.deleteCooking(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
+    public void deleteFlower(Long id) { collectionMapper.deleteFlower(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCrops", "countCrops", "searchCrops"}, allEntries = true)
+    public void deleteCrop(Long id) { collectionMapper.deleteCrop(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
+    public void deleteForageable(Integer id) { collectionMapper.deleteForageable(id); }
 }

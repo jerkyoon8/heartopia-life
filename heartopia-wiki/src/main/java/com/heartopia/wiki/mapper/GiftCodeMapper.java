@@ -11,4 +11,9 @@ public interface GiftCodeMapper {
     
     // 상태별 코드 조회 (ACTIVE, EXPIRED 등)
     List<GiftCode> findByStatus(String status);
+
+    // 새 기프트코드 추가
+    void insertGiftCode(GiftCode giftCode);
+    void updateGiftCode(GiftCode giftCode);
+    void deleteGiftCode(Long id);
 }
