@@ -4,6 +4,7 @@ import com.heartopia.wiki.model.BugCollection;
 import java.util.List;
 
 public record BugDto(
+    Integer id,
     String name,
     String imageUrl,
     String location,
@@ -12,10 +13,12 @@ public record BugDto(
     String weather,
     String time,
     List<Integer> prices,
+    Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
     String eventName
 ) {
     public static BugDto from(BugCollection b) {
         return new BugDto(
+            b.getId(),
             b.getName(),
             b.getImageUrl(),
             b.getLocation(),
@@ -30,6 +33,7 @@ public record BugDto(
                 b.getPrice4() != null ? b.getPrice4() : 0,
                 b.getPrice5() != null ? b.getPrice5() : 0
             ),
+            b.getPrice1(), b.getPrice2(), b.getPrice3(), b.getPrice4(), b.getPrice5(),
             b.getEventName()
         );
     }

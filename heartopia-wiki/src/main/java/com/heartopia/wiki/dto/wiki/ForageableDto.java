@@ -3,6 +3,7 @@ package com.heartopia.wiki.dto.wiki;
 import com.heartopia.wiki.model.ForageableCollection;
 
 public record ForageableDto(
+    Integer id,
     String name,
     String imageUrl,
     String location,
@@ -12,6 +13,7 @@ public record ForageableDto(
 ) {
     public static ForageableDto from(ForageableCollection f) {
         return new ForageableDto(
+            f.getId(),
             f.getName(),
             f.getImageUrl(),
             f.getLocation(),
