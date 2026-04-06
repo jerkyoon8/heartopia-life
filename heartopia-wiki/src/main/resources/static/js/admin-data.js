@@ -2,24 +2,26 @@
  * admin-data.js - 관리자 데이터 CRUD 공통 JS
  * 
  * 기능:
- * 1. 이미지 URL 기본 경로 자동 결합 (input-group prefix)
+ * 1. 이미지 파일 업로드 미리보기
  * 2. 수정 모달에 기존 데이터 채우기
  * 3. 삭제 확인 다이얼로그
  */
 document.addEventListener('DOMContentLoaded', function() {
 
     // ================================================================
-    // 1. 이미지 URL 기본 경로 결합
-    //    form submit 시 data-img-base + 파일명 → hidden imageUrl 필드에 합침
+    // 1. 이미지 파일 선택 시 미리보기
     // ================================================================
-    document.querySelectorAll('form[data-img-base]').forEach(form => {
-        form.addEventListener('submit', function() {
-            const base = this.dataset.imgBase || '';
-            const fileInput = this.querySelector('.img-filename');
-            const hiddenInput = this.querySelector('input[name="imageUrl"]');
-            if (fileInput && hiddenInput) {
-                const filename = fileInput.value.trim();
-                hiddenInput.value = filename ? (base + filename) : '';
+    document.querySelectorAll('.img-file-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const preview = this.closest('.img-upload-wrapper').querySelector('.img-preview');
+            const previewImg = preview?.querySelector('img');
+            if (this.files && this.files[0] && previewImg) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(this.files[0]);
             }
         });
     });
@@ -36,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const form = modal.querySelector('form');
             // action을 update로 변경
-            const addAction = form.dataset.addAction;
             const updateAction = form.dataset.updateAction;
             form.action = updateAction;
 
@@ -63,11 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 이미지 파일명 분리 (base path 제거)
-            const imgBase = form.dataset.imgBase || '';
-            const imgFileInput = form.querySelector('.img-filename');
-            if (imgFileInput && data.imageUrl) {
-                imgFileInput.value = data.imageUrl.replace(imgBase, '');
+            // 기존 이미지 URL을 hidden 필드에 세팅 + 미리보기
+            const existingImgInput = form.querySelector('input[name="existingImageUrl"]');
+            if (existingImgInput && data.imageUrl) {
+                existingImgInput.value = data.imageUrl;
+            }
+            const preview = form.querySelector('.img-preview');
+            const previewImg = preview?.querySelector('img');
+            if (previewImg && data.imageUrl) {
+                previewImg.src = data.imageUrl;
+                preview.style.display = 'block';
+            } else if (preview) {
+                preview.style.display = 'none';
             }
 
             // Bootstrap 모달 열기
@@ -105,6 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // id hidden 필드 비우기
             const idInput = form.querySelector('input[name="id"]');
             if (idInput) idInput.value = '';
+            // existingImageUrl 비우기
+            const existingImgInput = form.querySelector('input[name="existingImageUrl"]');
+            if (existingImgInput) existingImgInput.value = '';
+            // 미리보기 숨기기
+            const preview = form.querySelector('.img-preview');
+            if (preview) preview.style.display = 'none';
         });
     });
 

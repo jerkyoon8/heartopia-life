@@ -13,6 +13,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/heartopia_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./logs:/app/logs         # 로그 파일을 호스트에 노출 (영속화)
+      - ./uploads:/app/uploads   # 업로드 이미지 영속화
     restart: unless-stopped
 
   # MySQL 데이터베이스

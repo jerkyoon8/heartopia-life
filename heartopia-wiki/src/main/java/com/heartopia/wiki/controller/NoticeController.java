@@ -30,8 +30,22 @@ public class NoticeController {
 
     // 관리자: 새 소식 추가
     @PostMapping("/wiki/admin/notices/add")
-    public String addNotice(Notice notice) {
+    public String addNotice(Notice notice, @RequestHeader(value = "Referer", required = false) String referer) {
         noticeService.addNotice(notice);
+        // 공개 페이지에서 작성한 경우 공개 페이지로 리다이렉트
+        if (referer != null && referer.contains("/wiki/notices") && !referer.contains("/wiki/admin/notices")) {
+            return "redirect:/wiki/notices";
+        }
+        return "redirect:/wiki/admin/notices";
+    }
+
+    // 관리자: 공지 수정
+    @PostMapping("/wiki/admin/notices/update")
+    public String updateNotice(Notice notice, @RequestHeader(value = "Referer", required = false) String referer) {
+        noticeService.updateNotice(notice);
+        if (referer != null && referer.contains("/wiki/notices") && !referer.contains("/wiki/admin/notices")) {
+            return "redirect:/wiki/notices";
+        }
         return "redirect:/wiki/admin/notices";
     }
 
@@ -48,8 +62,11 @@ public class NoticeController {
 
     // 관리자: 공지 삭제
     @PostMapping("/wiki/admin/notices/delete")
-    public String deleteNotice(@RequestParam Long id) {
+    public String deleteNotice(@RequestParam Long id, @RequestHeader(value = "Referer", required = false) String referer) {
         noticeService.deleteNotice(id);
+        if (referer != null && referer.contains("/wiki/notices") && !referer.contains("/wiki/admin/notices")) {
+            return "redirect:/wiki/notices";
+        }
         return "redirect:/wiki/admin/notices";
     }
 }

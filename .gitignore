@@ -57,6 +57,9 @@ heartopia-wiki/docs/
 heartopia-wiki/*.log
 heartopia-wiki/*.txt
 
+# --- Uploads (이미지 업로드) ---
+**/uploads/
+
 # --- Temp ---
 tmp/
 temp/
