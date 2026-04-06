@@ -18,6 +18,7 @@ const LOCATION_TO_ZONE = {
     '도시 전체': '도시', '도시': '도시', '도시 근교': '도시근교', '근교': '도시근교', '도심': '도심',
     '해변': '해변', '물가': '물가'
 };
+window.LOCATION_TO_ZONE = LOCATION_TO_ZONE;
 
 window.MapApp.zone = {
     resolveZoneKeys: function (location, subLocation) {
@@ -88,7 +89,7 @@ window.MapApp.zone = {
         const placementBanner = document.getElementById('placementBanner');
         const placementText = document.getElementById('placementText');
         if (placementBanner) placementBanner.classList.add('active');
-        if (placementText) placementText.textContent = `[Zone: ${zoneKey}] 경계 좌표 입력 중 — 지점을 클릭하세요. 완료: 더블클릭`;
+        if (placementText) placementText.textContent = `📍 [${zoneKey}] 위치 지정 모드 — 맵에서 원하는 지점을 클릭하세요`;
     },
     exitZoneEditMode: function () {
         window.MapApp.state.zoneEditMode.active = false;

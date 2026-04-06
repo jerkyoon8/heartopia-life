@@ -44,5 +44,21 @@ window.MapApp.api = {
         } catch (e) {
             console.error('Zone 로드 실패:', e);
         }
+    },
+    saveZonePosition: async function (zoneKey, mapX, mapY) {
+        try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+            const response = await fetch('/wiki/map/api/zones/' + zoneKey + '/position', {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify({ mapX: mapX, mapY: mapY })
+            });
+            if (!response.ok) throw new Error('Zone 위치 저장 실패');
+            return await response.json();
+        } catch (err) {
+            console.error('Zone 위치 저장 에러:', err);
+            throw err;
+        }
     }
 };

@@ -42,6 +42,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+        // zone 라벨도 연동
+        if (state.zoneVisible) {
+            Object.keys(state.zoneVisible).forEach(k => { state.zoneVisible[k] = isVisible; });
+        }
+        if (state.allZones) {
+            state.allZones.forEach(z => {
+                if (!state.zoneVisible) state.zoneVisible = {};
+                state.zoneVisible[z.zoneKey] = isVisible;
+            });
+        }
+        if (window.MapApp.updateZoneLabelVisibility) window.MapApp.updateZoneLabelVisibility();
         ui.updateMarkerVisibility();
         ui.renderCategoryList();
     };
@@ -140,8 +151,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const zoneParam = params.get('zone'); 
 
         if (zoneParam) {
-            const zoneKeys = zoneParam.split(',').map(k => k.trim()).filter(Boolean);
-            zone.highlightZones(zoneKeys);
+            // LOCATION_TO_ZONE 매핑 시도 (한국어 이름 → zoneKey)
+            const LOCATION_TO_ZONE = window.LOCATION_TO_ZONE || {};
+            const resolvedKey = LOCATION_TO_ZONE[zoneParam] || zoneParam;
+            const zoneObj = state.allZones.find(z => z.zoneKey === resolvedKey);
+            if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                const lat = mapHeight - zoneObj.mapY;
+                const lng = zoneObj.mapX;
+                map.setView([lat, lng], 1, { animate: true });
+                ui.showToast(`📍 ${zoneObj.displayName}`);
+            } else {
+                // fallback: 폴리곤 기반 하이라이트 시도
+                const zoneKeys = zoneParam.split(',').map(k => k.trim()).filter(Boolean);
+                zone.highlightZones(zoneKeys);
+            }
             return;
         }
 
@@ -172,7 +195,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 ui.showInfoBox(master, category);
                 if (master.location) {
                     const zoneKeys = zone.resolveZoneKeys(master.location, master.subLocation);
-                    zone.highlightZones(zoneKeys);
+                    // 해당 zone만 켜고 나머지 전부 끄기
+                    if (state.allZones && zoneKeys.length > 0) {
+                        if (!state.zoneVisible) state.zoneVisible = {};
+                        state.allZones.forEach(z => { state.zoneVisible[z.zoneKey] = false; });
+                        zoneKeys.forEach(k => { state.zoneVisible[k] = true; });
+                        if (window.MapApp.updateZoneLabelVisibility) window.MapApp.updateZoneLabelVisibility();
+                        ui.renderCategoryList();
+                    }
+                    // mapX/mapY 좌표로 카메라 이동
+                    let moved = false;
+                    if (zoneKeys.length > 0) {
+                        const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
+                        if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                            const lat = mapHeight - zoneObj.mapY;
+                            const lng = zoneObj.mapX;
+                            map.setView([lat, lng], 1, { animate: true });
+                            moved = true;
+                        }
+                    }
+                    // fallback: polygonPoints 기반 하이라이트
+                    if (!moved) zone.highlightZones(zoneKeys);
                 }
             }
         }
@@ -191,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
     img.onload = function () {
         const mapWidth = this.naturalWidth;
         const mapHeight = this.naturalHeight;
+        state.mapHeight = mapHeight;
         const bounds = [[0, 0], [mapHeight, mapWidth]];
 
         state.map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 2, zoomSnap: 0.25, attributionControl: false, maxBounds: bounds, maxBoundsViscosity: 1.0 });
@@ -246,11 +290,87 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 ui.renderCategoryList();
                 handleDeepLink(state.map, mapHeight);
+                renderZoneLabels(state.map, mapHeight);
             });
+
+    // Zone 위치명 라벨 표시
+    function renderZoneLabels(map, mapHeight) {
+        if (!state.allZones) return;
+        state.zoneLabelMap = {}; // zoneKey → marker
+        if (!state.zoneVisible) state.zoneVisible = {};
+        state.allZones.forEach(z => {
+            if (z.mapX && z.mapY && !z.parentZoneKey) return;
+            if (!z.mapX || !z.mapY) return;
+            const lat = mapHeight - z.mapY;
+            const lng = z.mapX;
+            const label = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'zone-label-marker',
+                    html: `<span class="zone-label-text" style="color: ${z.color || '#333'}">${z.displayName}</span>`,
+                    iconSize: [0, 0],
+                    iconAnchor: [0, 0]
+                }),
+                interactive: false
+            });
+            // 초기 가시성 적용
+            if (state.zoneVisible[z.zoneKey] !== false) label.addTo(map);
+            state.zoneLabelMap[z.zoneKey] = label;
+        });
+        // zoom에 따라 라벨 크기 조절
+        function updateLabelSize() {
+            const zoom = map.getZoom();
+            const size = Math.max(10, Math.min(22, 12 + (zoom + 2) * 3));
+            document.querySelectorAll('.zone-label-text').forEach(el => {
+                el.style.fontSize = size + 'px';
+            });
+        }
+        map.on('zoomend', updateLabelSize);
+        updateLabelSize();
+    }
+
+    // 개별 zone 라벨 가시성 업데이트
+    window.MapApp.updateZoneLabelVisibility = function () {
+        if (!state.zoneLabelMap) return;
+        Object.entries(state.zoneLabelMap).forEach(([zoneKey, label]) => {
+            if (state.zoneVisible[zoneKey] !== false) {
+                if (!state.map.hasLayer(label)) label.addTo(state.map);
+            } else {
+                if (state.map.hasLayer(label)) state.map.removeLayer(label);
+            }
+        });
+    };
 
             state.map.on('click', function (e) {
                 const lat = e.latlng.lat; const lng = e.latlng.lng;
                 const x = Math.round(lng); const y = Math.round(mapHeight - lat);
+
+                // Zone 편집 모드: 클릭 한 번으로 위치 좌표 지정
+                if (state.zoneEditMode.active) {
+                    const zoneKey = state.zoneEditMode.targetZoneKey;
+                    
+                    // API로 좌표 저장
+                    api.saveZonePosition(zoneKey, x, y).then(result => {
+                        // state 업데이트
+                        const zoneObj = state.allZones.find(z => z.zoneKey === zoneKey);
+                        if (zoneObj) { zoneObj.mapX = x; zoneObj.mapY = y; }
+                        
+                        zone.exitZoneEditMode();
+                        
+                        // 저장된 위치에 마커 표시
+                        const marker = L.circleMarker([lat, lng], {
+                            radius: 8, color: zoneObj?.color || '#667eea',
+                            fillColor: zoneObj?.color || '#667eea', fillOpacity: 0.6, weight: 2
+                        }).addTo(state.map);
+                        marker.bindTooltip(zoneObj?.displayName || zoneKey, { permanent: false, direction: 'top' });
+                        setTimeout(() => state.map.removeLayer(marker), 3000);
+                        
+                        ui.showToast(`✅ ${zoneObj?.displayName || zoneKey} 위치 저장 완료! (${x}, ${y})`);
+                        ui.renderCategoryList();
+                    }).catch(err => {
+                        ui.showToast('❌ 위치 저장 실패');
+                    });
+                    return;
+                }
 
                 if (state.placementMode.active && state.placementMode.pinTemplate) {
                     const template = state.placementMode.pinTemplate;

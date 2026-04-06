@@ -250,6 +250,7 @@ window.MapApp.ui = {
         });
 
         window.MapApp.ui.bindCategoryEvents();
+        window.MapApp.ui.renderLocationList();
     },
     bindCategoryEvents: function() {
         const state = window.MapApp.state;
@@ -364,6 +365,165 @@ window.MapApp.ui = {
                     ui.exitPlacementMode();
                 } else {
                     ui.enterPlacementMode({ ...pin }, false);
+                }
+            });
+        });
+    },
+
+    // ==========================================
+    // 위치 (Location/Zone) 섹션
+    // ==========================================
+    renderLocationList: function () {
+        const state = window.MapApp.state;
+        const categoryList = document.getElementById('categoryList');
+        if (!categoryList || !state.allZones || state.allZones.length === 0) return;
+
+        const isLocationExpanded = state.expandedCategories['_locationSection'] !== false; // 기본 열림
+
+        // 구분선 (클릭으로 접기/펼치기)
+        const divider = document.createElement('div');
+        divider.className = 'location-divider';
+        divider.style.cursor = 'pointer';
+        divider.innerHTML = `<span class="category-arrow ${isLocationExpanded ? 'expanded' : ''}">▶</span><span>📍 위치</span>`;
+        divider.addEventListener('click', () => {
+            state.expandedCategories['_locationSection'] = !isLocationExpanded;
+            window.MapApp.ui.renderCategoryList();
+        });
+        categoryList.appendChild(divider);
+
+        if (!isLocationExpanded) return; // 접힌 상태면 여기서 끝
+
+        // 부모 zone 그룹핑
+        const parentZones = state.allZones.filter(z => !z.parentZoneKey);
+        const childMap = {};
+        state.allZones.forEach(z => {
+            if (z.parentZoneKey) {
+                if (!childMap[z.parentZoneKey]) childMap[z.parentZoneKey] = [];
+                childMap[z.parentZoneKey].push(z);
+            }
+        });
+
+        // zone 개별 가시성 초기화
+        if (!state.zoneVisible) state.zoneVisible = {};
+
+        parentZones.forEach(parent => {
+            const children = childMap[parent.zoneKey] || [];
+            const isExpanded = state.expandedCategories['loc_' + parent.zoneKey] === true;
+            
+            // 부모 zone 가시성: 자식 중 하나라도 켜진 게 있으면 켜짐
+            const isParentVisible = children.length > 0
+                ? children.some(c => state.zoneVisible[c.zoneKey] !== false)
+                : state.zoneVisible[parent.zoneKey] !== false;
+
+            const group = document.createElement('div');
+            group.className = 'category-group location-group';
+            group.innerHTML = `
+                <div class="category-header location-header" data-zone-parent="${parent.zoneKey}">
+                    <span class="category-arrow ${isExpanded ? 'expanded' : ''}">▶</span>
+                    <span class="category-color-bar" style="background: ${parent.color || '#94a3b8'}"></span>
+                    <span class="category-name">${parent.displayName.replace(' 전체', '')}</span>
+                    <div class="category-controls">
+                        <button class="category-toggle zone-group-toggle ${isParentVisible ? '' : 'off'}" data-zone-parent="${parent.zoneKey}">
+                            <i class="fas ${isParentVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="category-items ${isExpanded ? 'expanded' : ''}">
+                    ${children.map(child => {
+                        const childHasPosition = !!(child.mapX && child.mapY);
+                        const isChildVisible = state.zoneVisible[child.zoneKey] !== false;
+                        return `
+                        <div class="pin-item location-item" data-zone-key="${child.zoneKey}">
+                            <span class="location-color-dot" style="background: ${child.color || parent.color || '#94a3b8'}"></span>
+                            <span class="pin-item-name">${child.displayName}</span>
+                            <div class="pin-item-controls">
+                                ${childHasPosition ? `
+                                    <button class="item-visibility-toggle zone-item-toggle ${isChildVisible ? '' : 'off'}" data-zone-key="${child.zoneKey}" title="표시/숨기기">
+                                        <i class="fas ${isChildVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                                    </button>
+                                ` : '<span class="zone-status-dot empty" title="미지정"></span>'}
+                                ${window.isAdmin ? `<button class="zone-edit-btn" data-zone-key="${child.zoneKey}" title="위치 지정"><i class="fas fa-map-pin"></i></button>` : ''}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            categoryList.appendChild(group);
+        });
+
+        // 독립 zone (parentZoneKey 없고 자식도 없는 것)
+        const standaloneZones = state.allZones.filter(z => !z.parentZoneKey && !(childMap[z.zoneKey]?.length > 0) && !parentZones.some(p => p.zoneKey === z.zoneKey && childMap[p.zoneKey]?.length > 0));
+        // 이미 parentZones에 포함된 것은 위에서 처리되므로, 자식이 없는 부모는 단독 항목으로 보여줌
+
+        this.bindLocationEvents();
+    },
+    bindLocationEvents: function () {
+        const state = window.MapApp.state;
+        const zone = window.MapApp.zone;
+        const ui = window.MapApp.ui;
+
+        // 부모 zone 접기/펼치기
+        document.querySelectorAll('.location-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                if (e.target.closest('.zone-edit-btn') || e.target.closest('.zone-group-toggle')) return;
+                const parentKey = header.dataset.zoneParent;
+                state.expandedCategories['loc_' + parentKey] = !state.expandedCategories['loc_' + parentKey];
+                ui.renderCategoryList();
+            });
+        });
+
+        // 부모 zone 전체 토글 (눈 아이콘)
+        document.querySelectorAll('.zone-group-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const parentKey = btn.dataset.zoneParent;
+                const children = state.allZones.filter(z => z.parentZoneKey === parentKey);
+                // 현재 전체 켜짐 여부 확인
+                const allVisible = children.every(c => state.zoneVisible[c.zoneKey] !== false);
+                const newState = !allVisible;
+                children.forEach(c => { state.zoneVisible[c.zoneKey] = newState; });
+                window.MapApp.updateZoneLabelVisibility();
+                ui.renderCategoryList();
+            });
+        });
+
+        // 자식 zone 개별 토글 (눈 아이콘)
+        document.querySelectorAll('.zone-item-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const zoneKey = btn.dataset.zoneKey;
+                state.zoneVisible[zoneKey] = state.zoneVisible[zoneKey] === false ? true : false;
+                window.MapApp.updateZoneLabelVisibility();
+                ui.renderCategoryList();
+            });
+        });
+
+        // 자식 zone 클릭 → x,y 좌표로 카메라 이동
+        document.querySelectorAll('.location-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.pin-item-controls')) return;
+                const zoneKey = item.dataset.zoneKey;
+                const zoneObj = state.allZones.find(z => z.zoneKey === zoneKey);
+                if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                    const mapHeight = state.mapHeight || 3000;
+                    const lat = mapHeight - zoneObj.mapY;
+                    const lng = zoneObj.mapX;
+                    state.map.setView([lat, lng], 1, { animate: true });
+                    ui.showToast(`📍 ${zoneObj.displayName}`);
+                } else {
+                    ui.showToast(`⚠️ ${zoneObj?.displayName || zoneKey} — 위치가 아직 지정되지 않았습니다`);
+                }
+            });
+        });
+
+        // Zone 편집 버튼 (관리자)
+        document.querySelectorAll('.zone-edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const zoneKey = btn.dataset.zoneKey;
+                if (state.zoneEditMode.active && state.zoneEditMode.targetZoneKey === zoneKey) {
+                    zone.exitZoneEditMode();
+                } else {
+                    zone.enterZoneEditMode(zoneKey);
                 }
             });
         });

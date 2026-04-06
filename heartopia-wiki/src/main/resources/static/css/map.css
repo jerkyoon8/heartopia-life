@@ -812,4 +812,107 @@
     align-items: center;
     gap: 6px;
     pointer-events: none;
-}
+}
+
+/* ===== Location Section (위치 탭) ===== */
+.location-divider {
+    display: flex;
+    align-items: center;
+    padding: 14px 10px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-color, #555);
+    gap: 8px;
+    border-top: 1px dashed var(--border-subtle, #ddd);
+    margin-top: 8px;
+}
+
+.location-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.zone-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.zone-status-dot.done {
+    background: #51cf66;
+    box-shadow: 0 0 4px rgba(81, 207, 102, 0.5);
+}
+
+.zone-status-dot.empty {
+    background: #ffa726;
+    animation: blink-dot 2s ease-in-out infinite;
+}
+
+.zone-edit-btn {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle, #e0e0e0);
+    background: var(--card-bg, white);
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--stat-label, #999);
+    font-size: 11px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.zone-edit-btn:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.location-item:hover {
+    background: #f0f4ff;
+}
+
+/* Zone Label Marker */
+.zone-label-marker {
+    background: none !important;
+    border: none !important;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.zone-label-text {
+    font-weight: 700;
+    font-size: 12px;
+    font-family: 'Paperlogy', sans-serif;
+    text-shadow: 0 0 4px white, 0 0 4px white, 0 0 4px white, 0 0 8px white;
+    transition: font-size 0.2s ease;
+}
+
+/* Zone Label Toggle Button */
+.zone-label-toggle {
+    margin-left: auto;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 6px;
+    cursor: pointer;
+    color: #999;
+    font-size: 11px;
+    transition: all 0.2s;
+}
+
+.zone-label-toggle.active {
+    color: #667eea;
+    border-color: #667eea;
+}
+
+.zone-label-toggle:hover {
+    background: #f0f4ff;
+}
+

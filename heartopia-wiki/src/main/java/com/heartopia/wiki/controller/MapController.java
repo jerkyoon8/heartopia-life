@@ -221,6 +221,17 @@ public class MapController {
         return Map.of("success", true, "zoneKey", zoneKey);
     }
 
+    @PutMapping("/api/zones/{zoneKey}/position")
+    @ResponseBody
+    public Map<String, Object> updateZonePosition(
+            @PathVariable String zoneKey,
+            @RequestBody Map<String, Integer> body) {
+        Integer mapX = body.get("mapX");
+        Integer mapY = body.get("mapY");
+        locationZoneMapper.updateMapPosition(zoneKey, mapX, mapY);
+        return Map.of("success", true, "zoneKey", zoneKey, "mapX", mapX, "mapY", mapY);
+    }
+
     @PutMapping("/api/pins/{id}/position")
     @ResponseBody
     public Map<String, Object> updatePinPosition(

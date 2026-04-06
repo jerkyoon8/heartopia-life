@@ -12,4 +12,5 @@ public interface LocationZoneMapper {
     LocationZone findByZoneKey(@Param("zoneKey") String zoneKey);
     List<LocationZone> findByZoneKeys(@Param("zoneKeys") List<String> zoneKeys);
     void updatePolygon(@Param("zoneKey") String zoneKey, @Param("polygonPoints") String polygonPoints);
+    void updateMapPosition(@Param("zoneKey") String zoneKey, @Param("mapX") Integer mapX, @Param("mapY") Integer mapY);
 }

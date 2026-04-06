@@ -9,24 +9,26 @@
         <result property="zoneKey" column="zone_key"/>
         <result property="displayName" column="display_name"/>
         <result property="polygonPoints" column="polygon_points"/>
+        <result property="mapX" column="map_x"/>
+        <result property="mapY" column="map_y"/>
         <result property="color" column="color"/>
         <result property="parentZoneKey" column="parent_zone_key"/>
     </resultMap>
 
     <select id="findAll" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         ORDER BY id ASC
     </select>
 
     <select id="findByZoneKey" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         WHERE zone_key = #{zoneKey}
     </select>
 
     <select id="findByZoneKeys" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, color, parent_zone_key
+        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         WHERE zone_key IN
         <foreach item="key" collection="zoneKeys" open="(" separator="," close=")">
@@ -37,6 +39,12 @@
     <update id="updatePolygon">
         UPDATE location_zones
         SET polygon_points = #{polygonPoints}
+        WHERE zone_key = #{zoneKey}
+    </update>
+
+    <update id="updateMapPosition">
+        UPDATE location_zones
+        SET map_x = #{mapX}, map_y = #{mapY}
         WHERE zone_key = #{zoneKey}
     </update>
 

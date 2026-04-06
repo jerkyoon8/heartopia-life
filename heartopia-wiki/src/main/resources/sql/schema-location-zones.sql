@@ -1,10 +1,12 @@
--- Location Zone 테이블: 맵 위치 폴리곤 하이라이트용
+-- Location Zone 테이블: 맵 위치 표시용
 CREATE TABLE IF NOT EXISTS location_zones (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     zone_key        VARCHAR(50)  NOT NULL UNIQUE COMMENT '고유 키 (예: 거목강, 온천산)',
     display_name    VARCHAR(100) NOT NULL COMMENT '표시 이름 (예: 거목 강)',
     polygon_points  JSON         NULL     COMMENT '맵 픽셀 좌표 [[x1,y1],[x2,y2],...]',
-    color           VARCHAR(20)  NOT NULL DEFAULT '#4dabf7' COMMENT '폴리곤 색상',
+    map_x           INT          NULL     COMMENT '위치 x좌표 (픽셀)',
+    map_y           INT          NULL     COMMENT '위치 y좌표 (픽셀)',
+    color           VARCHAR(20)  NOT NULL DEFAULT '#4dabf7' COMMENT '색상',
     parent_zone_key VARCHAR(50)  NULL     COMMENT '상위 zone 키 (NULL이면 최상위)'
 );
 
