@@ -53,6 +53,13 @@
                 <option value="9">Lv.9</option>
                 <option value="10">Lv.10+</option>
             </select>
+            <select id="weatherFilter" class="filter-select">
+                <option value="all">모든 날씨</option>
+                <option value="상시">상시</option>
+                <option value="해">☀️ 맑음</option>
+                <option value="비">🌧️ 비</option>
+                <option value="무지개">🌈 무지개</option>
+            </select>
 
             <!-- Sort & Reset (Fragment) -->
             <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
@@ -66,6 +73,7 @@
 
             <div th:each="bug : ${bugList}" class="wiki-item-card" th:data-name="${bug.name}"
                 th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}"
+                th:data-weather="${bug.weather}"
                 th:data-event="${bug.eventName != null ? bug.eventName : ''}">
 
                 <div class="wiki-item-image">
@@ -145,6 +153,7 @@
                         th:data-name="${bug.name}"
                         th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
                         th:data-price="${bug.prices[0]}"
+                        th:data-weather="${bug.weather}"
                         th:data-event="${bug.eventName != null ? bug.eventName : ''}">
                         <td>
                             <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb">
@@ -200,7 +209,8 @@
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
-                    { id: 'levelFilter', dataKey: 'level' }
+                    { id: 'levelFilter', dataKey: 'level' },
+                    { id: 'weatherFilter', dataKey: 'weather' }
                 ]
             });
         });
@@ -210,7 +220,7 @@
     <div sec:authorize="hasRole('ADMIN')">
         <div class="modal fade" id="addBugModal" tabindex="-1" data-add-title="새 벌레 추가"><div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
             <div class="modal-header" style="background:linear-gradient(135deg,#4D342E,#795548);color:#fff;border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 벌레 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
-            <form action="/wiki/admin/data/bug/add" method="post" data-add-action="/wiki/admin/data/bug/add" data-update-action="/wiki/admin/data/bug/update" data-img-base="/images/bug/"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
+            <form action="/wiki/admin/data/bug/add" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/bug/add" data-update-action="/wiki/admin/data/bug/update"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
                 <div class="modal-body" style="padding:24px;"><div class="row g-3">
                     <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
                     <div class="col-md-3"><label class="form-label fw-bold">레벨 *</label><input type="number" name="level" class="form-control" required></div>
@@ -220,7 +230,7 @@
                     <div class="col-md-6"><label class="form-label fw-bold">날씨</label><input type="text" name="weather" class="form-control" placeholder="상시"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">시간</label><input type="text" name="time" class="form-control" placeholder="상시"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
-                    <div class="col-md-8"><label class="form-label fw-bold">이미지</label><div class="input-group"><span class="input-group-text" style="font-size:0.85rem;">/images/bug/</span><input type="text" class="form-control img-filename" placeholder="파일명.png"></div><input type="hidden" name="imageUrl" /></div>
+                    <div class="col-md-8"><label class="form-label fw-bold">이미지</label><div class="img-upload-wrapper"><input type="file" name="imageFile" class="form-control img-file-input" accept="image/*"><input type="hidden" name="existingImageUrl" /><div class="img-preview mt-2" style="display:none;"><img src="" alt="미리보기" style="max-height:80px;object-fit:contain;border-radius:8px;"></div></div></div>
                     <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
                 </div></div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button type="submit" class="btn btn-admin-submit text-white" style="background:linear-gradient(135deg,#4D342E,#795548);">추가하기</button></div>

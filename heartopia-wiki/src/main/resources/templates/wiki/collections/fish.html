@@ -62,6 +62,13 @@
                 <option value="all">모든 그림자</option>
                 <!-- Options populated by JS -->
             </select>
+            <select id="weatherFilter" class="filter-select">
+                <option value="all">모든 날씨</option>
+                <option value="상시">상시</option>
+                <option value="해">☀️ 맑음</option>
+                <option value="비">🌧️ 비</option>
+                <option value="무지개">🌈 무지개</option>
+            </select>
 
             <!-- Sort & Reset (Fragment) -->
             <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
@@ -75,6 +82,7 @@
             <div th:each="fish : ${fishList}" class="wiki-item-card" th:data-name="${fish.name}"
                 th:data-level="${#strings.replace(fish.level, 'Lv.', '')}" th:data-location="${fish.location}"
                 th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}"
+                th:data-weather="${fish.weather}"
                 th:data-event="${fish.eventName != null ? fish.eventName : ''}">
 
                 <div class="wiki-item-image">
@@ -163,6 +171,7 @@
                         th:data-location="${fish.location}"
                         th:data-shadow="${fish.size}"
                         th:data-price="${fish.prices[0]}"
+                        th:data-weather="${fish.weather}"
                         th:data-event="${fish.eventName != null ? fish.eventName : ''}">
                         <td>
                             <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" class="table-thumb">
@@ -199,7 +208,7 @@
                             <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 물고기 추가</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
                         </div>
-                        <form action="/wiki/admin/data/fish/add" method="post" data-add-action="/wiki/admin/data/fish/add" data-update-action="/wiki/admin/data/fish/update" data-img-base="/images/fish/">
+                        <form action="/wiki/admin/data/fish/add" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/fish/add" data-update-action="/wiki/admin/data/fish/update">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <input type="hidden" name="id" value="" />
                             <div class="modal-body" style="padding:24px;">
@@ -221,8 +230,11 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8"><label class="form-label fw-bold">이미지</label>
-                                        <div class="input-group"><span class="input-group-text" style="font-size:0.85rem;">/images/fish/</span><input type="text" class="form-control img-filename" placeholder="파일명.png"></div>
-                                        <input type="hidden" name="imageUrl" />
+                                        <div class="img-upload-wrapper">
+                                            <input type="file" name="imageFile" class="form-control img-file-input" accept="image/*">
+                                            <input type="hidden" name="existingImageUrl" />
+                                            <div class="img-preview mt-2" style="display:none;"><img src="" alt="미리보기" style="max-height:80px;object-fit:contain;border-radius:8px;"></div>
+                                        </div>
                                     </div>
                                     <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
                                 </div>
@@ -270,7 +282,8 @@
                         { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                         { id: 'levelFilter', dataKey: 'level' },
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
-                        { id: 'shadowFilter', dataKey: 'shadow', autoPopulate: true }
+                        { id: 'shadowFilter', dataKey: 'shadow', autoPopulate: true },
+                        { id: 'weatherFilter', dataKey: 'weather' }
                     ]
                 });
             });
