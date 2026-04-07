@@ -25,6 +25,20 @@ public class GlobalControllerAdvice {
         // Add current URI for report links, etc.
         model.addAttribute("currentUri", request.getRequestURI());
 
+        // Canonical URL: 중복 페이지 방지 및 Google SEO 사이트명 인식용
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int port = request.getServerPort();
+        String uri = request.getRequestURI();
+        // 프로덕션 환경에서는 항상 https + 도메인 기준 URL 생성
+        String baseUrl;
+        if ("localhost".equals(serverName) || "127.0.0.1".equals(serverName)) {
+            baseUrl = scheme + "://" + serverName + (port != 80 && port != 443 ? ":" + port : "");
+        } else {
+            baseUrl = "https://" + serverName;
+        }
+        model.addAttribute("canonicalUrl", baseUrl + uri);
+
         // Add visitor counts to every page
         model.addAttribute("totalVisitors", visitorService.getTotalVisitorCount());
         model.addAttribute("recent48hVisitors", visitorService.getRecent48hVisitorCount());

@@ -65,6 +65,10 @@ public class WikiController {
                 model.addAttribute("creative", creative);
                 model.addAttribute("others", others);
 
+                // SEO: /wiki는 heartopia-life.me/의 redirect 대상이므로
+                // canonical을 루트(/)로 지정해 Google 중복 페이지 문제 방지
+                model.addAttribute("canonicalUrl", "https://heartopia-life.me/");
+
                 return "wiki/wiki";
         }
 

@@ -11,14 +11,35 @@
     <meta name="keywords" content="두두타 도감, 두근두근타운, 두두타, heartopia, 공략, 도감, 지도, 주민 정보, 요리, 위키">
     <!-- Open Graph (카카오톡/디스코드 링크 공유 미리보기) -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://heartopia-life.me/">
+    <meta property="og:url" th:content="${canonicalUrl != null ? canonicalUrl : 'https://heartopia-life.me/wiki'}">
     <meta property="og:title" th:attr="content=${pageTitle != null ? pageTitle + ' - 두두타 도감' : '두두타 도감 | heartopia life'}">
     <meta property="og:description" th:attr="content=${pageDescription != null ? pageDescription : '두근두근라이프(하토피아) 공략 도감! 물고기, 벌레, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공합니다.'}">
     <!-- CSRF Tokens for Frontend API Calls -->
     <meta name="_csrf" th:content="${_csrf?.token}" />
     <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
-    <meta property="og:image" content="/images/logo/main_logo.png">
+    <meta property="og:image" content="https://heartopia-life.me/images/logo/main_logo.png">
+    <!-- Canonical: 중복 페이지 방지 -->
+    <link rel="canonical" th:href="${canonicalUrl != null ? canonicalUrl : 'https://heartopia-life.me/wiki'}">
     <link rel="icon" type="image/png" href="/images/logo/header_logo.png">
+    <!-- JSON-LD: Google 사이트 이름 인식용 구조화 데이터 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "두두타 도감",
+      "alternateName": ["두근두근타운 도감", "Heartopia Life"],
+      "url": "https://heartopia-life.me/",
+      "description": "두두타(두근두근타운) 공략 도감! 물고기, 벌레, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공하는 비공식 종합 도감입니다.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://heartopia-life.me/wiki/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
