@@ -301,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function () {
         state.allZones.forEach(z => {
             if (z.mapX && z.mapY && !z.parentZoneKey) return;
             if (!z.mapX || !z.mapY) return;
+            // 기본값: 명시적으로 true가 아닌 이상 꺼짐(false)
+            if (state.zoneVisible[z.zoneKey] === undefined) state.zoneVisible[z.zoneKey] = false;
             const lat = mapHeight - z.mapY;
             const lng = z.mapX;
             const label = L.marker([lat, lng], {
@@ -312,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }),
                 interactive: false
             });
-            // 초기 가시성 적용
+            // 초기 가시성 적용 (기본 켜짐)
             if (state.zoneVisible[z.zoneKey] !== false) label.addTo(map);
             state.zoneLabelMap[z.zoneKey] = label;
         });
