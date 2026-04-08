@@ -1,0 +1,26 @@
+name: Deploy Open Source Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Git 최신 코드 불러오기
+        run: |
+          cd ~/heartopia-life
+          git pull origin main
+          
+      - name: Docker 재빌드 및 실행
+        run: |
+          cd ~/heartopia-life/deploy
+          docker compose down
+          docker compose up -d --build
+          
+      - name: 사용하지 않는 Docker 쓰레기 옵션 정리
+        run: docker image prune -a -f
