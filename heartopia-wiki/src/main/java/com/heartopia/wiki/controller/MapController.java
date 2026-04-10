@@ -98,11 +98,74 @@ public class MapController {
             pins = mapPinService.getAllPins();
         }
 
-        // 카테고리별 상세 정보 채우기
-        pins.forEach(this::enrichPinDetails);
+        // --- 성능 최적화: 사전 메모리 매핑 (O(n) 사전 변환) ---
+        List<Villager> allVillagers = villagerService.getAllVillagers();
+        Map<String, FishCollection> fishMap = collectionService.getAllFish().stream()
+                .collect(Collectors.toMap(FishCollection::getName, f -> f, (e, r) -> e));
+        Map<String, BugCollection> bugMap = collectionService.getAllBugs().stream()
+                .collect(Collectors.toMap(BugCollection::getName, b -> b, (e, r) -> e));
+        Map<String, BirdCollection> birdMap = collectionService.getAllBirds().stream()
+                .collect(Collectors.toMap(BirdCollection::getName, b -> b, (e, r) -> e));
+        Map<String, AnimalCollection> animalMap = collectionService.getAllAnimals().stream()
+                .collect(Collectors.toMap(AnimalCollection::getName, a -> a, (e, r) -> e));
+        Map<String, ForageableCollection> forageableMap = collectionService.getAllForageables().stream()
+                .collect(Collectors.toMap(ForageableCollection::getName, f -> f, (e, r) -> e));
+
+        // 카테고리별 상세 정보 채우기 (O(1) 해시 룩업 활용 방식)
+        pins.forEach(pin -> {
+            if ("villager".equals(pin.getCategory())) {
+                allVillagers.stream()
+                        .filter(v -> v.getName().contains(pin.getName()))
+                        .findFirst().ifPresent(v -> {
+                            Map<String, String> details = new HashMap<>();
+                            if (v.getSubTitle() != null) details.put("역할", v.getSubTitle());
+                            if (v.getLocation() != null) details.put("위치", v.getLocation());
+                            if (v.getUnlockCondition() != null) details.put("해금", v.getUnlockCondition());
+                            pin.setDetails(details);
+                        });
+            } else if ("fish".equals(pin.getCategory()) && fishMap.containsKey(pin.getName())) {
+                FishCollection f = fishMap.get(pin.getName());
+                Map<String, String> details = new HashMap<>();
+                details.put("위치", formatLocation(f.getLocation(), f.getSubLocation()));
+                details.put("날씨", f.getWeather());
+                details.put("시간", f.getTime());
+                details.put("가격(1성)", String.valueOf(f.getPrice1()));
+                pin.setDetails(details);
+            } else if ("insect".equals(pin.getCategory()) && bugMap.containsKey(pin.getName())) {
+                BugCollection b = bugMap.get(pin.getName());
+                Map<String, String> details = new HashMap<>();
+                details.put("위치", formatLocation(b.getLocation(), b.getSubLocation()));
+                details.put("날씨", b.getWeather());
+                details.put("시간", b.getTime());
+                details.put("가격(1성)", String.valueOf(b.getPrice1()));
+                pin.setDetails(details);
+            } else if ("bird".equals(pin.getCategory()) && birdMap.containsKey(pin.getName())) {
+                BirdCollection b = birdMap.get(pin.getName());
+                Map<String, String> details = new HashMap<>();
+                details.put("위치", formatLocation(b.getLocation(), b.getSubLocation()));
+                details.put("날씨", b.getWeather());
+                details.put("시간", b.getTime());
+                details.put("가격(1성)", String.valueOf(b.getPrice1()));
+                pin.setDetails(details);
+            } else if ("animal".equals(pin.getCategory()) && animalMap.containsKey(pin.getName())) {
+                AnimalCollection a = animalMap.get(pin.getName());
+                Map<String, String> details = new HashMap<>();
+                details.put("위치", a.getLocation());
+                details.put("선호 날씨", a.getFavoriteWeather());
+                details.put("선호 음식", a.getFavoriteFood());
+                pin.setDetails(details);
+            } else if ("forageable".equals(pin.getCategory()) && forageableMap.containsKey(pin.getName())) {
+                ForageableCollection f = forageableMap.get(pin.getName());
+                Map<String, String> details = new HashMap<>();
+                details.put("위치", f.getLocation());
+                details.put("가격", String.valueOf(f.getPrice()));
+                if (f.getEnergy() != null) details.put("에너지", f.getEnergy());
+                pin.setDetails(details);
+            }
+        });
 
         // 채집물 카테고리의 경우 DB 설정(showOnMap)이 켜진 종만 필터링하여 반환
-        List<String> validForageables = collectionService.getAllForageables().stream()
+        List<String> validForageables = forageableMap.values().stream()
                 .filter(f -> Boolean.TRUE.equals(f.getShowOnMap()))
                 .map(ForageableCollection::getName)
                 .collect(Collectors.toList());

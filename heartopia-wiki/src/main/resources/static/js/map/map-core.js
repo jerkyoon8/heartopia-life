@@ -246,6 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
             api.loadAllZones()
         ]).then(([pins]) => {
             state.allPins = pins;
+
+            // --- UI 핀 개수 렌더링 (CI/CD용 배포 확인) ---
+            const countEl = document.getElementById('mapTotalPinCount');
+            if (countEl) countEl.innerText = `총 ${pins.length}개 핀`;
+
             pins.forEach(pin => {
                 if (state.categoryVisible[pin.category] === undefined) {
                     const defaultVisible = ['villager', 'animal', 'bus'];

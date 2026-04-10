@@ -114,8 +114,9 @@
 
             <!-- Left Side Panel (항상 보이는 외부 패널) -->
             <div class="map-side-panel" id="mapSidePanel">
-                <div class="side-panel-header">
-                    <h3>🗺️ 지도 탐색</h3>
+                <div class="side-panel-header" style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="margin: 0;">🗺️ 지도 탐색</h3>
+                    <span id="mapTotalPinCount" style="font-size: 12px; font-weight: bold; background: #ffeaa7; color: #d35400; padding: 4px 10px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">데이터 로딩중..</span>
                 </div>
 
                 <div class="side-panel-search">
