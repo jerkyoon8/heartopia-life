@@ -17,7 +17,7 @@
         .page-title {
             font-family: 'Paperlogy-4Regular', sans-serif;
             font-size: 2.2rem;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
         .notice-list {
@@ -125,7 +125,7 @@
         <div class="modal fade" id="addNoticeModal" tabindex="-1" data-add-title="새 공지 작성">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
-                    <div class="modal-header" style="background:linear-gradient(135deg,#ff4757,#ff7f9d);color:#fff;border-radius:20px 20px 0 0;padding:20px 24px;">
+                    <div class="modal-header" style="background:var(--modal-header-danger);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;">
                         <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 공지 작성</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
                     </div>

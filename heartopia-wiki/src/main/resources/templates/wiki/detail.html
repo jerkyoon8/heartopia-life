@@ -32,7 +32,7 @@
         }
 
         .detail-breadcrumb .current {
-            color: #333;
+            color: var(--text-color);
             font-weight: 600;
         }
 
@@ -51,7 +51,7 @@
 
         /* Left: Image + Basic Info Card */
         .detail-image-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 24px;
             padding: 30px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
@@ -81,7 +81,7 @@
         }
 
         .detail-image-area.bird {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            background: var(--card-bg); border: 1px solid var(--border-subtle);
         }
 
         .detail-image-area.animal {
@@ -89,7 +89,7 @@
         }
 
         .detail-image-area.cooking {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            background: var(--card-bg); border: 1px solid var(--border-subtle);
         }
 
         .detail-image-area.flower {
@@ -118,7 +118,7 @@
         .detail-item-name {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 5px;
         }
 
@@ -142,7 +142,7 @@
         }
 
         .badge-bird {
-            background: #fff3e0;
+            background: var(--nav-hover);
             color: #e65100;
         }
 
@@ -152,7 +152,7 @@
         }
 
         .badge-cooking {
-            background: #fff8e1;
+            background: var(--nav-hover);
             color: #f57f17;
         }
 
@@ -194,7 +194,7 @@
 
         /* Right: Detail Info */
         .detail-info-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 24px;
             padding: 30px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
@@ -204,7 +204,7 @@
         .detail-section-title {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -241,7 +241,7 @@
         }
 
         .detail-info-table .info-value {
-            color: #333;
+            color: var(--text-color);
             font-weight: 600;
             font-size: 0.95rem;
         }
@@ -256,10 +256,10 @@
 
         .price-item {
             text-align: center;
-            background: #fafafa;
+            background: var(--nav-hover, #fafafa);
             border-radius: 12px;
             padding: 12px 8px;
-            border: 1px solid #eee;
+            border: 1px solid var(--border-subtle, #eee);
             transition: all 0.2s;
         }
 
@@ -276,7 +276,7 @@
 
         .price-value {
             font-weight: 700;
-            color: #333;
+            color: var(--text-color);
             font-size: 1rem;
         }
 
@@ -288,7 +288,7 @@
         .related-header {
             font-size: 1.3rem;
             font-weight: 700;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -306,7 +306,7 @@
         }
 
         .related-card {
-            background: #fff;
+            background: var(--card-bg);
             border: 1px solid #f0f0f0;
             border-radius: 16px;
             padding: 16px;
@@ -343,8 +343,8 @@
             gap: 6px;
             padding: 10px 20px;
             border-radius: 12px;
-            background: #f5f5f5;
-            color: #555;
+            background: var(--nav-hover, #f5f5f5);
+            color: var(--stat-label, #555);
             text-decoration: none;
             font-size: 0.95rem;
             margin-top: 20px;
@@ -355,7 +355,7 @@
 
         .back-to-list:hover {
             background: #e0e0e0;
-            color: #333;
+            color: var(--text-color);
         }
 
         .report-info-btn {
@@ -364,7 +364,7 @@
             gap: 6px;
             padding: 10px 20px;
             border-radius: 12px;
-            background: #fff3e0;
+            background: var(--nav-hover);
             color: #e65100;
             text-decoration: none;
             font-size: 0.95rem;
@@ -409,7 +409,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             border: 1.5px solid #d0d0d0;
-            background: #fff;
+            background: var(--card-bg);
             color: #444;
             text-decoration: none;
             transition: all 0.2s ease;
@@ -418,17 +418,17 @@
 
         /* 연결된 재료 (클릭 가능) */
         .ingredient-tag.linked:hover {
-            background: #fffde7;
+            background: var(--nav-hover);
             border-color: #ffc107;
-            color: #333;
+            color: var(--text-color);
             box-shadow: 0 2px 8px rgba(255, 193, 7, 0.25);
             transform: translateY(-1px);
         }
 
         /* 미연결 재료 (클릭 불가) */
         .ingredient-tag.unlinked {
-            background: #f5f5f5;
-            color: #888;
+            background: var(--nav-hover, #f5f5f5);
+            color: var(--stat-label, #888);
             cursor: default;
         }
 

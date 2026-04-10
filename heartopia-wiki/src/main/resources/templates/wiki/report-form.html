@@ -13,7 +13,7 @@
         .report-card {
             max-width: 800px;
             margin: 60px auto;
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 30px;
             padding: 50px;
             box-shadow: 0 15px 40px rgba(77, 52, 46, 0.08);
@@ -76,7 +76,7 @@
         .form-input:focus,
         .form-textarea:focus {
             border-color: #f8bbd0;
-            background: #fff;
+            background: var(--card-bg);
         }
 
         /* Category Tabs */
@@ -92,7 +92,7 @@
             padding: 12px;
             border-radius: 18px;
             border: 2px solid #EFE9E8;
-            background: #fff;
+            background: var(--card-bg);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -142,7 +142,7 @@
 
         [data-theme='dark'] .report-card {
             background: #2D2D2D;
-            border-color: #333;
+            border-color: var(--text-color);
         }
 
         [data-theme='dark'] .report-title {

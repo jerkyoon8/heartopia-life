@@ -92,13 +92,13 @@
         .main-search-box {
             display: flex;
             align-items: center;
-            background: #fff;
+            background: var(--card-bg, #fff);
             border-radius: 50px;
             /* Fully rounded */
             padding: 5px 10px 5px 25px;
-            box-shadow: 0 5px 20px rgba(220, 100, 120, 0.1);
+            box-shadow: 0 5px 20px var(--shadow, rgba(220, 100, 120, 0.1));
             /* Soft pinkish shadow matching theme */
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.8));
             transition: all 0.3s ease;
         }
 
@@ -129,7 +129,7 @@
             border: none;
             outline: none;
             font-size: 18px;
-            color: #333;
+            color: var(--text-color, #333);
             font-family: 'Paperlogy', sans-serif;
             padding: 10px 0;
             background: transparent;
@@ -167,9 +167,15 @@
             padding: 40px;
             margin-bottom: 30px;
             /* Updated margin to 30px */
-            box-shadow: 0 10px 40px rgba(220, 100, 120, 0.05);
+            box-shadow: 0 10px 40px var(--shadow, rgba(220, 100, 120, 0.05));
             /* Soft pinkish shadow */
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.8));
+        }
+
+        [data-theme='dark'] .section-container {
+            background: linear-gradient(180deg, #242424 0%, #1A1A1A 100%);
+            border: 1px solid #333333;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
         .section-header {
@@ -183,7 +189,7 @@
 
         .section-icon {
             font-size: 32px;
-            color: #333;
+            color: var(--text-color, #333);
             width: 40px;
             text-align: center;
         }
@@ -293,7 +299,7 @@
             font-weight: 700;
             font-size: 19px;
             /* Reduced from 22px */
-            color: #333;
+            color: var(--text-color, #333);
             margin-bottom: 4px;
         }
 
@@ -307,7 +313,7 @@
 
         .quick-card-subtitle {
             font-size: 13px;
-            color: #888;
+            color: var(--stat-label, #888);
             margin-bottom: 20px;
         }
 
@@ -358,7 +364,7 @@
         .section-desc {
             font-family: 'Paperlogy', sans-serif;
             font-size: 14px;
-            color: #666;
+            color: var(--stat-label, #666);
             /* 진한 회색 */
             margin-top: 5px;
             margin-bottom: 0;
@@ -392,8 +398,8 @@
         }
 
         .wiki-card {
-            background-color: #fff;
-            border: 1px solid #f0f0f0;
+            background-color: var(--card-bg, #fff);
+            border: 1px solid var(--border-subtle, #f0f0f0);
             border-radius: 16px;
             padding: 16px;
             height: 140px;
@@ -402,7 +408,7 @@
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 6px var(--shadow, rgba(0, 0, 0, 0.02));
             position: relative;
         }
 
@@ -451,7 +457,7 @@
             font-family: 'Paperlogy', sans-serif;
             font-size: 20px;
             font-weight: 700;
-            color: #333;
+            color: var(--text-color, #333);
             margin-bottom: 2px;
             /* Reduced margin to bring count closer */
             transition: color 0.3s ease;
@@ -461,7 +467,7 @@
         .card-count {
             font-family: 'Paperlogy', sans-serif;
             font-size: 14px;
-            color: #888;
+            color: var(--stat-label, #888);
             /* Grey text */
         }
 
@@ -483,7 +489,7 @@
 
         /* Text: Color change */
         .wiki-card:hover .card-title {
-            color: #0645ad;
+            color: var(--link-color, #0645ad);
             /* Link color or Primary Theme Color */
         }
 
@@ -503,7 +509,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             margin-top: 6px;
@@ -536,7 +542,7 @@
             align-items: center;
             padding: 12px 20px;
             text-decoration: none;
-            color: #333;
+            color: var(--text-color);
             gap: 12px;
             transition: background 0.15s;
             cursor: pointer;
@@ -579,7 +585,7 @@
 
         .autocomplete-name mark {
             background: #ffe0e6;
-            color: #333;
+            color: var(--text-color);
             border-radius: 2px;
             padding: 0 1px;
         }
@@ -643,15 +649,15 @@
 
         <!-- Notice Ticker -->
         <div class="notice-ticker-container" th:if="${not #lists.isEmpty(notices)}" style="max-width: 650px; margin: 0 auto 12px; padding: 0 10px; position: relative; z-index: 10;">
-            <div class="notice-ticker" style="background: white; border-radius: 50px; padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;">
+            <div class="notice-ticker" style="background: var(--nav-hover, white); border-radius: 50px; padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px var(--shadow, rgba(0,0,0,0.06)); border: 1px solid var(--border-subtle, #f0f0f0);">
                 <div style="display: flex; align-items: center; flex: 1; overflow: hidden; cursor: pointer;" onclick="location.href='/wiki/notices'">
                     <span style="background: #ff5722; color: white; padding: 3px 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; margin-right: 15px; flex-shrink: 0; display: inline-block;">NOTICE</span>
                     <div style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center;">
-                        <span id="noticeTickerText" th:text="${notices[0].title}" style="font-size: 0.95rem; color: #333; font-weight: 500; transition: opacity 0.2s;">공지사항 불러오는 중...</span>
+                        <span id="noticeTickerText" th:text="${notices[0].title}" style="font-size: 0.95rem; color: var(--text-color); font-weight: 500; transition: opacity 0.2s;">공지사항 불러오는 중...</span>
                     </div>
                 </div>
                 <!-- Controls -->
-                <div style="display: flex; align-items: center; gap: 8px; color: #888; font-size: 0.85rem; flex-shrink: 0; margin-left: 15px; font-weight: 600;">
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--stat-label, #888); font-size: 0.85rem; flex-shrink: 0; margin-left: 15px; font-weight: 600;">
                     <i class="fas fa-chevron-left" style="cursor: pointer; padding: 5px;" onclick="prevNoticeTicker()"></i>
                     <span id="noticeTickerCount">1 / <span th:text="${#lists.size(notices)}">1</span></span>
                     <i class="fas fa-chevron-right" style="cursor: pointer; padding: 5px;" onclick="nextNoticeTicker()"></i>

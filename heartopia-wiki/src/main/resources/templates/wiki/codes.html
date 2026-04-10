@@ -115,7 +115,7 @@
         }
 
         .badge-soon {
-            background-color: #fff3cd;
+            background-color: var(--coupon-bg);
             color: #856404;
         }
 
@@ -336,7 +336,7 @@
         <div class="modal fade admin-modal" id="addGiftCodeModal" tabindex="-1" data-add-title="새 쿠폰 추가">
             <div class="modal-dialog">
                 <div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
-                    <div class="modal-header" style="background:linear-gradient(135deg,#d63384,#ff7f9d);color:#fff;border-radius:20px 20px 0 0;padding:20px 24px;">
+                    <div class="modal-header" style="background:var(--modal-header-danger);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;">
                         <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 쿠폰 추가</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
                     </div>
@@ -368,7 +368,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                            <button type="submit" class="btn btn-admin-submit text-white" style="background:linear-gradient(135deg,#d63384,#ff7f9d);">추가하기</button>
+                            <button type="submit" class="btn btn-admin-submit text-white" style="background:var(--modal-header-danger);">추가하기</button>
                         </div>
                     </form>
                 </div>
