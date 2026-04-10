@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.net.URLEncoder;
+import org.springframework.web.util.UriUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -195,7 +195,7 @@ public class WikiController {
                 List<FishCollection> related = collectionService.getFishByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
                                 .map(f -> new SearchResultDto(f.getName(), "fish", "물고기",
-                                                "/wiki/collections/fish/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/fish/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                                 f.getLocation() + " · " + f.getLevel() + " Lv"))
                                 .toList());
 
@@ -219,7 +219,7 @@ public class WikiController {
                 List<BugCollection> related = collectionService.getBugsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
                                 .map(b -> new SearchResultDto(b.getName(), "bug", "벌레",
-                                                "/wiki/collections/bug/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv"))
                                 .toList());
 
@@ -243,7 +243,7 @@ public class WikiController {
                 List<BirdCollection> related = collectionService.getBirdsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
                                 .map(b -> new SearchResultDto(b.getName(), "bird", "새",
-                                                "/wiki/collections/bird/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/bird/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv"))
                                 .toList());
 
@@ -268,7 +268,7 @@ public class WikiController {
                 List<AnimalCollection> related = collectionService.getAnimalsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
                                 .map(a -> new SearchResultDto(a.getName(), "animal", "동물",
-                                                "/wiki/collections/animal/" + URLEncoder.encode(a.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/animal/" + UriUtils.encodePathSegment(a.getName(), StandardCharsets.UTF_8),
                                                 a.getLocation()))
                                 .toList());
 
@@ -291,7 +291,7 @@ public class WikiController {
                 List<ForageableCollection> related = collectionService.getForageablesByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
                                 .map(f -> new SearchResultDto(f.getName(), "forageable", "채집",
-                                                "/wiki/collections/forageable/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/forageable/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                                 f.getLocation()))
                                 .toList());
 
@@ -380,42 +380,42 @@ public class WikiController {
 
                 collectionService.searchFish(searchKeyword)
                                 .forEach(f -> allResults.add(new SearchResultDto(f.getName(), "fish", "물고기",
-                                                "/wiki/collections/fish/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/fish/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                                 f.getLocation() + " · " + f.getLevel() + " Lv")));
 
                 collectionService.searchBugs(searchKeyword)
                                 .forEach(b -> allResults.add(new SearchResultDto(b.getName(), "bug", "벌레",
-                                                "/wiki/collections/bug/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv")));
 
                 collectionService.searchBirds(searchKeyword)
                                 .forEach(b -> allResults.add(new SearchResultDto(b.getName(), "bird", "새",
-                                                "/wiki/collections/bird/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/bird/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv")));
 
                 collectionService.searchAnimals(searchKeyword)
                                 .forEach(a -> allResults.add(new SearchResultDto(a.getName(), "animal", "동물",
-                                                "/wiki/collections/animal/" + URLEncoder.encode(a.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/animal/" + UriUtils.encodePathSegment(a.getName(), StandardCharsets.UTF_8),
                                                 a.getLocation())));
 
                 collectionService.searchCookings(searchKeyword)
                                 .forEach(c -> allResults.add(new SearchResultDto(c.getName(), "cooking", "요리",
-                                                "/wiki/items/cooking/" + URLEncoder.encode(c.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/items/cooking/" + UriUtils.encodePathSegment(c.getName(), StandardCharsets.UTF_8),
                                                 c.getLevel() + " Lv")));
 
                 collectionService.searchFlowers(searchKeyword)
                                 .forEach(f -> allResults.add(new SearchResultDto(f.getName(), "flower", "꽃",
-                                                "/wiki/items/flowers/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/items/flowers/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                                 f.getLevel() + " Lv")));
 
                 collectionService.searchCrops(searchKeyword)
                                 .forEach(c -> allResults.add(new SearchResultDto(c.getName(), "crop", "작물",
-                                                "/wiki/items/crops/" + URLEncoder.encode(c.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/items/crops/" + UriUtils.encodePathSegment(c.getName(), StandardCharsets.UTF_8),
                                                 c.getLevel() + " Lv")));
 
                 collectionService.searchForageables(searchKeyword)
                                 .forEach(f -> allResults.add(new SearchResultDto(f.getName(), "forageable", "채집",
-                                                "/wiki/collections/forageable/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                                "/wiki/collections/forageable/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                                 f.getLocation())));
 
                 villagerService.getAllVillagers().stream()
@@ -453,42 +453,42 @@ public class WikiController {
 
                 collectionService.searchFish(q).forEach(f -> results.add(Map.of(
                                 "name", f.getName(), "category", "fish", "label", "물고기",
-                                "url", "/wiki/collections/fish/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/collections/fish/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                 "sub", f.getLocation() + " · " + f.getLevel() + " Lv", "icon", "🐟")));
 
                 collectionService.searchBugs(q).forEach(b -> results.add(Map.of(
                                 "name", b.getName(), "category", "bug", "label", "벌레",
-                                "url", "/wiki/collections/bug/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                 "sub", b.getLocation() + " · " + b.getLevel() + " Lv", "icon", "🦋")));
 
                 collectionService.searchBirds(q).forEach(b -> results.add(Map.of(
                                 "name", b.getName(), "category", "bird", "label", "새",
-                                "url", "/wiki/collections/bird/" + URLEncoder.encode(b.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/collections/bird/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                 "sub", b.getLocation() + " · " + b.getLevel() + " Lv", "icon", "🐦")));
 
                 collectionService.searchAnimals(q).forEach(a -> results.add(Map.of(
                                 "name", a.getName(), "category", "animal", "label", "동물",
-                                "url", "/wiki/collections/animal/" + URLEncoder.encode(a.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/collections/animal/" + UriUtils.encodePathSegment(a.getName(), StandardCharsets.UTF_8),
                                 "sub", a.getLocation(), "icon", "🐾")));
 
                 collectionService.searchCookings(q).forEach(c -> results.add(Map.of(
                                 "name", c.getName(), "category", "cooking", "label", "요리",
-                                "url", "/wiki/items/cooking/" + URLEncoder.encode(c.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/items/cooking/" + UriUtils.encodePathSegment(c.getName(), StandardCharsets.UTF_8),
                                 "sub", c.getLevel() + " Lv", "icon", "🍳")));
 
                 collectionService.searchFlowers(q).forEach(f -> results.add(Map.of(
                                 "name", f.getName(), "category", "flower", "label", "꽃",
-                                "url", "/wiki/items/flowers/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/items/flowers/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                 "sub", f.getLevel() + " Lv", "icon", "🌻")));
 
                 collectionService.searchCrops(q).forEach(c -> results.add(Map.of(
                                 "name", c.getName(), "category", "crop", "label", "작물",
-                                "url", "/wiki/items/crops/" + URLEncoder.encode(c.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/items/crops/" + UriUtils.encodePathSegment(c.getName(), StandardCharsets.UTF_8),
                                 "sub", c.getLevel() + " Lv", "icon", "🌽")));
 
                 collectionService.searchForageables(q).forEach(f -> results.add(Map.of(
                                 "name", f.getName(), "category", "forageable", "label", "채집",
-                                "url", "/wiki/collections/forageable/" + URLEncoder.encode(f.getName(), StandardCharsets.UTF_8),
+                                "url", "/wiki/collections/forageable/" + UriUtils.encodePathSegment(f.getName(), StandardCharsets.UTF_8),
                                 "sub", f.getLocation(), "icon", "🥐")));
 
                 villagerService.getAllVillagers().stream()
