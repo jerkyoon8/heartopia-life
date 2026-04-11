@@ -3,7 +3,7 @@ FROM gradle:8.12-jdk17 AS builder
 WORKDIR /app
 COPY heartopia-wiki/ .
 RUN chmod +x gradlew
-RUN ./gradlew bootJar --no-daemon
+RUN ./gradlew bootJar --no-daemon -Dorg.gradle.jvmargs="-Xmx2g"
 
 # Stage 2: 실행
 FROM eclipse-temurin:17-jre

@@ -14,13 +14,15 @@ jobs:
       - name: Git 최신 코드 불러오기
         run: |
           cd ~/heartopia-life
+          # 스크립트에 의해 수정된 nginx.conf 파일 때문에 pull 충돌 방지
+          git restore deploy/nginx/nginx.conf || true
           git pull origin main
           
-      - name: Docker 재빌드 및 실행
+      - name: 무중단(Blue-Green) 배포 스크립트 실행
         run: |
           cd ~/heartopia-life/deploy
-          docker compose down
-          docker compose up -d --build
+          chmod +x deploy.sh
+          ./deploy.sh
           
       - name: 사용하지 않는 Docker 쓰레기 옵션 정리
         run: docker image prune -a -f
