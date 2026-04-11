@@ -146,7 +146,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle deep link logic within core since it needs resolveZoneKeys etc.
     function handleDeepLink(map, mapHeight) {
         const params = new URLSearchParams(window.location.search);
-        const category = params.get('cat') || params.get('category');
+        let category = params.get('cat') || params.get('category');
+        if (category === 'bug') category = 'insect';
         const name = params.get('name');
         const zoneParam = params.get('zone'); 
 
@@ -182,13 +183,14 @@ document.addEventListener('DOMContentLoaded', function () {
         ui.updateMarkerVisibility();
         ui.renderCategoryList();
 
-        if (['fish', 'insect', 'bird', 'animal', 'villager'].includes(category)) {
+        if (['fish', 'insect', 'bird', 'animal', 'villager', 'forageable'].includes(category)) {
             let masters = [];
             if (category === 'fish') masters = state.masterFish;
             else if (category === 'bird') masters = state.masterBirds;
             else if (category === 'insect') masters = state.masterInsects;
             else if (category === 'animal') masters = state.masterAnimals;
             else if (category === 'villager') masters = state.masterVillagers;
+            else if (category === 'forageable') masters = state.masterForageables;
 
             const master = masters.find(m => m.name === name);
             if (master) {

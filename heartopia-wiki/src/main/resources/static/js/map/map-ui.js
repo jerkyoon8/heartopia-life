@@ -324,7 +324,32 @@ window.MapApp.ui = {
                     else if (category === 'bird') masters = state.masterBirds;
                     else if (category === 'insect') masters = state.masterInsects;
                     const master = masters.find(m => m.name === name);
-                    if (master) ui.showInfoBox(master, category);
+                    if (master) {
+                        ui.showInfoBox(master, category);
+                        
+                        // 구역으로 카메라 이동 및 오버레이 폴리곤 하이라이트
+                        if (master.location) {
+                            const zone = window.MapApp.zone;
+                            const zoneKeys = zone.resolveZoneKeys(master.location, master.subLocation);
+                            let moved = false;
+                            
+                            if (zoneKeys.length > 0) {
+                                const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
+                                if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                                    const mapHeight = state.mapHeight || 3000;
+                                    const lat = mapHeight - zoneObj.mapY;
+                                    const lng = zoneObj.mapX;
+                                    state.map.setView([lat, lng], 1, { animate: true });
+                                    moved = true;
+                                }
+                            }
+                            
+                            // fallback: 폴리곤 지정 영역 하이라이트/포커스
+                            if (!moved) {
+                                zone.highlightZones(zoneKeys);
+                            }
+                        }
+                    }
                     return;
                 }
 
