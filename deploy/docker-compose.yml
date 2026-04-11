@@ -4,8 +4,6 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-    ports:
-      - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -23,8 +21,6 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-    ports:
-      - "8081:8080"
     depends_on:
       db:
         condition: service_healthy
