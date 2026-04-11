@@ -25,7 +25,7 @@ for i in {1..30}; do
     # Nginx 컨테이너 내부에서 타겟을 찔러보는 방식이 가장 확실 (로컬 포트 포워딩 불필요)
     HTTP_CODE=$(docker compose -f ~/heartopia-life/deploy/docker-compose.yml exec -T nginx curl -s -o /dev/null -w "%{http_code}" http://app-$TARGET:8080/)
     
-    if [ "$HTTP_CODE" == "200" ]; then
+    if [ "$HTTP_CODE" == "200" ] || [ "$HTTP_CODE" == "302" ]; then
         echo "Health check passed for app-$TARGET!"
         break
     fi
@@ -35,7 +35,7 @@ for i in {1..30}; do
 done
 
 # 만약 30번(약 60초) 넘게 응답이 없다면 배포를 중단(Rollback)
-if [ "$HTTP_CODE" != "200" ]; then
+if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "302" ]; then
     echo "Health check failed after 60 seconds."
     echo "Rolling back (stopping app-$TARGET)..."
     docker compose -f ~/heartopia-life/deploy/docker-compose.yml stop app-$TARGET
