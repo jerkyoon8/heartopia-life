@@ -44,9 +44,13 @@ fi
 
 # 4. Nginx 스위칭
 echo "Switching Nginx routing to app-$TARGET..."
-# nginx.conf의 proxy_pass를 타겟으로 치환 (inode 유지 — Docker 바인드 마운트 호환)
-sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$TARGET:8080/g" ~/heartopia-life/deploy/nginx/nginx.conf > /tmp/nginx.conf.tmp
-cp /tmp/nginx.conf.tmp ~/heartopia-life/deploy/nginx/nginx.conf
+NGINX_CONF=~/heartopia-life/deploy/nginx/nginx.conf
+sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$TARGET:8080/g" "$NGINX_CONF" > /tmp/nginx.conf.tmp
+cp /tmp/nginx.conf.tmp "$NGINX_CONF"
+
+# Docker 바인드 마운트는 inode 변경 시 동기화 안 됨 → 컨테이너에 직접 복사
+NGINX_CONTAINER=$(docker compose -f ~/heartopia-life/deploy/docker-compose.yml ps -q nginx)
+docker cp /tmp/nginx.conf.tmp "$NGINX_CONTAINER:/etc/nginx/conf.d/default.conf"
 rm -f /tmp/nginx.conf.tmp
 
 # 5. Nginx 재장전 (순단 없음)
