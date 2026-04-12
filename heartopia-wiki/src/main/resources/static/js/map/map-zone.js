@@ -25,7 +25,10 @@ window.MapApp.zone = {
         const keys = new Set();
         if (!location) return [];
 
-        if (subLocation && subLocation !== '-' && subLocation !== '') {
+        // "전체" subLocation은 무시하고 부모 zone으로 처리
+        const isWhole = !subLocation || subLocation === '-' || subLocation === '' || subLocation.endsWith('전체');
+
+        if (!isWhole) {
             const subKey = LOCATION_TO_ZONE[subLocation];
             if (subKey) keys.add(subKey);
         }
@@ -34,10 +37,20 @@ window.MapApp.zone = {
         if (locKey) keys.add(locKey);
 
         const state = window.MapApp.state;
+
+        // 부모 zone의 상위 zone도 포함
         keys.forEach(k => {
             const z = state.allZones.find(z2 => z2.zoneKey === k);
             if (z && z.parentZoneKey) keys.add(z.parentZoneKey);
         });
+
+        // "전체" 케이스: 부모 zone만 있으면 모든 하위 zone 자동 포함
+        if (isWhole && locKey) {
+            const childZones = state.allZones.filter(z => z.parentZoneKey === locKey);
+            if (childZones.length > 0) {
+                childZones.forEach(c => keys.add(c.zoneKey));
+            }
+        }
 
         return [...keys];
     },

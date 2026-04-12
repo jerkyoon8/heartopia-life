@@ -331,22 +331,69 @@ window.MapApp.ui = {
                         if (master.location) {
                             const zone = window.MapApp.zone;
                             const zoneKeys = zone.resolveZoneKeys(master.location, master.subLocation);
-                            let moved = false;
-                            
-                            if (zoneKeys.length > 0) {
-                                const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
-                                if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
-                                    const mapHeight = state.mapHeight || 3000;
-                                    const lat = mapHeight - zoneObj.mapY;
-                                    const lng = zoneObj.mapX;
-                                    state.map.setView([lat, lng], 1, { animate: true });
-                                    moved = true;
-                                }
+                            const isWhole = !master.subLocation || master.subLocation === '-' || master.subLocation === '' || master.subLocation.endsWith('전체');
+
+                            // 해당 zone 라벨만 켜기
+                            if (state.allZones && zoneKeys.length > 0) {
+                                if (!state.zoneVisible) state.zoneVisible = {};
+                                state.allZones.forEach(z => { state.zoneVisible[z.zoneKey] = false; });
+                                zoneKeys.forEach(k => { state.zoneVisible[k] = true; });
+                                if (window.MapApp.updateZoneLabelVisibility) window.MapApp.updateZoneLabelVisibility();
                             }
-                            
-                            // fallback: 폴리곤 지정 영역 하이라이트/포커스
-                            if (!moved) {
+
+                            if (isWhole && zoneKeys.length > 1) {
+                                // "전체" 케이스: 모든 핀 끄고, 하위 zone 라벨만 표시, fitBounds
+                                Object.keys(state.categoryVisible).forEach(cat => { state.categoryVisible[cat] = false; });
+                                state.allPins.forEach(p => {
+                                    const key = p.category === 'forageable' ? `forageable:${p.name}` : p.id;
+                                    state.itemVisible[key] = false;
+                                });
+                                const masterMapAll = {
+                                    'forageable': state.masterForageables, 'fish': state.masterFish,
+                                    'bird': state.masterBirds, 'insect': state.masterInsects,
+                                    'animal': state.masterAnimals, 'villager': state.masterVillagers
+                                };
+                                Object.entries(masterMapAll).forEach(([cat, ms]) => {
+                                    if (ms) ms.forEach(m => {
+                                        const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                                        state.itemVisible[key] = false;
+                                    });
+                                });
+                                ui.updateMarkerVisibility();
+                                ui.renderCategoryList();
+
+                                // 하위 zone 좌표로 fitBounds
+                                const mapHeight = state.mapHeight || 3000;
+                                const childCoords = [];
+                                zoneKeys.forEach(k => {
+                                    const zoneObj = state.allZones.find(z => z.zoneKey === k);
+                                    if (zoneObj && zoneObj.mapX && zoneObj.mapY && zoneObj.parentZoneKey) {
+                                        childCoords.push([mapHeight - zoneObj.mapY, zoneObj.mapX]);
+                                    }
+                                });
+                                if (childCoords.length > 0) {
+                                    const bounds = L.latLngBounds(childCoords);
+                                    state.map.fitBounds(bounds.pad(0.3), { animate: true });
+                                }
+
                                 zone.highlightZones(zoneKeys);
+                            } else {
+                                // 기존 로직: 단일 zone 좌표로 카메라 이동
+                                let moved = false;
+                                if (zoneKeys.length > 0) {
+                                    const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
+                                    if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                                        const mapHeight = state.mapHeight || 3000;
+                                        const lat = mapHeight - zoneObj.mapY;
+                                        const lng = zoneObj.mapX;
+                                        state.map.setView([lat, lng], 1, { animate: true });
+                                        moved = true;
+                                    }
+                                }
+                                // fallback: 폴리곤 하이라이트
+                                if (!moved) {
+                                    zone.highlightZones(zoneKeys);
+                                }
                             }
                         }
                     }

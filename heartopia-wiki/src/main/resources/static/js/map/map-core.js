@@ -172,6 +172,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!category || !name) return;
 
         state.categoryVisible[category] = true;
+        
+        // 검색창에 이름 연동
+        const pinSearch = document.getElementById('pinSearch');
+        if (pinSearch) {
+            pinSearch.value = name;
+            // trigger search filtering explicitly if needed
+            document.querySelectorAll('.pin-item').forEach(item => {
+                const n = (item.dataset.name || '').toLowerCase();
+                item.style.display = n.includes(name.toLowerCase()) ? 'flex' : 'none';
+            });
+        }
+
         state.allPins.forEach(p => {
             if (p.category === category) {
                 const isMatch = p.name === name || p.name.includes(name) || name.includes(p.name);
@@ -179,9 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 state.itemVisible[key] = isMatch;
             }
         });
-
-        ui.updateMarkerVisibility();
-        ui.renderCategoryList();
 
         if (['fish', 'insect', 'bird', 'animal', 'villager', 'forageable'].includes(category)) {
             let masters = [];
@@ -192,35 +201,87 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (category === 'villager') masters = state.masterVillagers;
             else if (category === 'forageable') masters = state.masterForageables;
 
+            // master itemVisible 동기화
+            if (masters) {
+                masters.forEach(m => {
+                    const isMatch = m.name === name || m.name.includes(name) || name.includes(m.name);
+                    const key = category === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                    state.itemVisible[key] = isMatch;
+                });
+            }
+
             const master = masters.find(m => m.name === name);
             if (master) {
                 ui.showInfoBox(master, category);
                 if (master.location) {
                     const zoneKeys = zone.resolveZoneKeys(master.location, master.subLocation);
+                    const isWhole = !master.subLocation || master.subLocation === '-' || master.subLocation === '' || master.subLocation.endsWith('전체');
+
                     // 해당 zone만 켜고 나머지 전부 끄기
                     if (state.allZones && zoneKeys.length > 0) {
                         if (!state.zoneVisible) state.zoneVisible = {};
                         state.allZones.forEach(z => { state.zoneVisible[z.zoneKey] = false; });
                         zoneKeys.forEach(k => { state.zoneVisible[k] = true; });
                         if (window.MapApp.updateZoneLabelVisibility) window.MapApp.updateZoneLabelVisibility();
-                        ui.renderCategoryList();
                     }
-                    // mapX/mapY 좌표로 카메라 이동
-                    let moved = false;
-                    if (zoneKeys.length > 0) {
-                        const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
-                        if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
-                            const lat = mapHeight - zoneObj.mapY;
-                            const lng = zoneObj.mapX;
-                            map.setView([lat, lng], 1, { animate: true });
-                            moved = true;
+
+                    if (isWhole && zoneKeys.length > 1) {
+                        // "전체" 케이스: 모든 핀 끄고, 해당 하위 zone 라벨만 표시, fitBounds로 전체 보기
+                        // 모든 핀 끄기
+                        Object.keys(state.categoryVisible).forEach(cat => { state.categoryVisible[cat] = false; });
+                        state.allPins.forEach(p => {
+                            const key = p.category === 'forageable' ? `forageable:${p.name}` : p.id;
+                            state.itemVisible[key] = false;
+                        });
+                        const masterMapAll = {
+                            'forageable': state.masterForageables, 'fish': state.masterFish,
+                            'bird': state.masterBirds, 'insect': state.masterInsects,
+                            'animal': state.masterAnimals, 'villager': state.masterVillagers
+                        };
+                        Object.entries(masterMapAll).forEach(([cat, masters]) => {
+                            if (masters) masters.forEach(m => {
+                                const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                                state.itemVisible[key] = false;
+                            });
+                        });
+                        ui.updateMarkerVisibility();
+
+                        // 하위 zone 좌표를 모아서 fitBounds
+                        const childCoords = [];
+                        zoneKeys.forEach(k => {
+                            const zoneObj = state.allZones.find(z => z.zoneKey === k);
+                            if (zoneObj && zoneObj.mapX && zoneObj.mapY && zoneObj.parentZoneKey) {
+                                childCoords.push([mapHeight - zoneObj.mapY, zoneObj.mapX]);
+                            }
+                        });
+                        if (childCoords.length > 0) {
+                            const bounds = L.latLngBounds(childCoords);
+                            map.fitBounds(bounds.pad(0.3), { animate: true });
                         }
+
+                        // 폴리곤 하이라이트도 표시
+                        zone.highlightZones(zoneKeys);
+                    } else {
+                        // 기존 로직: 단일 zone 좌표로 카메라 이동
+                        let moved = false;
+                        if (zoneKeys.length > 0) {
+                            const zoneObj = state.allZones.find(z => z.zoneKey === zoneKeys[0]);
+                            if (zoneObj && zoneObj.mapX && zoneObj.mapY) {
+                                const lat = mapHeight - zoneObj.mapY;
+                                const lng = zoneObj.mapX;
+                                map.setView([lat, lng], 1, { animate: true });
+                                moved = true;
+                            }
+                        }
+                        // fallback: polygonPoints 기반 하이라이트
+                        if (!moved) zone.highlightZones(zoneKeys);
                     }
-                    // fallback: polygonPoints 기반 하이라이트
-                    if (!moved) zone.highlightZones(zoneKeys);
                 }
             }
         }
+        
+        ui.updateMarkerVisibility();
+        ui.renderCategoryList();
 
         const pin = state.allPins.find(p => p.category === category && p.name === name);
         if (pin && state.markers[pin.id]) {
