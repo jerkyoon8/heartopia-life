@@ -47,15 +47,11 @@ echo "Switching Nginx routing to app-$TARGET..."
 NGINX_CONF=~/heartopia-life/deploy/nginx/nginx.conf
 sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$TARGET:8080/g" "$NGINX_CONF" > /tmp/nginx.conf.tmp
 cp /tmp/nginx.conf.tmp "$NGINX_CONF"
-
-# Docker 바인드 마운트는 inode 변경 시 동기화 안 됨 → 컨테이너에 직접 복사
-NGINX_CONTAINER=$(docker compose -f ~/heartopia-life/deploy/docker-compose.yml ps -q nginx)
-docker cp /tmp/nginx.conf.tmp "$NGINX_CONTAINER:/etc/nginx/conf.d/default.conf"
 rm -f /tmp/nginx.conf.tmp
 
-# 5. Nginx 재장전 (순단 없음)
-docker compose -f ~/heartopia-life/deploy/docker-compose.yml exec -T nginx nginx -s reload
-echo "Nginx reloaded successfully!"
+# 5. Nginx 재시작 (바인드 마운트 inode 갱신을 위해 restart 사용)
+docker compose -f ~/heartopia-life/deploy/docker-compose.yml restart nginx
+echo "Nginx restarted successfully!"
 
 # 6. 기존 컨테이너 종료 (선택적)
 if [ "$CURRENT" != "$TARGET" ]; then
