@@ -44,8 +44,10 @@ fi
 
 # 4. Nginx 스위칭
 echo "Switching Nginx routing to app-$TARGET..."
-# nginx.conf의 proxy_pass http://app-xxxx:8080; 부분을 타겟으로 치환
-sed -i -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$TARGET:8080/g" ~/heartopia-life/deploy/nginx/nginx.conf
+# nginx.conf의 proxy_pass를 타겟으로 치환 (inode 유지 — Docker 바인드 마운트 호환)
+sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$TARGET:8080/g" ~/heartopia-life/deploy/nginx/nginx.conf > /tmp/nginx.conf.tmp
+cp /tmp/nginx.conf.tmp ~/heartopia-life/deploy/nginx/nginx.conf
+rm -f /tmp/nginx.conf.tmp
 
 # 5. Nginx 재장전 (순단 없음)
 docker compose -f ~/heartopia-life/deploy/docker-compose.yml exec -T nginx nginx -s reload
