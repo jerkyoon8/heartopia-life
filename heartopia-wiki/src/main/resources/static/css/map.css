@@ -63,6 +63,10 @@
         z-index: 1003;
         box-shadow: 4px 0 20px rgba(0,0,0,0.15);
     }
+    /* 사이드바가 열려있을 때(collapsed가 아닐 때) 메뉴 버튼을 우측으로 295px 밀어냄 */
+    .map-side-panel:not(.collapsed) + .map-area .sidebar-toggle-btn {
+        transform: translateX(280px);
+    }
 }
 
 .side-panel-header {
