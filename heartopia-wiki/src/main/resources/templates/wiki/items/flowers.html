@@ -68,15 +68,23 @@
             </div>
 
             <!-- Flower Card Loop -->
-            <div th:each="flower : ${flowerList}" class="wiki-item-card" th:data-name="${flower.name}"
+            <div th:each="flower : ${flowerList}" class="wiki-item-card sync-item" th:data-sync-key="'flower_' + ${flower.name}" th:data-name="${flower.name}"
                 th:data-level="${flower.level}" th:data-price="${flower.prices[0]}"
                 th:data-event="${flower.eventName != null ? flower.eventName : ''}">
 
-                <div class="wiki-item-image">
+                <div class="wiki-item-image sync-container">
+                    <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                     <img th:if="${flower.imageUrl != null}" th:src="${flower.imageUrl}" th:alt="${flower.name}"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-fan fa-4x text-danger fallback-icon'"
                         th:style="${flower.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                    <div class="sync-stars">
+                        <i class="fas fa-star sync-star-icon" data-val="1"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="2"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="3"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="4"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="5"></i>
+                    </div>
                 </div>
 
                 <div class="wiki-item-info">

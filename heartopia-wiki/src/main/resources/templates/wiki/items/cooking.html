@@ -100,15 +100,23 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="item : ${cookingList}" class="wiki-item-card" th:data-name="${item.name}"
+            <div th:each="item : ${cookingList}" class="wiki-item-card sync-item" th:data-sync-key="'cooking_' + ${item.name}" th:data-name="${item.name}"
                 th:data-level="${item.level}" th:data-price="${item.prices[0]}"
                 th:data-event="${item.eventName != null ? item.eventName : ''}">
 
-                <div class="wiki-item-image">
+                <div class="wiki-item-image sync-container">
+                    <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                     <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-utensils fa-4x text-danger fallback-icon'"
                         th:style="${item.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                    <div class="sync-stars">
+                        <i class="fas fa-star sync-star-icon" data-val="1"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="2"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="3"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="4"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="5"></i>
+                    </div>
                 </div>
 
                 <div class="wiki-item-info">

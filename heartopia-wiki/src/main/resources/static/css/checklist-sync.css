@@ -1,0 +1,77 @@
+/* Checklist Global Sync UI */
+
+.sync-container {
+    position: relative; 
+    /* 자식 absolute 포지셔닝 기준역할. 보통 wiki-item-image 또는 detail-image-area 에 적용 */
+}
+
+/* 좌측/우측 상단 체크 버튼 */
+.sync-check-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px; /* 우측 상단 */
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #ccc;  /* 아웃라인만 회색 */
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: transparent; /* 평소엔 안보임 */
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.sync-check-btn i {
+    font-size: 1rem !important;
+    opacity: 1 !important;
+}
+
+.sync-check-btn:hover {
+    border-color: #ffca28;
+    background: rgba(255, 202, 40, 0.1);
+}
+
+.sync-item.checked .sync-check-btn {
+    border-color: #ffb300;
+    background: #ffb300;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255,179,0,0.4);
+}
+
+/* 별점 컨테이너 */
+.sync-stars {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* 개별 별 */
+.sync-star-icon {
+    font-size: 1.2rem !important;
+    opacity: 1 !important;
+    color: transparent;
+    -webkit-text-stroke: 1.5px #ccc; /* 아웃라인만 회색 */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sync-star-icon:hover {
+    transform: scale(1.2);
+}
+
+/* 아이템이 checked 거나 별이 선택됐을 때 반짝이게! (filled 상태) */
+.sync-star-icon.filled {
+    color: #ffca28; /* 노란색/금색 채우기 */
+    -webkit-text-stroke: 0;
+    text-shadow: 0 0 6px rgba(255, 202, 40, 0.6);
+}

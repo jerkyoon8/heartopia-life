@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Checklist Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/checklist.css}">
+</head>
+<body>
+
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="checklist-container" style="margin-top: 100px;">
+        
+        <!-- 경고 문구 -->
+        <div class="warning-banner">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span><strong>데이터 저장 안내:</strong> 회원가입 없이 브라우저 환경에 도감 수집 정보가 저장됩니다. <strong>브라우저 캐시 및 인터넷 사용 기록을 임의로 삭제하실 경우, 기록해 둔 도감 데이터가 소실</strong>될 수 있으니 유의하시기 바랍니다.</span>
+        </div>
+
+        <div class="checklist-header">
+            <div class="checklist-icon"><i class="fas fa-clipboard-list"></i></div>
+            <h1 class="checklist-title">수집 도감</h1>
+            <p class="checklist-desc">물고기, 곤충, 새, 요리 등 나만의 하토피아 수집품을 체크하고 퍼센티지를 채워보세요!</p>
+        </div>
+
+        <!-- 전체 진척도 (Red Area) -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <span class="progress-title">전체 달성률</span>
+                <span class="progress-count"><span id="overall-collected">0</span> / <span id="overall-total">0</span></span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="overall-progress-bar"></div>
+            </div>
+            <div class="progress-percent" id="overall-percent">0% 수집됨</div>
+        </div>
+
+        <!-- 카테고리 탭 (Blue Area) -->
+        <div class="categories-grid">
+            <!-- 1. 물고기 -->
+            <div class="category-card active" data-target="fish" th:attr="data-total=${fishList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-fish"></i>
+                    <span class="category-name">물고기</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-fish"></div></div>
+                <div class="cat-counts"><span id="count-fish">0</span> / <span th:text="${fishList.size()}">0</span></div>
+            </div>
+            <!-- 2. 곤충 -->
+            <div class="category-card" data-target="bug" th:attr="data-total=${bugList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-bug"></i>
+                    <span class="category-name">곤충</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-bug"></div></div>
+                <div class="cat-counts"><span id="count-bug">0</span> / <span th:text="${bugList.size()}">0</span></div>
+            </div>
+            <!-- 3. 새 -->
+            <div class="category-card" data-target="bird" th:attr="data-total=${birdList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-dove"></i>
+                    <span class="category-name">새</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-bird"></div></div>
+                <div class="cat-counts"><span id="count-bird">0</span> / <span th:text="${birdList.size()}">0</span></div>
+            </div>
+            <!-- 4. 꽃 -->
+            <div class="category-card" data-target="flower" th:attr="data-total=${flowerList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-seedling"></i>
+                    <span class="category-name">꽃</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-flower"></div></div>
+                <div class="cat-counts"><span id="count-flower">0</span> / <span th:text="${flowerList.size()}">0</span></div>
+            </div>
+            <!-- 5. 작물 -->
+            <div class="category-card" data-target="crop" th:attr="data-total=${cropList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-carrot"></i>
+                    <span class="category-name">작물</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-crop"></div></div>
+                <div class="cat-counts"><span id="count-crop">0</span> / <span th:text="${cropList.size()}">0</span></div>
+            </div>
+            <!-- 6. 요리 -->
+            <div class="category-card" data-target="cooking" th:attr="data-total=${cookingList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-utensils"></i>
+                    <span class="category-name">요리</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-cooking"></div></div>
+                <div class="cat-counts"><span id="count-cooking">0</span> / <span th:text="${cookingList.size()}">0</span></div>
+            </div>
+        </div>
+
+        <!-- 액션 바 -->
+        <div class="action-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="이름으로 아이템 검색...">
+            </div>
+            <div class="action-buttons">
+                <!-- 추후 스크립트 연결을 위해 UI만 세팅된 버튼 -->
+                <button class="action-btn btn-export" onclick="alert('준비중입니다!')"><i class="fas fa-download"></i> 내보내기</button>
+                <button class="action-btn btn-import" onclick="alert('준비중입니다!')"><i class="fas fa-upload"></i> 불러오기</button>
+                <button class="action-btn btn-reset" id="resetBtn"><i class="fas fa-undo"></i> 초기화</button>
+            </div>
+        </div>
+
+        <!-- 아이템 리스트 (Green Area) -->
+        <div id="checklists-wrapper">
+            
+            <!-- 물고기 컨테이너 -->
+            <div class="category-container active" id="container-fish" data-category="fish">
+                <div class="list-header">
+                    <i class="fas fa-fish"></i>
+                    <h3>물고기 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${fishList}" th:attr="data-key=|fish_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 곤충 컨테이너 -->
+            <div class="category-container" id="container-bug" data-category="bug">
+                <div class="list-header">
+                    <i class="fas fa-bug"></i>
+                    <h3>곤충 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${bugList}" th:attr="data-key=|bug_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 새 컨테이너 -->
+            <div class="category-container" id="container-bird" data-category="bird">
+                <div class="list-header">
+                    <i class="fas fa-dove"></i>
+                    <h3>새 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${birdList}" th:attr="data-key=|bird_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 꽃 컨테이너 -->
+            <div class="category-container" id="container-flower" data-category="flower">
+                <div class="list-header">
+                    <i class="fas fa-seedling"></i>
+                    <h3>꽃 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${flowerList}" th:attr="data-key=|flower_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 작물 컨테이너 -->
+            <div class="category-container" id="container-crop" data-category="crop">
+                <div class="list-header">
+                    <i class="fas fa-carrot"></i>
+                    <h3>작물 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${cropList}" th:attr="data-key=|crop_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 요리 컨테이너 -->
+            <div class="category-container" id="container-cooking" data-category="cooking">
+                <div class="list-header">
+                    <i class="fas fa-utensils"></i>
+                    <h3>요리 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${cookingList}" th:attr="data-key=|cooking_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- end wrapper -->
+
+    </div> <!-- end container -->
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Checklist Logic Script -->
+    <script th:src="@{/js/checklist.js}"></script>
+
+</body>
+</html>

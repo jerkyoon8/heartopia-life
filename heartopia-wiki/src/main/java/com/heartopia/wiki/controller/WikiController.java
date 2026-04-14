@@ -176,6 +176,37 @@ public class WikiController {
                 return "wiki/others/villagers";
         }
 
+        @GetMapping("/checklist")
+        public String checklist(Model model) {
+                // 1. 물고기
+                model.addAttribute("fishList", collectionService.getAllFish().stream()
+                        .map(FishDto::from).toList());
+                // 2. 곤충 (벌레)
+                model.addAttribute("bugList", collectionService.getAllBugs().stream()
+                        .map(BugDto::from).toList());
+                // 3. 새
+                model.addAttribute("birdList", collectionService.getAllBirds().stream()
+                        .map(BirdDto::from).toList());
+                // 4. 꽃
+                model.addAttribute("flowerList", collectionService.getAllFlowers().stream()
+                        .map(FlowerDto::from).toList());
+                // 5. 작물
+                model.addAttribute("cropList", collectionService.getAllCrops().stream()
+                        .map(CropDto::from).toList());
+                
+                // 6. 요리 (재료 포함)
+                List<CookingCollection> cookings = collectionService.getAllCookings();
+                java.util.Map<Integer, List<com.heartopia.wiki.model.CookingIngredient>> ingredientMap =
+                        collectionService.getAllCookingIngredientMap();
+                cookings.forEach(c -> c.setIngredientList(ingredientMap.getOrDefault(c.getId(), List.of())));
+                model.addAttribute("cookingList", cookings);
+
+                model.addAttribute("pageTitle", "수집 도감 (Checklist)");
+                model.addAttribute("pageDescription", "두근두근라이프 전체 수집품 진행도를 확인하고 나만의 도감을 완성해 보세요.");
+                
+                return "wiki/checklist";
+        }
+
         // ======================== 상세보기 페이지 ========================
 
         @GetMapping("/collections/fish/{name}")

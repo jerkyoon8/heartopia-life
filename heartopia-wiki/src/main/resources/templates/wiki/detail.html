@@ -104,7 +104,7 @@
             background: linear-gradient(135deg, #efebe9 0%, #d7ccc8 100%);
         }
 
-        .detail-image-area i {
+        .detail-image-area i.fallback-icon {
             font-size: 5rem;
             opacity: 0.6;
         }
@@ -459,8 +459,10 @@
         <!-- Detail Content -->
         <main class="detail-container">
             <!-- Left: Image Card -->
-            <div class="detail-image-card">
-                <div th:class="'detail-image-area ' + ${category}">
+            <div class="detail-image-card sync-item" th:data-sync-key="${category} + '_' + ${item.name}">
+                <div th:class="'detail-image-area sync-container ' + ${category}">
+                    <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                    
                     <!-- Universal Image Display -->
                     <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="'두근두근라이프 ' + ${item.name} + ' 정보 - 두두타 도감'">
                     <!-- Special Case for Animal (legacy variable) -->
@@ -469,6 +471,14 @@
                     <!-- Default Icon (Fallback) -->
                     <i th:class="${categoryIcon + ' text-muted fallback-icon'}"
                         th:style="${(item.imageUrl != null or (category == 'animal' and animalImageUrl != null)) ? 'display: none; font-size: 5rem; opacity: 0.6;' : 'display: flex; font-size: 5rem; opacity: 0.6;'}"></i>
+                        
+                    <div class="sync-stars">
+                        <i class="fas fa-star sync-star-icon" data-val="1"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="2"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="3"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="4"></i>
+                        <i class="fas fa-star sync-star-icon" data-val="5"></i>
+                    </div>
                 </div>
 
                 <h1 class="detail-item-name" th:text="${item.name}">아이템 이름</h1>

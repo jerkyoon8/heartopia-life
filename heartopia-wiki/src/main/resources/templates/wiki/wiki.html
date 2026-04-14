@@ -606,6 +606,32 @@
             flex-shrink: 0;
         }
 
+        .autocomplete-checklist-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            margin-right: 6px;
+        }
+
+        .autocomplete-checklist-status.checked {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .autocomplete-checklist-status .stars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            color: #ffc107;
+            margin-left: 2px;
+        }
+
+        .autocomplete-checklist-status.uncollected {
+            color: transparent;
+            -webkit-text-stroke: 1px #ddd;
+        }
+
         .autocomplete-footer {
             padding: 10px 20px;
             text-align: center;
@@ -884,8 +910,28 @@
                     return;
                 }
 
+                // 체크리스트 데이터 로드 (존재할 경우)
+                const coreData = typeof window.ChecklistCore !== 'undefined' ? window.ChecklistCore.getData() : {};
+                const collectibleCats = ['fish', 'bug', 'bird', 'flower', 'crop', 'cooking'];
+
                 let html = items.map((item, idx) => {
                     const highlightedName = highlightMatch(item.name, query);
+
+                    // 도감(체크리스트) 상태 렌더링 바인딩
+                    let statusHtml = '';
+                    if (collectibleCats.includes(item.category)) {
+                        const syncKey = item.category + "_" + item.name;
+                        const val = coreData[syncKey];
+                        if (val !== undefined && val !== null) {
+                            // 수집 완료
+                            let starsHtml = val > 0 ? `<div class="stars"><i class="fas fa-star"></i> x${val}</div>` : '';
+                            statusHtml = `<div class="autocomplete-checklist-status checked"><i class="fas fa-check"></i> ${starsHtml}</div>`;
+                        } else {
+                            // 미수집
+                            statusHtml = `<div class="autocomplete-checklist-status uncollected" title="미수집"><i class="fas fa-check"></i></div>`;
+                        }
+                    }
+
                     return `
                         <a href="${item.url}" class="autocomplete-item" data-index="${idx}">
                             <span class="autocomplete-icon">${item.icon}</span>
@@ -893,6 +939,7 @@
                                 <div class="autocomplete-name">${highlightedName}</div>
                                 <div class="autocomplete-sub">${item.sub || ''}</div>
                             </div>
+                            ${statusHtml}
                             <span class="autocomplete-badge">${item.label}</span>
                         </a>
                     `;

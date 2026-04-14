@@ -1,0 +1,394 @@
+/* =========================================
+   수집 도감 (Checklist) Stylesheet
+   ========================================= */
+
+body {
+    background-color: var(--body-bg, #fdfbf7);
+}
+
+.checklist-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 15px;
+    font-family: 'Paperlogy', sans-serif;
+}
+
+/* --- 상단 경고 문구 --- */
+.warning-banner {
+    background: #fff5f5;
+    border: 1px solid #ffe3e3;
+    color: #fa5252;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.warning-banner i {
+    font-size: 18px;
+}
+
+/* --- 헤더 --- */
+.checklist-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.checklist-icon {
+    width: 60px;
+    height: 60px;
+    background: #ffe8cc;
+    color: #f76707;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin: 0 auto 15px;
+}
+
+.checklist-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-color, #333);
+    margin-bottom: 10px;
+}
+
+.checklist-desc {
+    color: var(--stat-label, #868e96);
+    font-size: 15px;
+}
+
+/* --- Red Area: Overall Progress --- */
+.progress-card {
+    background: white;
+    padding: 24px 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    margin-bottom: 25px;
+    border: 1px solid var(--border-subtle, #f1f3f5);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #495057;
+}
+
+.progress-count {
+    font-size: 15px;
+    font-weight: 600;
+    color: #adb5bd;
+}
+
+.progress-bar-bg {
+    height: 12px;
+    background: #f1f3f5;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff8787, #ffa8a8);
+    border-radius: 6px;
+    width: 0%;
+    transition: width 0.5s ease-out;
+}
+
+.progress-percent {
+    font-size: 13px;
+    color: #adb5bd;
+}
+
+/* --- Blue Area: Categories Grid --- */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.category-card {
+    background: white;
+    border: 2px solid transparent;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.category-card.active {
+    border-color: #ffc9c9;
+    background: #fff5f5;
+}
+
+.category-card.active .category-icon {
+    color: #ff6b6b;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.category-icon {
+    font-size: 16px;
+    color: #868e96;
+}
+
+.category-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #495057;
+}
+
+.cat-progress-bg {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    overflow: hidden;
+}
+
+.cat-progress-fill {
+    height: 100%;
+    background: #d0ebff;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+.category-card.active .cat-progress-fill {
+    background: #ff8787;
+}
+
+.cat-counts {
+    font-size: 12px;
+    color: #adb5bd;
+}
+
+/* --- Action Bar --- */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: #339af0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+
+.action-btn:hover {
+    opacity: 0.85;
+}
+
+.btn-export { background: #b2f2bb; color: #2b8a3e; }
+.btn-import { background: #a5d8ff; color: #1864ab; }
+.btn-reset { background: #ffc9c9; color: #e03131; }
+
+/* --- Green Area: Item Lists --- */
+.category-container {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.category-container.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.list-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.list-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.list-count {
+    color: #868e96;
+    font-size: 14px;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.item-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.item-checkbox i {
+    opacity: 0;
+    color: white;
+    font-size: 12px;
+}
+
+.item-row.checked .item-checkbox {
+    background: #ff8787;
+    border-color: #ff8787;
+}
+
+.item-row.checked .item-checkbox i {
+    opacity: 1;
+}
+
+.item-name {
+    flex: 1;
+    font-size: 14px;
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    cursor: pointer;
+}
+
+.item-row.checked .item-name {
+    color: #ced4da;
+    text-decoration: line-through;
+}
+
+.item-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.star-icon {
+    color: #dee2e6;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.1s;
+}
+
+.star-icon:hover {
+    transform: scale(1.2);
+}
+
+.star-icon.filled {
+    color: #fcc419;
+}
+
+/* =========================================
+   Responsive Design (Mobile)
+   ========================================= */
+@media (max-width: 900px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .action-buttons {
+        justify-content: space-between;
+    }
+}
