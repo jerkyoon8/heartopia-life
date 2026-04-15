@@ -74,15 +74,36 @@
             </h1>
         </div>
         
-        <div class="filter-bar border-0 shadow-none pb-0">
-            <!-- Event Button -->
-            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap; margin-left: auto;">
-                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
-            </button>
-            <select id="eventFilter" class="filter-select" style="display: none;">
-                <option value="all">모든 이벤트</option>
-                <option value="꿈의 명암">꿈의 명암</option>
-            </select>
+        <div class="wiki-filter-container">
+            <div class="filter-top-tier" style="justify-content: space-between;">
+                <div class="search-wrapper" style="flex: 1; max-width: 300px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="동물 이름 검색...">
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    
+                    <!-- 꿈의 명암 스위치 -->
+                    <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0; margin-bottom: 0;">
+                        <label class="toggle-switch-label mb-0" style="font-weight: 500; font-size: 0.85rem;">
+                            <label class="switch mb-0" style="transform: scale(0.85); transform-origin: left center;">
+                                <input type="checkbox" id="btn-dream-event">
+                                <span class="slider"></span>
+                            </label>
+                            <i class="fas fa-moon text-warning"></i> 꿈의 명암
+                        </label>
+                    </div>
+                    
+                    <select id="eventFilter" style="display: none;">
+                        <option value="all">모든 이벤트</option>
+                        <option value="꿈의 명암">꿈의 명암</option>
+                    </select>
+
+                    <button type="button" id="resetBtn" class="btn-reset-icon" title="초기화">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="wiki-grid-layout" id="wikiGrid">

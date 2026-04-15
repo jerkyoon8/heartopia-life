@@ -20,49 +20,133 @@
                 <span sec:authorize="hasRole('ADMIN')"><button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addBugModal" style="font-size:0.5em;vertical-align:middle;"><i class="fas fa-plus me-1"></i>벌레 추가</button></span>
             </h1>
         </div>
-        <!-- Filter Bar -->
-        <div class="filter-bar">
-            <!-- Search -->
-            <div class="filter-group" style="flex-grow: 2;">
-                <i class="fas fa-search text-secondary"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
+        <!-- Filter Bar (Redesign) -->
+        <!-- Filter Bar (Heartopia Style) -->
+        <div class="wiki-filter-container">
+            <div class="filter-top-tier">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="벌레 이름 검색...">
+                </div>
+                
+                <!-- 꿈의 명암 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-dream-event">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-moon text-warning"></i> 꿈의 명암만 표시
+                    </label>
+                </div>
+                
+                <!-- 수집된 항목 숨기기 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-hide-collected">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-eye-slash text-secondary"></i> 수집된 항목 숨기기
+                    </label>
+                </div>
+                
+                <select id="eventFilter" style="display: none;">
+                    <option value="all">모든 이벤트</option>
+                    <option value="꿈의 명암">꿈의 명암</option>
+                </select>
+
+                <button type="button" class="btn-filter-toggle" onclick="document.getElementById('advancedFilters').classList.toggle('show')">
+                    <i class="fas fa-sliders-h"></i> 상세 옵션 <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+                
+                <button type="button" id="resetBtn" class="btn-reset-icon" title="초기화">
+                    <i class="fas fa-undo"></i>
+                </button>
             </div>
+            
+            <div class="filter-advanced-tier" id="advancedFilters">
+                
+                <!-- 1단: 데이터 범위 축소 (조건 필터링) -->
+                <div class="advanced-section">
+                    <div class="section-label"><i class="fas fa-filter"></i> 조건 검색</div>
+                    <div class="advanced-controls-box">
+                        <div class="filter-select-wrapper">
+                            <span class="prefix">레벨</span>
+                            <select id="levelFilter">
+                                <option value="all">모든 레벨</option>
+                                <option value="1">Lv.1</option>
+                                <option value="2">Lv.2</option>
+                                <option value="3">Lv.3</option>
+                                <option value="4">Lv.4</option>
+                                <option value="5">Lv.5</option>
+                                <option value="6">Lv.6</option>
+                                <option value="7">Lv.7</option>
+                                <option value="8">Lv.8</option>
+                                <option value="9">Lv.9</option>
+                                <option value="10">Lv.10+</option>
+                            </select>
+                        </div>
 
-            <!-- Event Button -->
-            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
-                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
-            </button>
+                        <div class="filter-select-wrapper">
+                            <span class="prefix">장소</span>
+                            <select id="locationFilter">
+                                <option value="all">모든 장소</option>
+                                <!-- Options populated by JS -->
+                            </select>
+                        </div>
+                        
+                        <div class="filter-select-wrapper">
+                            <span class="prefix">날씨</span>
+                            <select id="weatherFilter">
+                                <option value="all">모든 날씨</option>
+                                <option value="상시">상시</option>
+                                <option value="해">☀️ 맑음</option>
+                                <option value="비">🌧️ 비</option>
+                                <option value="무지개">🌈 무지개</option>
+                                <option value="only-무지개">🌈 무지개만 출력</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 날씨 뒤에 시간대 조건 검색 추가 -->
+                        <div class="filter-select-wrapper" style="padding-right: 8px;">
+                            <span class="prefix">시간</span>
+                            <div style="display:flex; align-items:center; gap: 4px;">
+                                <select id="timeStartFilter" class="form-control form-control-sm" style="border:none; outline:none; background:transparent; padding:0 4px; font-weight: 500; font-family: inherit; width: 55px;">
+                                    <option value="" selected>시작</option>
+                                    <option value="00:00">00시</option>
+                                    <option value="06:00">06시</option>
+                                    <option value="12:00">12시</option>
+                                    <option value="18:00">18시</option>
+                                </select>
+                                <span style="color:var(--text-color); font-weight:bold; opacity: 0.5;">~</span>
+                                <select id="timeEndFilter" class="form-control form-control-sm" style="border:none; outline:none; background:transparent; padding:0 4px; font-weight: 500; font-family: inherit; width: 55px;">
+                                    <option value="" selected>종료</option>
+                                    <option value="06:00">06시</option>
+                                    <option value="12:00">12시</option>
+                                    <option value="18:00">18시</option>
+                                    <option value="24:00">24시</option>
+                                </select>
+                                <label style="display:flex; align-items:center; gap: 4px; font-size: 0.8rem; margin-left: 6px; cursor: pointer;">
+                                    <input type="checkbox" id="btn-include-always" checked style="accent-color: var(--link-color); width: 14px; height: 14px; cursor: pointer;">
+                                    <span style="white-space: nowrap;">상시 포함</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Hidden Event Filter -->
-            <select id="eventFilter" class="filter-select" style="display: none;">
-                <option value="all">모든 이벤트</option>
-                <option value="꿈의 명암">꿈의 명암</option>
-            </select>
+                <div class="advanced-divider"></div>
 
-            <!-- Custom Filters -->
-            <select id="levelFilter" class="filter-select">
-                <option value="all">모든 레벨</option>
-                <option value="1">Lv.1</option>
-                <option value="2">Lv.2</option>
-                <option value="3">Lv.3</option>
-                <option value="4">Lv.4</option>
-                <option value="5">Lv.5</option>
-                <option value="6">Lv.6</option>
-                <option value="7">Lv.7</option>
-                <option value="8">Lv.8</option>
-                <option value="9">Lv.9</option>
-                <option value="10">Lv.10+</option>
-            </select>
-            <select id="weatherFilter" class="filter-select">
-                <option value="all">모든 날씨</option>
-                <option value="상시">상시</option>
-                <option value="해">☀️ 맑음</option>
-                <option value="비">🌧️ 비</option>
-                <option value="무지개">🌈 무지개</option>
-            </select>
-
-            <!-- Sort & Reset (Fragment) -->
-            <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+                <!-- 2단: 보기 및 정렬 -->
+                <div class="advanced-section">
+                    <div class="section-label"><i class="fas fa-sort-amount-down"></i> 결과 정렬 및 보기</div>
+                    <div class="advanced-controls-box">
+                        <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+                    </div>
+                </div>
+                
+            </div>
         </div>
 
         <div class="wiki-grid-layout" id="wikiGrid">
@@ -73,7 +157,7 @@
 
             <div th:each="bug : ${bugList}" class="wiki-item-card sync-item" th:data-sync-key="'bug_' + ${bug.name}" th:data-name="${bug.name}"
                 th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}"
-                th:data-weather="${bug.weather}"
+                th:data-weather="${bug.weather}" th:data-time="${bug.time}" th:data-location="${bug.location}"
                 th:data-event="${bug.eventName != null ? bug.eventName : ''}">
 
                 <div class="wiki-item-image sync-container">
@@ -82,22 +166,22 @@
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-bug fa-4x text-success fallback-icon'"
                         th:style="${bug.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                </div>
+
+                <div class="wiki-item-info">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-0">
+
+                        <a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="wiki-item-name mb-0">
+                            <span th:text="${bug.name}"></span>
+                            <span th:if="${bug.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${bug.eventName}"></span>
+                        </a>
+                    </div>
                     <div class="sync-stars">
                         <i class="fas fa-star sync-star-icon" data-val="1"></i>
                         <i class="fas fa-star sync-star-icon" data-val="2"></i>
                         <i class="fas fa-star sync-star-icon" data-val="3"></i>
                         <i class="fas fa-star sync-star-icon" data-val="4"></i>
                         <i class="fas fa-star sync-star-icon" data-val="5"></i>
-                    </div>
-                </div>
-
-                <div class="wiki-item-info">
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-
-                        <a th:href="@{/wiki/collections/bug/{name}(name=${bug.name})}" class="wiki-item-name mb-0">
-                            <span th:text="${bug.name}"></span>
-                            <span th:if="${bug.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${bug.eventName}"></span>
-                        </a>
                     </div>
                     <div>
                         <a th:href="@{/wiki/map(cat='insect', name=${bug.name})}" class="wiki-item-tag location-link">
@@ -193,22 +277,24 @@
         document.addEventListener('DOMContentLoaded', function () {
             const btnDream = document.getElementById('btn-dream-event');
             const eventFilter = document.getElementById('eventFilter');
-            let isDreamOnly = false;
 
             if (btnDream && eventFilter) {
-                btnDream.addEventListener('click', function() {
-                    isDreamOnly = !isDreamOnly;
-                    if(isDreamOnly) {
+                btnDream.addEventListener('change', function() {
+                    if(this.checked) {
                         eventFilter.value = '꿈의 명암';
-                        btnDream.classList.remove('btn-outline-dark');
-                        btnDream.classList.add('btn-dark');
                     } else {
                         eventFilter.value = 'all';
-                        btnDream.classList.remove('btn-dark');
-                        btnDream.classList.add('btn-outline-dark');
                     }
                     eventFilter.dispatchEvent(new Event('change'));
                 });
+                
+                // Also reset checkbox when reset button is clicked (handled by wiki-filter.js naturally firing change? no we need to uncheck)
+                const resetBtn = document.getElementById('resetBtn');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        btnDream.checked = false;
+                    });
+                }
             }
 
             new WikiFilter({
@@ -218,7 +304,9 @@
                 filters: [
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                     { id: 'levelFilter', dataKey: 'level' },
-                    { id: 'weatherFilter', dataKey: 'weather' }
+                    { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
+                    { id: 'weatherFilter', dataKey: 'weather' },
+                    { id: 'timeFilter', dataKey: 'time', autoPopulate: true }
                 ]
             });
         });

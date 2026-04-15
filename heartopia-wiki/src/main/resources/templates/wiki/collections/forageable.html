@@ -26,31 +26,47 @@
         </div>
         <p class="text-secondary mb-4">하트피아 대륙 곳곳에서 채집하거나 주울 수 있는 다양한 아이템들에 대한 정보입니다.</p>
 
-        <!-- Filter Bar -->
-        <div class="filter-bar">
-            <!-- Search -->
-            <div class="filter-group" style="flex-grow: 2;">
-                <i class="fas fa-search text-secondary"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="이름 검색...">
+        <!-- Filter Bar (Heartopia Style) -->
+        <div class="wiki-filter-container">
+            <div class="filter-top-tier" style="justify-content: space-between;">
+                <div class="search-wrapper" style="flex: 1; max-width: 300px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="채집물 검색...">
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    
+                    <!-- 꿈의 명암 스위치 -->
+                    <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0; margin-bottom: 0;">
+                        <label class="toggle-switch-label mb-0" style="font-weight: 500; font-size: 0.85rem;">
+                            <label class="switch mb-0" style="transform: scale(0.85); transform-origin: left center;">
+                                <input type="checkbox" id="btn-dream-event">
+                                <span class="slider"></span>
+                            </label>
+                            <i class="fas fa-moon text-warning"></i> 꿈의 명암
+                        </label>
+                    </div>
+                    
+                    <select id="eventFilter" style="display: none;">
+                        <option value="all">모든 이벤트</option>
+                        <option value="꿈의 명암">꿈의 명암</option>
+                    </select>
+
+                    <select id="locationFilter" style="border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 12px; font-weight: 500; font-size: 0.85rem; outline: none; background: var(--card-bg);">
+                        <option value="all">모든 장소</option>
+                        <!-- Options populated by JS -->
+                    </select>
+
+                    <div class="sort-group d-flex align-items-center" id="sortGroup" style="gap:5px;">
+                        <button type="button" class="btn btn-sm text-secondary active" data-sort="name" style="border:none; background:transparent;"><i class="fas fa-sort-alpha-down"></i> 이름순</button>
+                        <button type="button" class="btn btn-sm text-secondary" data-sort="price" style="border:none; background:transparent;"><i class="fas fa-coins"></i> 가격순</button>
+                    </div>
+
+                    <button type="button" id="resetBtn" class="btn-reset-icon" title="초기화">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
             </div>
-            <!-- Event Button -->
-            <button type="button" id="btn-dream-event" class="btn btn-outline-dark rounded-pill px-3 shadow-sm d-flex align-items-center gap-2" style="border-width: 2px; font-weight: bold; white-space: nowrap;">
-                <i class="fas fa-moon text-warning"></i> 꿈의 명암만 보기
-            </button>
-
-            <!-- Hidden Event Filter -->
-            <select id="eventFilter" class="filter-select" style="display: none;">
-                <option value="all">모든 이벤트</option>
-                <option value="꿈의 명암">꿈의 명암</option>
-            </select>
-            <!-- Filters -->
-            <select id="locationFilter" class="filter-select">
-                <option value="all">모든 장소</option>
-                <!-- Options populated by JS -->
-            </select>
-
-            <!-- Sort & Reset (Fragment) -->
-            <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
         </div>
 
         <div class="wiki-grid-layout" id="wikiGrid">
@@ -181,22 +197,23 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const btnDream = document.getElementById('btn-dream-event');
                 const eventFilter = document.getElementById('eventFilter');
-                let isDreamOnly = false;
 
                 if (btnDream && eventFilter) {
-                    btnDream.addEventListener('click', function() {
-                        isDreamOnly = !isDreamOnly;
-                        if(isDreamOnly) {
+                    btnDream.addEventListener('change', function() {
+                        if(this.checked) {
                             eventFilter.value = '꿈의 명암';
-                            btnDream.classList.remove('btn-outline-dark');
-                            btnDream.classList.add('btn-dark');
                         } else {
                             eventFilter.value = 'all';
-                            btnDream.classList.remove('btn-dark');
-                            btnDream.classList.add('btn-outline-dark');
                         }
                         eventFilter.dispatchEvent(new Event('change'));
                     });
+                    
+                    const resetBtn = document.getElementById('resetBtn');
+                    if (resetBtn) {
+                        resetBtn.addEventListener('click', () => {
+                            btnDream.checked = false;
+                        });
+                    }
                 }
 
                 new WikiFilter({

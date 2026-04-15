@@ -43,24 +43,39 @@
 
 /* 별점 컨테이너 */
 .sync-stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    z-index: 10;
+    padding: 2px 8px;
+    border-radius: 12px;
+    flex-wrap: nowrap;
+}
+
+/* 이미지 박스 내부(절대 위치)로 쓰일 때 (detail 등) */
+.sync-container > .sync-stars {
     position: absolute;
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 4px;
-    z-index: 10;
     background: rgba(255, 255, 255, 0.6);
-    padding: 2px 8px;
-    border-radius: 12px;
+}
+
+/* 카드 정보 영역(이름 위)로 쓰일 때 */
+.wiki-item-info .sync-stars {
+    position: static;
+    transform: none;
+    background: transparent;
+    margin-top: 4px;
+    margin-bottom: 10px;
 }
 
 /* 개별 별 */
 .sync-star-icon {
-    font-size: 1.2rem !important;
+    font-size: 1.0rem !important;
     opacity: 1 !important;
     color: transparent;
-    -webkit-text-stroke: 1.5px #ccc; /* 아웃라인만 회색 */
+    -webkit-text-stroke: 1px #ccc; /* 얇고 섬세한 테두리 */
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

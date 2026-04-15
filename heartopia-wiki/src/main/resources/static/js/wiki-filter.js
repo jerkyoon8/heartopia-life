@@ -79,6 +79,44 @@ class WikiFilter {
             this.resetBtn.addEventListener('click', () => this.reset());
         }
 
+        // New Toggle Listeners
+        this.hideCollectedBtn = document.getElementById('btn-hide-collected');
+        if (this.hideCollectedBtn) {
+            const savedHide = localStorage.getItem('wikiHideCollected');
+            if (savedHide === 'true') {
+                this.hideCollectedBtn.checked = true;
+                // 저장된 상태를 페이지 로드 시 즉시 적용
+                setTimeout(() => this.applyFilter(), 0);
+            }
+            this.hideCollectedBtn.addEventListener('change', () => {
+                localStorage.setItem('wikiHideCollected', this.hideCollectedBtn.checked);
+                this.applyFilter();
+            });
+        }
+
+        // ChecklistCore Subscribe for auto-hide
+        if (typeof window.ChecklistCore !== 'undefined') {
+            window.ChecklistCore.subscribe(() => {
+                if (this.hideCollectedBtn && this.hideCollectedBtn.checked) {
+                    setTimeout(() => this.applyFilter(), 10);
+                }
+            });
+        }
+
+        // Time Filter setup
+        this.timeStartFilter = document.getElementById('timeStartFilter');
+        this.timeEndFilter = document.getElementById('timeEndFilter');
+        this.includeAlwaysBtn = document.getElementById('btn-include-always');
+        
+        if (this.timeStartFilter && this.timeEndFilter) {
+            const applyTimeFilter = () => this.applyFilter();
+            this.timeStartFilter.addEventListener('change', applyTimeFilter);
+            this.timeEndFilter.addEventListener('change', applyTimeFilter);
+            if (this.includeAlwaysBtn) {
+                this.includeAlwaysBtn.addEventListener('change', applyTimeFilter);
+            }
+        }
+
         // View Toggle
         this.initViewToggle();
     }
@@ -175,16 +213,18 @@ class WikiFilter {
             const key = btn.dataset.sort;
 
             btn.classList.remove('active');
-            const icon = btn.querySelector('i');
-            if (icon) icon.remove();
+            
+            // Remove only the dynamically added directional arrow, not original icons
+            const dynamicArrow = btn.querySelector('.sort-dir-arrow');
+            if (dynamicArrow) dynamicArrow.remove();
 
             if (key === this.currentSort.key) {
                 btn.classList.add('active');
 
                 const newIcon = document.createElement('i');
                 newIcon.className = this.currentSort.order === 'asc'
-                    ? 'fas fa-arrow-up'
-                    : 'fas fa-arrow-down';
+                    ? 'fas fa-arrow-up sort-dir-arrow ms-1'
+                    : 'fas fa-arrow-down sort-dir-arrow ms-1';
                 btn.appendChild(newIcon);
             }
         });
@@ -240,6 +280,11 @@ class WikiFilter {
                 if (f.key === 'level' && selectedValue === '10') {
                     if (parseInt(itemValue) < 10) isMatch = false;
                 }
+                else if (f.key === 'weather' && selectedValue === 'only-무지개') {
+                    if (!itemValue || String(itemValue).trim() !== '무지개') {
+                        isMatch = false;
+                    }
+                }
                 else {
                     if (!itemValue || !String(itemValue).includes(selectedValue)) {
                         isMatch = false;
@@ -247,6 +292,67 @@ class WikiFilter {
                 }
 
                 if (!isMatch) break;
+            }
+        }
+
+        // 3. Hide Collected Filter
+        if (isMatch && this.hideCollectedBtn && this.hideCollectedBtn.checked) {
+            if (element.classList.contains('checked')) {
+                isMatch = false;
+            }
+        }
+
+        // 4. Time Range Filter (Overlap Logic)
+        if (isMatch && this.timeStartFilter && this.timeEndFilter) {
+            const userStartStr = this.timeStartFilter.value;
+            const userEndStr = this.timeEndFilter.value;
+
+            if (userStartStr && userEndStr) {
+                const itemTimeStr = String(element.dataset.time || '').trim();
+                
+                // If item time is "상시" or empty, handled by includeAlwaysBtn
+                if (itemTimeStr === '상시' || itemTimeStr === '') {
+                    if (this.includeAlwaysBtn && !this.includeAlwaysBtn.checked) {
+                        isMatch = false;
+                    }
+                } else {
+                    // Extract minutes
+                    const [usH, usM] = userStartStr.split(':').map(Number);
+                    const [ueH, ueM] = userEndStr.split(':').map(Number);
+                    const uStart = usH * 60 + usM;
+                    const uEnd = ueH * 60 + ueM;
+                    const uCrossesMidnight = uEnd < uStart;
+
+                    // Support regex parsing for formats like "06:00~18:00" or "6시~18시"
+                    const match = itemTimeStr.match(/(\d{1,2})[:시]?(\d{0,2})?\s*[~-]\s*(\d{1,2})[:시]?(\d{0,2})?/);
+                    
+                    if (match) {
+                        const iStart = parseInt(match[1]) * 60 + (parseInt(match[2]) || 0);
+                        const iEnd = parseInt(match[3]) * 60 + (parseInt(match[4]) || 0);
+                        const iCrossesMidnight = iEnd < iStart;
+
+                        const hasOverlap = (s1, e1, s2, e2) => Math.max(s1, s2) <= Math.min(e1, e2);
+
+                        const checkOverlap = (st1, en1, cross1, st2, en2, cross2) => {
+                            const intervals1 = cross1 ? [[st1, 1440], [0, en1]] : [[st1, en1]];
+                            const intervals2 = cross2 ? [[st2, 1440], [0, en2]] : [[st2, en2]];
+
+                            for (const iv1 of intervals1) {
+                                for (const iv2 of intervals2) {
+                                    if (hasOverlap(iv1[0], iv1[1], iv2[0], iv2[1])) return true;
+                                }
+                            }
+                            return false;
+                        };
+
+                        if (!checkOverlap(uStart, uEnd, uCrossesMidnight, iStart, iEnd, iCrossesMidnight)) {
+                            isMatch = false;
+                        }
+                    } else {
+                        // Unparseable string not matching "상시" hides from range search
+                        isMatch = false;
+                    }
+                }
             }
         }
 
@@ -297,6 +403,11 @@ class WikiFilter {
         this.filterElements.forEach(f => {
             f.element.value = 'all';
         });
+
+        if (this.hideCollectedBtn) this.hideCollectedBtn.checked = false;
+        if (this.timeStartFilter) this.timeStartFilter.value = '';
+        if (this.timeEndFilter) this.timeEndFilter.value = '';
+        if (this.includeAlwaysBtn) this.includeAlwaysBtn.checked = true;
 
         this.currentSort = { key: 'name', order: 'asc' };
         this.updateSortUI();

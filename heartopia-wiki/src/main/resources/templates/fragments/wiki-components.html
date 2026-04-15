@@ -48,43 +48,27 @@
         th:replace="~{fragments/wiki-components :: filterContainer(~{:: #my-filters})}"
     -->
 
-    <div th:fragment="sortAndReset" class="d-flex align-items-center gap-2">
-        <!-- Sort Buttons Group -->
+    <!-- 프래그먼트: 정렬 기능 -->
+    <div th:fragment="sortAndReset" class="d-flex w-100 flex-wrap justify-content-between align-items-center mb-1">
+        <!-- Sort Buttons -->
         <div class="sort-group" id="sortGroup">
-            <!-- Icon -->
-            <i class="fas fa-exchange-alt fa-rotate-90 text-secondary me-1" style="font-size: 0.9rem;"></i>
-
-            <button type="button" class="sort-chip active" data-sort="name" data-order="asc">
-                이름 <i class="fas fa-arrow-up"></i>
-            </button>
-            <button type="button" class="sort-chip" data-sort="level" data-order="asc">
-                레벨
-            </button>
-            <button type="button" class="sort-chip" data-sort="price" data-order="desc">
-                가격
-            </button>
+            <button class="sort-chip active" data-sort="default"><i class="fas fa-asterisk"></i> 기본순</button>
+            <button class="sort-chip" data-sort="name"><i class="fas fa-sort-alpha-down"></i> 이름순</button>
+            <button class="sort-chip" data-sort="level"><i class="fas fa-sort-numeric-down"></i> 레벨순</button>
+            <button class="sort-chip" data-sort="price"><i class="fas fa-coins"></i> 가격순</button>
         </div>
 
-        <!-- Vertical Separator -->
-        <div class="vr mx-2"></div>
+        <div class="vr d-none d-md-block mx-1"></div>
 
-        <!-- View Toggle -->
-        <div class="view-toggle" id="viewToggle">
-            <button type="button" class="view-toggle-btn active" data-view="card" title="카드 보기">
+        <!-- Right Side: View Toggle -->
+        <div class="btn-group shadow-sm ms-auto" role="group" id="viewToggle">
+            <button type="button" class="btn btn-outline-secondary view-toggle-btn active" data-view="card" title="카드 뷰">
                 <i class="fas fa-th-large"></i>
             </button>
-            <button type="button" class="view-toggle-btn" data-view="table" title="테이블 보기">
+            <button type="button" class="btn btn-outline-secondary view-toggle-btn" data-view="table" title="테이블 뷰">
                 <i class="fas fa-list"></i>
             </button>
         </div>
-
-        <!-- Vertical Separator -->
-        <div class="vr mx-2"></div>
-
-        <!-- Reset -->
-        <button id="resetBtn" class="btn-reset">
-            <i class="fas fa-undo"></i> 초기화
-        </button>
     </div>
 
     <!-- 

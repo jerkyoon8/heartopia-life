@@ -161,7 +161,8 @@
                 opacity: 0;
                 visibility: hidden;
                 transform: translateY(10px);
-                transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+                /* 닫힐 때 빠르게: 80ms */
+                transition: opacity 0.08s ease, visibility 0.08s ease, transform 0.08s ease;
                 z-index: 999;
             }
 
@@ -170,6 +171,8 @@
                 opacity: 1;
                 visibility: visible;
                 transform: translateY(0);
+                /* 열릴 때는 부드럽게: 200ms */
+                transition: opacity 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.2s, transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
             }
 
             .mega-menu-grid {
