@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXTDCP8G1V"></script>
+    <script>
+        // Google Analytics 4 초기화
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RXTDCP8G1V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요리 레시피 - 두근두근타운</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ── 페이지 고유 스타일 ── */
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .page-header h1 { font-size: 2rem; color: var(--color-primary); margin-bottom: 8px; }
+        .page-header p  { color: var(--color-text-soft); }
+        .page-header nav { margin-bottom: 12px; }
+        .page-header nav ul { list-style: none; display: flex; gap: 12px; justify-content: center; }
+        /*.page-header nav a {*/
+        /*    color: var(--color-primary);*/
+        /*    text-decoration: none;*/
+        /*    font-size: 0.9rem;*/
+        /*    padding: 4px 12px;*/
+        /*    border: 1px solid var(--color-primary-light);*/
+        /*    border-radius: 20px;*/
+        /*    transition: background 0.2s;*/
+        /*}*/
+        /*.page-header nav a:hover { background: var(--color-primary-surface); }*/
+
+        /* 통계 카드 */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--color-surface);
+            border-radius: 14px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+        .stat-card .number { font-size: 1.6rem; font-weight: 700; color: var(--color-primary); }
+        .stat-card .label  { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 4px; }
+
+        /* 컨트롤 패널 */
+        .control-panel {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 6px; }
+        .control-group label { font-size: 0.8rem; font-weight: 600; color: var(--color-text-soft); }
+        .control-group input,
+        .control-group select {
+            padding: 8px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+            min-width: 160px;
+        }
+        .control-group input:focus,
+        .control-group select:focus { border-color: var(--color-primary); }
+
+        /* 등급 선택 버튼 */
+        .grade-btns { display: flex; gap: 8px; }
+        .grade-btn {
+            width: 38px; height: 38px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--color-text-soft);
+        }
+        .grade-btn:hover  { border-color: var(--color-primary-light); color: var(--color-primary); }
+        .grade-btn.active { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+
+        /* 뷰 토글 */
+        .view-toggle { display: flex; gap: 6px; }
+        .view-btn {
+            padding: 7px 16px;
+            border: 1.5px solid var(--color-border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-soft);
+            transition: all 0.2s;
+        }
+        .view-btn.active { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+
+        /* 시즌 버튼 */
+        .season-btn {
+            padding: 7px 14px;
+            border: 1.5px solid #80c8f0;
+            border-radius: 8px;
+            background: #e8f6ff;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a6fa0;
+            transition: all 0.2s;
+        }
+        .season-btn:hover { background: #cce8f8; border-color: #4aa8e0; }
+        .season-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .season-btn-remove {
+            padding: 7px 14px;
+            border: 1.5px solid #f0a0a0;
+            border-radius: 8px;
+            background: #fff0f0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #aa2020;
+            transition: all 0.2s;
+        }
+        .season-btn-remove:hover { background: #fddede; border-color: #e06060; }
+        .season-btn-remove:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        /* 시즌 아이템 배지 (카드/테이블) */
+        .season-tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: #ddf0ff;
+            color: #1a6fa0;
+            border: 1px solid #90ccf0;
+            margin-left: 5px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        /* ── 카드 그리드 뷰 ── */
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+        }
+        .recipe-card {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border: 2px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: default;
+        }
+        .recipe-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            border-color: var(--color-primary-light);
+        }
+        .recipe-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .recipe-name { font-size: 1.05rem; font-weight: 700; color: var(--color-text-strong); }
+        .recipe-efficiency-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .badge-excellent { background: #d4f5e2; color: #1a8a4a; }
+        .badge-good      { background: #dceeff; color: #2165cc; }
+        .badge-normal    { background: #f0f0f0; color: #666; }
+        .badge-low       { background: #fff0e0; color: #c07800; }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 14px;
+        }
+        .ingredient-tag {
+            font-size: 0.76rem;
+            padding: 2px 9px;
+            border-radius: 12px;
+            background: var(--color-surface-light);
+            color: var(--color-text-soft);
+            border: 1px solid var(--color-border);
+        }
+        .ingredient-tag.shop    { background: #e8f4ff; border-color: #b0d4f5; color: #1a5fa3; }
+        .ingredient-tag.crop    { background: #edfce8; border-color: #a5d996; color: #2a7a1e; }
+        .ingredient-tag.gather  { background: #fff8e0; border-color: #f0d860; color: #8a6800; }
+        .ingredient-tag.recipe  { background: #fce8ff; border-color: #d8a0f0; color: #7a1a9a; }
+        .ingredient-tag.fish    { background: #e0f5ff; border-color: #80ccf0; color: #0a5fa0; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .metric {
+            background: var(--color-surface-light);
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+        .metric-label { font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 2px; }
+        .metric-value { font-size: 1rem; font-weight: 700; color: var(--color-text-strong); }
+        .metric-value.profit-pos { color: #1a8a4a; }
+        .metric-value.profit-neg { color: #cc2222; }
+        .metric-value.highlight  { color: var(--color-primary); }
+
+        .metric-bar-wrap { margin-top: 10px; }
+        .metric-bar-label {
+            display: flex; justify-content: space-between;
+            font-size: 0.72rem; color: var(--color-text-muted); margin-bottom: 3px;
+        }
+        .metric-bar {
+            height: 6px; border-radius: 3px;
+            background: var(--color-border);
+            overflow: hidden;
+        }
+        .metric-bar-fill {
+            height: 100%; border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .bar-roi    { background: linear-gradient(90deg, #60c060, #2aaa2a); }
+        .bar-stam   { background: linear-gradient(90deg, #60a0ff, #2060ee); }
+
+        /* ── 테이블 뷰 ── */
+        .table-wrap {
+            background: var(--color-surface);
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        .recipe-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.87rem;
+        }
+        .recipe-table thead th {
+            background: var(--color-surface-light);
+            padding: 12px 14px;
+            text-align: left;
+            color: var(--color-text-soft);
+            font-weight: 700;
+            font-size: 0.78rem;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 2px solid var(--color-border);
+        }
+        .recipe-table thead th:hover { color: var(--color-primary); }
+        .recipe-table thead th.sort-asc::after  { content: ' ▲'; color: var(--color-primary); }
+        .recipe-table thead th.sort-desc::after { content: ' ▼'; color: var(--color-primary); }
+        .recipe-table tbody tr { border-bottom: 1px solid var(--color-border); transition: background 0.15s; }
+        .recipe-table tbody tr:hover { background: var(--color-primary-surface); }
+        .recipe-table tbody td { padding: 11px 14px; color: var(--color-text); vertical-align: middle; }
+        .recipe-table tbody td:first-child { font-weight: 700; color: var(--color-text-strong); }
+
+        .table-badge {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 700;
+        }
+        .profit-cell { font-weight: 700; }
+        .profit-cell.pos { color: #1a8a4a; }
+        .profit-cell.neg { color: #cc2222; }
+
+        /* 범례 */
+        .legend {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            margin-bottom: 16px; align-items: center;
+        }
+        .legend-title { font-size: 0.78rem; font-weight: 700; color: var(--color-text-soft); }
+        .legend-item {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.75rem; color: var(--color-text-soft);
+        }
+        .legend-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+
+        /* ── 음식 이미지 ── */
+        .food-img-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: var(--color-surface-light);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .food-img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            image-rendering: pixelated; /* 픽셀 아트 이미지 선명하게 */
+        }
+        /* 카드 헤더에 이미지 포함 시 레이아웃 */
+        .recipe-card-header {
+            gap: 10px;
+        }
+        .recipe-card-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+        /* 테이블 내 소형 이미지 */
+        .food-img-sm {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            image-rendering: pixelated;
+            border-radius: 6px;
+            background: var(--color-surface-light);
+            border: 1px solid var(--color-border);
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        /* ── 버프 배지 ── */
+        .buff-row {
+            margin-bottom: 10px;
+        }
+        .buff-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #fff8e1;
+            color: #b06000;
+            border: 1px solid #f5c842;
+            white-space: nowrap;
+        }
+        /* 테이블 내 버프 셀 */
+        .buff-cell {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #b06000;
+            white-space: nowrap;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center; padding: 60px 20px;
+            color: var(--color-text-muted); font-size: 1rem;
+        }
+
+        /* 로딩 */
+        .loading { text-align: center; padding: 60px; color: var(--color-text-muted); font-size: 1rem; }
+
+        /* 정렬 기준 표시 */
+        .sort-indicator {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-left: auto;
+        }
+
+        /* 재료비 계산 설명 툴팁 */
+        .info-note {
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            background: var(--color-surface-light);
+            border-left: 3px solid var(--color-primary-light);
+            padding: 8px 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .recipes-grid { grid-template-columns: 1fr; }
+            .control-panel { flex-direction: column; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+
+    <!-- 방문자 추적 스크립트 (로컬 localStorage 기록용) -->
+    <script src="../../../src/js/tracker.js"></script>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+    <div class="page-header">
+        <nav>
+            <ul>
+                <li><a href="../crops/crops-list.html">🌱 작물 도감</a></li>
+            </ul>
+        </nav>
+        <h1>🍳 요리 레시피</h1>
+        <p>재료비, 수익, 체력 효율을 한눈에 비교해보세요</p>
+    </div>
+
+    <!-- 통계 -->
+    <div class="stats" id="statsRow">
+        <div class="stat-card"><div class="number" id="statTotal">-</div><div class="label">총 레시피 수</div></div>
+        <div class="stat-card"><div class="number" id="statBestProfit">-</div><div class="label">최고 순이익 레시피</div></div>
+        <div class="stat-card"><div class="number" id="statBestROI">-</div><div class="label">최고 수익률 레시피</div></div>
+        <div class="stat-card"><div class="number" id="statBestStam">-</div><div class="label">최고 체력 효율</div></div>
+        <div class="stat-card"><div class="number" id="statGradePrice">-</div><div class="label">선택 등급 최고가</div></div>
+    </div>
+
+    <!-- 컨트롤 -->
+    <div class="control-panel">
+        <div class="control-group">
+            <label>🔍 레시피 검색</label>
+            <input type="text" id="searchInput" placeholder="레시피 또는 재료 이름..." oninput="applyFilters()">
+        </div>
+        <div class="control-group">
+            <label>📊 정렬 기준</label>
+            <select id="sortSelect" onchange="applyFilters()">
+                <option value="profit-desc">순이익 높은순</option>
+                <option value="roi-desc">수익률 높은순</option>
+                <option value="price-desc">판매가 높은순</option>
+                <option value="stamGold-desc">골드/체력 높은순</option>
+                <option value="stamina-desc">체력 높은순</option>
+                <option value="name-asc">이름순</option>
+                <option value="profit-asc">순이익 낮은순</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>⭐ 레시피 등급</label>
+            <div class="grade-btns" id="gradeBtns">
+                <button class="grade-btn active" data-grade="1" onclick="setGrade(1)">1</button>
+                <button class="grade-btn" data-grade="2" onclick="setGrade(2)">2</button>
+                <button class="grade-btn" data-grade="3" onclick="setGrade(3)">3</button>
+                <button class="grade-btn" data-grade="4" onclick="setGrade(4)">4</button>
+                <button class="grade-btn" data-grade="5" onclick="setGrade(5)">5</button>
+            </div>
+        </div>
+        <div class="control-group">
+            <label>🖼️ 보기 방식</label>
+            <div class="view-toggle">
+                <button class="view-btn active" id="btnCard" onclick="setView('card')">카드</button>
+                <button class="view-btn" id="btnTable" onclick="setView('table')">테이블</button>
+            </div>
+        </div>
+        <!-- 빙설 시즌 추가/제거 -->
+        <div class="control-group">
+            <label>❄️ 빙설 시즌</label>
+            <div style="display:flex; gap:6px;">
+                <button class="season-btn"        id="btnIceAdd"    onclick="loadSeasonData('ice')">❄️ 시즌 추가</button>
+                <button class="season-btn-remove" id="btnIceRemove" onclick="removeSeasonData('ice')" disabled>🗑️ 제거</button>
+            </div>
+        </div>
+        <!-- 꿈의 명암 시즌 추가/제거 — 새 시즌 추가 시 이 블록을 복사해서 id/함수 인자만 수정 -->
+        <div class="control-group">
+            <label>🌙 꿈의 명암</label>
+            <div style="display:flex; gap:6px;">
+                <button class="season-btn season-dreamlight-btn" id="btnDreamlightAdd"    onclick="loadSeasonData('dreamlight')">🌙 시즌 추가</button>
+                <button class="season-btn-remove"                id="btnDreamlightRemove" onclick="removeSeasonData('dreamlight')" disabled>🗑️ 제거</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 안내 -->
+    <div class="info-note">
+        💡 <strong>재료비 계산 기준:</strong> 작물·채집·상점 구매 아이템은 판매가(기회비용) 기준, 상점 아이템은 상점가 기준으로 산출됩니다. 다른 레시피를 재료로 쓰는 경우 해당 레시피의 1등급 판매가가 적용됩니다.
+    </div>
+
+    <!-- 범례 -->
+    <div class="legend">
+        <span class="legend-title">재료 분류:</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#a5d996"></span>작물</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f0d860"></span>채집</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#b0d4f5"></span>상점</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#80ccf0"></span>낚시</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#d8a0f0"></span>요리(중간재)</span>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div id="resultArea">
+        <div class="loading">⏳ 데이터를 불러오는 중...</div>
+    </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="../../js/common.js"></script>
+<script>
+// ── 전역 상태 ──
+let recipeData   = null;
+let allProcessed = [];    // 계산 완료된 레시피 목록
+let baseProcessed = [];   // 시즌 추가 전 원본 레시피 목록 (제거 시 복원용)
+// 시즌별 로드 여부 추적 — 새 시즌 추가 시 키만 늘리면 됩니다
+const seasonLoaded = {
+    ice:        false,  // 빙설 시즌
+    dreamlight: false,  // 꿈의 명암 시즌
+};
+let currentGrade = 1;
+let currentView  = 'card';
+let sortKey      = 'profit-desc';
+
+// ── 재료 코스트 맵 (이름 → 골드) ──
+const costMap = {};
+
+// ── 데이터 로드 ──
+async function loadAll() {
+    const base = '../../data/';
+    const [recipes, crops, shop, gather] = await Promise.all([
+        fetch(base + 'recipes.json').then(r => r.json()),
+        fetch(base + 'crops.json').then(r => r.json()),
+        fetch(base + 'shop.json').then(r => r.json()),
+        fetch(base + 'gather.json').then(r => r.json()),
+    ]);
+
+    recipeData = recipes;
+
+    // gradeMultipliers / staminaMultipliers 키를 '1.0' → '1' 형태로 정규화.
+    // csv_to_json.py 에서 소수점 키로 저장될 수 있어 String(grade) 조회가 실패하는 버그 방지.
+    ['gradeMultipliers', 'staminaMultipliers'].forEach(field => {
+        const normalized = {};
+        for (const [k, v] of Object.entries(recipeData[field] || {})) {
+            normalized[String(Math.round(parseFloat(k)))] = v;
+        }
+        recipeData[field] = normalized;
+    });
+
+    // 작물 (기회비용 = sellPrice)
+    for (const c of crops.items) {
+        costMap[c.name] = { cost: c.sellPrice, type: 'crop' };
+    }
+
+    // 상점 (shopPrice)
+    for (const s of shop) {
+        // 이름 정규화: 별칭이 필요하면 배열에 추가
+        const names = [s.name];
+        // if (s.name === '커피원두') names.push('커피 원두');
+        // if (s.name === '사탕(150)') names.push('사탕150');
+        // if (s.name === '사탕(200)') names.push('사탕200');
+        for (const n of names) {
+            costMap[n] = { cost: s.shopPrice, type: 'shop' };
+        }
+    }
+
+    // 채집 (기회비용 = sellPrice)
+    for (const g of gather) {
+        // 이름 정규화: 별칭이 필요하면 배열에 추가
+        const names = [g.name];
+        // if (g.name === '물고기(50)') names.push('물고기50');
+        // if (g.name === '물고기(75)') names.push('물고기75');
+        for (const n of names) {
+            costMap[n] = { cost: g.sellPrice, type: 'gather' };
+        }
+    }
+
+    // 레시피 자체를 재료로 쓰는 경우 (1등급 기준)
+    for (const item of recipes.items) {
+        costMap[item.name] = { cost: item.price * recipes.gradeMultipliers['1'], type: 'recipe' };
+    }
+
+    // 레시피 처리
+    allProcessed = recipes.items.map(item => processRecipe(item, recipes));
+    baseProcessed = [...allProcessed]; // 원본 백업 (시즌 제거 시 복원용)
+    updateStats();
+    applyFilters();
+}
+
+// ── 레시피 계산 ──
+function processRecipe(item, recipes) {
+    // 재료 집계
+    const ingCount = {};
+    for (const ing of item.ingredients) {
+        ingCount[ing] = (ingCount[ing] || 0) + 1;
+    }
+
+    // 재료비 합산
+    let baseCost = 0;
+    const ingDetails = [];
+    for (const [name, count] of Object.entries(ingCount)) {
+        const info = costMap[name] || { cost: 0, type: 'unknown' };
+        baseCost += info.cost * count;
+        ingDetails.push({ name, count, cost: info.cost * count, type: info.type });
+    }
+
+    return {
+        ...item,
+        ingDetails,
+        baseCost,
+        ingCount,
+    };
+}
+
+// ── 등급 적용 계산 ──
+function calcForGrade(r, grade) {
+    const gMul = recipeData.gradeMultipliers[String(grade)] || 1;
+    const sMul = recipeData.staminaMultipliers[String(grade)] || 1;
+    const price   = Math.round(r.price * gMul);
+    const stamina = Math.round(r.stamina * sMul);
+    const profit  = price - r.baseCost;
+    const roi     = r.baseCost > 0 ? ((profit / r.baseCost) * 100) : 0;
+    const goldPerStam = stamina > 0 ? (price / stamina) : 0;
+    return { price, stamina, profit, roi, goldPerStam, baseCost: r.baseCost };
+}
+
+// ── 효율 등급 ──
+function getEfficiencyBadge(roi) {
+    if (roi >= 200)  return { cls: 'badge-excellent', label: '🌟 매우 우수' };
+    if (roi >= 100)  return { cls: 'badge-good',      label: '✨ 우수' };
+    if (roi >= 0)    return { cls: 'badge-normal',    label: '보통' };
+    return              { cls: 'badge-low',       label: '⚠️ 손실' };
+}
+
+// ── 등급 설정 ──
+function setGrade(g) {
+    currentGrade = g;
+    document.querySelectorAll('.grade-btn').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.grade) === g);
+    });
+    updateStats();
+    applyFilters();
+}
+
+// ── 뷰 설정 ──
+function setView(v) {
+    currentView = v;
+    document.getElementById('btnCard').classList.toggle('active', v === 'card');
+    document.getElementById('btnTable').classList.toggle('active', v === 'table');
+    applyFilters();
+}
+
+// ── 통계 업데이트 ──
+function updateStats() {
+    if (!allProcessed.length) return;
+    const calced = allProcessed.map(r => ({ ...r, ...calcForGrade(r, currentGrade) }));
+
+    document.getElementById('statTotal').textContent = calced.length;
+
+    const bestProfit = calced.reduce((a, b) => a.profit > b.profit ? a : b);
+    document.getElementById('statBestProfit').textContent = bestProfit.name;
+
+    const bestROI = calced.reduce((a, b) => a.roi > b.roi ? a : b);
+    document.getElementById('statBestROI').textContent = bestROI.name;
+
+    const bestStam = calced.reduce((a, b) => a.goldPerStam > b.goldPerStam ? a : b);
+    document.getElementById('statBestStam').textContent = bestStam.name;
+
+    const maxPrice = Math.max(...calced.map(r => r.price));
+    document.getElementById('statGradePrice').textContent = maxPrice.toLocaleString() + 'G';
+}
+
+// ── 필터 & 렌더 ──
+function applyFilters() {
+    if (!allProcessed.length) return;
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    sortKey      = document.getElementById('sortSelect').value;
+
+    let list = allProcessed.filter(r => {
+        if (!query) return true;
+        if (r.name.toLowerCase().includes(query)) return true;
+        return Object.keys(r.ingCount).some(n => n.toLowerCase().includes(query));
+    });
+
+    // 등급 계산 추가
+    list = list.map(r => ({ ...r, ...calcForGrade(r, currentGrade) }));
+
+    // 정렬
+    const [field, dir] = sortKey.split('-');
+    list.sort((a, b) => {
+        let va, vb;
+        if (field === 'profit')   { va = a.profit;       vb = b.profit; }
+        else if (field === 'roi') { va = a.roi;           vb = b.roi; }
+        else if (field === 'price')    { va = a.price;        vb = b.price; }
+        else if (field === 'stamGold') { va = a.goldPerStam;  vb = b.goldPerStam; }
+        else if (field === 'stamina')  { va = a.stamina;       vb = b.stamina; }
+        else if (field === 'name')     { return dir === 'asc' ? a.name.localeCompare(b.name, 'ko') : b.name.localeCompare(a.name, 'ko'); }
+        else { va = 0; vb = 0; }
+        return dir === 'asc' ? va - vb : vb - va;
+    });
+
+    // 최대값 (바 그래프 계산용)
+    const maxROI    = Math.max(...list.map(r => r.roi), 1);
+    const maxGPS    = Math.max(...list.map(r => r.goldPerStam), 1);
+
+    const area = document.getElementById('resultArea');
+    if (!list.length) {
+        area.innerHTML = '<div class="empty-state">😢 검색 결과가 없어요</div>';
+        return;
+    }
+
+    if (currentView === 'card') {
+        renderCards(list, area, maxROI, maxGPS);
+    } else {
+        renderTable(list, area);
+    }
+}
+
+// ── 카드 렌더 ──
+function renderCards(list, area, maxROI, maxGPS) {
+    const html = `
+        <div class="recipes-grid">
+            ${list.map(r => renderCard(r, maxROI, maxGPS)).join('')}
+        </div>`;
+    area.innerHTML = html;
+}
+
+function renderCard(r, maxROI, maxGPS) {
+    const badge    = getEfficiencyBadge(r.roi);
+    const profitCls = r.profit >= 0 ? 'profit-pos' : 'profit-neg';
+    const roiPct   = Math.max(0, Math.min(100, (r.roi / maxROI) * 100));
+    const gpsPct   = Math.max(0, Math.min(100, (r.goldPerStam / maxGPS) * 100));
+
+    const ingHTML = r.ingDetails.map(ing => {
+        const typeCls = ing.type === 'recipe' ? 'recipe' :
+                        ing.type === 'crop'   ? 'crop'   :
+                        ing.type === 'gather' ? 'gather' :
+                        ing.type === 'shop'   ? 'shop'   : 'fish';
+        const label = ing.count > 1 ? `${ing.name} ×${ing.count}` : ing.name;
+        return `<span class="ingredient-tag ${typeCls}">${label}</span>`;
+    }).join('');
+
+    // 음식 이미지 경로 생성 (이미지 키가 있을 때만)
+    const imgHTML = r.image
+        ? `<div class="food-img-wrap">
+               <img class="food-img"
+                    src="../../../public/images/food_img/${r.image}.webp"
+                    alt="${r.name}"
+                    onerror="this.parentElement.style.display='none'">
+           </div>`
+        : '';
+
+    // 시즌 배지 - 시즌명에 따라 이모지 자동 선택
+    const SEASON_EMOJI_MAP = { '빙설': '❄️', '꿈의 명암': '🌙' };
+    const seasonEmoji = (r.season && SEASON_EMOJI_MAP[r.season]) ? SEASON_EMOJI_MAP[r.season] : '🗓️';
+    const seasonTag = r.season ? `<span class="season-tag">${seasonEmoji} ${r.season}</span>` : '';
+
+    // 버프: 값이 있으면 "버프이름 + 등급수" 형식으로 표시 (예: 활력 충만1, 활력 충만5)
+    const buffHTML = r.buff
+        ? `<div class="buff-row"><span class="buff-tag">✨ ${r.buff}${currentGrade}</span></div>`
+        : '';
+
+    return `
+    <div class="recipe-card">
+        <div class="recipe-card-header">
+            ${imgHTML}
+            <div class="recipe-card-header-info">
+                <span class="recipe-name">${r.name}${seasonTag}</span>
+                <span class="recipe-efficiency-badge ${badge.cls}">${badge.label}</span>
+            </div>
+        </div>
+        ${buffHTML}
+        <div class="ingredients-list">${ingHTML}</div>
+        <div class="metrics-grid">
+            <div class="metric">
+                <div class="metric-label">💰 판매가 (${currentGrade}등급)</div>
+                <div class="metric-value highlight">${r.price.toLocaleString()} G</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">🧺 재료비</div>
+                <div class="metric-value">${r.baseCost.toLocaleString()} G</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">📈 순이익</div>
+                <div class="metric-value ${profitCls}">${r.profit >= 0 ? '+' : ''}${r.profit.toLocaleString()} G</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">⚡ 체력</div>
+                <div class="metric-value">${r.stamina}</div>
+            </div>
+        </div>
+        <div class="metric-bar-wrap">
+            <div class="metric-bar-label">
+                <span>수익률 (ROI)</span>
+                <span>${r.roi.toFixed(0)}%</span>
+            </div>
+            <div class="metric-bar">
+                <div class="metric-bar-fill bar-roi" style="width:${roiPct}%"></div>
+            </div>
+        </div>
+        <div class="metric-bar-wrap" style="margin-top:6px">
+            <div class="metric-bar-label">
+                <span>골드/체력</span>
+                <span>${r.goldPerStam.toFixed(1)}</span>
+            </div>
+            <div class="metric-bar">
+                <div class="metric-bar-fill bar-stam" style="width:${gpsPct}%"></div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ── 테이블 렌더 ──
+function renderTable(list, area) {
+    const rows = list.map(r => {
+        const badge    = getEfficiencyBadge(r.roi);
+        const profitCls = r.profit >= 0 ? 'pos' : 'neg';
+        const ingStr = r.ingDetails.map(i => i.count > 1 ? `${i.name}×${i.count}` : i.name).join(', ');
+
+        // 테이블용 소형 이미지 (이미지 키가 있을 때만)
+        const imgSmHTML = r.image
+            ? `<img class="food-img-sm"
+                    src="../../../public/images/food_img/${r.image}.webp"
+                    alt="${r.name}"
+                    onerror="this.style.display='none'">`
+            : '';
+
+        // 시즌 배지 - 시즌명에 따라 이모지 자동 선택
+        const SEASON_EMOJI_MAP_TBL = { '빙설': '❄️', '꿈의 명암': '🌙' };
+        const seasonEmojiTbl = (r.season && SEASON_EMOJI_MAP_TBL[r.season]) ? SEASON_EMOJI_MAP_TBL[r.season] : '🗓️';
+        const seasonTagTbl = r.season ? `<span class="season-tag">${seasonEmojiTbl} ${r.season}</span>` : '';
+
+        // 버프: 값이 있으면 "버프이름 + 등급수" 형식 (예: 활력 충만1)
+        const buffCellHTML = r.buff
+            ? `<span class="buff-tag">✨ ${r.buff}${currentGrade}</span>`
+            : `<span style="color:var(--color-text-muted)">-</span>`;
+
+        return `
+        <tr>
+            <td>${imgSmHTML}${r.name}${seasonTagTbl}</td>
+            <td style="font-size:0.8rem;color:var(--color-text-soft)">${ingStr}</td>
+            <td style="font-weight:700;color:var(--color-primary)">${r.price.toLocaleString()} G</td>
+            <td>${r.baseCost.toLocaleString()} G</td>
+            <td class="profit-cell ${profitCls}">${r.profit >= 0 ? '+' : ''}${r.profit.toLocaleString()} G</td>
+            <td>${r.roi.toFixed(0)}%</td>
+            <td>${r.stamina}</td>
+            <td>${r.goldPerStam.toFixed(1)}</td>
+            <td class="buff-cell">${buffCellHTML}</td>
+            <td><span class="table-badge ${badge.cls}">${badge.label}</span></td>
+        </tr>`;
+    }).join('');
+
+    area.innerHTML = `
+    <div class="table-wrap">
+        <table class="recipe-table">
+            <thead>
+                <tr>
+                    <th onclick="setSort('name')">레시피명</th>
+                    <th>재료</th>
+                    <th onclick="setSort('price')">판매가 (${currentGrade}등급)</th>
+                    <th onclick="setSort('baseCost')">재료비</th>
+                    <th onclick="setSort('profit')">순이익</th>
+                    <th onclick="setSort('roi')">수익률 ROI</th>
+                    <th onclick="setSort('stamina')">체력</th>
+                    <th onclick="setSort('stamGold')">골드/체력</th>
+                    <th>버프</th>
+                    <th>효율 등급</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`;
+}
+
+// ── 시즌 설정 테이블 ──
+// 새 시즌 추가 시 이 객체에 항목만 추가하면 됩니다.
+// label: 사용자에게 표시되는 이름 / jsonPath: JSON 파일 경로 / emoji: 표시 이모지
+// btnAdd / btnRemove: 버튼 element id
+const SEASON_CONFIG = {
+    ice: {
+        label:    '빙설 시즌',
+        emoji:    '❄️',
+        jsonPath: '../../data/season_ice/season_ice_recipes.json',
+        btnAdd:    'btnIceAdd',
+        btnRemove: 'btnIceRemove',
+    },
+    dreamlight: {
+        label:    '꿈의 명암 시즌',
+        emoji:    '🌙',
+        jsonPath: '../../data/season_dreamlight/season_dreamlight_recipes.json',
+        btnAdd:    'btnDreamlightAdd',
+        btnRemove: 'btnDreamlightRemove',
+    },
+};
+
+// ── 시즌 데이터 추가 ──
+// season: 'ice' | 'dreamlight' (SEASON_CONFIG 의 키)
+async function loadSeasonData(season) {
+    const cfg = SEASON_CONFIG[season];
+    if (!cfg) { console.error('알 수 없는 시즌:', season); return; }
+    if (seasonLoaded[season]) {
+        alert(`이미 ${cfg.label} 데이터가 추가되어 있습니다.`);
+        return;
+    }
+
+    try {
+        const res = await fetch(cfg.jsonPath);
+        if (!res.ok) throw new Error(`${cfg.jsonPath} 파일을 찾을 수 없습니다.`);
+
+        const json = await res.json();
+
+        // 시즌 레시피를 costMap에 등록 (다른 시즌 레시피가 재료로 쓰일 때 대비)
+        // gradeMultipliers 키가 '1.0' 형태일 수 있으므로 둘 다 시도
+        const grade1Mul = json.gradeMultipliers?.['1'] ?? json.gradeMultipliers?.['1.0'] ?? 1;
+        for (const item of json.items) {
+            costMap[item.name] = { cost: item.price * grade1Mul, type: 'recipe' };
+        }
+
+        // 시즌 아이템 처리 후 기존 목록과 병합 (이름 중복 제거)
+        const seasonProcessed = json.items.map(item => processRecipe(item, json));
+        const combined = [...allProcessed, ...seasonProcessed];
+        allProcessed = combined.filter((item, idx, self) =>
+            idx === self.findIndex(r => r.name === item.name)
+        );
+
+        seasonLoaded[season] = true;
+        // 버튼 상태 업데이트
+        document.getElementById(cfg.btnAdd).disabled    = true;
+        document.getElementById(cfg.btnRemove).disabled = false;
+
+        updateStats();
+        applyFilters();
+        alert(`${cfg.emoji} ${cfg.label} 레시피 ${seasonProcessed.length}종이 추가되었습니다. (총 ${allProcessed.length}종)`);
+    } catch (err) {
+        console.error('시즌 데이터 로드 오류:', err);
+        alert(`시즌 데이터를 불러오지 못했습니다.\n${err.message}`);
+    }
+}
+
+// ── 시즌 데이터 제거 ──
+// season: 'ice' | 'dreamlight'  (특정 시즌만 제거)
+// 인자 없이 호출하면 모든 시즌 제거
+function removeSeasonData(season) {
+    // 특정 시즌 제거
+    if (season) {
+        const cfg = SEASON_CONFIG[season];
+        if (!cfg) return;
+        if (!seasonLoaded[season]) { alert(`제거할 ${cfg.label} 데이터가 없습니다.`); return; }
+
+        // 해당 시즌의 아이템을 allProcessed 에서 제거
+        // special 필드로 시즌 레시피를 식별 (csv_to_json.py 에서 special 필드 설정됨)
+        allProcessed = allProcessed.filter(r => {
+            const specialVal = r.special;
+            if (season === 'ice')        return specialVal !== '빙설' && specialVal !== '빙설 시즌';
+            if (season === 'dreamlight') return specialVal !== '꿈의 명암';
+            return true;
+        });
+
+        seasonLoaded[season] = false;
+        document.getElementById(cfg.btnAdd).disabled    = false;
+        document.getElementById(cfg.btnRemove).disabled = true;
+
+        updateStats();
+        applyFilters();
+        alert(`${cfg.emoji} ${cfg.label} 데이터가 제거되었습니다.`);
+        return;
+    }
+
+    // 인자 없이 호출 시 전체 제거 (이전 버전 호환)
+    allProcessed = [...baseProcessed];
+    for (const key of Object.keys(seasonLoaded)) {
+        seasonLoaded[key] = false;
+        const cfg = SEASON_CONFIG[key];
+        if (cfg) {
+            document.getElementById(cfg.btnAdd).disabled    = false;
+            document.getElementById(cfg.btnRemove).disabled = true;
+        }
+    }
+    updateStats();
+    applyFilters();
+    alert('모든 시즌 데이터가 제거되었습니다.');
+}
+
+function setSort(field) {
+    const sel = document.getElementById('sortSelect');
+    const currentField = sortKey.split('-')[0];
+    const currentDir   = sortKey.split('-')[1];
+    const newDir = (currentField === field && currentDir === 'desc') ? 'asc' : 'desc';
+    sel.value = `${field}-${newDir}`;
+    applyFilters();
+}
+
+// ── 실행 ──
+loadAll().catch(console.error);
+</script>
+</body>
+</html>

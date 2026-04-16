@@ -26,6 +26,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // 1-1. 이미지 모드 토글 라디오 버튼 처리
+    document.addEventListener('change', function(e) {
+        if (e.target.name === 'imageMode') {
+            const uploadWrapper = e.target.closest('form').querySelector('.img-upload-wrapper');
+            const fileInput = uploadWrapper.querySelector('.img-file-input');
+            const existingImgInput = uploadWrapper.querySelector('input[name="existingImageUrl"]');
+            const preview = uploadWrapper.querySelector('.img-preview');
+            
+            if (e.target.value === 'DEFAULT') {
+                uploadWrapper.style.display = 'none';
+                fileInput.value = ''; // 첨부된 파일 무효화
+                // 미리보기도 숨김
+                if (preview) preview.style.display = 'none';
+            } else {
+                uploadWrapper.style.display = 'block';
+                // 기존 이미지가 있으면 다시 보여줌
+                if (existingImgInput && existingImgInput.value && existingImgInput.value.startsWith('/uploads/')) {
+                    if (preview && preview.querySelector('img')) {
+                        preview.querySelector('img').src = existingImgInput.value;
+                        preview.style.display = 'block';
+                    }
+                }
+            }
+        }
+    });
+
     // ================================================================
     // 2. 수정 모달 데이터 채우기
     //    수정 버튼 클릭 시 data-* 속성을 읽어 모달 폼에 채움
@@ -64,18 +90,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 기존 이미지 URL을 hidden 필드에 세팅 + 미리보기
+            // 기존 이미지 URL을 hidden 필드에 세팅 + 미리보기 및 모드 설정
             const existingImgInput = form.querySelector('input[name="existingImageUrl"]');
             if (existingImgInput && data.imageUrl) {
                 existingImgInput.value = data.imageUrl;
             }
+            
             const preview = form.querySelector('.img-preview');
             const previewImg = preview?.querySelector('img');
-            if (previewImg && data.imageUrl) {
-                previewImg.src = data.imageUrl;
-                preview.style.display = 'block';
-            } else if (preview) {
-                preview.style.display = 'none';
+            const uploadWrapper = form.querySelector('.img-upload-wrapper');
+            const radioDefault = form.querySelector('input[name="imageMode"][value="DEFAULT"]');
+            const radioUpload = form.querySelector('input[name="imageMode"][value="UPLOAD"]');
+
+            if (data.imageUrl && data.imageUrl.startsWith('/uploads/')) {
+                // 업로드된 이미지인 경우
+                if (radioUpload) {
+                    radioUpload.checked = true;
+                    if (uploadWrapper) uploadWrapper.style.display = 'block';
+                }
+                if (previewImg) {
+                    previewImg.src = data.imageUrl;
+                    if (preview) preview.style.display = 'block';
+                }
+            } else {
+                // 기본 이미지이거나 없는 경우
+                if (radioDefault) {
+                    radioDefault.checked = true;
+                    if (uploadWrapper) uploadWrapper.style.display = 'none';
+                }
+                if (preview) preview.style.display = 'none';
             }
 
             // Bootstrap 모달 열기
@@ -116,9 +159,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // existingImageUrl 비우기
             const existingImgInput = form.querySelector('input[name="existingImageUrl"]');
             if (existingImgInput) existingImgInput.value = '';
-            // 미리보기 숨기기
+            // 라디오 초기화
+            const radioDefault = form.querySelector('input[name="imageMode"][value="DEFAULT"]');
+            if (radioDefault) radioDefault.checked = true;
+            // 미리보기 숨기고 업로드 폼 숨기기
             const preview = form.querySelector('.img-preview');
             if (preview) preview.style.display = 'none';
+            const uploadWrapper = form.querySelector('.img-upload-wrapper');
+            if (uploadWrapper) uploadWrapper.style.display = 'none';
         });
     });
 
