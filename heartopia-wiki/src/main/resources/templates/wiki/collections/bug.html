@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=1.7" defer></script>
+    <script src="/js/wiki-filter.js?v=1.8" defer></script>
     <script src="/js/admin-data.js" defer></script>
 </head>
 
@@ -325,7 +325,21 @@
                     <div class="col-md-6"><label class="form-label fw-bold">날씨</label><input type="text" name="weather" class="form-control" placeholder="상시"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">시간</label><input type="text" name="time" class="form-control" placeholder="상시"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
-                    <div class="col-md-8"><label class="form-label fw-bold">이미지</label><div class="img-upload-wrapper"><input type="file" name="imageFile" class="form-control img-file-input" accept="image/*"><input type="hidden" name="existingImageUrl" /><div class="img-preview mt-2" style="display:none;"><img src="" alt="미리보기" style="max-height:80px;object-fit:contain;border-radius:8px;"></div></div></div>
+                    <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
+                        <div class="mb-2">
+                            <label class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="imageMode" value="DEFAULT" checked> 기본 이미지
+                            </label>
+                            <label class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="imageMode" value="UPLOAD"> 직접 업로드
+                            </label>
+                        </div>
+                        <div class="img-upload-wrapper" style="display:none;">
+                            <input type="file" name="imageFile" class="form-control img-file-input" accept="image/*">
+                            <input type="hidden" name="existingImageUrl" />
+                            <div class="img-preview mt-2" style="display:none;"><img src="" alt="미리보기" style="max-height:80px;object-fit:contain;border-radius:8px;"></div>
+                        </div>
+                    </div>
                     <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
                 </div></div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button type="submit" class="btn btn-admin-submit text-white" style="background:var(--modal-header-bg);">추가하기</button></div>

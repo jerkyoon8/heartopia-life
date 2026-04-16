@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
@@ -273,22 +276,77 @@ public class AdminDataController {
 
     /**
      * 이미지 업로드 공통 처리
-     * - 새 파일이 올라오면: 업로드 → imageUrl 세팅, 기존 파일 삭제
-     * - 새 파일이 없으면: 기존 imageUrl 유지
+     * - imageMode 파라미터를 읽어 'DEFAULT'이면 기본 URL 생성 및 기존 파일 정리
+     * - 'UPLOAD'이면 새 파일 업로드 처리
      */
     private void handleImageUpload(Object entity, MultipartFile imageFile, String category, String existingImageUrl) throws IOException {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            // 기존 이미지 삭제 (업로드된 것만)
-            if (existingImageUrl != null && !existingImageUrl.isBlank()) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String imageMode = request.getParameter("imageMode");
+        
+        // Multipart 요청에서 파라미터가 누락된 경우 직접 Part를 읽어 수동으로 파라미터 추출
+        if (imageMode == null) {
+            try {
+                if (request.getContentType() != null && request.getContentType().startsWith("multipart/form-data")) {
+                    for (jakarta.servlet.http.Part part : request.getParts()) {
+                        if ("imageMode".equals(part.getName())) {
+                            imageMode = new String(part.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Multipart imageMode 파라미터 추출 실패", e);
+            }
+        }
+        
+        if (imageMode == null) imageMode = "DEFAULT";
+
+        if ("DEFAULT".equals(imageMode)) {
+            // 기존에 직접 업로드된 파일이 있었다면 서버 공간 확보를 위해 삭제
+            if (existingImageUrl != null && existingImageUrl.startsWith("/uploads/")) {
                 fileUploadService.delete(existingImageUrl);
             }
-            // 새 파일 업로드
-            String newImageUrl = fileUploadService.upload(imageFile, category);
-            setImageUrl(entity, newImageUrl);
-        } else if (existingImageUrl != null && !existingImageUrl.isBlank()) {
-            // 파일 업로드 안 했으면 기존 이미지 URL 유지
-            setImageUrl(entity, existingImageUrl);
+            // 이름 기반 기본 URL 생성
+            String itemName = getEntityName(entity);
+            String defaultUrl = generateDefaultImageUrl(category, itemName);
+            setImageUrl(entity, defaultUrl);
+        } else {
+            // UPLOAD 모드
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // 기존 이미지 삭제 (업로드된 것만)
+                if (existingImageUrl != null && existingImageUrl.startsWith("/uploads/")) {
+                    fileUploadService.delete(existingImageUrl);
+                }
+                // 새 파일 업로드
+                String newImageUrl = fileUploadService.upload(imageFile, category);
+                setImageUrl(entity, newImageUrl);
+            } else if (existingImageUrl != null && !existingImageUrl.isBlank()) {
+                // 파일 업로드 안 했으면 기존 이미지 URL 유지
+                setImageUrl(entity, existingImageUrl);
+            }
         }
+    }
+
+    private String getEntityName(Object entity) {
+        if (entity instanceof FishCollection e) return e.getName();
+        else if (entity instanceof BugCollection e) return e.getName();
+        else if (entity instanceof BirdCollection e) return e.getName();
+        else if (entity instanceof AnimalCollection e) return e.getName();
+        else if (entity instanceof ForageableCollection e) return e.getName();
+        else if (entity instanceof CookingCollection e) return e.getName();
+        else if (entity instanceof FlowerCollection e) return e.getName();
+        else if (entity instanceof GardeningCollection e) return e.getName();
+        return "unknown";
+    }
+
+    private String generateDefaultImageUrl(String category, String itemName) {
+        if ("cook".equals(category) || "flower".equals(category) || "crop".equals(category)) {
+            return "/images/items/" + category + "/" + category + "_" + itemName + ".webp";
+        }
+        if ("forageable".equals(category) || "forage".equals(category)) {
+             return "/images/collections/forage/forage_" + itemName + ".webp";
+        }
+        return "/images/collections/" + category + "/" + category + "_" + itemName + ".webp";
     }
 
     /**

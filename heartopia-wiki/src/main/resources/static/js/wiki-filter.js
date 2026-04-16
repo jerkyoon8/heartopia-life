@@ -331,7 +331,7 @@ class WikiFilter {
                         const iEnd = parseInt(match[3]) * 60 + (parseInt(match[4]) || 0);
                         const iCrossesMidnight = iEnd < iStart;
 
-                        const hasOverlap = (s1, e1, s2, e2) => Math.max(s1, s2) <= Math.min(e1, e2);
+                        const hasOverlap = (s1, e1, s2, e2) => Math.max(s1, s2) < Math.min(e1, e2);
 
                         const checkOverlap = (st1, en1, cross1, st2, en2, cross2) => {
                             const intervals1 = cross1 ? [[st1, 1440], [0, en1]] : [[st1, en1]];
