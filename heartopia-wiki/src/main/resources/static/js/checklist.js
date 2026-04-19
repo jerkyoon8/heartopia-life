@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isDragging = false;
     let dragMode = null;
     let isContinuousSelectionEnabled = false; // 기본값: 연속 선택 꺼짐
+    let touchFired = false; // 모바일 ghost click 방지 플래그
 
     const continuousBtn = document.getElementById('continuousBtn');
     if (continuousBtn) {
@@ -143,8 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         itemEl.style.userSelect = 'none';
 
         // 1) 마우스 누를 때 (이름, 체크박스 영역 공통)
+        //    touchFired 플래그가 켜져 있으면 모바일 ghost click이므로 무시
         itemEl.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.star-icon') || e.button !== 0) return; // 별 혹은 좌클릭 아닐 시 무시
+            if (touchFired) return; // 터치 직후 발사된 가짜 mousedown 차단
+            if (e.target.closest('.star-icon') || e.button !== 0) return;
             isDragging = true;
             dragMode = itemEl.classList.contains('checked') ? 'uncheck' : 'check';
             setItemStatus(itemEl, dragMode);
@@ -160,6 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3) 모바일 터치 시작 (이름, 빈칸 공용)
         itemEl.addEventListener('touchstart', (e) => {
             if (e.target.closest('.star-icon')) return;
+            // ghost click 방지: 터치 직후 400ms 동안 mousedown 무시
+            touchFired = true;
+            clearTimeout(itemEl._touchTimer);
+            itemEl._touchTimer = setTimeout(() => { touchFired = false; }, 400);
             isDragging = true;
             dragMode = itemEl.classList.contains('checked') ? 'uncheck' : 'check';
             setItemStatus(itemEl, dragMode);
