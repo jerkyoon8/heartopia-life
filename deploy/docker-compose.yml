@@ -11,6 +11,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/heartopia_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     volumes:
       - ./logs/blue:/app/logs     # 로그 충돌 방지
       - ./uploads:/app/uploads   # 업로드 이미지 영속화 (공유)
@@ -28,6 +30,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/heartopia_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     volumes:
       - ./logs/green:/app/logs   # 로그 충돌 방지
       - ./uploads:/app/uploads

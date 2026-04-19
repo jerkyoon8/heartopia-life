@@ -323,8 +323,8 @@
                             </a>
                         </div>
                         <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
-                            <span style="font-family: 'Paperlogy', sans-serif; font-size: 14px; color: var(--text-color, #333); display: none; @media (min-width: 768px) { display: inline; }">
-                                <span sec:authentication="name" style="font-weight: 700;">방문자</span>님
+                            <span class="header-username-label" style="font-family: 'Paperlogy', sans-serif; font-size: 14px; color: var(--text-color, #333);">
+                                <span sec:authentication="name" style="font-weight: 700;"></span>님
                             </span>
                             <form th:action="@{/wiki/admin/logout}" method="post" class="m-0 p-0">
                                 <button type="submit" class="btn btn-outline-secondary btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">

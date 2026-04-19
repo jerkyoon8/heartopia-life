@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.UserMapper">
+
+    <select id="findByProviderAndProviderId" resultType="com.heartopia.wiki.model.User">
+        SELECT * FROM users
+        WHERE provider = #{provider} AND provider_id = #{providerId}
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (provider, provider_id, email, nickname, role, created_at)
+        VALUES (#{provider}, #{providerId}, #{email}, #{nickname}, #{role}, NOW())
+    </insert>
+
+    <update id="updateUser">
+        UPDATE users
+        SET email = #{email}, nickname = #{nickname}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

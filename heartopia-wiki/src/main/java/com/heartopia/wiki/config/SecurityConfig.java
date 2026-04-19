@@ -12,10 +12,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import com.heartopia.wiki.service.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,19 +45,29 @@ public class SecurityConfig {
                         // 관리자 페이지는 ADMIN만 가능
                         .requestMatchers("/wiki/admin/**").hasRole("ADMIN")
 
+                        // 로그인/개인정보처리방침/OAuth2는 비로그인 포함 모두 허용
+                        .requestMatchers("/wiki/login", "/wiki/privacy", "/oauth2/**", "/login/oauth2/**").permitAll()
+
                         // 나머지는 모두 허용 (정적 리소스 포함)
                         .anyRequest().permitAll())
                 .formLogin(form -> form
                         .loginPage("/wiki/admin/login")
                         .loginProcessingUrl("/wiki/admin/login")
-                        .defaultSuccessUrl("/wiki/admin/reports", true)
+                        .defaultSuccessUrl("/wiki", true)
                         .permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/wiki/login")
+                        .defaultSuccessUrl("/wiki", true)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/wiki/admin/logout"))
                         .logoutSuccessUrl("/wiki")
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
-                        .permitAll());
+                        .permitAll())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

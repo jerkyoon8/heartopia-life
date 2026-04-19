@@ -87,6 +87,22 @@ public class ReportController {
     }
 
     /**
+     * 일반 사용자 소셜 로그인 페이지를 보여줍니다.
+     */
+    @GetMapping("/login")
+    public String showLogin() {
+        return "wiki/login";
+    }
+
+    /**
+     * 개인정보 처리방침 페이지를 보여줍니다.
+     */
+    @GetMapping("/privacy")
+    public String showPrivacy() {
+        return "wiki/privacy";
+    }
+
+    /**
      * 관리자 전용 제보 내역 조회 페이지를 보여줍니다.
      * 
      * @param model   뷰에 전달할 데이터

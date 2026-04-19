@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        body {
+            background-color: var(--bg-color, #fdfaf8);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg, #ffffff);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(77, 52, 46, 0.08);
+            text-align: center;
+        }
+
+        .login-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: 'Paperlogy', sans-serif;
+            color: var(--text-color, #4D342E);
+            margin-bottom: 15px;
+        }
+
+        .login-desc {
+            color: var(--text-secondary, #8D7A75);
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background: #ffffff;
+            color: #3c4043;
+            padding: 14px;
+            border-radius: 15px;
+            border: 1px solid #dadce0;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .google-btn i {
+            margin-right: 12px;
+            color: #DB4437;
+            font-size: 1.2rem;
+        }
+        
+        .return-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--text-muted, #999);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .return-link:hover {
+            color: var(--text-color, #555);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="login-icon">
+            <i class="fas fa-seedling" style="color: #4CAF50;"></i>
+        </div>
+        <h1 class="login-title">하토피아 위키 로그인</h1>
+        <p class="login-desc">소셜 계정으로 3초만에 로그인하고<br>나만의 지도 핀을 남겨보세요!</p>
+
+        <!-- 일반 유저 소셜 로그인 구역 -->
+        <a href="/oauth2/authorization/google" class="google-btn">
+            <i class="fab fa-google"></i> 구글 계정으로 계속하기
+        </a>
+        
+        <a th:href="@{/wiki}" class="return-link"><i class="fas fa-arrow-left"></i> 홈으로 돌아가기</a>
+    </div>
+</body>
+
+</html>

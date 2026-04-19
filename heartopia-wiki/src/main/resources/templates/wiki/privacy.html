@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보 처리방침 | 하토피아 위키</title>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+</head>
+<body style="background-color: var(--bg-color);">
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+    
+    <div class="container" style="margin-top: 100px; max-width: 800px; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+        <h2 style="font-family: 'Paperlogy', sans-serif; font-weight: 700; margin-bottom: 20px; color: #4D342E;">개인정보 처리방침</h2>
+        
+        <p style="color: #666; line-height: 1.6;">하토피아 게임 위키("본 사이트")는 사용자 분들의 개인정보 보호를 중요하게 생각하며, 소셜 로그인 연동 시 다음과 같이 정보를 관리합니다.</p>
+        
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+        
+        <h4 style="font-family: 'Paperlogy', sans-serif; font-weight: 700; margin-top: 30px;">1. 수집하는 개인정보 항목</h4>
+        <ul style="color: #666; line-height: 1.8;">
+            <li>구글 계정 이메일 (회원 식별)</li>
+            <li>프로필 고유 식별자 (ID)</li>
+            <li>별명 (사이트 내 표시명)</li>
+        </ul>
+        <div class="alert alert-info" style="font-size: 0.9rem;">
+            비밀번호 등 민감한 정보는 구글에서 직접 관리하며 본 사이트에 수집되거나 저장되지 않습니다.
+        </div>
+
+        <h4 style="font-family: 'Paperlogy', sans-serif; font-weight: 700; margin-top: 30px;">2. 개인정보 수집 및 이용 목적</h4>
+        <ul style="color: #666; line-height: 1.8;">
+            <li>커뮤니티 및 지도 커스텀 핀 기능 제공을 위한 본인 확인</li>
+            <li>서비스 부정 이용 방지 (스팸, 도배 등 방어)</li>
+        </ul>
+
+        <h4 style="font-family: 'Paperlogy', sans-serif; font-weight: 700; margin-top: 30px;">3. 보관 기간 및 파기</h4>
+        <p style="color: #666; line-height: 1.6;">본 사이트는 회원 탈퇴를 요청하거나 사이트 운영이 종료될 경우, 또는 1년 이상 로그인 기록이 없는 경우 수집된 개인정보를 지체 없이 영구 파기합니다.</p>
+
+        <div style="margin-top: 50px; text-align: center;">
+            <a th:href="@{/wiki}" class="btn btn-primary" style="font-family: 'Paperlogy', sans-serif; border-radius: 25px; padding: 10px 30px;">뒤로 가기</a>
+        </div>
+    </div>
+</body>
+</html>
