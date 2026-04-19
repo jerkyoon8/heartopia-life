@@ -13,6 +13,10 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      # Spring Boot가 직접 읽는 OAuth2 속성명 (application-secret.properties 없이도 동작)
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_SCOPE=profile,email
     volumes:
       - ./logs/blue:/app/logs     # 로그 충돌 방지
       - ./uploads:/app/uploads   # 업로드 이미지 영속화 (공유)
@@ -32,6 +36,10 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      # Spring Boot가 직접 읽는 OAuth2 속성명 (application-secret.properties 없이도 동작)
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_SCOPE=profile,email
     volumes:
       - ./logs/green:/app/logs   # 로그 충돌 방지
       - ./uploads:/app/uploads
