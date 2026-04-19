@@ -101,6 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 4. Events: Drag/Click and Stars --- //
     let isDragging = false;
     let dragMode = null;
+    let isContinuousSelectionEnabled = false; // 기본값: 연속 선택 꺼짐
+
+    const continuousBtn = document.getElementById('continuousBtn');
+    if (continuousBtn) {
+        continuousBtn.addEventListener('click', () => {
+            isContinuousSelectionEnabled = !isContinuousSelectionEnabled;
+            if (isContinuousSelectionEnabled) {
+                continuousBtn.innerHTML = '<i class="fas fa-hand-pointer"></i> 연속 선택: 켜짐';
+                continuousBtn.classList.add('active');
+            } else {
+                continuousBtn.innerHTML = '<i class="fas fa-mouse-pointer"></i> 연속 선택: 꺼짐';
+                continuousBtn.classList.remove('active');
+            }
+        });
+    }
 
     function setItemStatus(itemEl, mode) {
         const key = itemEl.getAttribute('data-key');
@@ -137,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2) 마우스로 드래그하며 진입할 때
         itemEl.addEventListener('mouseenter', () => {
-            if (isDragging && dragMode) {
+            if (isContinuousSelectionEnabled && isDragging && dragMode) {
                 setItemStatus(itemEl, dragMode);
             }
         });
@@ -189,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 모바일 드래그 중인 위치의 엘리먼트 감지 및 상태 변경
     window.addEventListener('touchmove', (e) => {
-        if (!isDragging || !dragMode) return;
+        if (!isContinuousSelectionEnabled || !isDragging || !dragMode) return;
         const touch = e.touches[0];
         const el = document.elementFromPoint(touch.clientX, touch.clientY);
         if (el) {
