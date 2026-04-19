@@ -316,7 +316,7 @@
                     </a>
 
                     <div class="header-actions">
-                        <!-- User Auth -->
+                        <!-- [로그인 기능 준비 중] 기능 완성 후 아래 주석 해제
                         <div sec:authorize="isAnonymous()">
                             <a th:href="@{/wiki/login}" class="btn btn-outline-primary btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 15px;">
                                 로그인
@@ -331,8 +331,19 @@
                                     로그아웃
                                 </button>
                             </form>
-                            <!-- 관리자만 보이는 버튼 -->
                             <a sec:authorize="hasRole('ADMIN')" th:href="@{/wiki/admin/reports}" class="btn btn-danger btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
+                                ADMIN
+                            </a>
+                        </div>
+                        -->
+                        <!-- 관리자 버튼은 항상 표시 -->
+                        <div sec:authorize="hasRole('ADMIN')" class="d-flex align-items-center gap-2">
+                            <form th:action="@{/wiki/admin/logout}" method="post" class="m-0 p-0">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
+                                    로그아웃
+                                </button>
+                            </form>
+                            <a th:href="@{/wiki/admin/reports}" class="btn btn-danger btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
                                 ADMIN
                             </a>
                         </div>
