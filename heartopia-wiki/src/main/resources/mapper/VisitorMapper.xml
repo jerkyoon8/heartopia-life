@@ -28,4 +28,11 @@
         WHERE visit_date >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
     </select>
 
+    <!-- Get today total -->
+    <select id="getTodayTotal" resultType="int">
+        SELECT COALESCE(SUM(visit_count), 0)
+        FROM visitor_stats
+        WHERE visit_date = CURDATE()
+    </select>
+
 </mapper>

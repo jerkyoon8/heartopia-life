@@ -26,4 +26,8 @@ public class VisitorService {
     public int getRecent48hVisitorCount() {
         return visitorMapper.getRecent48hTotal();
     }
+
+    public int getTodayVisitorCount() {
+        return visitorMapper.getTodayTotal();
+    }
 }

@@ -11,4 +11,6 @@ public interface VisitorMapper {
     int getTotalTotal();
 
     int getRecent48hTotal();
+
+    int getTodayTotal();
 }

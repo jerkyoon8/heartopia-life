@@ -40,7 +40,7 @@ public class GlobalControllerAdvice {
         model.addAttribute("canonicalUrl", baseUrl + uri);
 
         // Add visitor counts to every page
-        model.addAttribute("totalVisitors", visitorService.getTotalVisitorCount());
-        model.addAttribute("recent48hVisitors", visitorService.getRecent48hVisitorCount());
+        model.addAttribute("weeklyVisitors", visitorService.getWeeklyVisitorCount());
+        model.addAttribute("todayVisitors", visitorService.getTodayVisitorCount());
     }
 }

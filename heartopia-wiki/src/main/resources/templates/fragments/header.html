@@ -316,6 +316,27 @@
                     </a>
 
                     <div class="header-actions">
+                        <!-- User Auth -->
+                        <div sec:authorize="isAnonymous()">
+                            <a th:href="@{/wiki/login}" class="btn btn-outline-primary btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 15px;">
+                                로그인
+                            </a>
+                        </div>
+                        <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
+                            <span style="font-family: 'Paperlogy', sans-serif; font-size: 14px; color: var(--text-color, #333); display: none; @media (min-width: 768px) { display: inline; }">
+                                <span sec:authentication="name" style="font-weight: 700;">방문자</span>님
+                            </span>
+                            <form th:action="@{/wiki/admin/logout}" method="post" class="m-0 p-0">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
+                                    로그아웃
+                                </button>
+                            </form>
+                            <!-- 관리자만 보이는 버튼 -->
+                            <a sec:authorize="hasRole('ADMIN')" th:href="@{/wiki/admin/reports}" class="btn btn-danger btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
+                                ADMIN
+                            </a>
+                        </div>
+
                         <!-- Dark Mode Toggle -->
                         <button class="theme-toggle-btn" id="themeToggle" title="테마 변경">
                             <i class="fas fa-moon"></i>
@@ -341,20 +362,20 @@
                         </ul>
 
                         <!-- Visitor Counter (Icons only) -->
-                        <div class="visitor-counter" th:if="${totalVisitors != null}">
+                        <div class="visitor-counter" th:if="${weeklyVisitors != null}">
                             <div class="d-flex align-items-center gap-2">
-                                <div class="d-flex align-items-center gap-1" title="전체 조회수">
+                                <div class="d-flex align-items-center gap-1" title="주간 조회수">
                                     <i class="fas fa-eye" style="color: #889;"></i>
                                     <span class="visitor-count-num"
-                                        th:text="${#numbers.formatInteger(totalVisitors, 0, 'COMMA')}">1,234</span>
+                                        th:text="${#numbers.formatInteger(weeklyVisitors, 0, 'COMMA')}">1,234</span>
                                 </div>
                                 <div
                                     style="width: 1px; height: 10px; background-color: var(--border-subtle, #ddd); margin: 0 4px;">
                                 </div>
-                                <div class="d-flex align-items-center gap-1" title="48시간 조회수">
-                                    <i class="fas fa-bolt" style="color: #ffc107;"></i>
+                                <div class="d-flex align-items-center gap-1" title="오늘 조회수">
+                                    <i class="fas fa-fire" style="color: #ff6b6b;"></i>
                                     <span class="visitor-count-num"
-                                        th:text="${#numbers.formatInteger(recent48hVisitors, 0, 'COMMA')}">56</span>
+                                        th:text="${#numbers.formatInteger(todayVisitors, 0, 'COMMA')}">56</span>
                                 </div>
                             </div>
                         </div>
