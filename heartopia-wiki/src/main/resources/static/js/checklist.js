@@ -102,7 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let isDragging = false;
     let dragMode = null;
     let isContinuousSelectionEnabled = false; // 기본값: 연속 선택 꺼짐
-    let touchFired = false; // 모바일 ghost click 방지 플래그
+    let touchFired = false;   // 모바일 ghost click 방지 플래그
+    let touchStartX = 0;      // 터치 시작 X 좌표
+    let touchStartY = 0;      // 터치 시작 Y 좌표
+    let touchMoved = false;   // 스크롤 의도 감지 플래그
+    let pendingItem = null;   // 선택 보류 중인 아이템
 
     const continuousBtn = document.getElementById('continuousBtn');
     if (continuousBtn) {
@@ -160,16 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 3) 모바일 터치 시작 (이름, 빈칸 공용)
+        // 3) 모바일 터치 시작 → 좌표 기록만, 선택은 touchend에서 처리
         itemEl.addEventListener('touchstart', (e) => {
             if (e.target.closest('.star-icon')) return;
             // ghost click 방지: 터치 직후 400ms 동안 mousedown 무시
             touchFired = true;
             clearTimeout(itemEl._touchTimer);
             itemEl._touchTimer = setTimeout(() => { touchFired = false; }, 400);
+            // 시작 좌표 기록, 선택은 보류
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+            pendingItem = itemEl;
             isDragging = true;
             dragMode = itemEl.classList.contains('checked') ? 'uncheck' : 'check';
-            setItemStatus(itemEl, dragMode);
         }, {passive: true});
 
         // 4) 별점 클릭 세팅 (단독 지정)
@@ -209,22 +217,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 모바일 드래그 중인 위치의 엘리먼트 감지 및 상태 변경
+    // 모바일 이동 처리: 스크롤 의도 감지 + 연속 선택
     window.addEventListener('touchmove', (e) => {
-        if (!isContinuousSelectionEnabled || !isDragging || !dragMode) return;
+        if (!isDragging) return;
         const touch = e.touches[0];
-        const el = document.elementFromPoint(touch.clientX, touch.clientY);
-        if (el) {
-            const itemEl = el.closest('.collectible-item');
-            if (itemEl) {
-                setItemStatus(itemEl, dragMode);
+        const dx = Math.abs(touch.clientX - touchStartX);
+        const dy = Math.abs(touch.clientY - touchStartY);
+        // 10px 이상 움직이면 스크롤 의도 → 선택 후보 취소
+        if (dx > 10 || dy > 10) {
+            touchMoved = true;
+            pendingItem = null;
+        }
+        // 연속 선택 모드가 켜진 경우에만 드래그 선택 처리
+        if (isContinuousSelectionEnabled && dragMode) {
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (el) {
+                const targetItem = el.closest('.collectible-item');
+                if (targetItem) setItemStatus(targetItem, dragMode);
             }
         }
     }, {passive: true});
 
-    // 모바일 드래그 종료 (저장)
+    // 모바일 터치 종료: 스크롤이 아닌 경우에만 선택 처리
     window.addEventListener('touchend', () => {
         if (isDragging) {
+            if (pendingItem && !touchMoved) {
+                // 손가락이 거의 안 움직였다 → 탭(선택) 의도
+                setItemStatus(pendingItem, dragMode);
+            }
+            pendingItem = null;
+            touchMoved = false;
             isDragging = false;
             dragMode = null;
             updateProgressUI();
