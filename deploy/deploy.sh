@@ -49,9 +49,9 @@ sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$T
 cp /tmp/nginx.conf.tmp "$NGINX_CONF"
 rm -f /tmp/nginx.conf.tmp
 
-# 5. Nginx 재시작 (바인드 마운트 inode 갱신을 위해 restart 사용)
-docker compose -f ~/heartopia-life/deploy/docker-compose.yml restart nginx
-echo "Nginx restarted successfully!"
+# 5. Nginx graceful reload (기존 연결 유지하며 설정만 교체 → 무중단)
+docker exec deploy-nginx-1 nginx -s reload
+echo "Nginx reloaded successfully (zero-downtime)!"
 
 # 6. 기존 컨테이너 종료 (선택적)
 if [ "$CURRENT" != "$TARGET" ]; then
