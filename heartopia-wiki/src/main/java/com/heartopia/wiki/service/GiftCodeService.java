@@ -23,6 +23,10 @@ public class GiftCodeService {
         return giftCodeMapper.findAll();
     }
 
+    public java.time.LocalDateTime getLatestGiftCodeDate() {
+        return giftCodeMapper.getLatestGiftCodeDate();
+    }
+
     // 화면에 보여줄 때 활성/만료 코드를 구분해서 맵으로 리턴
     public Map<String, List<GiftCode>> getCodesGroupedByStatus() {
         List<GiftCode> allCodes = giftCodeMapper.findAll();

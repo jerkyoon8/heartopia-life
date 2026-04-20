@@ -36,6 +36,10 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="getLatestGiftCodeDate" resultType="java.time.LocalDateTime">
+        SELECT MAX(created_at) FROM gift_code
+    </select>
+
     <insert id="insertGiftCode" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO gift_code (code_name, rewards, status, expiration_date, created_at, updated_at)
         VALUES (#{codeName}, #{rewards}, #{status}, #{expirationDate}, NOW(), NOW())
