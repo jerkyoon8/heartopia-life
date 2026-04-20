@@ -245,11 +245,9 @@
             background: var(--card-bg, #fff);
             border: 1px solid var(--border-color, #f0f0f0);
             border-radius: 20px;
-            padding: 20px 15px;
-            /* Reduced padding */
+            padding: 16px 12px;
             width: 100%;
-            max-width: 240px;
-            /* Reduced from 320px */
+            max-width: 210px;
             text-align: center;
             text-decoration: none !important;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
@@ -266,17 +264,15 @@
         }
 
         .quick-card-icon {
-            width: 55px;
-            /* Reduced from 70px */
-            height: 55px;
+            width: 48px;
+            height: 48px;
             background: #f8f9fa;
-            border-radius: 16px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            /* Reduced from 32px */
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 12px;
             transition: transform 0.3s ease;
         }
 
@@ -285,36 +281,35 @@
         }
 
         .quick-card.coupon .quick-card-icon {
-            background: #fff1f2;
-            color: #f43f5e;
+            background: #fcf0f2;
+            color: #d16477;
         }
 
         .quick-card.map .quick-card-icon {
-            background: #f0fdf4;
-            color: #22c55e;
+            background: #f0fbf4;
+            color: #55b578;
         }
 
         .quick-card-title {
             font-family: 'Paperlogy', sans-serif;
             font-weight: 700;
-            font-size: 19px;
-            /* Reduced from 22px */
+            font-size: 17px;
             color: var(--text-color, #333);
             margin-bottom: 4px;
         }
 
         .quick-card.coupon .quick-card-title {
-            color: #e11d48;
+            color: #b5495e;
         }
 
         .quick-card.map .quick-card-title {
-            color: #16a34a;
+            color: #429f63;
         }
 
         .quick-card-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--stat-label, #888);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .quick-card-action {
@@ -324,16 +319,15 @@
         }
 
         .q-action-btn {
-            width: 38px;
-            /* Reduced from 45px */
-            height: 38px;
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #f1f5f9;
             color: #64748b;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.2s;
         }
 
@@ -341,11 +335,9 @@
             background: #6366f1;
             color: white;
             width: auto;
-            padding: 0 18px;
-            /* Reduced padding */
+            padding: 0 14px;
             font-weight: 600;
-            font-size: 13px;
-            /* Reduced font size */
+            font-size: 12px;
         }
 
         .quick-card.coupon .q-action-btn.primary {
@@ -752,8 +744,9 @@
                     <i class="fas fa-ticket-alt"></i>
                 </div>
                 <div class="quick-card-title">선물 코드</div>
-                <div class="quick-card-subtitle" style="font-weight: bold; animation: blinkRed 1.5s infinite;">
-                    🔥 신규 코드가 있습니다!
+                <div id="giftCodeSubtitle" class="quick-card-subtitle"
+                     th:data-latest-ts="${latestCodeTsRaw}">
+                    현재 신규 코드 없음
                 </div>
                 <div class="quick-card-action">
                     <div class="q-action-btn"><i class="fas fa-info-circle"></i></div>
@@ -1015,6 +1008,19 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const subtitle = document.getElementById('giftCodeSubtitle');
+            if (!subtitle) return;
+            const latestTs = subtitle.dataset.latestTs;
+            const lastCopiedAt = localStorage.getItem('lastCopiedAt') || '0';
+            if (latestTs && new Date(latestTs) > new Date(lastCopiedAt)) {
+                subtitle.textContent = '🔥 신규 코드가 있습니다!';
+                subtitle.style.fontWeight = 'bold';
+                subtitle.style.animation = 'blinkRed 1.5s infinite';
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

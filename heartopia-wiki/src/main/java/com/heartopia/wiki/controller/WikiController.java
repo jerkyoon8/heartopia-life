@@ -5,6 +5,7 @@ import com.heartopia.wiki.service.VillagerService;
 import com.heartopia.wiki.service.NoticeService;
 import com.heartopia.wiki.model.*;
 import com.heartopia.wiki.dto.wiki.*;
+import com.heartopia.wiki.service.GiftCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ public class WikiController {
         private final CollectionService collectionService;
         private final VillagerService villagerService;
         private final NoticeService noticeService;
+        private final GiftCodeService giftCodeService;
 
         @GetMapping
         public String index(Model model) {
@@ -64,6 +66,14 @@ public class WikiController {
                 model.addAttribute("basics", basics);
                 model.addAttribute("creative", creative);
                 model.addAttribute("others", others);
+
+                // 4. 최근 기프트코드 업데이트 일자 (SQL 단일 쿼리로 최적화)
+                java.time.LocalDateTime latestDate = giftCodeService.getLatestGiftCodeDate();
+                String lastCodeUpdate = latestDate != null
+                        ? latestDate.format(java.time.format.DateTimeFormatter.ofPattern("M월 d일 H시")) + " 업데이트"
+                        : "쿠폰 정보 없음";
+                model.addAttribute("lastCodeUpdate", lastCodeUpdate);
+                model.addAttribute("latestCodeTsRaw", latestDate != null ? latestDate.toString() : "");
 
                 // SEO: /wiki는 heartopia-life.me/의 redirect 대상이므로
                 // canonical을 루트(/)로 지정해 Google 중복 페이지 문제 방지
