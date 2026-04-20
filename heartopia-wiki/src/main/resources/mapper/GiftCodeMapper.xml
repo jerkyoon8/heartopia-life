@@ -5,7 +5,7 @@
 <mapper namespace="com.heartopia.wiki.mapper.GiftCodeMapper">
 
     <select id="findAll" resultType="com.heartopia.wiki.model.GiftCode">
-        SELECT 
+        SELECT
             id,
             code_name,
             rewards,
@@ -14,7 +14,7 @@
             created_at,
             updated_at
         FROM gift_code
-        ORDER BY 
+        ORDER BY
             CASE status
                 WHEN 'EXPIRED' THEN 2
                 ELSE 1
@@ -23,7 +23,7 @@
     </select>
 
     <select id="findByStatus" resultType="com.heartopia.wiki.model.GiftCode">
-        SELECT 
+        SELECT
             id,
             code_name,
             rewards,

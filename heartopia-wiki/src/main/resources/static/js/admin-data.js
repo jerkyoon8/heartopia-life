@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //    수정 버튼 클릭 시 data-* 속성을 읽어 모달 폼에 채움
     // ================================================================
     document.querySelectorAll('.btn-admin-edit').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
             const modalId = this.dataset.modalTarget;
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -80,13 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // 데이터 필드 채우기
             const data = JSON.parse(this.dataset.item || '{}');
             Object.keys(data).forEach(key => {
-                const input = form.querySelector(`[name="${key}"]`);
-                if (input) {
-                    if (input.type === 'checkbox') {
-                        input.checked = data[key];
-                    } else {
-                        input.value = data[key] != null ? data[key] : '';
-                    }
+                const checkbox = form.querySelector(`input[type="checkbox"][name="${key}"]`);
+                if (checkbox) {
+                    checkbox.checked = !!data[key];
+                } else {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) input.value = data[key] != null ? data[key] : '';
                 }
             });
 
@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.btn-admin-delete').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             const name = this.dataset.name || '이 항목';
             const deleteUrl = this.dataset.deleteUrl;
             const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
