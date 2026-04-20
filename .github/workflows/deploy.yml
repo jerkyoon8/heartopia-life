@@ -14,8 +14,9 @@ jobs:
       - name: Git 최신 코드 불러오기
         run: |
           cd ~/heartopia-life
-          # 스크립트에 의해 수정된 nginx.conf 파일 때문에 pull 충돌 방지
+          # 서버에서 직접 수정될 수 있는 deploy/ 파일들 충돌 방지
           git restore deploy/nginx/nginx.conf || true
+          git restore deploy/healthwatch.sh || true
           git pull origin main
           
       - name: 무중단(Blue-Green) 배포 스크립트 실행
