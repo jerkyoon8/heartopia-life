@@ -45,8 +45,8 @@ public class SecurityConfig {
                         // 관리자 페이지는 ADMIN만 가능
                         .requestMatchers("/wiki/admin/**").hasRole("ADMIN")
 
-                        // 로그인/개인정보처리방침/OAuth2는 비로그인 포함 모두 허용
-                        .requestMatchers("/wiki/login", "/wiki/privacy", "/oauth2/**", "/login/oauth2/**").permitAll()
+                        // 개인정보처리방침/OAuth2는 비로그인 포함 모두 허용
+                        .requestMatchers("/wiki/privacy", "/oauth2/**", "/login/oauth2/**").permitAll()
 
                         // 나머지는 모두 허용 (정적 리소스 포함)
                         .anyRequest().permitAll())
@@ -66,8 +66,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/wiki")
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
-                        .permitAll())
-                .csrf(csrf -> csrf.disable());
+                        .permitAll());
 
         return http.build();
     }
