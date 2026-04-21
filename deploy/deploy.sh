@@ -49,16 +49,12 @@ sed -E "s/proxy_pass http:\/\/app(-blue|-green|):8080/proxy_pass http:\/\/app-$T
 cp /tmp/nginx.conf.tmp "$NGINX_CONF"
 rm -f /tmp/nginx.conf.tmp
 
-# 5. Nginx 무중단 reload (restart 대신 reload → Nginx 프로세스 유지, 신규 요청 즉시 새 백엔드로)
-docker exec deploy-nginx-1 nginx -s reload
-echo "Nginx reloaded successfully!"
+# 5. Nginx 재시작 (Cloudflare가 앞단에서 brief restart를 투명하게 처리함)
+docker compose -f ~/heartopia-life/deploy/docker-compose.yml restart nginx
+echo "Nginx restarted successfully!"
 
-# 6. 기존 컨테이너 종료
-# nginx -s reload 후 Cloudflare keepalive 커넥션이 old worker에 최대 ~15초 남아있을 수 있음
-# 30초 대기하여 old worker가 완전히 drain된 뒤 종료 → 502 방지
+# 6. 기존 컨테이너 종료 (선택적)
 if [ "$CURRENT" != "$TARGET" ]; then
-    echo "Waiting 30s for existing connections to drain before stopping app-$CURRENT..."
-    sleep 30
     echo "Stopping previous container app-$CURRENT..."
     docker compose -f ~/heartopia-life/deploy/docker-compose.yml stop app-$CURRENT
 fi
