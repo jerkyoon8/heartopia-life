@@ -32,6 +32,10 @@ public class WikiReportService {
             throw new IllegalArgumentException("제보 내용은 필수입니다.");
         }
 
+        // mass assignment 방지: 클라이언트 입력값 무시하고 안전한 기본값 강제 적용
+        report.setPublic(false);
+        report.setDeleted(false);
+
         try {
             reportMapper.insertReport(report);
             log.info("새로운 위키 제보가 접수되었습니다. 아이템: {}, 제보자: {}", report.getItemName(), report.getReporterName());
@@ -49,5 +53,48 @@ public class WikiReportService {
     @Transactional(readOnly = true)
     public List<WikiReport> getAllReports() {
         return reportMapper.findAllReports();
+    }
+
+    /**
+     * 일반 사용자용: 공개 승인된 제보 내역만 최신순으로 조회합니다.
+     */
+    @Transactional(readOnly = true)
+    public List<WikiReport> getPublicReports() {
+        return reportMapper.findPublicReports();
+    }
+
+    /**
+     * 관리자가 게시글의 공개 여부를 토글합니다.
+     * 
+     * @param id 게시물 고유 번호
+     * @param isPublic 변경할 상태
+     */
+    @Transactional
+    public void togglePublicStatus(Integer id, boolean isPublic) {
+        reportMapper.updatePublicStatus(id, isPublic);
+        log.info("제보(ID: {}) 공개 상태가 {}로 변경되었습니다.", id, isPublic);
+    }
+
+    /**
+     * 관리자가 게시글을 소프트 삭제(숨김 처리)합니다.
+     *
+     * @param id 게시물 고유 번호
+     */
+    @Transactional
+    public void softDeleteReport(Integer id) {
+        reportMapper.updateDeleteStatus(id);
+        log.info("제보(ID: {}) 소프트 삭제(숨김) 처리되었습니다.", id);
+    }
+
+    /**
+     * 관리자 답변을 저장합니다.
+     *
+     * @param id         게시물 고유 번호
+     * @param adminReply 답변 내용
+     */
+    @Transactional
+    public void updateAdminReply(Integer id, String adminReply) {
+        reportMapper.updateAdminReply(id, adminReply);
+        log.info("제보(ID: {}) 관리자 답변 등록됨.", id);
     }
 }

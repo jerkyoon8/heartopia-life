@@ -6,6 +6,7 @@ import com.heartopia.wiki.dto.oauth2.OAuth2Response;
 import com.heartopia.wiki.mapper.UserMapper;
 import com.heartopia.wiki.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -21,22 +22,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserMapper userMapper;
 
+    @Value("${wiki.admin.email}")
+    private String adminEmail;
+
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        OAuth2Response oAuth2Response = null;
+        OAuth2Response oAuth2Response;
         if ("google".equals(registrationId)) {
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         } else {
-            return null; // unsupported provider
+            throw new OAuth2AuthenticationException("Unsupported provider: " + registrationId);
         }
 
         String provider = oAuth2Response.getProvider();
         String providerId = oAuth2Response.getProviderId();
-        
+        String email = oAuth2Response.getEmail();
+        String role = adminEmail.equalsIgnoreCase(email) ? "ROLE_ADMIN" : "ROLE_USER";
+
         Optional<User> existingUser = userMapper.findByProviderAndProviderId(provider, providerId);
         User user;
 
@@ -44,15 +50,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = User.builder()
                     .provider(provider)
                     .providerId(providerId)
-                    .email(oAuth2Response.getEmail())
+                    .email(email)
                     .nickname(oAuth2Response.getName())
-                    .role("ROLE_USER")
+                    .role(role)
                     .build();
             userMapper.insertUser(user);
         } else {
             user = existingUser.get();
-            user.setEmail(oAuth2Response.getEmail());
+            user.setEmail(email);
             user.setNickname(oAuth2Response.getName());
+            user.setRole(role);
             userMapper.updateUser(user);
         }
 

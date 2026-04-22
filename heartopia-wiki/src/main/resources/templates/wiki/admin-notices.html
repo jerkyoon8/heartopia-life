@@ -47,7 +47,7 @@
                 <i class="fas fa-plus-circle text-primary"></i> 새 소식 등록
             </div>
             <div class="card-body">
-                <form action="/wiki/admin/notices/add" method="post">
+                <form th:action="@{/wiki/admin/notices/add}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <div class="mb-3">
                         <label class="form-label">제목</label>
@@ -88,13 +88,13 @@
                                 </td>
                                 <td th:text="${#temporals.format(n.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
                                 <td>
-                                    <form action="/wiki/admin/notices/toggle" method="post" style="display:inline;">
+                                    <form th:action="@{/wiki/admin/notices/toggle}" method="post" style="display:inline;">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                         <input type="hidden" name="id" th:value="${n.id}">
                                         <input type="hidden" name="isActive" th:value="${!n.isActive}">
                                         <button type="submit" class="btn btn-sm btn-outline-secondary" th:text="${n.isActive ? '숨기기' : '노출하기'}">토글</button>
                                     </form>
-                                    <form action="/wiki/admin/notices/delete" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                    <form th:action="@{/wiki/admin/notices/delete}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                         <input type="hidden" name="id" th:value="${n.id}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>

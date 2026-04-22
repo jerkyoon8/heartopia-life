@@ -15,7 +15,7 @@
 
     <update id="updateUser">
         UPDATE users
-        SET email = #{email}, nickname = #{nickname}
+        SET email = #{email}, nickname = #{nickname}, role = #{role}
         WHERE id = #{id}
     </update>
 

@@ -8,6 +8,7 @@ import com.heartopia.wiki.model.CookingCollection;
 import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
+import com.heartopia.wiki.model.FlowerImage;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import lombok.RequiredArgsConstructor;
@@ -332,6 +333,28 @@ public class CollectionService {
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
     public void deleteFlower(Long id) { collectionMapper.deleteFlower(id); }
+
+    public List<FlowerImage> getFlowerImages(Long flowerId) {
+        return collectionMapper.findFlowerImages(flowerId);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void saveFlowerImages(Long flowerId, List<String> imageUrls) {
+        collectionMapper.deleteFlowerImagesByFlowerId(flowerId);
+        for (int i = 0; i < imageUrls.size(); i++) {
+            String url = imageUrls.get(i);
+            if (url == null || url.isBlank()) continue;
+            FlowerImage img = new FlowerImage();
+            img.setFlowerId(flowerId);
+            img.setImageUrl(url);
+            img.setSortOrder(i);
+            collectionMapper.insertFlowerImage(img);
+        }
+    }
+
+    public void deleteFlowerImage(Long id) {
+        collectionMapper.deleteFlowerImage(id);
+    }
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allCrops", "countCrops", "searchCrops"}, allEntries = true)
     public void deleteCrop(Long id) { collectionMapper.deleteCrop(id); }

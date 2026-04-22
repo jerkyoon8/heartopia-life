@@ -4,16 +4,49 @@
 
     <!-- 신규 제보 저장: 작성일(created_at)은 DB 기본값(CURRENT_TIMESTAMP) 사용 -->
     <insert id="insertReport" parameterType="com.heartopia.wiki.model.WikiReport">
-        INSERT INTO wiki_reports (category, reporter_name, reporter_email, message, source_url, item_name)
-        VALUES (#{category}, #{reporterName}, #{reporterEmail}, #{message}, #{sourceUrl}, #{itemName})
+        INSERT INTO wiki_reports (category, reporter_name, message, source_url, item_name, is_public, is_deleted)
+        VALUES (#{category}, #{reporterName}, #{message}, #{sourceUrl}, #{itemName}, #{isPublic}, #{isDeleted})
     </insert>
 
-    <!-- 전체 제보 목록 조회: 카멜 케이스 별칭 적용 및 최신순 정렬 -->
+    <!-- 관리자용 전체 제보 목록 조회: 삭제되지 않은 글 전체 -->
     <select id="findAllReports" resultType="com.heartopia.wiki.model.WikiReport">
-        SELECT id, category, reporter_name as reporterName, reporter_email as reporterEmail,
-               message, source_url as sourceUrl, item_name as itemName, created_at as createdAt
+        SELECT id, category, reporter_name as reporterName, is_public as isPublic, is_deleted as isDeleted,
+               message, source_url as sourceUrl, item_name as itemName, created_at as createdAt,
+               admin_reply as adminReply, replied_at as repliedAt
         FROM wiki_reports
+        WHERE is_deleted = false
         ORDER BY created_at DESC
     </select>
+
+    <!-- 사용자용 공개 제보 목록 조회 -->
+    <select id="findPublicReports" resultType="com.heartopia.wiki.model.WikiReport">
+        SELECT id, category, reporter_name as reporterName, is_public as isPublic, is_deleted as isDeleted,
+               message, source_url as sourceUrl, item_name as itemName, created_at as createdAt,
+               admin_reply as adminReply, replied_at as repliedAt
+        FROM wiki_reports
+        WHERE is_deleted = false AND is_public = true
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 관리자 상태 제어: 공개/비공개 토글 -->
+    <update id="updatePublicStatus">
+        UPDATE wiki_reports 
+        SET is_public = #{isPublic} 
+        WHERE id = #{id}
+    </update>
+
+    <!-- 관리자 상태 제어: 소프트 삭제 -->
+    <update id="updateDeleteStatus">
+        UPDATE wiki_reports
+        SET is_deleted = true
+        WHERE id = #{id}
+    </update>
+
+    <!-- 관리자 답변 저장 -->
+    <update id="updateAdminReply">
+        UPDATE wiki_reports
+        SET admin_reply = #{adminReply}, replied_at = NOW()
+        WHERE id = #{id}
+    </update>
 
 </mapper>

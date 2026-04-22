@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        body {
+            background-color: #fdfaf8;
+        }
+
+        .board-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .board-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #4D342E;
+            margin-bottom: 10px;
+        }
+
+        .board-subtitle {
+            color: #8D7A75;
+            font-size: 1rem;
+        }
+
+        .board-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .qa-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid #EFE9E8;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(77, 52, 46, 0.05);
+            transition: box-shadow 0.2s;
+        }
+
+        .qa-card:hover {
+            box-shadow: 0 8px 24px rgba(77, 52, 46, 0.1);
+        }
+
+        .qa-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .badge-cat {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .cat-BUG        { background: #ffebee; color: #c62828; }
+        .cat-CONTRIBUTION { background: #e8f5e9; color: #2e7d32; }
+        .cat-HELP       { background: #e3f2fd; color: #1565c0; }
+        .cat-BUSINESS   { background: var(--nav-hover); color: #e65100; }
+        .cat-GENERAL    { background: #f5f5f5; color: #616161; }
+
+        .qa-author {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #4D342E;
+        }
+
+        .qa-date {
+            font-size: 0.8rem;
+            color: #BCB1AE;
+            margin-left: auto;
+        }
+
+        .qa-question {
+            margin-bottom: 20px;
+        }
+
+        .qa-question-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #d81b60;
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .qa-question-text {
+            font-size: 0.95rem;
+            color: #4D342E;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .qa-answer {
+            background: #fff8fb;
+            border-left: 3px solid #f48fb1;
+            border-radius: 0 12px 12px 0;
+            padding: 14px 18px;
+        }
+
+        .qa-answer-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #8D7A75;
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .qa-answer-text {
+            font-size: 0.95rem;
+            color: #4D342E;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .qa-pending {
+            font-size: 0.85rem;
+            color: #BCB1AE;
+            font-style: italic;
+        }
+
+        .write-btn-wrap {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .write-btn {
+            background: #4D342E;
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .write-btn:hover {
+            background: #3A2722;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #BCB1AE;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #f48fb1;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* 다크모드 */
+        [data-theme='dark'] body {
+            background-color: #1e1e1e;
+        }
+
+        [data-theme='dark'] .board-title {
+            color: #EEE;
+        }
+
+        [data-theme='dark'] .qa-card {
+            background: #2D2D2D;
+            border-color: #444;
+        }
+
+        [data-theme='dark'] .qa-author,
+        [data-theme='dark'] .qa-question-text,
+        [data-theme='dark'] .qa-answer-text {
+            color: #EEE;
+        }
+
+        [data-theme='dark'] .qa-answer {
+            background: #3a2535;
+            border-color: #c2185b;
+        }
+
+        [data-theme='dark'] .cat-GENERAL {
+            background: #444;
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="board-header">
+            <h1 class="board-title"><i class="fas fa-comments me-2" style="color:#f06292;"></i>문의 게시판</h1>
+            <p class="board-subtitle">공개된 문의 내역과 답변을 확인하실 수 있습니다.</p>
+        </div>
+
+        <div class="board-container">
+
+            <!-- 문의글 목록 -->
+            <div th:if="${not #lists.isEmpty(reports)}">
+                <div class="qa-card" th:each="report : ${reports}">
+                    <div class="qa-meta">
+                        <span th:class="'badge-cat cat-' + ${report.category}" th:switch="${report.category}">
+                            <span th:case="'BUG'">오류 제보</span>
+                            <span th:case="'CONTRIBUTION'">정보 추가</span>
+                            <span th:case="'HELP'">이용 안내</span>
+                            <span th:case="'GENERAL'">기타 문의</span>
+                            <span th:case="*" th:text="${report.category}"></span>
+                        </span>
+                        <span class="qa-author" th:text="${report.reporterName}"></span>
+                        <span class="qa-date" th:text="${#temporals.format(report.createdAt, 'yyyy.MM.dd')}"></span>
+                    </div>
+
+                    <!-- 질문 -->
+                    <div class="qa-question">
+                        <div class="qa-question-label">Q.</div>
+                        <div class="qa-question-text" th:text="${report.message}"></div>
+                    </div>
+
+                    <!-- 답변 -->
+                    <div class="qa-answer" th:if="${report.adminReply != null and not #strings.isEmpty(report.adminReply)}">
+                        <div class="qa-answer-label">A.</div>
+                        <div class="qa-answer-text" th:text="${report.adminReply}"></div>
+                    </div>
+                    <div th:unless="${report.adminReply != null and not #strings.isEmpty(report.adminReply)}">
+                        <span class="qa-pending"><i class="fas fa-clock me-1"></i>답변 준비 중입니다.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 빈 상태 -->
+            <div class="empty-state" th:if="${#lists.isEmpty(reports)}">
+                <i class="fas fa-inbox"></i>
+                <p>아직 공개된 문의글이 없습니다.</p>
+            </div>
+
+            <!-- 문의하기 버튼 -->
+            <div class="write-btn-wrap">
+                <a th:href="@{/wiki/reports/write}" class="write-btn">
+                    <i class="fas fa-paper-plane me-2"></i>문의하기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

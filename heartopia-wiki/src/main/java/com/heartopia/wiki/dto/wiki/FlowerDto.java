@@ -1,6 +1,8 @@
 package com.heartopia.wiki.dto.wiki;
 
 import com.heartopia.wiki.model.FlowerCollection;
+import com.heartopia.wiki.model.FlowerImage;
+import java.util.Collections;
 import java.util.List;
 
 public record FlowerDto(
@@ -13,9 +15,14 @@ public record FlowerDto(
     Integer seedSellPrice,
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
-    String eventName
+    String eventName,
+    List<String> imageUrls
 ) {
     public static FlowerDto from(FlowerCollection f) {
+        List<String> imageUrls = f.getImages() != null
+            ? f.getImages().stream().map(FlowerImage::getImageUrl).toList()
+            : Collections.emptyList();
+
         return new FlowerDto(
             f.getId(),
             f.getName(),
@@ -32,7 +39,8 @@ public record FlowerDto(
                 f.getPrice5() != null ? f.getPrice5() : 0
             ),
             f.getPrice1(), f.getPrice2(), f.getPrice3(), f.getPrice4(), f.getPrice5(),
-            f.getEventName()
+            f.getEventName(),
+            imageUrls
         );
     }
 }

@@ -381,7 +381,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/admin-data.js?v=1.2" defer></script>
 
-    <script>
+    <script th:inline="javascript">
+        const isLoggedIn = /*[[${currentUser != null}]]*/ false;
+
+        function getCsrf() {
+            return {
+                token: document.querySelector('meta[name="_csrf"]')?.getAttribute('content'),
+                header: document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content')
+            };
+        }
+
         function copyCode(e, codeName, element) {
             if (e && e.target && e.target.closest('.btn-admin-edit, .btn-admin-delete')) return;
 
@@ -403,18 +412,36 @@
         function markAsCopied(element, codeName) {
             if (!element) return;
             element.classList.add('copied');
-
-            let copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
-            if (!copied.includes(codeName)) {
-                copied.push(codeName);
-                localStorage.setItem('copiedCoupons', JSON.stringify(copied));
-            }
-            // 복사한 시각 저장 → 신규 뱃지 판단 기준
             localStorage.setItem('lastCopiedAt', new Date().toISOString());
+
+            if (isLoggedIn) {
+                const csrf = getCsrf();
+                fetch('/api/user/coupons', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                    body: JSON.stringify(codeName)
+                });
+            } else {
+                let copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+                if (!copied.includes(codeName)) {
+                    copied.push(codeName);
+                    localStorage.setItem('copiedCoupons', JSON.stringify(copied));
+                }
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+        document.addEventListener('DOMContentLoaded', async () => {
+            let copied = [];
+            if (isLoggedIn) {
+                try {
+                    const res = await fetch('/api/user/coupons');
+                    copied = await res.json();
+                } catch (e) {
+                    copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+                }
+            } else {
+                copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+            }
 
             document.querySelectorAll('.code-card').forEach(card => {
                 const codeName = card.querySelector('.code-name')?.textContent.trim();

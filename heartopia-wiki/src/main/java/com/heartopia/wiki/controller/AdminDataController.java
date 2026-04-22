@@ -6,17 +6,22 @@ import com.heartopia.wiki.service.FileUploadService;
 import com.heartopia.wiki.service.GiftCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 관리자 전용 데이터 CRUD 컨트롤러
@@ -221,20 +226,26 @@ public class AdminDataController {
     // ======================== 꽃 ========================
     @PostMapping("/flower/add")
     public String addFlower(FlowerCollection flower,
-                            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+                            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                            @RequestParam(value = "variantImageFiles", required = false) List<MultipartFile> variantImageFiles,
+                            @RequestParam(value = "existingVariantUrls", required = false) List<String> existingVariantUrls) throws IOException {
         log.info("관리자 데이터 추가: 꽃 '{}'", flower.getName());
         handleImageUpload(flower, imageFile, "flower", null);
         collectionService.addFlower(flower);
+        saveVariantImages(flower.getId(), variantImageFiles, existingVariantUrls);
         return "redirect:/wiki/items/flowers";
     }
 
     @PostMapping("/flower/update")
     public String updateFlower(FlowerCollection flower,
                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-                               @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+                               @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl,
+                               @RequestParam(value = "variantImageFiles", required = false) List<MultipartFile> variantImageFiles,
+                               @RequestParam(value = "existingVariantUrls", required = false) List<String> existingVariantUrls) throws IOException {
         log.info("관리자 데이터 수정: 꽃 id={}", flower.getId());
         handleImageUpload(flower, imageFile, "flower", existingImageUrl);
         collectionService.updateFlower(flower);
+        saveVariantImages(flower.getId(), variantImageFiles, existingVariantUrls);
         return "redirect:/wiki/items/flowers";
     }
 
@@ -243,6 +254,43 @@ public class AdminDataController {
         log.info("관리자 데이터 삭제: 꽃 id={}", id);
         collectionService.deleteFlower(id);
         return "redirect:/wiki/items/flowers";
+    }
+
+    @GetMapping("/flower/{id}/images")
+    @ResponseBody
+    public ResponseEntity<List<FlowerImage>> getFlowerImages(@PathVariable Long id) {
+        return ResponseEntity.ok(collectionService.getFlowerImages(id));
+    }
+
+    @PostMapping("/flower/image/delete/{id}")
+    public String deleteFlowerImage(@PathVariable Long id) {
+        log.info("꽃 이미지 삭제: id={}", id);
+        collectionService.deleteFlowerImage(id);
+        return "redirect:/wiki/items/flowers";
+    }
+
+    private void saveVariantImages(Long flowerId, List<MultipartFile> files, List<String> existingUrls) throws IOException {
+        List<String> urls = new ArrayList<>();
+        int fileIdx = 0;
+        int existingIdx = 0;
+        // existingUrls: 유지할 기존 URL (빈 문자열이면 새 파일로 대체)
+        int total = Math.max(
+            files != null ? files.size() : 0,
+            existingUrls != null ? existingUrls.size() : 0
+        );
+        for (int i = 0; i < total; i++) {
+            String existing = (existingUrls != null && i < existingUrls.size()) ? existingUrls.get(i) : "";
+            MultipartFile file = (files != null && i < files.size()) ? files.get(i) : null;
+            if (file != null && !file.isEmpty()) {
+                if (existing != null && existing.startsWith("/uploads/")) {
+                    fileUploadService.delete(existing);
+                }
+                urls.add(fileUploadService.upload(file, "flower"));
+            } else if (existing != null && !existing.isBlank()) {
+                urls.add(existing);
+            }
+        }
+        collectionService.saveFlowerImages(flowerId, urls);
     }
 
     // ======================== 작물 ========================

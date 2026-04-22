@@ -23,6 +23,17 @@
             </h1>
         </div>
 
+        <!-- 꽃 교배 가이드 (임시 비활성화) -->
+        <div class="flower-guide-accordion" style="display: none;">
+            <button class="flower-guide-toggle" id="flowerGuideToggle" type="button" aria-expanded="true">
+                <span><i class="fas fa-book-open me-2"></i>꽃 교배 가이드</span>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </button>
+            <div class="flower-guide-body" id="flowerGuideBody">
+                <img src="/images/items/flower-guide.webp" alt="꽃 교배 가이드" class="flower-guide-img">
+            </div>
+        </div>
+
         <!-- Filter Bar (Redesign) -->
         <div class="wiki-filter-container">
             <div class="filter-top-tier">
@@ -115,10 +126,22 @@
 
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
-                    <img th:if="${flower.imageUrl != null}" th:src="${flower.imageUrl}" th:alt="${flower.name}"
-                        style="max-height: 100px; object-fit: contain;">
+                    <img class="flower-main-img"
+                         th:if="${flower.imageUrl != null}"
+                         th:src="${flower.imageUrls != null and !flower.imageUrls.isEmpty()} ? ${flower.imageUrls[0]} : ${flower.imageUrl}"
+                         th:alt="${flower.name}"
+                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-fan fa-4x text-danger fallback-icon'"
                         th:style="${flower.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                    <!-- 레벨별 이미지 스와치 -->
+                    <div class="flower-swatches" th:if="${flower.imageUrls != null and flower.imageUrls.size() > 1}">
+                        <div th:each="imgUrl, stat : ${flower.imageUrls}"
+                             class="flower-swatch"
+                             th:classappend="${stat.index == 0} ? ' active' : ''"
+                             th:style="'background-image: url(' + ${imgUrl} + ')'"
+                             th:data-src="${imgUrl}"
+                             title="이미지 변경"></div>
+                    </div>
                 </div>
 
                 <div class="wiki-item-info">
@@ -224,8 +247,94 @@
         </div>
     </div>
 
+    <style>
+        .flower-guide-accordion {
+            margin: 0 0 16px 0;
+            border: 1px solid #e8d5f0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fdf8ff;
+        }
+        .flower-guide-toggle {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: linear-gradient(90deg, #f3e6fc, #fdf8ff);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #6a3fa6;
+        }
+        .flower-guide-toggle .toggle-icon {
+            transition: transform 0.25s;
+        }
+        .flower-guide-toggle[aria-expanded="false"] .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .flower-guide-body {
+            padding: 12px 16px 16px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .flower-guide-body.collapsed {
+            display: none;
+        }
+        .flower-guide-img {
+            width: 100%;
+            border-radius: 10px;
+            display: block;
+        }
+        /* 스와치 */
+        .flower-swatches {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .flower-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+        .flower-swatch:hover { transform: scale(1.15); }
+        .flower-swatch.active { border-color: #7c3aed; }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // 가이드 accordion
+            const guideToggle = document.getElementById('flowerGuideToggle');
+            const guideBody   = document.getElementById('flowerGuideBody');
+            if (guideToggle && guideBody) {
+                guideToggle.addEventListener('click', function () {
+                    const expanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', String(!expanded));
+                    guideBody.classList.toggle('collapsed', expanded);
+                });
+            }
+
+            // 스와치 클릭 → 메인 이미지 교체
+            document.querySelectorAll('.flower-swatches').forEach(function (swatchGroup) {
+                swatchGroup.addEventListener('click', function (e) {
+                    const swatch = e.target.closest('.flower-swatch');
+                    if (!swatch) return;
+                    const card     = swatch.closest('.wiki-item-card');
+                    const mainImg  = card.querySelector('.flower-main-img');
+                    if (mainImg) mainImg.src = swatch.dataset.src;
+                    swatchGroup.querySelectorAll('.flower-swatch').forEach(s => s.classList.remove('active'));
+                    swatch.classList.add('active');
+                });
+            });
+
             const btnDream = document.getElementById('btn-dream-event');
             const eventFilter = document.getElementById('eventFilter');
 
@@ -271,7 +380,7 @@
                     <div class="col-md-6"><label class="form-label fw-bold">씨앗 구매가</label><input type="number" name="seedBuyPrice" class="form-control"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">씨앗 판매가</label><input type="number" name="seedSellPrice" class="form-control"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
-                    <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
+                    <div class="col-md-8"><label class="form-label fw-bold">대표 이미지 등록 방식</label>
                         <div class="mb-2">
                             <label class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="imageMode" value="DEFAULT" checked> 기본 이미지
@@ -287,6 +396,14 @@
                         </div>
                     </div>
                     <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
+                    <!-- 레벨별 이미지 슬롯 -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold">레벨별 이미지 <small class="text-muted fw-normal">(스와치로 표시됨, 순서대로 등록)</small></label>
+                        <div id="variantSlotList" class="d-flex flex-column gap-2"></div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addVariantSlotBtn">
+                            <i class="fas fa-plus me-1"></i>이미지 슬롯 추가
+                        </button>
+                    </div>
                 </div></div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button><button type="submit" class="btn btn-admin-submit text-white" style="background:var(--modal-header-bg);">추가하기</button></div>
             </form>
@@ -298,6 +415,59 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
+    <script>
+    (function () {
+        const modal = document.getElementById('addFlowerModal');
+        if (!modal) return;
+
+        const slotList = document.getElementById('variantSlotList');
+        const addBtn   = document.getElementById('addVariantSlotBtn');
+
+        function createSlot(existingUrl) {
+            const wrap = document.createElement('div');
+            wrap.className = 'd-flex align-items-center gap-2';
+            wrap.innerHTML = `
+                <span class="text-muted" style="min-width:20px;font-size:.85rem;">${slotList.children.length + 1}</span>
+                <input type="hidden" name="existingVariantUrls" value="${existingUrl || ''}">
+                <input type="file" name="variantImageFiles" class="form-control form-control-sm" accept="image/*" style="flex:1;">
+                ${existingUrl ? `<img src="${existingUrl}" alt="" style="height:36px;object-fit:contain;border-radius:4px;">` : ''}
+                <button type="button" class="btn btn-outline-danger btn-sm remove-slot-btn"><i class="fas fa-times"></i></button>
+            `;
+            wrap.querySelector('.remove-slot-btn').addEventListener('click', function () {
+                wrap.remove();
+                renumberSlots();
+            });
+            slotList.appendChild(wrap);
+        }
+
+        function renumberSlots() {
+            slotList.querySelectorAll('span').forEach((s, i) => s.textContent = i + 1);
+        }
+
+        addBtn && addBtn.addEventListener('click', () => createSlot(''));
+
+        // 수정 모달 열릴 때 flowerId로 API 호출 → 기존 variant 이미지 슬롯 복원
+        modal.addEventListener('show.bs.modal', function (e) {
+            slotList.innerHTML = '';
+            const trigger = e.relatedTarget;
+            if (!trigger) return;
+
+            const itemJson = trigger.dataset.item;
+            if (!itemJson) return;
+
+            let item;
+            try { item = JSON.parse(itemJson); } catch { return; }
+            if (!item.id) return;
+
+            fetch(`/wiki/admin/data/flower/${item.id}/images`)
+                .then(r => r.json())
+                .then(images => {
+                    images.forEach(img => createSlot(img.imageUrl));
+                })
+                .catch(() => {});
+        });
+    })();
+    </script>
 </body>
 
 </html>

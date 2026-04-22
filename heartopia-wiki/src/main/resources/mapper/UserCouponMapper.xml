@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.UserCouponMapper">
+
+    <select id="findCouponNamesByUserId" resultType="string">
+        SELECT coupon_name FROM user_copied_coupons WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertCoupon">
+        INSERT IGNORE INTO user_copied_coupons (user_id, coupon_name)
+        VALUES (#{userId}, #{couponName})
+    </insert>
+
+    <insert id="insertCoupons">
+        INSERT IGNORE INTO user_copied_coupons (user_id, coupon_name)
+        VALUES
+        <foreach collection="couponNames" item="name" separator=",">
+            (#{userId}, #{name})
+        </foreach>
+    </insert>
+
+</mapper>

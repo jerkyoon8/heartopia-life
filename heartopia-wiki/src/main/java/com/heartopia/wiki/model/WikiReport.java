@@ -19,9 +19,8 @@ public class WikiReport {
     @Size(max = 100, message = "이름은 100자 이내로 입력해주세요.")
     private String reporterName; // 제보자 성함
     
-    @Email(message = "올바른 이메일 형식이 아닙니다.")
-    @Size(max = 200, message = "이메일은 200자 이내로 입력해주세요.")
-    private String reporterEmail; // 제보자 연락처 (이메일, 선택 사항)
+    private boolean isPublic; // 공개 여부
+    private boolean isDeleted; // 삭제(숨김) 여부
     
     @NotBlank(message = "내용을 입력해주세요.")
     @Size(max = 2000, message = "내용은 2000자 이내로 입력해주세요.")
@@ -30,4 +29,6 @@ public class WikiReport {
     private String sourceUrl; // 제보가 발생한 원본 페이지 URL
     private String itemName; // 대상 아이템 이름
     private LocalDateTime createdAt; // 제보 일시
+    private String adminReply; // 관리자 답변
+    private LocalDateTime repliedAt; // 답변 일시
 }

@@ -2,8 +2,11 @@ package com.heartopia.wiki.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.heartopia.wiki.interceptor.RateLimitInterceptor;
 
 /**
  * 업로드된 이미지 파일을 정적 리소스로 서빙하기 위한 설정
@@ -15,11 +18,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${app.upload.dir:./uploads}")
     private String uploadDir;
 
+    @Autowired
+    private RateLimitInterceptor rateLimitInterceptor;
+
     @Override
     public void addResourceHandlers(@org.springframework.lang.NonNull ResourceHandlerRegistry registry) {
         // /uploads/** URL 패턴을 외부 업로드 디렉토리에 매핑
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadDir + "/")
                 .setCachePeriod(3600);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(rateLimitInterceptor)
+                .addPathPatterns("/wiki/reports/write");
     }
 }

@@ -39,6 +39,25 @@
         image_url, event_name
     </sql>
 
+    <!-- flower_images 포함한 FlowerCollection resultMap -->
+    <resultMap id="flowerResultMap" type="com.heartopia.wiki.model.FlowerCollection">
+        <id     property="id"           column="id"/>
+        <result property="name"         column="name"/>
+        <result property="price1"       column="price_1"/>
+        <result property="price2"       column="price_2"/>
+        <result property="price3"       column="price_3"/>
+        <result property="price4"       column="price_4"/>
+        <result property="price5"       column="price_5"/>
+        <result property="level"        column="level"/>
+        <result property="growthTime"   column="growth_time"/>
+        <result property="seedBuyPrice" column="seed_buy_price"/>
+        <result property="seedSellPrice" column="seed_sell_price"/>
+        <result property="imageUrl"     column="image_url"/>
+        <result property="eventName"    column="event_name"/>
+        <collection property="images" ofType="com.heartopia.wiki.model.FlowerImage"
+                    select="findFlowerImages" column="id"/>
+    </resultMap>
+
     <sql id="forageableColumns">
         id, name, location, price, energy, image_url, event_name, show_on_map
     </sql>
@@ -59,7 +78,7 @@
     <select id="findAllCookings" resultType="com.heartopia.wiki.model.CookingCollection">
         SELECT <include refid="cookingColumns"/> FROM cooking_collections ORDER BY id ASC
     </select>
-    <select id="findAllFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
+    <select id="findAllFlowers" resultMap="flowerResultMap">
         SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections ORDER BY level, name
     </select>
     <select id="findAllGardening" resultType="com.heartopia.wiki.model.GardeningCollection">
@@ -85,7 +104,7 @@
     <select id="findCookingByName" resultType="com.heartopia.wiki.model.CookingCollection">
         SELECT <include refid="cookingColumns"/> FROM cooking_collections WHERE name = #{name}
     </select>
-    <select id="findFlowerByName" resultType="com.heartopia.wiki.model.FlowerCollection">
+    <select id="findFlowerByName" resultMap="flowerResultMap">
         SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections WHERE name = #{name}
     </select>
     <select id="findCropByName" resultType="com.heartopia.wiki.model.GardeningCollection">
@@ -147,7 +166,7 @@
     <select id="searchCookings" resultType="com.heartopia.wiki.model.CookingCollection">
         SELECT <include refid="cookingColumns"/> FROM cooking_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-    <select id="searchFlowers" resultType="com.heartopia.wiki.model.FlowerCollection">
+    <select id="searchFlowers" resultMap="flowerResultMap">
         SELECT <include refid="flowerAndCropColumns"/> FROM flower_collections WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
     <select id="searchCrops" resultType="com.heartopia.wiki.model.GardeningCollection">
@@ -275,6 +294,27 @@
     <delete id="deleteAnimal">DELETE FROM animal_collections WHERE id=#{id}</delete>
     <delete id="deleteCooking">DELETE FROM cooking_collections WHERE id=#{id}</delete>
     <delete id="deleteFlower">DELETE FROM flower_collections WHERE id=#{id}</delete>
+
+    <!-- ========== flower_images CRUD ========== -->
+    <select id="findFlowerImages" resultType="com.heartopia.wiki.model.FlowerImage">
+        SELECT id, flower_id, image_url, sort_order
+        FROM flower_images
+        WHERE flower_id = #{flowerId}
+        ORDER BY sort_order ASC
+    </select>
+
+    <insert id="insertFlowerImage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO flower_images (flower_id, image_url, sort_order)
+        VALUES (#{flowerId}, #{imageUrl}, #{sortOrder})
+    </insert>
+
+    <delete id="deleteFlowerImage">
+        DELETE FROM flower_images WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteFlowerImagesByFlowerId">
+        DELETE FROM flower_images WHERE flower_id = #{flowerId}
+    </delete>
     <delete id="deleteCrop">DELETE FROM crop_collections WHERE id=#{id}</delete>
     <delete id="deleteForageable">DELETE FROM forageable_collections WHERE id=#{id}</delete>
 

@@ -7,6 +7,7 @@ import com.heartopia.wiki.model.CookingCollection;
 import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
+import com.heartopia.wiki.model.FlowerImage;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import org.apache.ibatis.annotations.Mapper;
@@ -133,4 +134,10 @@ public interface CollectionMapper {
     void deleteFlower(Long id);
     void deleteCrop(Long id);
     void deleteForageable(Integer id);
+
+    // === flower_images ===
+    List<FlowerImage> findFlowerImages(@Param("flowerId") Long flowerId);
+    void insertFlowerImage(FlowerImage image);
+    void deleteFlowerImage(@Param("id") Long id);
+    void deleteFlowerImagesByFlowerId(@Param("flowerId") Long flowerId);
 }

@@ -1,6 +1,7 @@
 package com.heartopia.wiki.model;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class FlowerCollection {
@@ -17,4 +18,5 @@ public class FlowerCollection {
     private Integer seedSellPrice;
     private String imageUrl;
     private String eventName;
+    private List<FlowerImage> images;
 }
