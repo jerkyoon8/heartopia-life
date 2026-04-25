@@ -1,22 +1,42 @@
 /**
  * Checklist Global Sync UI Handler
  * - 모든 페이지에서 .sync-item 이 존재하면 ChecklistCore와 연동합니다.
+ * - 로그인 시 DB와 동기화합니다.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     if (typeof window.ChecklistCore === 'undefined') return;
-    
+
     const core = window.ChecklistCore;
     const syncItems = document.querySelectorAll('.sync-item');
     if (syncItems.length === 0) return;
 
+    const syncEnabled = window._heartopiaChecklistSyncEnabled || false;
+
+    function getCsrf() {
+        return {
+            token: document.querySelector('meta[name="_csrf"]')?.getAttribute('content'),
+            header: document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content')
+        };
+    }
+
+    // 동기화 ON: 머지 완료 후 DB에서 체크리스트 로드
+    if (syncEnabled) {
+        if (window._checklistMergeOnLogin) await window._checklistMergeOnLogin;
+        try {
+            const res = await fetch('/api/user/checklist');
+            if (res.ok) {
+                const dbData = await res.json();
+                Object.keys(dbData).forEach(key => core.setItem(key, dbData[key]));
+            }
+        } catch (e) { /* DB 실패 시 메모리 상태 유지 */ }
+    }
+
     // UI 상태 갱신
     function renderItemStatus(itemEl, val) {
-        const checkBtn = itemEl.querySelector('.sync-check-btn');
         const stars = itemEl.querySelectorAll('.sync-star-icon');
-        
+
         if (val !== undefined && val !== null) {
-            // 수집 완료
             itemEl.classList.add('checked');
             stars.forEach(star => {
                 const sVal = parseInt(star.getAttribute('data-val'));
@@ -27,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } else {
-            // 수집 취소
             itemEl.classList.remove('checked');
             stars.forEach(star => star.classList.remove('filled'));
         }
@@ -62,14 +81,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkBtn) {
             checkBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation(); // 클릭 시 부모 <a> 이동 방지
-                
+                e.stopPropagation();
+
                 if (itemEl.classList.contains('checked')) {
                     core.removeItem(key);
+                    if (syncEnabled) {
+                        const csrf = getCsrf();
+                        fetch('/api/user/checklist/item', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key })
+                        }).catch(() => {});
+                    }
                 } else {
                     core.setItem(key, 0);
+                    if (syncEnabled) {
+                        const csrf = getCsrf();
+                        fetch('/api/user/checklist/item', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key, val: 0 })
+                        }).catch(() => {});
+                    }
                 }
-                // (renderItemStatus는 subscribe 콜백을 통해 자동호출됨)
             });
         }
 
@@ -78,9 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
             star.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const val = parseInt(star.getAttribute('data-val'));
                 core.setItem(key, val);
+                if (syncEnabled) {
+                    const csrf = getCsrf();
+                    fetch('/api/user/checklist/item', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                        body: JSON.stringify({ key, val })
+                    }).catch(() => {});
+                }
             });
         });
     });

@@ -3,3 +3,4 @@
 
 ALTER TABLE wiki_reports ADD COLUMN admin_reply TEXT DEFAULT NULL;
 ALTER TABLE wiki_reports ADD COLUMN replied_at DATETIME DEFAULT NULL;
+

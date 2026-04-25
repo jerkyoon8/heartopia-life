@@ -419,7 +419,16 @@
                 fetch('/api/user/coupons', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
-                    body: JSON.stringify(codeName)
+                    body: JSON.stringify({ codeName: codeName })
+                }).then(res => {
+                    if (!res.ok) throw new Error('save failed');
+                }).catch(() => {
+                    // DB 저장 실패 시 localStorage에 폴백 저장
+                    let saved = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+                    if (!saved.includes(codeName)) {
+                        saved.push(codeName);
+                        localStorage.setItem('copiedCoupons', JSON.stringify(saved));
+                    }
                 });
             } else {
                 let copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
@@ -433,9 +442,15 @@
         document.addEventListener('DOMContentLoaded', async () => {
             let copied = [];
             if (isLoggedIn) {
+                // 마이그레이션 완료 후 쿠폰 목록 조회 (타이밍 보장)
+                if (window._couponMigration) await window._couponMigration;
                 try {
                     const res = await fetch('/api/user/coupons');
-                    copied = await res.json();
+                    if (res.ok) {
+                        copied = await res.json();
+                    } else {
+                        copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
+                    }
                 } catch (e) {
                     copied = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
                 }

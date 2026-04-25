@@ -303,6 +303,15 @@
                 .brand-logo span {
                     font-size: 18px;
                 }
+
+                /* 좁은 화면: 유저명 숨기고, 동기화 토글의 "동기화" 텍스트만 숨김 */
+                .header-username-label {
+                    display: none;
+                }
+
+                .sync-toggle-label {
+                    display: none;
+                }
             }
         </style>
 
@@ -322,6 +331,33 @@
                             </a>
                         </div>
                         <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
+                            <!-- 수집도감 동기화 토글 (항상 노출) -->
+                            <div class="sync-toggle-wrap d-flex align-items-center gap-1" style="font-family: 'Paperlogy', sans-serif; font-size: 12px; color: var(--text-color, #555); position: relative;">
+                                <label class="form-check form-switch m-0 d-flex align-items-center" style="padding-left: 2.2em; cursor: pointer;" title="수집도감 기기 간 동기화">
+                                    <input class="form-check-input" type="checkbox" id="checklistSyncToggle"
+                                           th:checked="${currentUser != null and currentUser.checklistSyncEnabled}"
+                                           style="cursor: pointer;">
+                                    <span class="sync-toggle-label ms-1" style="white-space: nowrap;">기기간 동기화</span>
+                                </label>
+                                <button type="button" id="syncInfoBtn"
+                                        class="btn btn-link p-0"
+                                        style="color: #888; font-size: 13px; line-height: 1; border: none;">
+                                    <i class="fas fa-circle-question"></i>
+                                </button>
+                                <!-- 클릭 시 토글되는 설명 팝업 -->
+                                <div id="syncInfoPopover" style="display:none; position:absolute; top:100%; right:0; margin-top:8px; background:#fff; border:1px solid #a7d7f9; border-radius:10px; padding:14px 16px; box-shadow:0 4px 16px rgba(0,0,0,0.12); z-index:10000; width:280px; font-size:12px; line-height:1.55; color:#333; font-family:Paperlogy,sans-serif;">
+                                    <div style="font-weight:700; margin-bottom:6px; color:#1864ab;">
+                                        <i class="fas fa-cloud me-1"></i>기기간 동기화란?
+                                    </div>
+                                    <div style="color:#555;">
+                                        <strong>켜짐:</strong> 수집 진행 상황이 계정에 저장됩니다. 다른 기기/브라우저에서 같은 계정으로 로그인하면 동일하게 보입니다.
+                                    </div>
+                                    <div style="color:#555; margin-top:6px;">
+                                        <strong>꺼짐:</strong> 이 기기에서만 저장됩니다. 다른 기기와 분리됩니다.
+                                    </div>
+                                </div>
+                            </div>
+
                             <span class="header-username-label" style="font-family: 'Paperlogy', sans-serif; font-size: 14px; color: var(--text-color, #333);">
                                 <span sec:authentication="name" style="font-weight: 700;"></span>님
                             </span>
@@ -430,22 +466,173 @@
             </div>
         </div>
 
-        <!-- localStorage → DB 쿠폰 자동 마이그레이션 (로그인 세션 1회) -->
+        <!-- 로그인 상태 플래그 (sync 플래그는 common-head.html에서 이미 설정됨) -->
+        <script>window._heartopiaIsLoggedIn = false;</script>
+
         <th:block th:if="${currentUser != null}">
         <script>
-            if (!sessionStorage.getItem('couponMigrationDone')) {
-                sessionStorage.setItem('couponMigrationDone', 'true');
+            window._heartopiaIsLoggedIn = true;
+
+            (function () {
+                const csrf = {
+                    token: document.querySelector('meta[name="_csrf"]')?.getAttribute('content'),
+                    header: document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content')
+                };
+
+                // --- 쿠폰 마이그레이션 (로그인 시 1회, 성공 후 자동 종료) ---
                 const localCoupons = JSON.parse(localStorage.getItem('copiedCoupons') || '[]');
                 if (localCoupons.length > 0) {
-                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
-                    fetch('/api/user/coupons/migrate', {
+                    window._couponMigration = fetch('/api/user/coupons/migrate', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
+                        headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
                         body: JSON.stringify(localCoupons)
-                    }).then(r => { if (r.ok) localStorage.removeItem('copiedCoupons'); });
+                    }).then(r => { if (r.ok) localStorage.removeItem('copiedCoupons'); })
+                      .catch(() => {});
+                } else {
+                    window._couponMigration = Promise.resolve();
                 }
-            }
+
+                // --- 동기화 토글 + 발견성 유도 ---
+                document.addEventListener('DOMContentLoaded', () => {
+                    const toggle = document.getElementById('checklistSyncToggle');
+
+                    // ? 버튼 클릭 → 설명 팝업 토글, 외부 클릭 시 닫기
+                    const infoBtn = document.getElementById('syncInfoBtn');
+                    const infoPopover = document.getElementById('syncInfoPopover');
+                    if (infoBtn && infoPopover) {
+                        infoBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            infoPopover.style.display = infoPopover.style.display === 'none' ? 'block' : 'none';
+                        });
+                        document.addEventListener('click', (e) => {
+                            if (infoPopover.style.display === 'block' &&
+                                !infoPopover.contains(e.target) &&
+                                e.target !== infoBtn &&
+                                !infoBtn.contains(e.target)) {
+                                infoPopover.style.display = 'none';
+                            }
+                        });
+                    }
+
+                    // 동기화 토글 동작
+                    if (toggle) {
+                        let toggleInFlight = false;
+                        toggle.addEventListener('change', async () => {
+                            if (toggleInFlight) {
+                                // 진행 중 double-click 방지 — UI 상태 원복
+                                toggle.checked = !toggle.checked;
+                                return;
+                            }
+                            const enabled = toggle.checked;
+                            const localData = enabled
+                                ? JSON.parse(localStorage.getItem('heartopia_checklist') || '{}')
+                                : null;
+
+                            if (enabled && Object.keys(localData || {}).length > 0) {
+                                if (!confirm('현재 이 기기의 수집 데이터를 계정에 업로드합니다. 계속하시겠습니까?')) {
+                                    toggle.checked = false;
+                                    return;
+                                }
+                            }
+
+                            toggleInFlight = true;
+                            toggle.disabled = true;
+                            try {
+                                const res = await fetch('/api/user/checklist/sync', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                                    body: JSON.stringify({ enabled, localData })
+                                });
+                                if (!res.ok) throw new Error('sync toggle failed');
+                                const dbData = await res.json();
+
+                                // 토글 OFF 시: DB 데이터를 localStorage에 복사해 로컬로 전환
+                                if (!enabled) {
+                                    localStorage.setItem('heartopia_checklist', JSON.stringify(dbData));
+                                }
+                                // 토글 ON 시: localStorage 비움 (ChecklistCore가 DB에서 다시 로드)
+                                else {
+                                    localStorage.removeItem('heartopia_checklist');
+                                }
+                                window.location.reload();
+                            } catch (e) {
+                                alert('동기화 설정 변경에 실패했습니다.');
+                                toggle.checked = !enabled;
+                                toggle.disabled = false;
+                                toggleInFlight = false;
+                            }
+                        });
+                    }
+
+                    // 로그아웃 시: 로그인 중 DB에만 있던 데이터를 localStorage로 복사
+                    // (sync OFF 토글과 동일한 결과 — 로그아웃 후에도 데이터 보임)
+                    const logoutForm = document.querySelector('form[action$="/wiki/logout"]');
+                    if (logoutForm) {
+                        let logoutInFlight = false;
+                        logoutForm.addEventListener('submit', async (e) => {
+                            if (logoutInFlight) return; // 중복 클릭 시 두 번째는 정상 진행
+                            e.preventDefault();
+                            logoutInFlight = true;
+                            const tasks = [];
+
+                            // 동기화 ON일 때만 체크리스트 복사 (sync OFF면 이미 localStorage에 있음)
+                            if (window._heartopiaChecklistSyncEnabled) {
+                                tasks.push(
+                                    fetch('/api/user/checklist')
+                                        .then(r => r.ok ? r.json() : null)
+                                        .then(data => {
+                                            if (data) localStorage.setItem('heartopia_checklist', JSON.stringify(data));
+                                        })
+                                        .catch(() => {})
+                                );
+                            }
+
+                            // 쿠폰은 항상 DB가 진실이라 무조건 복사
+                            tasks.push(
+                                fetch('/api/user/coupons')
+                                    .then(r => r.ok ? r.json() : null)
+                                    .then(data => {
+                                        if (data) localStorage.setItem('copiedCoupons', JSON.stringify(data));
+                                    })
+                                    .catch(() => {})
+                            );
+
+                            await Promise.all(tasks);
+                            logoutForm.submit();
+                        });
+                    }
+
+                    // 첫 로그인 토스트: sync OFF + localStorage에 데이터 있고 안내 미노출 시
+                    const syncFlag = window._heartopiaChecklistSyncEnabled;
+                    const hintShown = localStorage.getItem('heartopia_sync_hint_shown');
+                    const localChecklist = JSON.parse(localStorage.getItem('heartopia_checklist') || '{}');
+                    if (!syncFlag && !hintShown && Object.keys(localChecklist).length > 0) {
+                        setTimeout(() => {
+                            showSyncHintToast();
+                            localStorage.setItem('heartopia_sync_hint_shown', '1');
+                        }, 1500);
+                    }
+
+                    function showSyncHintToast() {
+                        // slideIn keyframe을 한 번만 주입
+                        if (!document.getElementById('syncHintKeyframes')) {
+                            const style = document.createElement('style');
+                            style.id = 'syncHintKeyframes';
+                            style.textContent = '@keyframes syncHintSlideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }';
+                            document.head.appendChild(style);
+                        }
+                        const toast = document.createElement('div');
+                        toast.style.cssText = 'position:fixed;bottom:30px;right:30px;background:#fff;border:1px solid #a7d7f9;border-radius:12px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:10000;max-width:320px;font-family:Paperlogy,sans-serif;font-size:13px;line-height:1.5;animation:syncHintSlideIn 0.3s ease-out;';
+                        toast.innerHTML = '<div style="font-weight:700;color:#333;margin-bottom:6px;"><i class="fas fa-cloud-upload-alt" style="color:#ff7f9d;"></i> 다른 기기에서도 보고 싶으세요?</div>' +
+                            '<div style="color:#666;margin-bottom:10px;">프로필 메뉴에서 "기기 간 동기화"를 켜면 이 기기의 수집 데이터가 계정에 저장됩니다.</div>' +
+                            '<button style="background:none;border:none;color:#888;font-size:12px;cursor:pointer;padding:0;">닫기</button>';
+                        toast.querySelector('button').addEventListener('click', () => toast.remove());
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 10000);
+                    }
+                });
+            })();
         </script>
         </th:block>
 

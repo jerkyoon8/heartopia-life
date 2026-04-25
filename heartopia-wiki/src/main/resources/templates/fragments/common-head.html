@@ -57,6 +57,38 @@
     <link rel="stylesheet" th:href="@{/css/checklist-sync.css(v=1.4)}">
 
     <!-- Checklist Global Sync Scripts -->
+    <!-- sync 플래그는 ChecklistCore init 전에 설정 (init에서 localStorage 로드 여부 결정) -->
+    <script th:inline="javascript">
+        window._heartopiaChecklistSyncEnabled = /*[[${currentUser != null ? currentUser.checklistSyncEnabled : false}]]*/ false;
+
+        // 동기화 ON 상태로 로그인 + localStorage에 데이터 있으면 1회 머지 후 비움.
+        // ChecklistCore가 localStorage를 wipe하기 전에 fetch body에 캡처해야 한다.
+        (function () {
+            if (!window._heartopiaChecklistSyncEnabled) {
+                window._checklistMergeOnLogin = Promise.resolve();
+                return;
+            }
+            let localData = {};
+            try { localData = JSON.parse(localStorage.getItem('heartopia_checklist') || '{}'); } catch (e) {}
+            if (Object.keys(localData).length === 0) {
+                window._checklistMergeOnLogin = Promise.resolve();
+                return;
+            }
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+            if (!csrfToken || !csrfHeader) {
+                window._checklistMergeOnLogin = Promise.resolve();
+                return;
+            }
+            window._checklistMergeOnLogin = fetch('/api/user/checklist/migrate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
+                body: JSON.stringify(localData)
+            }).then(r => {
+                if (r.ok) localStorage.removeItem('heartopia_checklist');
+            }).catch(() => {});
+        })();
+    </script>
     <script src="/js/checklist-core.js"></script>
     <script src="/js/checklist-sync.js" defer></script>
     <script>

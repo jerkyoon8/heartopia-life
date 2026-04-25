@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +23,8 @@ public class UserCouponController {
 
     @PostMapping("/coupons")
     public void saveCoupon(@AuthenticationPrincipal CustomOAuth2User user,
-                           @RequestBody String couponName) {
-        userCouponService.saveCoupon(user.getUserId(), couponName);
+                           @RequestBody Map<String, String> body) {
+        userCouponService.saveCoupon(user.getUserId(), body.get("codeName"));
     }
 
     @PostMapping("/coupons/migrate")

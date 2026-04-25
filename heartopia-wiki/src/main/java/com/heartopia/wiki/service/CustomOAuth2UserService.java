@@ -5,6 +5,7 @@ import com.heartopia.wiki.dto.oauth2.GoogleResponse;
 import com.heartopia.wiki.dto.oauth2.OAuth2Response;
 import com.heartopia.wiki.mapper.UserMapper;
 import com.heartopia.wiki.model.User;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,7 +15,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +27,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserMapper userMapper;
 
     @Value("${wiki.admin.email}")
-    private String adminEmail;
+    private String adminEmailsRaw;
+
+    private Set<String> adminEmails;
+
+    @PostConstruct
+    private void initAdminEmails() {
+        adminEmails = Arrays.stream(adminEmailsRaw.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+    }
 
     @Override
     @Transactional
@@ -41,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String provider = oAuth2Response.getProvider();
         String providerId = oAuth2Response.getProviderId();
         String email = oAuth2Response.getEmail();
-        String role = adminEmail.equalsIgnoreCase(email) ? "ROLE_ADMIN" : "ROLE_USER";
+        String role = adminEmails.contains(email.toLowerCase()) ? "ROLE_ADMIN" : "ROLE_USER";
 
         Optional<User> existingUser = userMapper.findByProviderAndProviderId(provider, providerId);
         User user;

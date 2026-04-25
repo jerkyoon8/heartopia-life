@@ -40,4 +40,16 @@ public class CustomOAuth2User implements OAuth2User {
     public String getProviderId() {
         return user.getProviderId();
     }
+
+    public boolean isChecklistSyncEnabled() {
+        return user.isChecklistSyncEnabled();
+    }
+
+    /**
+     * 세션에 캐시된 User 객체의 플래그를 DB 업데이트와 동시에 갱신.
+     * 이걸 호출 안 하면 reload 시 Thymeleaf가 stale 값을 읽는다.
+     */
+    public void updateChecklistSyncEnabled(boolean enabled) {
+        user.setChecklistSyncEnabled(enabled);
+    }
 }

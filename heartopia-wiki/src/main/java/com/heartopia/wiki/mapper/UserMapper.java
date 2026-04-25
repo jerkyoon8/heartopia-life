@@ -21,4 +21,9 @@ public interface UserMapper {
      * 유저 정보(이메일, 닉네임) 갱신
      */
     void updateUser(User user);
+
+    /**
+     * 체크리스트 DB 동기화 opt-in 토글
+     */
+    void updateChecklistSyncEnabled(@Param("userId") Long userId, @Param("enabled") boolean enabled);
 }

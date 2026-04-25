@@ -19,4 +19,10 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateChecklistSyncEnabled">
+        UPDATE users
+        SET checklist_sync_enabled = #{enabled}
+        WHERE id = #{userId}
+    </update>
+
 </mapper>

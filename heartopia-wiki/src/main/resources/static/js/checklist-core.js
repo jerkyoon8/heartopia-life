@@ -1,14 +1,26 @@
 /**
  * Heartopia Checklist Core Module
- * 로컬스토리지를 일관되게 관리하기 위한 싱글톤 객체
+ * 싱글톤. 비로그인/동기화OFF 유저는 localStorage 사용, 동기화ON 유저는 메모리만.
  */
 const ChecklistCore = (function() {
     const STORAGE_KEY = 'heartopia_checklist';
     let collectionData = {};
     const observers = [];
 
-    // 초기 데이터 로드 (클로저 내부)
+    // sync ON이면 localStorage 완전 무시 (DB가 진실)
+    function isSyncMode() {
+        return !!window._heartopiaChecklistSyncEnabled;
+    }
+
+    // 초기 데이터 로드
     function loadStorage() {
+        if (isSyncMode()) {
+            // 동기화 모드: localStorage 무시하고 빈 상태로 시작.
+            // 페이지 스크립트가 DB에서 로드해서 채움.
+            // localStorage 삭제는 common-head의 머지 성공 시 처리 (실패 시 데이터 보존).
+            collectionData = {};
+            return;
+        }
         const rawData = localStorage.getItem(STORAGE_KEY);
         if (!rawData) {
             collectionData = {};
@@ -25,9 +37,11 @@ const ChecklistCore = (function() {
         }
     }
 
-    // 데이터를 스토리지에 덮어쓰기
+    // 데이터를 스토리지에 덮어쓰기 (sync 모드면 localStorage 안 건드림)
     function saveStorage() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectionData));
+        if (!isSyncMode()) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(collectionData));
+        }
         notifyObservers();
     }
 
@@ -38,10 +52,15 @@ const ChecklistCore = (function() {
 
     // 멀티 탭 실시간 동기화 지원 (다른 탭에서 변경 시)
     window.addEventListener('storage', (e) => {
-        if (e.key === STORAGE_KEY) {
-            loadStorage();
-            notifyObservers();
+        if (e.key !== STORAGE_KEY) return;
+        // sync 모드인데 다른 탭이 localStorage를 변경했다 = 다른 탭에서 토글 OFF로 전환됨.
+        // 현재 탭은 stale 상태이므로 reload로 새 플래그/데이터를 받는다.
+        if (isSyncMode() && e.newValue !== null) {
+            window.location.reload();
+            return;
         }
+        loadStorage();
+        notifyObservers();
     });
 
     // 최초 로드 실행
