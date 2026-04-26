@@ -304,11 +304,14 @@
                     font-size: 18px;
                 }
 
-                /* 좁은 화면: 유저명 숨기고, 동기화 토글의 "동기화" 텍스트만 숨김 */
+                /* 좁은 화면: 유저명 숨김 */
                 .header-username-label {
                     display: none;
                 }
+            }
 
+            /* 진짜 좁은 폰(<=480px)에서만 동기화 라벨 숨김 */
+            @media (max-width: 480px) {
                 .sync-toggle-label {
                     display: none;
                 }
