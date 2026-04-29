@@ -1,6 +1,7 @@
 package com.heartopia.wiki.service;
 
 import com.heartopia.wiki.mapper.CollectionMapper;
+import com.heartopia.wiki.model.Achievement;
 import com.heartopia.wiki.model.AnimalCollection;
 import com.heartopia.wiki.model.BirdCollection;
 import com.heartopia.wiki.model.BugCollection;
@@ -361,4 +362,37 @@ public class CollectionService {
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
     public void deleteForageable(Integer id) { collectionMapper.deleteForageable(id); }
+
+    // ===================================================================
+    // 업적 (Achievement)
+    // ===================================================================
+
+    @Cacheable("allAchievements")
+    public List<Achievement> getAllAchievements() {
+        return collectionMapper.findAllAchievements();
+    }
+
+    @Cacheable("countAchievements")
+    public int getAchievementCount() {
+        return collectionMapper.countAllAchievements();
+    }
+
+    @Cacheable(value = "searchAchievements", key = "#keyword")
+    public List<Achievement> searchAchievements(String keyword) {
+        return collectionMapper.searchAchievements(keyword);
+    }
+
+    @Cacheable(value = "achievementDetail", key = "#name")
+    public Achievement getAchievementByName(String name) {
+        return collectionMapper.findAchievementByName(name);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    public void addAchievement(Achievement achievement) { collectionMapper.insertAchievement(achievement); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    public void updateAchievement(Achievement achievement) { collectionMapper.updateAchievement(achievement); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    public void deleteAchievement(Integer id) { collectionMapper.deleteAchievement(id); }
 }

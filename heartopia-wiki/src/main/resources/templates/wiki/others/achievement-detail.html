@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        .achievement-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .achievement-detail-container { grid-template-columns: 1fr; }
+        }
+
+        .ach-image-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid #f0f0f0;
+            position: sticky;
+            top: 180px;
+            height: fit-content;
+        }
+        .ach-image-area {
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .ach-image-area img {
+            max-width: 160px;
+            max-height: 160px;
+            object-fit: contain;
+        }
+        .ach-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+        .ach-category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .ach-category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .ach-category-tag.hidden-tag {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .ach-info-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid #f0f0f0;
+        }
+        .ach-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ach-section-title i { color: #ff8a80; }
+
+        .ach-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        .ach-info-table tr { border-bottom: 1px solid #f5f5f5; }
+        .ach-info-table tr:last-child { border-bottom: none; }
+        .ach-info-table td { padding: 12px 8px; }
+        .ach-info-table .info-label {
+            color: #888;
+            font-weight: 600;
+            width: 110px;
+            font-size: 0.95rem;
+        }
+        .ach-info-table .info-value {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fff8e1, #fffde7);
+            border-left: 4px solid #ffc107;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+        .tip-box-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #f57f17;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tip-box-content {
+            font-size: 0.92rem;
+            color: #5d4037;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .breadcrumb-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .breadcrumb-bar a { color: #666; text-decoration: none; transition: color 0.2s; }
+        .breadcrumb-bar a:hover { color: var(--link-color); }
+        .breadcrumb-bar .sep { color: #ccc; }
+        .breadcrumb-bar .current { color: var(--text-color); font-weight: 600; }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: var(--nav-hover, #f5f5f5);
+            color: var(--stat-label, #555);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .back-btn:hover { background: #e0e0e0; color: var(--text-color); }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="mw-body">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar">
+            <a href="/wiki"><i class="fas fa-home"></i> 위키</a>
+            <span class="sep">›</span>
+            <a href="/wiki/others/achievements">업적 도감</a>
+            <span class="sep">›</span>
+            <span class="current" th:text="${achievement.name}">업적 이름</span>
+        </div>
+
+        <!-- Detail Content -->
+        <div class="achievement-detail-container">
+
+            <!-- Left: Image Card -->
+            <div class="ach-image-card">
+                <div class="ach-image-area">
+                    <img th:if="${achievement.imageUrl != null}"
+                         th:src="${achievement.imageUrl}"
+                         th:alt="${achievement.name}">
+                    <i th:if="${achievement.imageUrl == null}"
+                       class="fas fa-trophy fa-5x text-warning"
+                       style="opacity: 0.7;"></i>
+                </div>
+
+                <h1 class="ach-name" th:text="${achievement.name}">업적 이름</h1>
+
+                <!-- 카테고리 태그 -->
+                <div class="ach-category-tags">
+                    <th:block th:each="cat : ${achievement.categoryList}">
+                        <span th:class="'ach-category-tag' + (${cat == '숨겨진'} ? ' hidden-tag' : '')"
+                              th:text="${cat}">카테고리</span>
+                    </th:block>
+                </div>
+            </div>
+
+            <!-- Right: Info Card -->
+            <div class="ach-info-card">
+                <div class="ach-section-title">
+                    <i class="fas fa-info-circle"></i> 업적 정보
+                </div>
+
+                <table class="ach-info-table">
+                    <tr>
+                        <td class="info-label"><i class="fas fa-tasks me-1"></i>달성 조건</td>
+                        <td class="info-value" th:text="${achievement.cond}">-</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label"><i class="fas fa-crown me-1"></i>획득 칭호</td>
+                        <td class="info-value">
+                            <span class="badge bg-warning text-dark fs-6 px-3 py-2"
+                                  th:text="${achievement.title}">칭호</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="info-label"><i class="fas fa-tag me-1"></i>카테고리</td>
+                        <td class="info-value" th:text="${achievement.categories}">-</td>
+                    </tr>
+                </table>
+
+                <!-- TIP 박스 (tip != null 인 경우만 표시) -->
+                <div th:if="${achievement.tip != null and !achievement.tip.isEmpty()}" class="tip-box">
+                    <div class="tip-box-title">
+                        <i class="fas fa-lightbulb"></i> 달성 팁
+                    </div>
+                    <div class="tip-box-content" th:text="${achievement.tip}">팁 내용</div>
+                </div>
+
+                <div class="mt-4">
+                    <a th:href="${listUrl}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

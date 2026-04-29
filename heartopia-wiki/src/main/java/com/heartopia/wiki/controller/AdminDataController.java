@@ -320,6 +320,33 @@ public class AdminDataController {
         return "redirect:/wiki/items/crops";
     }
 
+    // ======================== 업적 (Achievement) ========================
+    @PostMapping("/achievement/add")
+    public String addAchievement(Achievement achievement,
+                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        log.info("관리자 데이터 추가: 업적 '{}'", achievement.getName());
+        handleImageUpload(achievement, imageFile, "achievement", null);
+        collectionService.addAchievement(achievement);
+        return "redirect:/wiki/others/achievements";
+    }
+
+    @PostMapping("/achievement/update")
+    public String updateAchievement(Achievement achievement,
+                                    @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                    @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        log.info("관리자 데이터 수정: 업적 id={}", achievement.getId());
+        handleImageUpload(achievement, imageFile, "achievement", existingImageUrl);
+        collectionService.updateAchievement(achievement);
+        return "redirect:/wiki/others/achievements";
+    }
+
+    @PostMapping("/achievement/delete/{id}")
+    public String deleteAchievement(@PathVariable Integer id) {
+        log.info("관리자 데이터 삭제: 업적 id={}", id);
+        collectionService.deleteAchievement(id);
+        return "redirect:/wiki/others/achievements";
+    }
+
     // ======================== 이미지 처리 공통 메서드 ========================
 
     /**
@@ -384,6 +411,7 @@ public class AdminDataController {
         else if (entity instanceof CookingCollection e) return e.getName();
         else if (entity instanceof FlowerCollection e) return e.getName();
         else if (entity instanceof GardeningCollection e) return e.getName();
+        else if (entity instanceof Achievement e) return e.getName();
         return "unknown";
     }
 
@@ -393,6 +421,9 @@ public class AdminDataController {
         }
         if ("forageable".equals(category) || "forage".equals(category)) {
              return "/images/collections/forage/forage_" + itemName + ".webp";
+        }
+        if ("achievement".equals(category)) {
+            return "/images/achievements/" + itemName + ".webp";
         }
         return "/images/collections/" + category + "/" + category + "_" + itemName + ".webp";
     }
@@ -409,5 +440,6 @@ public class AdminDataController {
         else if (entity instanceof CookingCollection e) e.setImageUrl(imageUrl);
         else if (entity instanceof FlowerCollection e) e.setImageUrl(imageUrl);
         else if (entity instanceof GardeningCollection e) e.setImageUrl(imageUrl);
+        else if (entity instanceof Achievement e) e.setImageUrl(imageUrl);
     }
 }

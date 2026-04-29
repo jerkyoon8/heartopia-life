@@ -62,6 +62,7 @@ public class WikiController {
                 // 3. 기타 (Others)
                 List<CategoryItemDto> others = new ArrayList<>();
                 others.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/others/villages_icon.png", 21));
+                others.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", null, collectionService.getAchievementCount()));
 
                 model.addAttribute("basics", basics);
                 model.addAttribute("creative", creative);
@@ -186,6 +187,29 @@ public class WikiController {
                 return "wiki/others/villagers";
         }
 
+        @GetMapping("/others/achievements")
+        public String achievements(Model model) {
+                List<AchievementDto> list = collectionService.getAllAchievements().stream()
+                                .map(AchievementDto::from)
+                                .toList();
+                model.addAttribute("achievementList", list);
+                model.addAttribute("pageTitle", "업적 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 전체 업적 목록 - 조건 달성 시 획득하는 칭호 정보를 확인하세요.");
+                return "wiki/others/achievements";
+        }
+
+        @GetMapping("/others/achievements/{name}")
+        public String achievementDetail(@PathVariable String name, Model model) {
+                com.heartopia.wiki.model.Achievement item = collectionService.getAchievementByName(name);
+                if (item == null) return "redirect:/wiki/others/achievements";
+
+                model.addAttribute("achievement", item);
+                model.addAttribute("pageTitle", item.getName() + " - 업적");
+                model.addAttribute("pageDescription", "두근두근라이프 업적 " + item.getName() + " - " + item.getCond());
+                model.addAttribute("listUrl", "/wiki/others/achievements");
+                return "wiki/others/achievement-detail";
+        }
+
         @GetMapping("/checklist")
         public String checklist(Model model) {
                 // 1. 물고기
@@ -210,6 +234,9 @@ public class WikiController {
                         collectionService.getAllCookingIngredientMap();
                 cookings.forEach(c -> c.setIngredientList(ingredientMap.getOrDefault(c.getId(), List.of())));
                 model.addAttribute("cookingList", cookings);
+
+                // 7. 업적 (Achievement) - 별점 없이 체크만
+                model.addAttribute("achievementList", collectionService.getAllAchievements());
 
                 model.addAttribute("pageTitle", "수집 도감 (Checklist)");
                 model.addAttribute("pageDescription", "두근두근라이프 전체 수집품 진행도를 확인하고 나만의 도감을 완성해 보세요.");
@@ -465,6 +492,11 @@ public class WikiController {
                                                 "/wiki/others/villagers",
                                                 v.getSubTitle() != null ? v.getSubTitle() : "")));
 
+                collectionService.searchAchievements(searchKeyword)
+                                .forEach(a -> allResults.add(new SearchResultDto(a.getName(), "achievement", "업적",
+                                                "/wiki/others/achievements/" + UriUtils.encodePathSegment(a.getName(), StandardCharsets.UTF_8),
+                                                a.getTitle())));
+
                 if (allResults.size() == 1) {
                         return "redirect:" + allResults.get(0).detailUrl();
                 }
@@ -538,6 +570,11 @@ public class WikiController {
                                                 "name", v.getName(), "category", "villager", "label", "주민",
                                                 "url", "/wiki/others/villagers",
                                                 "sub", v.getSubTitle() != null ? v.getSubTitle() : "", "icon", "👤")));
+
+                collectionService.searchAchievements(q).forEach(a -> results.add(Map.of(
+                                "name", a.getName(), "category", "achievement", "label", "업적",
+                                "url", "/wiki/others/achievements/" + UriUtils.encodePathSegment(a.getName(), StandardCharsets.UTF_8),
+                                "sub", a.getTitle(), "icon", "🏆")));
 
                 return results.size() > 10 ? results.subList(0, 10) : results;
         }

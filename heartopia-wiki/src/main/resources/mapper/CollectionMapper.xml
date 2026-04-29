@@ -318,4 +318,43 @@
     <delete id="deleteCrop">DELETE FROM crop_collections WHERE id=#{id}</delete>
     <delete id="deleteForageable">DELETE FROM forageable_collections WHERE id=#{id}</delete>
 
+    <!-- ========== 업적 (Achievement) ========== -->
+    <sql id="achievementColumns">
+        id, categories, name, cond, title, tip, image_url, sort_order
+    </sql>
+
+    <select id="findAllAchievements" resultType="com.heartopia.wiki.model.Achievement">
+        SELECT <include refid="achievementColumns"/> FROM achievements ORDER BY sort_order ASC
+    </select>
+
+    <select id="findAchievementByName" resultType="com.heartopia.wiki.model.Achievement">
+        SELECT <include refid="achievementColumns"/> FROM achievements WHERE name = #{name}
+    </select>
+
+    <select id="searchAchievements" resultType="com.heartopia.wiki.model.Achievement">
+        SELECT <include refid="achievementColumns"/> FROM achievements
+        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+           OR cond LIKE CONCAT('%', #{keyword}, '%')
+           OR title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY sort_order ASC
+    </select>
+
+    <select id="countAllAchievements" resultType="int">
+        SELECT count(*) FROM achievements
+    </select>
+
+    <insert id="insertAchievement" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO achievements (categories, name, cond, title, tip, image_url, sort_order)
+        VALUES (#{categories}, #{name}, #{cond}, #{title}, #{tip}, #{imageUrl}, #{sortOrder})
+    </insert>
+
+    <update id="updateAchievement">
+        UPDATE achievements
+        SET categories=#{categories}, name=#{name}, cond=#{cond}, title=#{title},
+            tip=#{tip}, image_url=#{imageUrl}, sort_order=#{sortOrder}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteAchievement">DELETE FROM achievements WHERE id=#{id}</delete>
+
 </mapper>

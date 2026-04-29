@@ -1,5 +1,6 @@
 package com.heartopia.wiki.mapper;
 
+import com.heartopia.wiki.model.Achievement;
 import com.heartopia.wiki.model.AnimalCollection;
 import com.heartopia.wiki.model.BirdCollection;
 import com.heartopia.wiki.model.BugCollection;
@@ -140,4 +141,13 @@ public interface CollectionMapper {
     void insertFlowerImage(FlowerImage image);
     void deleteFlowerImage(@Param("id") Long id);
     void deleteFlowerImagesByFlowerId(@Param("flowerId") Long flowerId);
+
+    // === 업적 (Achievement) ===
+    List<Achievement> findAllAchievements();
+    Achievement findAchievementByName(@Param("name") String name);
+    List<Achievement> searchAchievements(@Param("keyword") String keyword);
+    int countAllAchievements();
+    void insertAchievement(Achievement achievement);
+    void updateAchievement(Achievement achievement);
+    void deleteAchievement(Integer id);
 }

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <!-- Wiki Filter JS -->
+    <script src="/js/wiki-filter.js?v=1.8" defer></script>
+</head>
+
+<body>
+    <!-- Navbar (Common Fragment) -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="mw-body">
+        <div class="page-header"><i class="fas fa-trophy fa-2x text-warning"></i>
+            <h1>업적 도감 (Achievements)
+                <span sec:authorize="hasRole('ADMIN')">
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addAchievementModal" style="font-size: 0.5em; vertical-align: middle;">
+                        <i class="fas fa-plus me-1"></i> 업적 추가
+                    </button>
+                </span>
+            </h1>
+        </div>
+        <p class="text-secondary mb-4">하트피아에서 특정 조건을 달성하면 획득할 수 있는 칭호 목록입니다.</p>
+
+        <!-- Filter Bar -->
+        <div class="wiki-filter-container">
+            <div class="filter-top-tier">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="업적 이름 검색...">
+                </div>
+
+                <!-- 수집된 항목 숨기기 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-hide-collected">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-eye-slash text-secondary"></i> 수집된 항목 숨기기
+                    </label>
+                </div>
+
+                <button type="button" class="btn-filter-toggle" onclick="document.getElementById('advancedFilters').classList.toggle('show')">
+                    <i class="fas fa-sliders-h"></i> 상세 옵션 <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+
+                <button type="button" id="resetBtn" class="btn-reset-icon" title="초기화">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </div>
+
+            <div class="filter-advanced-tier" id="advancedFilters">
+
+                <!-- 카테고리 필터 -->
+                <div class="advanced-section">
+                    <div class="section-label"><i class="fas fa-tag"></i> 카테고리</div>
+                    <div class="advanced-controls-box">
+                        <button class="filter-btn active" data-filter="categories" data-value="all">전체</button>
+                        <button class="filter-btn" data-filter="categories" data-value="낚시">🎣 낚시</button>
+                        <button class="filter-btn" data-filter="categories" data-value="요리">🍳 요리</button>
+                        <button class="filter-btn" data-filter="categories" data-value="새 관찰">🐦 새 관찰</button>
+                        <button class="filter-btn" data-filter="categories" data-value="곤충 채집">🦋 곤충 채집</button>
+                        <button class="filter-btn" data-filter="categories" data-value="원예">🌱 원예</button>
+                        <button class="filter-btn" data-filter="categories" data-value="고양이/강아지">🐾 고양이/강아지</button>
+                        <button class="filter-btn" data-filter="categories" data-value="생활">🏠 생활</button>
+                        <button class="filter-btn" data-filter="categories" data-value="이벤트">🎉 이벤트</button>
+                        <button class="filter-btn" data-filter="categories" data-value="숨겨진">🔒 숨겨진</button>
+                    </div>
+                </div>
+
+                <!-- 보기 및 정렬 -->
+                <div class="advanced-section">
+                    <div class="section-label"><i class="fas fa-sort-amount-down"></i> 결과 정렬 및 보기</div>
+                    <div class="advanced-controls-box">
+                        <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="wiki-grid-layout" id="wikiGrid">
+            <div class="no-results" id="noResults"><i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <!-- Achievement Card Loop -->
+            <div th:each="achievement : ${achievementList}"
+                 class="wiki-item-card sync-item"
+                 th:data-sync-key="'achievement_' + ${achievement.name}"
+                 th:data-name="${achievement.name}"
+                 th:data-categories="${achievement.categories}">
+
+                <!-- sync-container 적용 -->
+                <div class="wiki-item-image sync-container">
+                    <div class="sync-check-btn" title="달성 처리 (0별)"><i class="fas fa-check"></i></div>
+
+                    <img th:if="${achievement.imageUrl != null}" th:src="${achievement.imageUrl}" th:alt="${achievement.name}"
+                        style="max-height: 100px; object-fit: contain;">
+                    <i th:class="'fas fa-trophy fa-4x text-warning fallback-icon'"
+                        th:style="${achievement.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                </div>
+
+                <div class="wiki-item-info">
+                    <a th:href="@{/wiki/others/achievements/{name}(name=${achievement.name})}"
+                       class="wiki-item-name mb-0"
+                       style="text-decoration: none; color: inherit;">
+                        <span th:text="${achievement.name}">업적 이름</span>
+                    </a>
+                </div>
+
+                <table class="wiki-item-stats">
+                    <tr>
+                        <td class="stat-label">조건</td>
+                        <td class="stat-value" th:text="${achievement.cond}">달성 조건</td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">칭호</td>
+                        <td class="stat-value">
+                            <span class="badge bg-warning text-dark" th:text="${achievement.title}">칭호 이름</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 관리자: 수정/삭제 버튼 -->
+                <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addAchievementModal" data-edit-title="업적 수정"
+                        th:data-item="${'&#123;&quot;id&quot;:' + achievement.id + ',&quot;name&quot;:&quot;' + achievement.name + '&quot;,&quot;cond&quot;:&quot;' + (achievement.cond != null ? achievement.cond : '') + '&quot;,&quot;title&quot;:&quot;' + (achievement.title != null ? achievement.title : '') + '&quot;,&quot;imageUrl&quot;:&quot;' + (achievement.imageUrl != null ? achievement.imageUrl : '') + '&quot;&#125;'}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete"
+                        th:data-name="${achievement.name}" th:data-delete-url="${'/wiki/admin/data/achievement/delete/' + achievement.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>조건</th>
+                        <th>칭호</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="achievement : ${achievementList}" class="wiki-table-row"
+                        th:data-name="${achievement.name}"
+                        th:data-categories="${achievement.categories}">
+                        <td>
+                            <img th:if="${achievement.imageUrl != null}" th:src="${achievement.imageUrl}" th:alt="${achievement.name}" class="table-thumb">
+                            <div th:unless="${achievement.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-trophy"></i></div>
+                        </td>
+                        <td>
+                            <span class="table-name-link" th:text="${achievement.name}">이름</span>
+                        </td>
+                        <td th:text="${achievement.cond}">조건</td>
+                        <td>
+                            <span class="badge bg-warning text-dark" th:text="${achievement.title}">칭호</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 관리자 전용: 업적 추가/수정 모달 -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <div class="modal fade" id="addAchievementModal" tabindex="-1" data-add-title="새 업적 추가">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+                        <div class="modal-header" style="background:var(--modal-header-bg);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;">
+                            <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 업적 추가</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
+                        </div>
+                        <form th:action="@{/wiki/admin/data/achievement/add}" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/achievement/add" data-update-action="/wiki/admin/data/achievement/update">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="id" value="" />
+                            <div class="modal-body" style="padding:24px;">
+                                <div class="row g-3">
+                                    <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
+                                    <div class="col-md-6"><label class="form-label fw-bold">칭호 *</label><input type="text" name="title" class="form-control" required placeholder="달성 시 획득 칭호"></div>
+                                    <div class="col-12"><label class="form-label fw-bold">달성 조건 *</label><input type="text" name="cond" class="form-control" required placeholder="예: 물고기 50마리 낚기"></div>
+                                    <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
+                                        <div class="mb-2">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="imageMode" value="DEFAULT" checked> 기본 이미지
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="imageMode" value="UPLOAD"> 직접 업로드
+                                            </label>
+                                        </div>
+                                        <div class="img-upload-wrapper" style="display:none;">
+                                            <input type="file" name="imageFile" class="form-control img-file-input" accept="image/*">
+                                            <input type="hidden" name="existingImageUrl" />
+                                            <div class="img-preview mt-2" style="display:none;"><img src="" alt="미리보기" style="max-height:80px;object-fit:contain;border-radius:8px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                <button type="submit" class="btn btn-admin-submit text-white" style="background:var(--modal-header-bg);">추가하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer (Common Fragment) -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // WikiFilter 초기화 (검색, 정렬, 보기 토글)
+                new WikiFilter({
+                    gridId: 'wikiGrid',
+                    tableId: 'wikiTable',
+                    itemSelector: '.wiki-item-card',
+                    filters: []
+                });
+
+                // 카테고리 필터 버튼 직접 구현 (WikiFilter는 select 방식만 지원함)
+                let activeCategory = 'all';
+
+                document.querySelectorAll('.filter-btn[data-filter="categories"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.filter-btn[data-filter="categories"]').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        activeCategory = this.dataset.value;
+                        applyCategoryFilter();
+                    });
+                });
+
+                function applyCategoryFilter() {
+                    // 카드 필터
+                    document.querySelectorAll('#wikiGrid .wiki-item-card').forEach(card => {
+                        if (activeCategory === 'all') {
+                            card.style.display = '';
+                        } else {
+                            const cats = (card.dataset.categories || '').split(',').map(s => s.trim());
+                            card.style.display = cats.includes(activeCategory) ? '' : 'none';
+                        }
+                    });
+                    // 테이블 행 필터
+                    document.querySelectorAll('#wikiTable .wiki-table-row').forEach(row => {
+                        if (activeCategory === 'all') {
+                            row.style.display = '';
+                        } else {
+                            const cats = (row.dataset.categories || '').split(',').map(s => s.trim());
+                            row.style.display = cats.includes(activeCategory) ? '' : 'none';
+                        }
+                    });
+                    // 검색 결과 없음 체크
+                    const visible = document.querySelectorAll('#wikiGrid .wiki-item-card:not([style*="display: none"])');
+                    const noResults = document.getElementById('noResults');
+                    if (noResults) noResults.style.display = visible.length === 0 ? 'block' : 'none';
+                }
+            });
+        </script>
+    <script src="/js/admin-data.js?v=1.1" defer></script>
+</body>
+
+</html>

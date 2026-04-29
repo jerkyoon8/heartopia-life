@@ -93,6 +93,15 @@
                 <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-cooking"></div></div>
                 <div class="cat-counts"><span id="count-cooking">0</span> / <span th:text="${cookingList.size()}">0</span></div>
             </div>
+            <!-- 7. 업적 -->
+            <div class="category-card" data-target="achievement" th:attr="data-total=${achievementList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-trophy"></i>
+                    <span class="category-name">업적</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-achievement"></div></div>
+                <div class="cat-counts"><span id="count-achievement">0</span> / <span th:text="${achievementList.size()}">0</span></div>
+            </div>
         </div>
 
         <!-- 액션 바 -->
@@ -225,7 +234,7 @@
                 </div>
                 <div class="items-grid">
                     <div class="item-row collectible-item" th:each="item : ${cookingList}" th:attr="data-key=|cooking_${item.name}|" th:data-searchname="${item.name}">
-                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-checkbox" title="수집 수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
@@ -233,6 +242,27 @@
                             <i class="fas fa-star star-icon" data-val="3"></i>
                             <i class="fas fa-star star-icon" data-val="4"></i>
                             <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 업적 컨테이너 (별점 없음, 체크만) -->
+            <div class="category-container" id="container-achievement" data-category="achievement">
+                <div class="list-header">
+                    <i class="fas fa-trophy"></i>
+                    <h3>업적 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${achievementList}"
+                         th:attr="data-key=|achievement_${item.name}|"
+                         th:data-searchname="${item.name}"
+                         style="justify-content: flex-start; gap: 12px;">
+                        <div class="item-checkbox" title="달성 표시"><i class="fas fa-check"></i></div>
+                        <div style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
+                            <div class="item-name" th:text="${item.name}">이름</div>
+                            <div style="font-size: 0.75rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                 th:text="${item.cond}">조건</div>
                         </div>
                     </div>
                 </div>
