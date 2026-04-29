@@ -74,7 +74,18 @@
                         <i class="fas fa-moon text-warning"></i> 꿈의 명암만 표시
                     </label>
                 </div>
-                
+
+                <!-- 몰티즈 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-maltese-event">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-dog text-info"></i> 몰티즈만 표시
+                    </label>
+                </div>
+
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -89,6 +100,7 @@
                 <select id="eventFilter" style="display: none;">
                     <option value="all">모든 이벤트</option>
                     <option value="꿈의 명암">꿈의 명암</option>
+                    <option value="몰티즈">몰티즈</option>
                 </select>
 
                 <button type="button" class="btn-filter-toggle" onclick="document.getElementById('advancedFilters').classList.toggle('show')">
@@ -257,24 +269,35 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnDream = document.getElementById('btn-dream-event');
+            const btnMaltese = document.getElementById('btn-maltese-event');
             const eventFilter = document.getElementById('eventFilter');
+
+            function applyEventToggle(activeName) {
+                if (!eventFilter) return;
+                eventFilter.value = activeName || 'all';
+                eventFilter.dispatchEvent(new Event('change'));
+            }
 
             if (btnDream && eventFilter) {
                 btnDream.addEventListener('change', function() {
-                    if(this.checked) {
-                        eventFilter.value = '꿈의 명암';
-                    } else {
-                        eventFilter.value = 'all';
-                    }
-                    eventFilter.dispatchEvent(new Event('change'));
+                    if (this.checked && btnMaltese) btnMaltese.checked = false;
+                    applyEventToggle(this.checked ? '꿈의 명암' : null);
                 });
-                
-                const resetBtn = document.getElementById('resetBtn');
-                if (resetBtn) {
-                    resetBtn.addEventListener('click', () => {
-                        btnDream.checked = false;
-                    });
-                }
+            }
+
+            if (btnMaltese && eventFilter) {
+                btnMaltese.addEventListener('change', function() {
+                    if (this.checked && btnDream) btnDream.checked = false;
+                    applyEventToggle(this.checked ? '몰티즈' : null);
+                });
+            }
+
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (btnDream) btnDream.checked = false;
+                    if (btnMaltese) btnMaltese.checked = false;
+                });
             }
 
             new WikiFilter({
