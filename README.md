@@ -1,264 +1,185 @@
-# 하토피아 위키 (Heartopia Wiki)
+# 두두타 도감
 
-**평일 DAU 630 / 주말 DAU 1,100+ | 오픈 4일째 GA4 기준 | 1인 개발 · 운영**
+Heartopia(두근두근타운) 유저를 위한 종합 도감 및 인터랙티브 지도 서비스
 
-Heartopia 게임 종합 도감 웹서비스 — 주민, 컬렉션, 인터랙티브 지도, 기프트코드
+1인 개발로 운영 중이며, 지난 7일간 GA4 기준 활성 사용자 3,800명과 페이지 조회수 9만 회를 기록했습니다.
 
-🌐 [heartopia-life.me](https://heartopia-life.me)
+서비스명은 `두두타 도감`이며, 저장소는 `heartopia-wiki`, 배포 도메인은 [heartopia-life.me](https://heartopia-life.me) 를 사용하고 있습니다.
 
+<img width="1233" height="1268" alt="brave_pBTtTxT4Kb" src="https://github.com/user-attachments/assets/2cb817b3-8896-4d40-876d-f7d326f92e91" />
 ---
 
-## 운영 현황
+두두타 도감은 흩어져 있는 Heartopia 정보를 한 곳에서 빠르게 찾을 수 있도록 만든 서비스입니다.
+주민, 수집 도감, 작물, 요리, 선물 취향, 기프트코드, 지도 정보를 한 곳에서 탐색할 수 있도록 구성했습니다.
 
-오픈 직후 실측 DAU (GA4 기준):
+## 주요 화면
 
-| 날짜 | 요일 | DAU |
-|------|------|-----|
-| 2026-04-19 | 일 | **1,100** |
-| 2026-04-20 | 월 | 630 |
-| 2026-04-21 | 화 | 680 |
 
-1인 개발 · 운영 중. 외부 유입으로 자연 성장.
 
----
+### 1. 통합 검색
 
-## 아키텍처
+<img width="1549" height="1097" alt="search01" src="https://github.com/user-attachments/assets/e1281b04-1a36-42d0-8b58-215ec303b128" />
 
-```
-[사용자]
-   ↓
-[Cloudflare CDN · DDoS 방어]
-   ↓
-[Ubuntu Server]
-  ├── Nginx  (리버스 프록시 · Rate Limiting · SSL · 악성 경로 차단)
-  │     ↓ Blue-Green 포트 전환
-  ├── Docker: app-blue (8080)  ←→  app-green (8080)
-  └── Docker: MySQL 8
-```
+메인 화면에서 검색어를 입력하면 주민, 아이템, 도감 데이터를 통합 검색할 수 있도록 구현했습니다.
+입력 중에는 디바운싱을 적용해 불필요한 API 호출을 줄이고 검색 응답 흐름을 안정화했습니다.
 
-**CI/CD 파이프라인**: `git push origin main` → GitHub Actions (Self-Hosted Runner) → `deploy.sh` 자동 실행 → 무중단 전환
 
----
+### 2. 도감 화면
 
-## 실운영 트러블슈팅
+<img width="1278" height="1276" alt="brave_Pw3mG1KRr9" src="https://github.com/user-attachments/assets/a3ab1da8-eb2b-4046-b273-dcefffa2b821" />
 
-### 1. Blue-Green 무중단 배포 — Docker Inode 캐싱 버그 해결
 
-**배경**: `sed -i`로 `nginx.conf`를 수정하면 Linux가 파일의 Inode를 새로 발급합니다.
-Docker 바인드 마운트는 Inode 기준으로 파일을 추적하기 때문에 변경된 내용을 인식하지 못하는 버그가 있습니다. Nginx 설정을 바꿔도 재시작 후 이전 설정이 그대로 적용되는 문제.
 
-**해결**: `/tmp`에 복사 후 `cp`로 원본 덮어씌기. Inode는 유지되면서 내용만 교체.
+물고기, 새, 곤충 등 주요 도감 데이터를 카테고리와 필터 중심으로 탐색할 수 있도록 구성했습니다.
+많은 데이터를 한 화면에서 비교하고 탐색할 수 있도록 정보 구조를 정리했습니다.
 
-```bash
-# deploy.sh 핵심 로직
-cp nginx.conf /tmp/nginx.conf.tmp
-sed -i "s/app-blue/app-green/g" /tmp/nginx.conf.tmp
-cp /tmp/nginx.conf.tmp nginx.conf   # Inode 유지 → Docker가 변경 감지
-docker compose restart nginx
-```
 
-헬스체크: 신규 컨테이너가 Spring Boot를 완전히 로딩하기 전에 트래픽을 넘기면 502가 발생합니다. `curl`로 2초 간격 최대 30회(60초) 폴링하여 HTTP 200 확인 후 전환.
 
-### 2. SQL Injection 공격 탐지 및 차단 (2026-04-19)
+### 3. 인터랙티브 지도
 
-DAU 1,100을 기록한 당일, 단일 외부 IP에서 **9,996건의 요청**이 단시간에 집중됐습니다.
-Nginx 로그를 IP별로 집계해 공격을 탐지하고 직접 대응했습니다.
+<img width="1549" height="1097" alt="interactive_map01" src="https://github.com/user-attachments/assets/00680e5a-3aaf-4868-84a6-3e9dddc1aec8" />
 
-```bash
-# 탐지 명령
-docker logs deploy-nginx-1 2>&1 | awk '{print $1}' | sort | uniq -c | sort -rn | head -20
-```
 
-**공격 패턴** — HTTP Referer 헤더에 SQL 페이로드 삽입:
-```
-"if(now()=sysdate(),sleep(15),0)"       ← Time-based Blind SQLi
-"SELECT 463 FROM PG_SLEEP(15))--"       ← Time-based Blind SQLi
-"-1 OR 2+878-878-1=0+0+0+1 --"         ← Boolean-based SQLi
-```
-
-**장애 메커니즘**: 대량 요청 → Tomcat 스레드 풀(200개) 고갈 → 큐 적체 → 502 Bad Gateway
-
-추가로 ThinkPHP RCE 익스플로잇, `.git/config` 탈취 시도 등 다수의 봇 스캔도 앱 로그에서 확인했습니다.
-Docker 볼륨 마운트 덕분에 컨테이너 재시작 후에도 로그가 보존되어 사고 분석이 가능했습니다.
-
-**대응 조치**:
-```nginx
-# nginx.conf
-limit_req_zone $binary_remote_addr zone=req_limit:10m rate=20r/s;
-
-server {
-    server_tokens off;                          # Nginx 버전 정보 숨김
-
-    limit_req zone=req_limit burst=30 nodelay;  # 초당 20개 제한, burst 30
-    limit_req_status 429;
-
-    location ~* "\.php$" { return 444; }        # PHP 스캔 차단 (Java 서버)
-    location ~* "/\.git"  { return 444; }       # Git 설정 탈취 차단
-
-    proxy_connect_timeout 10s;
-    proxy_read_timeout    60s;
-}
-```
-
-> `444`: Nginx 전용 응답 코드. 응답 본문 없이 연결을 즉시 끊어 공격 도구에 아무 정보도 제공하지 않음.
-
-### 3. Nginx restart vs reload — 504/502 이슈
-
-**문제**: 배포 중 `docker compose restart nginx` 사용 시, Cloudflare와 맺어진 keepalive 연결을
-구 worker가 끊기 전에 트래픽을 받아 502를 리턴하는 현상.
-
-**해결**: `nginx -s reload` + 30초 drain 대기. reload는 신규 요청은 새 worker가 받고,
-기존 연결은 구 worker가 정상 처리 후 종료.
-
-> 관련 커밋: `a3ff7fa`, `9110802`
-
-### 4. healthwatch.sh — 5분 주기 무인 자동 복구
-
-장애 초기에는 3번 모두 수동 복구. 자동화 이후 야간 장애도 5분 이내 무인 복구.
-
-```bash
-# crontab: */5 * * * * /bin/bash ~/heartopia-life/deploy/healthwatch.sh
-
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://heartopia-life.me)
-if [[ "$HTTP_STATUS" != "200" && "$HTTP_STATUS" != "301" && "$HTTP_STATUS" != "302" ]]; then
-    docker compose restart app-$ACTIVE
-    # 재확인 후 실패 시 nginx도 재시작
-fi
-# 모든 이벤트를 deploy/logs/healthwatch.log에 기록
-```
-
-### 5. MapController 병목 제거 — 1051ms → 205ms (81% 개선)
-
-코드에 미리 심어둔 AOP 성능 모니터링(`PerformanceLoggingAspect`)이 경고를 포착했습니다.
-
-```
-[SLOW] MapController.getPins 실행 시간: 1051ms (임계값 1000ms 초과!)
-```
-
-**원인**: 지도 핀 약 430개를 조회할 때, 각 핀마다 도감 전체 리스트를 선형 탐색 (`Stream.filter`)하는 O(N × M) 구조.
-430개 핀 × 도감 100개 = **43,000번 반복 스캔**.
-
-```java
-// Before: O(N × M) — 매 핀마다 전체 리스트 재스캔
-pins.forEach(pin ->
-    collectionService.getAllFish().stream()
-        .filter(f -> f.getName().equals(pin.getName()))
-        ...
-);
-
-// After: O(N + M) — 1번만 로드 후 HashMap 즉시 색인
-Map<String, FishCollection> fishMap = collectionService.getAllFish().stream()
-    .collect(Collectors.toMap(FishCollection::getName, f -> f));
-
-pins.forEach(pin -> {
-    if (fishMap.containsKey(pin.getName())) {
-        FishCollection f = fishMap.get(pin.getName());  // O(1)
-        ...
-    }
-});
-```
-
-Redis 같은 외부 캐시 없이 순수 Java 자료구조 최적화만으로 해결.
-
-### 6. Blue-Green Health Check — 302 오진 롤백 버그
-
-배포 스크립트가 신규 컨테이너 정상 기동 후에도 "비정상"으로 판정하여 자동 롤백하는 현상.
-
-**원인**: Spring Security가 Root(`/`) 요청을 `/wiki`로 302 리다이렉트하는데, Health Check가 `200`만 정상으로 인식.
-
-**해결**: 조건문에 `302`를 정상 상태로 편입.
-
-```bash
-if [[ "$HTTP_CODE" == "200" || "$HTTP_CODE" == "302" ]]; then
-    # healthy — 트래픽 전환 진행
-fi
-```
-
----
-
-## 코드 설계 포인트
-
-### Application-level Aggregation (DB 부하 분산)
-
-인터랙티브 지도 마커와 도감 데이터를 DB JOIN 대신 Java Stream API로 Application 레이어에서 병합.
-서로 다른 테이블 간 무거운 JOIN을 피하고 DB 부하를 분산.
-
-```java
-markers.forEach(marker ->
-    items.stream()
-        .filter(item -> item.getId().equals(marker.getItemId()))
-        .findFirst()
-        .ifPresent(marker::setItemDetail)
-);
-```
-
-### AOP 전역 예외 처리 + 성능 모니터링
-
-`@ControllerAdvice`로 중앙 집중 예외 처리. `Accept` 헤더 분석으로 비동기 요청(JSON 응답)과
-페이지 요청(error.html 리다이렉트)을 분기. `NoResourceFoundException`(이미지 404)은 로그 레벨을
-낮춰 모니터링 노이즈 제거.
-
-별도로 `PerformanceLoggingAspect`를 구성해 임계값(1000ms) 초과 시 `[SLOW]` 경고를 남겨
-사전에 병목을 탐지. MapController 1051ms 이슈가 이 모니터링으로 발견됐습니다.
-
-### CSRF 토큰 — Fetch API 연동
-
-Spring Security CSRF 활성화 상태에서 ES6 Fetch API로 POST 요청 시
-HTML `<meta>` 태그의 `_csrf` 토큰을 읽어 HTTP Header에 직접 주입.
-
-### JVM + HikariCP 튜닝
-
-```
--Xms256m -Xmx1g -XX:+ExitOnOutOfMemoryError
-```
-
-OOM 발생 시 즉시 종료 → Docker restart 정책으로 빠른 재기동. HikariCP 커넥션 풀 20 고정.
-Gzip 압축으로 네트워크 전송량 **70% 절감** (텍스트 중심 도감 데이터 특성상 압축 효율 높음).
-정적 리소스에 1년 브라우저 캐시 + Content Hash 전략 적용 — 파일 변경 시 즉시 새 캐시 발급.
-
----
-
-## 기술 스택
-
-| 영역 | 기술 |
-|------|------|
-| Backend | Spring Boot 3.4.2, Java 17 |
-| ORM | MyBatis |
-| DB | MySQL 8.0 |
-| Frontend | Thymeleaf, Vanilla JS, Vue.js (부분) |
-| 인프라 | Docker Compose, Nginx, Cloudflare |
-| CI/CD | GitHub Actions Self-Hosted Runner |
-| 인증 | Spring Security Form Login (Admin) + Google OAuth 2.0 |
-| 모니터링 | GA4, healthwatch.sh (cron), Docker 볼륨 로그 보존 |
-
----
+도감 데이터와 지도 데이터를 연결해, 선택한 항목의 위치를 지도에서 바로 확인할 수 있도록 구현했습니다.
+핀 클릭과 위치 하이라이트를 통해 위치 기반 탐색 경험을 강화했습니다.
 
 ## 주요 기능
 
-- **주민 도감** — 전체 주민 정보, 선물 취향, 역할
-- **컬렉션 도감** — 물고기, 곤충, 새, 채집물, 동물
-- **아이템** — 요리, 작물, 꽃
-- **기프트코드** — 쿠폰 목록 + 관리자 등록/관리
-- **인터랙티브 지도** — 핀 기반 커스텀 마커, 비동기 CRUD
-- **관리자 페이지** — Spring Security 기반 어드민 전용 데이터 관리
+- 통합 검색: 주민, 아이템, 수집 도감 데이터를 한 번에 탐색할 수 있는 검색 기능
+- 인터랙티브 지도: 도감 데이터와 연계해 위치를 지도에서 바로 확인할 수 있는 기능
+- 로그인 및 저장 기능: Google OAuth 기반 로그인과 수집도감 저장 기능을 제공하며, 비로그인 상태에서는 `localStorage`, 로그인 시에는 DB와 연동해 기기 간 이어서 사용할 수 있도록 구성했습니다.
+- 관리자 기능: 기프트코드, 문의, 공지 데이터를 관리할 수 있는 운영 페이지
 
----
 
-## 로컬 실행
+## 어떤 문제를 해결하는 서비스인가?
+
+Heartopia(두근두근타운) 관련 정보는 여러 커뮤니티 게시글과 이미지에 흩어져 있어,
+유저가 원하는 정보를 다시 찾기 어렵고 위치 정보까지 함께 확인하기도 번거로웠습니다.
+
+두두타 도감은 주민, 수집 도감, 작물, 요리, 선물 취향, 기프트코드, 위치 정보를 한 곳에서 탐색할 수 있도록 구성한 서비스입니다.
+정보 조회에서 끝나지 않고, 검색 결과와 지도 기능을 연결해 실제 플레이에 바로 활용할 수 있도록 설계했습니다.
+
+
+## 핵심 성과
+
+- 지난 7일간 GA4 기준 활성 사용자 3,800명과 페이지 조회수 9만 회를 기록했습니다.
+- 지도 핀 조회 로직을 개선해 응답 시간을 1051ms에서 205ms로 단축했습니다. (Spring AOP 로그로 측정)
+- GitHub Actions, Docker Compose, Nginx 기반으로 배포 및 운영 자동화 환경을 구성했습니다.
+
+<img width="793" height="405" alt="g4a_info" src="https://github.com/user-attachments/assets/6566bbd8-96f7-4d7a-b48a-865b1e075cde" />
+
+
+## 구현 영역
+
+- 백엔드: 도감/지도/검색 기능 API 및 비즈니스 로직 구현
+- 데이터: MySQL 스키마 설계 및 MyBatis 기반 데이터 접근 로직 작성
+- 인증: Google OAuth 로그인 및 관리자 인증 기능 구현
+- 프론트엔드: Thymeleaf 기반 화면 구성과 JavaScript, Fetch API 기반 인터랙션 구현
+- 인프라/운영: Docker Compose, Nginx, GitHub Actions 기반 배포 및 운영 자동화 구성
+
+
+## 기술 스택
+
+- Backend: Java 17, Spring Boot, Spring Security, MyBatis
+- Database: MySQL 8
+- Frontend: Thymeleaf, JavaScript, Fetch API
+- Infra: Docker Compose, Nginx, Cloudflare
+- Deployment: GitHub Actions, Self-Hosted Runner
+- Monitoring: GA4, healthwatch.sh, Discord Webhook
+
+
+
+
+## 아키텍처
+
+```mermaid
+graph LR
+    User[User] --> CF[Cloudflare]
+    CF --> Nginx[Nginx]
+
+    subgraph Server[Ubuntu Server]
+        direction LR
+        Nginx --> Blue[Spring Boot Blue]
+        Nginx --> Green[Spring Boot Green]
+        Blue --> DB[(MySQL 8)]
+        Green --> DB
+    end
+
+    subgraph Deploy[CI/CD Pipeline]
+        direction LR
+        Local[Local Development] --> GitHub[GitHub]
+        GitHub --> Actions[GitHub Actions]
+        Actions --> Runner[Self-Hosted Runner]
+        Runner --> DeployScript[deploy.sh]
+        DeployScript --> Nginx
+        DeployScript --> Blue
+        DeployScript --> Green
+    end
+
+    subgraph Ops[Operations]
+        direction TB
+        Health[healthwatch.sh] --> Blue
+        Health --> Green
+        Health --> Discord[Discord Webhook]
+    end
+
+    OAuth[Google OAuth 2.0] --> Blue
+    OAuth --> Green
+```
+
+Cloudflare와 Nginx를 거쳐 Spring Boot 애플리케이션으로 요청을 전달하고,
+GitHub Actions와 Self-Hosted Runner 기반의 Blue-Green 배포 및 운영 자동화를 구성했습니다.
+
+
+
+
+## 대표 트러블슈팅
+
+
+
+### 1. Blue-Green 배포 안정화
+
+배포 과정에서 신규 컨테이너가 완전히 기동되기 전에 트래픽이 전환되면서 `502 Bad Gateway`가 발생하는 문제가 있었습니다.  
+`deploy.sh`에 헬스 체크 로직을 추가해 신규 컨테이너가 정상 응답을 반환한 뒤에만 트래픽을 전환하도록 수정했습니다.
+
+또한 Nginx 설정 반영 방식과 트래픽 전환 흐름을 조정해, GitHub Actions와 Self-Hosted Runner 기반의 무중단 배포 환경을 안정화했습니다.
+
+### 2. 비정상 트래픽 차단 및 운영 보호
+
+실서비스 운영 중 외부 봇과 비정상 요청이 집중되면서 서버 응답이 불안정해지는 문제가 있었습니다.  
+Nginx `rate limiting`, 악성 경로 차단, 타임아웃 조정을 적용해 요청을 제어하고, 운영 로그를 바탕으로 반복되는 공격 패턴에 대응했습니다.
+
+이를 통해 서비스 장애 가능성을 낮추고, 운영 중 발생하는 비정상 트래픽에 대한 방어 체계를 구성했습니다.
+
+### 3. 지도 조회 성능 개선
+
+지도 핀 조회 과정에서 각 핀마다 도감 데이터를 반복 탐색하는 구조로 인해 응답 속도가 저하되는 문제가 있었습니다.  
+기존의 반복 탐색 구조를 `HashMap` 기반 조회로 변경해 데이터 매핑 비용을 줄였고, Spring AOP 로그 기준 응답 시간을 `1051ms`에서 `205ms`로 단축했습니다.
+
+실서비스 기능을 유지한 상태에서 별도 캐시 서버 없이 애플리케이션 레벨 최적화만으로 성능을 개선했습니다.
+
+
+
+
+## 로컬 실행 방법
 
 ```bash
-# 1. MySQL 데이터베이스 생성
+# 1. 저장소 클론
+git clone https://github.com/jerkyoon8/heartopia-life.git
+cd heartopia-life/heartopia-wiki
+
+# 2. MySQL 데이터베이스 생성
 mysql -u root -p -e "CREATE DATABASE heartopia_db;"
 
-# 2. 환경변수 파일 생성
-# heartopia-wiki/src/main/resources/application-secret.properties
-echo "DB_PASSWORD=비밀번호" > heartopia-wiki/src/main/resources/application-secret.properties
+# 3. 환경변수 파일 생성
+# src/main/resources/application-secret.properties
+DB_PASSWORD=your_mysql_password
 
-# 3. 실행
-cd heartopia-wiki
+# 4. 애플리케이션 실행
 ./gradlew bootRun
 ```
 
----
+애플리케이션 실행 후 `http://localhost:8080/wiki` 에서 확인할 수 있습니다.
 
-*1인 개발 · 운영. 제3자 게임 팬사이트로 공식 Heartopia와 무관합니다.*
+
+---
