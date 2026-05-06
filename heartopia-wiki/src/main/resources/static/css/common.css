@@ -59,6 +59,15 @@
     --coupon-bg: #2b281f;
 }
 
+/* Bootstrap 유틸리티 클래스 다크모드 오버라이드 (하드코딩 색상 → 프로젝트 변수 통일) */
+[data-theme='dark'] .text-muted {
+    color: var(--stat-label) !important;
+}
+
+[data-theme='dark'] .text-secondary {
+    color: var(--stat-label) !important;
+}
+
 
 
 *, *::before, *::after {
@@ -448,6 +457,12 @@ body {
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 10px auto;
+}
+
+/* 펼친 옵션 팝업: 사이트 테마와 통일 (OS 다크/라이트와 무관하게 일관된 색) */
+.filter-select-wrapper select option {
+    color: var(--text-color);
+    background-color: var(--card-bg);
 }
 
 /* iOS Toggle Drop-in for Dream Event */

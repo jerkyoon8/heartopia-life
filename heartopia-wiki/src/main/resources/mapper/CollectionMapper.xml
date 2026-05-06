@@ -12,9 +12,10 @@
     </sql>
 
     <sql id="birdColumns">
-        id, location, sub_location, name, level, weather, time, 
+        id, location, sub_location, name, level, weather, time,
         price_1, price_2, price_3, price_4, price_5,
-        type, image_url, event_name
+        type, image_url, event_name,
+        distance, stretch_time
     </sql>
 
     <sql id="bugColumns">

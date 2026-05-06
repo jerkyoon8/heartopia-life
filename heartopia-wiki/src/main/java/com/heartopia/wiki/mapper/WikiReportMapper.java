@@ -26,6 +26,19 @@ public interface WikiReportMapper {
     List<WikiReport> findPublicReports();
 
     /**
+     * 공개 승인된 제보 내역을 페이지네이션하여 조회합니다.
+     *
+     * @param offset 조회 시작 위치 (0-based)
+     * @param size   한 페이지당 표시할 건수
+     */
+    List<WikiReport> findPublicReportsPaged(@Param("offset") int offset, @Param("size") int size);
+
+    /**
+     * 공개 승인된 제보의 전체 건수를 조회합니다.
+     */
+    int countPublicReports();
+
+    /**
      * 제보의 공개 상태를 변경합니다.
      */
     void updatePublicStatus(@Param("id") Integer id, @Param("isPublic") boolean isPublic);

@@ -549,6 +549,16 @@
                         <td class="info-label"><i class="fas fa-tag me-1"></i>종류</td>
                         <td class="info-value" th:text="${item.type ?: '-'}">종류</td>
                     </tr>
+                    <!-- Bird: Distance -->
+                    <tr th:if="${category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-ruler me-1"></i>거리</td>
+                        <td class="info-value" th:text="${item.distance ?: '-'}">-</td>
+                    </tr>
+                    <!-- Bird: Stretch Time -->
+                    <tr th:if="${category == 'bird'}">
+                        <td class="info-label"><i class="fas fa-stopwatch me-1"></i>펴기 시간</td>
+                        <td class="info-value" th:text="${item.stretchTime ?: '-'}">-</td>
+                    </tr>
                     <!-- Animal: Location, Food, Weather -->
                     <tr th:if="${category == 'animal'}">
                         <td class="info-label"><i class="fas fa-map-marker-alt me-1"></i>서식지</td>

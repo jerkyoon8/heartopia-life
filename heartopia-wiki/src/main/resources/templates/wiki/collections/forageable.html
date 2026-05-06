@@ -35,22 +35,13 @@
                 </div>
 
                 <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                    
-                    <!-- 꿈의 명암 스위치 -->
-                    <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0; margin-bottom: 0;">
-                        <label class="toggle-switch-label mb-0" style="font-weight: 500; font-size: 0.85rem;">
-                            <label class="switch mb-0" style="transform: scale(0.85); transform-origin: left center;">
-                                <input type="checkbox" id="btn-dream-event">
-                                <span class="slider"></span>
-                            </label>
-                            <i class="fas fa-moon text-warning"></i> 꿈의 명암
-                        </label>
+
+                    <div class="filter-select-wrapper">
+                        <span class="prefix">이벤트</span>
+                        <select id="eventFilter">
+                            <option value="all">모든 이벤트</option>
+                        </select>
                     </div>
-                    
-                    <select id="eventFilter" style="display: none;">
-                        <option value="all">모든 이벤트</option>
-                        <option value="꿈의 명암">꿈의 명암</option>
-                    </select>
 
                     <select id="locationFilter" style="border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 12px; font-weight: 500; font-size: 0.85rem; outline: none; background: var(--card-bg);">
                         <option value="all">모든 장소</option>
@@ -209,27 +200,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const btnDream = document.getElementById('btn-dream-event');
-                const eventFilter = document.getElementById('eventFilter');
-
-                if (btnDream && eventFilter) {
-                    btnDream.addEventListener('change', function() {
-                        if(this.checked) {
-                            eventFilter.value = '꿈의 명암';
-                        } else {
-                            eventFilter.value = 'all';
-                        }
-                        eventFilter.dispatchEvent(new Event('change'));
-                    });
-                    
-                    const resetBtn = document.getElementById('resetBtn');
-                    if (resetBtn) {
-                        resetBtn.addEventListener('click', () => {
-                            btnDream.checked = false;
-                        });
-                    }
-                }
-
                 new WikiFilter({
                     gridId: 'wikiGrid',
                     tableId: 'wikiTable',

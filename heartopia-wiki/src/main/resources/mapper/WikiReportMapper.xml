@@ -28,6 +28,23 @@
         ORDER BY created_at DESC
     </select>
 
+    <!-- 사용자용 공개 제보 페이지네이션 조회 -->
+    <select id="findPublicReportsPaged" resultType="com.heartopia.wiki.model.WikiReport">
+        SELECT id, category, reporter_name as reporterName, is_public as isPublic, is_deleted as isDeleted,
+               message, source_url as sourceUrl, item_name as itemName, created_at as createdAt,
+               admin_reply as adminReply, replied_at as repliedAt
+        FROM wiki_reports
+        WHERE is_deleted = false AND is_public = true
+        ORDER BY created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <!-- 사용자용 공개 제보 전체 건수 카운트 -->
+    <select id="countPublicReports" resultType="int">
+        SELECT COUNT(*) FROM wiki_reports
+        WHERE is_deleted = false AND is_public = true
+    </select>
+
     <!-- 관리자 상태 제어: 공개/비공개 토글 -->
     <update id="updatePublicStatus">
         UPDATE wiki_reports 

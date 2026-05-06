@@ -19,6 +19,8 @@ public class BirdCollection {
     private String type;
     private String imageUrl;
     private String eventName;
+    private String distance;
+    private String stretchTime;
 
     public java.util.List<Integer> getPrices() {
         return java.util.Arrays.asList(price1, price2, price3, price4, price5);

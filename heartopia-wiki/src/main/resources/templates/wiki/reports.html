@@ -171,6 +171,55 @@
             margin-bottom: 0;
         }
 
+        /* 페이지네이션 */
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 36px;
+            flex-wrap: wrap;
+        }
+
+        .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 12px;
+            border: 1px solid #EFE9E8;
+            background: var(--card-bg);
+            color: #4D342E;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .page-link:hover {
+            background: #4D342E;
+            color: #fff;
+            border-color: #4D342E;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(77, 52, 46, 0.15);
+        }
+
+        .page-link.active {
+            background: #4D342E;
+            color: #fff;
+            border-color: #4D342E;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(77, 52, 46, 0.2);
+        }
+
+        .page-link.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
         /* 다크모드 */
         [data-theme='dark'] body {
             background-color: #1e1e1e;
@@ -199,6 +248,24 @@
         [data-theme='dark'] .cat-GENERAL {
             background: #444;
             color: #ccc;
+        }
+
+        [data-theme='dark'] .page-link {
+            background: #2D2D2D;
+            border-color: #444;
+            color: #EEE;
+        }
+
+        [data-theme='dark'] .page-link:hover {
+            background: #555;
+            border-color: #666;
+            color: #fff;
+        }
+
+        [data-theme='dark'] .page-link.active {
+            background: #f06292;
+            border-color: #f06292;
+            color: #fff;
         }
     </style>
 </head>
@@ -251,6 +318,28 @@
                 <i class="fas fa-inbox"></i>
                 <p>아직 공개된 문의글이 없습니다.</p>
             </div>
+
+            <!-- 페이지네이션 -->
+            <nav th:if="${totalPages > 1}" class="pagination-wrap" aria-label="페이지 이동">
+                <a th:if="${currentPage > 1}"
+                   th:href="@{/wiki/reports(page=${currentPage - 1})}"
+                   class="page-link">← 이전</a>
+                <a th:if="${currentPage <= 1}"
+                   class="page-link disabled">← 이전</a>
+
+                <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href="@{/wiki/reports(page=${i})}"
+                       th:text="${i}"
+                       th:classappend="${i == currentPage} ? ' active' : ''"
+                       class="page-link"></a>
+                </th:block>
+
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{/wiki/reports(page=${currentPage + 1})}"
+                   class="page-link">다음 →</a>
+                <a th:if="${currentPage >= totalPages}"
+                   class="page-link disabled">다음 →</a>
+            </nav>
 
             <!-- 문의하기 버튼 -->
             <div class="write-btn-wrap">

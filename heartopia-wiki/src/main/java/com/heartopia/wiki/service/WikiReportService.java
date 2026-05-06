@@ -17,6 +17,9 @@ import java.util.List;
 public class WikiReportService {
     private final WikiReportMapper reportMapper;
 
+    /** 한 페이지당 표시할 게시글 수 */
+    private static final int PAGE_SIZE = 5;
+
     /**
      * 새로운 제보를 데이터베이스에 저장합니다.
      * 
@@ -61,6 +64,29 @@ public class WikiReportService {
     @Transactional(readOnly = true)
     public List<WikiReport> getPublicReports() {
         return reportMapper.findPublicReports();
+    }
+
+    /**
+     * 일반 사용자용: 공개 제보 내역을 페이지 단위로 조회합니다.
+     *
+     * @param page 요청 페이지 번호 (1-based)
+     * @return 해당 페이지의 제보 목록
+     */
+    @Transactional(readOnly = true)
+    public List<WikiReport> getPublicReportsPaged(int page) {
+        int offset = (page - 1) * PAGE_SIZE;
+        return reportMapper.findPublicReportsPaged(offset, PAGE_SIZE);
+    }
+
+    /**
+     * 공개 제보의 전체 페이지 수를 계산합니다.
+     *
+     * @return 전체 페이지 수 (최소 0)
+     */
+    @Transactional(readOnly = true)
+    public int getTotalPages() {
+        int total = reportMapper.countPublicReports();
+        return (int) Math.ceil((double) total / PAGE_SIZE);
     }
 
     /**

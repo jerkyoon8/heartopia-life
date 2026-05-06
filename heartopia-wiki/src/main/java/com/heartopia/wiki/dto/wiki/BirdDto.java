@@ -15,7 +15,9 @@ public record BirdDto(
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
     String type,
-    String eventName
+    String eventName,
+    String distance,
+    String stretchTime
 ) {
     public static BirdDto from(BirdCollection b) {
         return new BirdDto(
@@ -36,7 +38,9 @@ public record BirdDto(
             ),
             b.getPrice1(), b.getPrice2(), b.getPrice3(), b.getPrice4(), b.getPrice5(),
             b.getType(),
-            b.getEventName()
+            b.getEventName(),
+            b.getDistance(),
+            b.getStretchTime()
         );
     }
 }

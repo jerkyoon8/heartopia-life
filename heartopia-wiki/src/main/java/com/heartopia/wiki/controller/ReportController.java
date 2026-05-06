@@ -108,13 +108,23 @@ public class ReportController {
     }
 
     /**
-     * 일반 사용자 페이지: 승인된 문의하기 공개 목록을 보여줍니다.
+     * 일반 사용자 페이지: 승인된 문의하기 공개 목록을 페이지 단위로 보여줍니다.
+     *
+     * @param page 요청 페이지 번호 (기본값 1)
      */
     @GetMapping("/reports")
-    public String viewPublicReports(Model model) {
-        log.info("사용자 공개 문의 게시판 목록 조회 요청됨");
-        List<WikiReport> publicReports = reportService.getPublicReports();
+    public String viewPublicReports(@RequestParam(defaultValue = "1") int page, Model model) {
+        log.info("사용자 공개 문의 게시판 목록 조회 요청됨 (page={})", page);
+
+        // 페이지 유효성 보정
+        int totalPages = reportService.getTotalPages();
+        if (page < 1) page = 1;
+        if (totalPages > 0 && page > totalPages) page = totalPages;
+
+        List<WikiReport> publicReports = reportService.getPublicReportsPaged(page);
         model.addAttribute("reports", publicReports);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
         model.addAttribute("pageTitle", "문의 게시판");
         return "wiki/reports";
     }

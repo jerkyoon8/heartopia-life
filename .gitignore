@@ -77,3 +77,12 @@ rebuild_git.sh
 nul
 */nul
 **/nul
+
+# --- Claude Code 작업 디렉토리 (개인) ---
+.claude/
+
+# --- 내부 문서/dump (프로젝트 루트 docs) ---
+docs/
+
+# --- Gradle 캐시 ---
+heartopia-wiki/.gradle-user-home/
