@@ -27,7 +27,18 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="새 이름 검색...">
                 </div>
-                
+
+                <!-- 블록 시가지 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-block-city-event">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-city text-warning"></i> 블록 시가지만 표시
+                    </label>
+                </div>
+
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -288,6 +299,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const btnBlockCity = document.getElementById('btn-block-city-event');
+            const eventFilter = document.getElementById('eventFilter');
+            if (btnBlockCity && eventFilter) {
+                btnBlockCity.addEventListener('change', function() {
+                    if (this.checked) {
+                        if (![...eventFilter.options].some(o => o.value === '블록 시가지')) {
+                            const opt = document.createElement('option');
+                            opt.value = '블록 시가지';
+                            opt.textContent = '블록 시가지';
+                            eventFilter.appendChild(opt);
+                        }
+                        eventFilter.value = '블록 시가지';
+                    } else {
+                        eventFilter.value = 'all';
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+                eventFilter.addEventListener('change', function() {
+                    if (this.value !== '블록 시가지') btnBlockCity.checked = false;
+                });
+            }
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn && btnBlockCity) {
+                resetBtn.addEventListener('click', () => { btnBlockCity.checked = false; });
+            }
+
             new WikiFilter({
                 gridId: 'wikiGrid',
                 tableId: 'wikiTable',

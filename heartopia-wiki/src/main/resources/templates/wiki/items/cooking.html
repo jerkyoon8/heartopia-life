@@ -75,6 +75,17 @@
                     </label>
                 </div>
 
+                <!-- 블록 시가지 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-block-city-event">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-city text-warning"></i> 블록 시가지만 표시
+                    </label>
+                </div>
+
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -259,20 +270,44 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnMaltese = document.getElementById('btn-maltese-event');
+            const btnBlockCity = document.getElementById('btn-block-city-event');
             const eventFilter = document.getElementById('eventFilter');
 
-            // 토글 → 드롭다운 동기화
-            if (btnMaltese && eventFilter) {
-                btnMaltese.addEventListener('change', function() {
-                    eventFilter.value = this.checked ? '몰티즈' : 'all';
-                    eventFilter.dispatchEvent(new Event('change'));
-                });
+            const eventToggles = [
+                { btn: btnMaltese, value: '몰티즈' },
+                { btn: btnBlockCity, value: '블록 시가지' }
+            ];
+
+            function ensureOption(select, value) {
+                if (![...select.options].some(o => o.value === value)) {
+                    const opt = document.createElement('option');
+                    opt.value = value;
+                    opt.textContent = value;
+                    select.appendChild(opt);
+                }
             }
 
-            // 드롭다운 → 토글 역방향 동기화 (드롭다운에서 다른 값 선택하면 토글 OFF)
-            if (eventFilter && btnMaltese) {
+            // 토글 → 드롭다운 동기화 (다른 토글은 OFF)
+            eventToggles.forEach(({ btn, value }) => {
+                if (!btn || !eventFilter) return;
+                btn.addEventListener('change', function() {
+                    if (this.checked) {
+                        eventToggles.forEach(t => { if (t.btn !== btn) t.btn.checked = false; });
+                        ensureOption(eventFilter, value);
+                        eventFilter.value = value;
+                    } else {
+                        eventFilter.value = 'all';
+                    }
+                    eventFilter.dispatchEvent(new Event('change'));
+                });
+            });
+
+            // 드롭다운 → 토글 역방향 동기화
+            if (eventFilter) {
                 eventFilter.addEventListener('change', function() {
-                    if (this.value !== '몰티즈') btnMaltese.checked = false;
+                    eventToggles.forEach(({ btn, value }) => {
+                        if (btn) btn.checked = (this.value === value);
+                    });
                 });
             }
 
@@ -280,7 +315,7 @@
             const resetBtn = document.getElementById('resetBtn');
             if (resetBtn) {
                 resetBtn.addEventListener('click', () => {
-                    if (btnMaltese) btnMaltese.checked = false;
+                    eventToggles.forEach(({ btn }) => { if (btn) btn.checked = false; });
                 });
             }
 
