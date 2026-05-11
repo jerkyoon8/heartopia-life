@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=1.8" defer></script>
+    <script src="/js/wiki-filter.js?v=1.9" defer></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
 </head>
 
@@ -232,7 +232,15 @@
                     </tr>
                     <tr>
                         <td class="stat-label">펴기 시간</td>
-                        <td class="stat-value" th:text="${bird.stretchTime != null ? bird.stretchTime : '-'}"></td>
+                        <td class="stat-value"
+                            th:text="${bird.stretchTime == null ? '-'
+                                : (#strings.contains(bird.stretchTime, ', 새호루라기')
+                                    ? #strings.substringBefore(bird.stretchTime, ', 새호루라기')
+                                    : (#strings.startsWith(bird.stretchTime, '새호루라기') ? '-' : bird.stretchTime))}"></td>
+                    </tr>
+                    <tr th:if="${bird.stretchTime != null and #strings.contains(bird.stretchTime, '새호루라기')}">
+                        <td class="stat-label stat-label-wide">호루라기 펴기시간</td>
+                        <td class="stat-value" th:text="${#strings.trim(#strings.substringAfter(bird.stretchTime, '새호루라기'))}"></td>
                     </tr>
                 </table>
 

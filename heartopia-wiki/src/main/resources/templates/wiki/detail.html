@@ -557,7 +557,16 @@
                     <!-- Bird: Stretch Time -->
                     <tr th:if="${category == 'bird'}">
                         <td class="info-label"><i class="fas fa-stopwatch me-1"></i>펴기 시간</td>
-                        <td class="info-value" th:text="${item.stretchTime ?: '-'}">-</td>
+                        <td class="info-value"
+                            th:text="${item.stretchTime == null ? '-'
+                                : (#strings.contains(item.stretchTime, ', 새호루라기')
+                                    ? #strings.substringBefore(item.stretchTime, ', 새호루라기')
+                                    : (#strings.startsWith(item.stretchTime, '새호루라기') ? '-' : item.stretchTime))}">-</td>
+                    </tr>
+                    <!-- Bird: Whistle Stretch Time -->
+                    <tr th:if="${category == 'bird' and item.stretchTime != null and #strings.contains(item.stretchTime, '새호루라기')}">
+                        <td class="info-label"><i class="fas fa-bullhorn me-1"></i>호루라기 펴기시간</td>
+                        <td class="info-value" th:text="${#strings.trim(#strings.substringAfter(item.stretchTime, '새호루라기'))}">-</td>
                     </tr>
                     <!-- Animal: Location, Food, Weather -->
                     <tr th:if="${category == 'animal'}">

@@ -240,6 +240,10 @@ body {
     width: 80px;
 }
 
+.stat-label.stat-label-wide {
+    width: 110px;
+}
+
 .stat-value {
     color: var(--stat-value);
     font-weight: 600;

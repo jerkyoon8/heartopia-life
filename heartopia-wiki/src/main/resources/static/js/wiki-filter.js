@@ -323,14 +323,11 @@ class WikiFilter {
                     const uEnd = ueH * 60 + ueM;
                     const uCrossesMidnight = uEnd < uStart;
 
-                    // Support regex parsing for formats like "06:00~18:00" or "6시~18시"
-                    const match = itemTimeStr.match(/(\d{1,2})[:시]?(\d{0,2})?\s*[~-]\s*(\d{1,2})[:시]?(\d{0,2})?/);
-                    
-                    if (match) {
-                        const iStart = parseInt(match[1]) * 60 + (parseInt(match[2]) || 0);
-                        const iEnd = parseInt(match[3]) * 60 + (parseInt(match[4]) || 0);
-                        const iCrossesMidnight = iEnd < iStart;
+                    // Parse ALL ranges (e.g. "0~6 / 18~24" → 두 구간 모두 검사)
+                    const rangeRegex = /(\d{1,2})[:시]?(\d{0,2})?\s*[~-]\s*(\d{1,2})[:시]?(\d{0,2})?/g;
+                    const matches = [...itemTimeStr.matchAll(rangeRegex)];
 
+                    if (matches.length > 0) {
                         const hasOverlap = (s1, e1, s2, e2) => Math.max(s1, s2) < Math.min(e1, e2);
 
                         const checkOverlap = (st1, en1, cross1, st2, en2, cross2) => {
@@ -345,7 +342,14 @@ class WikiFilter {
                             return false;
                         };
 
-                        if (!checkOverlap(uStart, uEnd, uCrossesMidnight, iStart, iEnd, iCrossesMidnight)) {
+                        const anyMatch = matches.some(m => {
+                            const iStart = parseInt(m[1]) * 60 + (parseInt(m[2]) || 0);
+                            const iEnd = parseInt(m[3]) * 60 + (parseInt(m[4]) || 0);
+                            const iCrossesMidnight = iEnd < iStart;
+                            return checkOverlap(uStart, uEnd, uCrossesMidnight, iStart, iEnd, iCrossesMidnight);
+                        });
+
+                        if (!anyMatch) {
                             isMatch = false;
                         }
                     } else {
