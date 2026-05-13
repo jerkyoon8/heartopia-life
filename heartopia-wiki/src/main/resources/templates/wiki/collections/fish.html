@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=1.9" defer></script>
+    <script src="/js/wiki-filter.js?v=2.2" defer></script>
 </head>
 
 <body>
@@ -100,7 +100,15 @@
                                 <!-- Options populated by JS -->
                             </select>
                         </div>
-                        
+
+                        <div class="filter-select-wrapper filter-disabled" id="subLocationWrapper">
+                            <span class="prefix">세부 장소</span>
+                            <select id="subLocationFilter" disabled>
+                                <option value="all">모든 세부</option>
+                                <!-- Options populated by JS (depends on locationFilter) -->
+                            </select>
+                        </div>
+
                         <div class="filter-select-wrapper">
                             <span class="prefix">그림자 크기</span>
                             <select id="shadowFilter">
@@ -169,6 +177,7 @@
             <!-- Fish Card Loop -->
             <div th:each="fish : ${fishList}" class="wiki-item-card sync-item" th:data-sync-key="'fish_' + ${fish.name}" th:data-name="${fish.name}"
                 th:data-level="${#strings.replace(fish.level, 'Lv.', '')}" th:data-location="${fish.location}"
+                th:data-sub-location="${fish.subLocation != null ? fish.subLocation : ''}"
                 th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}"
                 th:data-weather="${fish.weather}" th:data-time="${fish.time}"
                 th:data-event="${fish.eventName != null ? fish.eventName : ''}">
@@ -268,6 +277,7 @@
                         th:data-name="${fish.name}"
                         th:data-level="${#strings.replace(fish.level, 'Lv.', '')}"
                         th:data-location="${fish.location}"
+                        th:data-sub-location="${fish.subLocation != null ? fish.subLocation : ''}"
                         th:data-shadow="${fish.size}"
                         th:data-price="${fish.prices[0]}"
                         th:data-weather="${fish.weather}"
@@ -396,6 +406,7 @@
                         { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                         { id: 'levelFilter', dataKey: 'level' },
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
+                        { id: 'subLocationFilter', dataKey: 'subLocation', parentFilter: 'locationFilter', parentKey: 'location', wrapperId: 'subLocationWrapper' },
                         { id: 'shadowFilter', dataKey: 'shadow', autoPopulate: true },
                         { id: 'weatherFilter', dataKey: 'weather' }
                     ]

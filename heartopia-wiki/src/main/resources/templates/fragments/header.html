@@ -70,7 +70,7 @@
                 gap: 20px;
             }
 
-            /* Dark Mode Toggle */
+            /* Dark Mode Toggle (legacy — kept for backward compat) */
             .theme-toggle-btn {
                 background: none;
                 border: none;
@@ -89,17 +89,144 @@
                 background-color: var(--nav-hover, #f0f2f5);
             }
 
-            .theme-toggle-btn .fa-sun {
-                display: none;
+            /* Settings Dropdown */
+            .settings-wrap {
+                position: relative;
             }
 
-            [data-theme='dark'] .theme-toggle-btn .fa-moon {
-                display: none;
+            .settings-btn {
+                background: none;
+                border: none;
+                color: var(--text-color, #333);
+                font-size: 20px;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 50%;
+                transition: background-color 0.2s, color 0.2s, transform 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            [data-theme='dark'] .theme-toggle-btn .fa-sun {
-                display: inline-block;
-                color: #ffc107;
+            .settings-btn:hover {
+                background-color: var(--nav-hover, #f0f2f5);
+            }
+
+            .settings-wrap.open .settings-btn {
+                background-color: var(--nav-hover, #f0f2f5);
+                transform: rotate(30deg);
+            }
+
+            .settings-dropdown {
+                position: absolute;
+                top: calc(100% + 8px);
+                right: 0;
+                min-width: 280px;
+                background-color: var(--navbar-bg, #ffffff);
+                border: 1px solid var(--border-color, #a7d7f9);
+                border-radius: 12px;
+                box-shadow: 0 8px 24px var(--shadow, rgba(0, 0, 0, 0.12));
+                padding: 8px 0;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-6px);
+                transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+                z-index: 1100;
+                font-family: 'Paperlogy', sans-serif;
+            }
+
+            .settings-wrap.open .settings-dropdown {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .settings-section-title {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--stat-label, #888);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 8px 16px 4px;
+            }
+
+            .settings-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 10px 16px;
+                color: var(--text-color, #333);
+                font-size: 14px;
+            }
+
+            .settings-item-label {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .settings-item-label i {
+                width: 18px;
+                text-align: center;
+                color: var(--stat-label, #889);
+            }
+
+            .settings-item-title {
+                font-weight: 500;
+            }
+
+            .settings-item-desc {
+                font-size: 11.5px;
+                color: var(--stat-label, #888);
+                line-height: 1.5;
+                padding: 0 16px 8px 44px;
+            }
+
+            .settings-item-desc.danger {
+                color: #d63031;
+            }
+
+            .settings-divider {
+                height: 1px;
+                background-color: var(--border-subtle, #eee);
+                margin: 6px 0;
+            }
+
+            /* Theme switch inside dropdown */
+            .theme-switch {
+                position: relative;
+                width: 48px;
+                height: 26px;
+                background-color: #ccd;
+                border-radius: 13px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                flex-shrink: 0;
+            }
+
+            .theme-switch::after {
+                content: '';
+                position: absolute;
+                top: 3px;
+                left: 3px;
+                width: 20px;
+                height: 20px;
+                background-color: #fff;
+                border-radius: 50%;
+                transition: transform 0.2s;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            }
+
+            [data-theme='dark'] .theme-switch {
+                background-color: #4a5568;
+            }
+
+            [data-theme='dark'] .theme-switch::after {
+                transform: translateX(22px);
+                background-color: #ffc107;
             }
 
             /* Nav Bar & Mega Menu Wrapper */
@@ -310,10 +437,11 @@
                 }
             }
 
-            /* 진짜 좁은 폰(<=480px)에서만 동기화 라벨 숨김 */
+            /* 모바일 좁은 화면에서 설정 드롭다운이 화면 밖으로 나가지 않도록 */
             @media (max-width: 480px) {
-                .sync-toggle-label {
-                    display: none;
+                .settings-dropdown {
+                    min-width: 260px;
+                    right: -8px;
                 }
             }
         </style>
@@ -334,36 +462,6 @@
                             </a>
                         </div>
                         <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
-                            <!-- 수집도감 동기화 토글 (항상 노출) -->
-                            <div class="sync-toggle-wrap d-flex align-items-center gap-1" style="font-family: 'Paperlogy', sans-serif; font-size: 12px; color: var(--text-color, #555); position: relative;">
-                                <label class="form-check form-switch m-0 d-flex align-items-center" style="padding-left: 2.2em; cursor: pointer;" title="수집도감 계정 간 동기화">
-                                    <input class="form-check-input" type="checkbox" id="checklistSyncToggle"
-                                           th:checked="${currentUser != null and currentUser.checklistSyncEnabled}"
-                                           style="cursor: pointer;">
-                                    <span class="sync-toggle-label ms-1" style="white-space: nowrap;">계정간 동기화</span>
-                                </label>
-                                <button type="button" id="syncInfoBtn"
-                                        class="btn btn-link p-0"
-                                        style="color: #888; font-size: 13px; line-height: 1; border: none;">
-                                    <i class="fas fa-circle-question"></i>
-                                </button>
-                                <!-- 클릭 시 토글되는 설명 팝업 -->
-                                <div id="syncInfoPopover" style="display:none; position:absolute; top:100%; right:0; margin-top:8px; background:#fff; border:1px solid #a7d7f9; border-radius:10px; padding:14px 16px; box-shadow:0 4px 16px rgba(0,0,0,0.12); z-index:10000; width:280px; font-size:12px; line-height:1.55; color:#333; font-family:Paperlogy,sans-serif;">
-                                    <div style="font-weight:700; margin-bottom:6px; color:#1864ab;">
-                                        <i class="fas fa-cloud me-1"></i>계정간 동기화란?
-                                    </div>
-                                    <div style="color:#555;">
-                                        <strong>켜짐:</strong> 수집 진행 상황이 계정에 저장됩니다. 다른 기기/브라우저에서 같은 계정으로 로그인하면 동일하게 보입니다.
-                                    </div>
-                                    <div style="color:#555; margin-top:6px;">
-                                        <strong>꺼짐:</strong> 이 기기에서만 저장됩니다. 다른 기기와 분리됩니다.
-                                    </div>
-                                    <div style="color:#d63031; margin-top:8px; font-size:11px; line-height:1.45;">
-                                        ※ 동기화 켠 동안엔 이 기기에 저장되지 않아요. 끄거나 로그아웃하면 그때 이 기기로 복사됩니다.
-                                    </div>
-                                </div>
-                            </div>
-
                             <span class="header-username-label" style="font-family: 'Paperlogy', sans-serif; font-size: 14px; color: var(--text-color, #333);">
                                 <span sec:authentication="name" style="font-weight: 700;"></span>님
                             </span>
@@ -377,11 +475,68 @@
                             </a>
                         </div>
 
-                        <!-- Dark Mode Toggle -->
-                        <button class="theme-toggle-btn" id="themeToggle" title="테마 변경">
-                            <i class="fas fa-moon"></i>
-                            <i class="fas fa-sun"></i>
-                        </button>
+                        <!-- Settings Dropdown (다크모드 + 계정연동) -->
+                        <div class="settings-wrap" id="settingsWrap">
+                            <button type="button" class="settings-btn" id="settingsBtn" title="설정"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="settings-dropdown" id="settingsDropdown" role="menu">
+                                <div class="settings-section-title">화면</div>
+                                <div class="settings-item">
+                                    <div class="settings-item-label">
+                                        <i class="fas fa-moon"></i>
+                                        <span class="settings-item-title">다크 모드</span>
+                                    </div>
+                                    <div class="theme-switch" id="themeSwitch" role="switch" tabindex="0"
+                                         aria-label="다크 모드 전환"></div>
+                                </div>
+
+                                <div class="settings-divider"></div>
+                                <div class="settings-section-title">도감 필터</div>
+                                <div class="settings-item">
+                                    <div class="settings-item-label">
+                                        <i class="fas fa-eye-slash"></i>
+                                        <span class="settings-item-title">수집 숨김 기준</span>
+                                    </div>
+                                    <select id="hideThresholdSelect" class="form-select form-select-sm"
+                                            style="width: auto; min-width: 110px; font-family: 'Paperlogy', sans-serif; font-size: 13px;">
+                                        <option value="0">모든 수집</option>
+                                        <option value="1">1★ 이상</option>
+                                        <option value="2">2★ 이상</option>
+                                        <option value="3">3★ 이상</option>
+                                        <option value="4">4★ 이상</option>
+                                        <option value="5">5★ 만</option>
+                                    </select>
+                                </div>
+                                <div class="settings-item-desc">
+                                    페이지의 "수집된 항목 숨기기"가 켜져 있을 때, 여기서 정한 기준 이상만 숨깁니다.
+                                </div>
+
+                                <th:block sec:authorize="isAuthenticated()">
+                                    <div class="settings-divider"></div>
+                                    <div class="settings-section-title">계정</div>
+                                    <div class="settings-item">
+                                        <div class="settings-item-label">
+                                            <i class="fas fa-cloud"></i>
+                                            <span class="settings-item-title">계정간 동기화</span>
+                                        </div>
+                                        <label class="form-check form-switch m-0" style="padding-left: 2.5em; cursor: pointer;">
+                                            <input class="form-check-input" type="checkbox" id="checklistSyncToggle"
+                                                   th:checked="${currentUser != null and currentUser.checklistSyncEnabled}"
+                                                   style="cursor: pointer;">
+                                        </label>
+                                    </div>
+                                    <div class="settings-item-desc">
+                                        <strong>켜짐:</strong> 수집 진행 상황이 계정에 저장되어 다른 기기에서도 동일하게 보입니다.<br>
+                                        <strong>꺼짐:</strong> 이 기기에서만 저장됩니다.
+                                    </div>
+                                    <div class="settings-item-desc danger">
+                                        ※ 켠 동안엔 이 기기에 저장되지 않아요. 끄거나 로그아웃하면 그때 이 기기로 복사됩니다.
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -432,7 +587,7 @@
                                     <li><a th:href="@{/wiki/collections/fish}" class="mega-link"><i
                                                 class="fas fa-fish"></i> 물고기</a></li>
                                     <li><a th:href="@{/wiki/collections/bug}" class="mega-link"><i
-                                                class="fas fa-bug"></i> 벌레</a></li>
+                                                class="fas fa-bug"></i> 곤충</a></li>
                                     <li><a th:href="@{/wiki/collections/bird}" class="mega-link"><i
                                                 class="fas fa-crow"></i> 새</a></li>
                                     <li><a th:href="@{/wiki/collections/animal}" class="mega-link"><i
@@ -502,23 +657,10 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     const toggle = document.getElementById('checklistSyncToggle');
 
-                    // ? 버튼 클릭 → 설명 팝업 토글, 외부 클릭 시 닫기
-                    const infoBtn = document.getElementById('syncInfoBtn');
-                    const infoPopover = document.getElementById('syncInfoPopover');
-                    if (infoBtn && infoPopover) {
-                        infoBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            infoPopover.style.display = infoPopover.style.display === 'none' ? 'block' : 'none';
-                        });
-                        document.addEventListener('click', (e) => {
-                            if (infoPopover.style.display === 'block' &&
-                                !infoPopover.contains(e.target) &&
-                                e.target !== infoBtn &&
-                                !infoBtn.contains(e.target)) {
-                                infoPopover.style.display = 'none';
-                            }
-                        });
+                    // 드롭다운 내부 클릭은 닫히지 않도록 (토글 조작 중 닫힘 방지)
+                    const dropdown = document.getElementById('settingsDropdown');
+                    if (dropdown) {
+                        dropdown.addEventListener('click', (e) => e.stopPropagation());
                     }
 
                     // 동기화 토글 동작
@@ -631,7 +773,7 @@
                         const toast = document.createElement('div');
                         toast.style.cssText = 'position:fixed;bottom:30px;right:30px;background:#fff;border:1px solid #a7d7f9;border-radius:12px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:10000;max-width:320px;font-family:Paperlogy,sans-serif;font-size:13px;line-height:1.5;animation:syncHintSlideIn 0.3s ease-out;';
                         toast.innerHTML = '<div style="font-weight:700;color:#333;margin-bottom:6px;"><i class="fas fa-cloud-upload-alt" style="color:#ff7f9d;"></i> 다른 기기에서도 보고 싶으세요?</div>' +
-                            '<div style="color:#666;margin-bottom:10px;">프로필 메뉴에서 "계정간 동기화"를 켜면 이 기기의 수집 데이터가 계정에 저장됩니다.</div>' +
+                            '<div style="color:#666;margin-bottom:10px;">설정(<i class="fas fa-cog"></i>) 메뉴에서 "계정간 동기화"를 켜면 이 기기의 수집 데이터가 계정에 저장됩니다.</div>' +
                             '<button style="background:none;border:none;color:#888;font-size:12px;cursor:pointer;padding:0;">닫기</button>';
                         toast.querySelector('button').addEventListener('click', () => toast.remove());
                         document.body.appendChild(toast);
@@ -650,15 +792,65 @@
             })();
 
             document.addEventListener('DOMContentLoaded', () => {
-                const themeToggle = document.getElementById('themeToggle');
+                // --- 다크 모드 스위치 (드롭다운 내부) ---
+                const themeSwitch = document.getElementById('themeSwitch');
+                if (themeSwitch) {
+                    const toggleTheme = () => {
+                        const currentTheme = document.documentElement.getAttribute('data-theme');
+                        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                        document.documentElement.setAttribute('data-theme', newTheme);
+                        localStorage.setItem('theme', newTheme);
+                    };
+                    themeSwitch.addEventListener('click', toggleTheme);
+                    themeSwitch.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleTheme();
+                        }
+                    });
+                }
 
-                themeToggle.addEventListener('click', () => {
-                    const currentTheme = document.documentElement.getAttribute('data-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                // --- 수집 숨김 기준 (N★ 이상) ---
+                const hideThresholdSelect = document.getElementById('hideThresholdSelect');
+                if (hideThresholdSelect) {
+                    const saved = localStorage.getItem('wikiHideThreshold');
+                    if (saved !== null && ['0','1','2','3','4','5'].includes(saved)) {
+                        hideThresholdSelect.value = saved;
+                    }
+                    hideThresholdSelect.addEventListener('change', () => {
+                        localStorage.setItem('wikiHideThreshold', hideThresholdSelect.value);
+                        // 현재 페이지의 WikiFilter에 즉시 반영
+                        window.dispatchEvent(new CustomEvent('heartopia:hide-threshold-changed', {
+                            detail: { threshold: parseInt(hideThresholdSelect.value, 10) }
+                        }));
+                    });
+                }
 
-                    document.documentElement.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
-                });
+                // --- 설정 드롭다운 토글 + 외부 클릭 닫기 ---
+                const settingsWrap = document.getElementById('settingsWrap');
+                const settingsBtn = document.getElementById('settingsBtn');
+                if (settingsWrap && settingsBtn) {
+                    settingsBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const opened = settingsWrap.classList.toggle('open');
+                        settingsBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+                    });
+                    document.addEventListener('click', (e) => {
+                        if (!settingsWrap.classList.contains('open')) return;
+                        if (!settingsWrap.contains(e.target)) {
+                            settingsWrap.classList.remove('open');
+                            settingsBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && settingsWrap.classList.contains('open')) {
+                            settingsWrap.classList.remove('open');
+                            settingsBtn.setAttribute('aria-expanded', 'false');
+                            settingsBtn.focus();
+                        }
+                    });
+                }
             });
         </script>
     </nav>

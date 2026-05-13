@@ -53,14 +53,74 @@ class WikiFilter {
         this.config.filters.forEach(f => {
             const el = document.getElementById(f.id);
             if (el) {
-                this.filterElements.push({ element: el, key: f.dataKey });
+                this.filterElements.push({
+                    element: el,
+                    key: f.dataKey,
+                    parentFilter: f.parentFilter || null,
+                    parentKey: f.parentKey || null,
+                    wrapper: f.wrapperId ? document.getElementById(f.wrapperId) : null,
+                    autoPopulate: !!f.autoPopulate
+                });
 
-                if (f.autoPopulate) {
+                if (f.autoPopulate && !f.parentFilter) {
                     this.populateOptions(el, f.dataKey);
                 }
 
                 el.addEventListener('change', () => this.applyFilter());
             }
+        });
+
+        // Setup parent->child dependent dropdowns (disabled-toggle style)
+        this.filterElements.forEach(child => {
+            if (!child.parentFilter) return;
+            const parent = this.filterElements.find(p => p.element.id === child.parentFilter);
+            if (!parent) return;
+
+            const setChildDisabled = (disabled) => {
+                child.element.disabled = disabled;
+                if (child.wrapper) {
+                    child.wrapper.classList.toggle('filter-disabled', disabled);
+                }
+            };
+
+            const refreshChild = () => {
+                const parentVal = parent.element.value;
+                if (parentVal === 'all') {
+                    child.element.value = 'all';
+                    while (child.element.options.length > 1) child.element.remove(1);
+                    setChildDisabled(true);
+                } else {
+                    const values = new Set();
+                    this.items.forEach(item => {
+                        const pv = item.dataset[parent.key];
+                        const cv = item.dataset[child.key];
+                        if (pv === parentVal && cv && cv !== '-' && cv !== '') {
+                            values.add(cv);
+                        }
+                    });
+                    const sorted = Array.from(values).sort();
+                    const prevVal = child.element.value;
+                    while (child.element.options.length > 1) child.element.remove(1);
+                    sorted.forEach(v => {
+                        const opt = document.createElement('option');
+                        opt.value = v;
+                        opt.textContent = v;
+                        child.element.appendChild(opt);
+                    });
+                    if (prevVal !== 'all' && sorted.includes(prevVal)) {
+                        child.element.value = prevVal;
+                    } else {
+                        child.element.value = 'all';
+                    }
+                    setChildDisabled(sorted.length === 0);
+                }
+            };
+
+            parent.element.addEventListener('change', () => {
+                refreshChild();
+                this.applyFilter();
+            });
+            refreshChild();
         });
 
         // Event Listeners
@@ -102,6 +162,14 @@ class WikiFilter {
                 }
             });
         }
+
+        // 설정 드롭다운에서 N★ 임계값 변경 시 즉시 재필터링
+        this._onHideThresholdChanged = () => {
+            if (this.hideCollectedBtn && this.hideCollectedBtn.checked) {
+                this.applyFilter();
+            }
+        };
+        window.addEventListener('heartopia:hide-threshold-changed', this._onHideThresholdChanged);
 
         // Time Filter setup
         this.timeStartFilter = document.getElementById('timeStartFilter');
@@ -295,10 +363,23 @@ class WikiFilter {
             }
         }
 
-        // 3. Hide Collected Filter
+        // 3. Hide Collected Filter (with N★ threshold modifier from settings)
         if (isMatch && this.hideCollectedBtn && this.hideCollectedBtn.checked) {
-            if (element.classList.contains('checked')) {
-                isMatch = false;
+            const rawThreshold = localStorage.getItem('wikiHideThreshold');
+            const threshold = rawThreshold === null ? 0 : parseInt(rawThreshold, 10);
+            const syncKey = element.dataset.syncKey;
+
+            if (threshold === 0) {
+                // 기본: 수집된 모든 항목(별점 무관) 숨김 — 기존 동작과 동일
+                if (element.classList.contains('checked')) {
+                    isMatch = false;
+                }
+            } else if (syncKey && typeof window.ChecklistCore !== 'undefined') {
+                // N★ 이상만 숨김 (체크만 한 0★ 항목은 보임)
+                const val = window.ChecklistCore.getItem(syncKey);
+                if (typeof val === 'number' && val >= threshold) {
+                    isMatch = false;
+                }
             }
         }
 
@@ -406,6 +487,12 @@ class WikiFilter {
 
         this.filterElements.forEach(f => {
             f.element.value = 'all';
+            // Clear dependent child options and disable
+            if (f.parentFilter) {
+                while (f.element.options.length > 1) f.element.remove(1);
+                f.element.disabled = true;
+                if (f.wrapper) f.wrapper.classList.add('filter-disabled');
+            }
         });
 
         if (this.hideCollectedBtn) this.hideCollectedBtn.checked = false;

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=1.9" defer></script>
+    <script src="/js/wiki-filter.js?v=2.2" defer></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
 </head>
 
@@ -111,7 +111,15 @@
                                 <!-- Options populated by JS -->
                             </select>
                         </div>
-                        
+
+                        <div class="filter-select-wrapper filter-disabled" id="subLocationWrapper">
+                            <span class="prefix">세부 장소</span>
+                            <select id="subLocationFilter" disabled>
+                                <option value="all">모든 세부</option>
+                                <!-- Options populated by JS (depends on locationFilter) -->
+                            </select>
+                        </div>
+
                         <div class="filter-select-wrapper">
                             <span class="prefix">날씨</span>
                             <select id="weatherFilter">
@@ -171,6 +179,7 @@
             <div th:each="bird : ${birdList}" class="wiki-item-card sync-item" th:data-sync-key="'bird_' + ${bird.name}" th:data-name="${bird.name}"
                 th:data-level="${#strings.replace(bird.level, 'Lv.', '')}" th:data-price="${bird.prices[0]}"
                 th:data-type="${bird.type}" th:data-weather="${bird.weather}" th:data-time="${bird.time}" th:data-location="${bird.location}"
+                th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
                 th:data-event="${bird.eventName != null ? bird.eventName : ''}">
 
                 <div class="wiki-item-image sync-container">
@@ -277,6 +286,8 @@
                         th:data-price="${bird.prices[0]}"
                         th:data-type="${bird.type}"
                         th:data-weather="${bird.weather}"
+                        th:data-location="${bird.location}"
+                        th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
                         th:data-event="${bird.eventName != null ? bird.eventName : ''}">
                         <td>
                             <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}" class="table-thumb">
@@ -342,6 +353,7 @@
                     { id: 'levelFilter', dataKey: 'level' },
                     { id: 'typeFilter', dataKey: 'type' },
                     { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
+                    { id: 'subLocationFilter', dataKey: 'subLocation', parentFilter: 'locationFilter', parentKey: 'location', wrapperId: 'subLocationWrapper' },
                     { id: 'weatherFilter', dataKey: 'weather' },
                     { id: 'timeFilter', dataKey: 'time', autoPopulate: true }
                 ]

@@ -469,6 +469,16 @@ body {
     background-color: var(--card-bg);
 }
 
+/* 부모 필터 선택 전: 종속 드롭다운 비활성 상태 */
+.filter-select-wrapper.filter-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.filter-select-wrapper.filter-disabled select {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* iOS Toggle Drop-in for Dream Event */
 .toggle-switch-wrapper {
     display: flex;

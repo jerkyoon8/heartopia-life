@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=1.9" defer></script>
+    <script src="/js/wiki-filter.js?v=2.2" defer></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
 </head>
 
@@ -16,8 +16,8 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="mw-body">
         <div class="page-header"><i class="fas fa-bug fa-2x text-success"></i>
-            <h1>벌레 도감 (Bug Collection)
-                <span sec:authorize="hasRole('ADMIN')"><button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addBugModal" style="font-size:0.5em;vertical-align:middle;"><i class="fas fa-plus me-1"></i>벌레 추가</button></span>
+            <h1>곤충 도감 (Bug Collection)
+                <span sec:authorize="hasRole('ADMIN')"><button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm ms-3 btn-admin-add" data-bs-toggle="modal" data-bs-target="#addBugModal" style="font-size:0.5em;vertical-align:middle;"><i class="fas fa-plus me-1"></i>곤충 추가</button></span>
             </h1>
         </div>
         <!-- Filter Bar (Redesign) -->
@@ -26,7 +26,7 @@
             <div class="filter-top-tier">
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="벌레 이름 검색...">
+                    <input type="text" id="searchInput" class="search-input" placeholder="곤충 이름 검색...">
                 </div>
 
                 <!-- 블록 시가지 스위치 -->
@@ -97,7 +97,15 @@
                                 <!-- Options populated by JS -->
                             </select>
                         </div>
-                        
+
+                        <div class="filter-select-wrapper filter-disabled" id="subLocationWrapper">
+                            <span class="prefix">세부 장소</span>
+                            <select id="subLocationFilter" disabled>
+                                <option value="all">모든 세부</option>
+                                <!-- Options populated by JS (depends on locationFilter) -->
+                            </select>
+                        </div>
+
                         <div class="filter-select-wrapper">
                             <span class="prefix">날씨</span>
                             <select id="weatherFilter">
@@ -160,6 +168,7 @@
             <div th:each="bug : ${bugList}" class="wiki-item-card sync-item" th:data-sync-key="'bug_' + ${bug.name}" th:data-name="${bug.name}"
                 th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}"
                 th:data-weather="${bug.weather}" th:data-time="${bug.time}" th:data-location="${bug.location}"
+                th:data-sub-location="${bug.subLocation != null ? bug.subLocation : ''}"
                 th:data-event="${bug.eventName != null ? bug.eventName : ''}">
 
                 <div class="wiki-item-image sync-container">
@@ -220,7 +229,7 @@
                 <!-- Price Fragment -->
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${bug.prices})}"></div>
                 <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
-                    <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addBugModal" data-edit-title="벌레 수정"
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addBugModal" data-edit-title="곤충 수정"
                         th:data-item="${'{&quot;id&quot;:' + bug.id + ',&quot;name&quot;:&quot;' + bug.name + '&quot;,&quot;level&quot;:' + bug.level + ',&quot;location&quot;:&quot;' + bug.location + '&quot;,&quot;subLocation&quot;:&quot;' + (bug.subLocation != null ? bug.subLocation : '') + '&quot;,&quot;weather&quot;:&quot;' + (bug.weather != null ? bug.weather : '') + '&quot;,&quot;time&quot;:&quot;' + (bug.time != null ? bug.time : '') + '&quot;,&quot;price1&quot;:' + (bug.price1 != null ? bug.price1 : 'null') + ',&quot;price2&quot;:' + (bug.price2 != null ? bug.price2 : 'null') + ',&quot;price3&quot;:' + (bug.price3 != null ? bug.price3 : 'null') + ',&quot;price4&quot;:' + (bug.price4 != null ? bug.price4 : 'null') + ',&quot;price5&quot;:' + (bug.price5 != null ? bug.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (bug.imageUrl != null ? bug.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (bug.eventName != null ? bug.eventName : '') + '&quot;}'}">
                         <i class="fas fa-edit"></i></button>
                     <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${bug.name}" th:data-delete-url="${'/wiki/admin/data/bug/delete/' + bug.id}"><i class="fas fa-trash"></i></button>
@@ -248,6 +257,8 @@
                         th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
                         th:data-price="${bug.prices[0]}"
                         th:data-weather="${bug.weather}"
+                        th:data-location="${bug.location}"
+                        th:data-sub-location="${bug.subLocation != null ? bug.subLocation : ''}"
                         th:data-event="${bug.eventName != null ? bug.eventName : ''}">
                         <td>
                             <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb">
@@ -311,16 +322,17 @@
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                     { id: 'levelFilter', dataKey: 'level' },
                     { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
+                    { id: 'subLocationFilter', dataKey: 'subLocation', parentFilter: 'locationFilter', parentKey: 'location', wrapperId: 'subLocationWrapper' },
                     { id: 'weatherFilter', dataKey: 'weather' }
                 ]
             });
         });
     </script>
 
-    <!-- 관리자 전용: 벌레 추가 모달 -->
+    <!-- 관리자 전용: 곤충 추가 모달 -->
     <div sec:authorize="hasRole('ADMIN')">
-        <div class="modal fade" id="addBugModal" tabindex="-1" data-add-title="새 벌레 추가"><div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
-            <div class="modal-header" style="background:var(--modal-header-bg);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 벌레 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
+        <div class="modal fade" id="addBugModal" tabindex="-1" data-add-title="새 곤충 추가"><div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background:var(--modal-header-bg);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 곤충 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
             <form th:action="@{/wiki/admin/data/bug/add}" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/bug/add" data-update-action="/wiki/admin/data/bug/update"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
                 <div class="modal-body" style="padding:24px;"><div class="row g-3">
                     <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
