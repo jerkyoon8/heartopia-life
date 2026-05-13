@@ -45,7 +45,7 @@ public class MapController {
         // 채집물 명단도 함께 전달하여 사이드바에서 핀이 없어도 보이게 함
         model.addAttribute("categories", categories);
         model.addAttribute("pageTitle", "인터랙티브 지도");
-        model.addAttribute("pageDescription", "두근두근라이프 인터랙티브 맵 - 물고기, 벌레, 동물 등 자원 위치를 지도에서 확인하세요.");
+        model.addAttribute("pageDescription", "두근두근라이프 인터랙티브 맵 - 물고기, 곤충, 동물 등 자원 위치를 지도에서 확인하세요.");
         return "wiki/map";
     }
 

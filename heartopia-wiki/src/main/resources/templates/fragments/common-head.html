@@ -16,13 +16,13 @@
     <!-- 네이버 서치어드바이저 소유 인증 -->
     <meta name="naver-site-verification" content="06f32035e51c69718507d0d7303e65c6bcb643f2" />
     <title th:text="${pageTitle != null ? pageTitle + ' - 두두타 도감' : '두두타 도감 | heartopia life'}">두두타 도감 | heartopia life</title>
-    <meta name="description" th:attr="content=${pageDescription != null ? pageDescription : '두두타(두근두근타운) 공략 도감! 물고기, 벌레, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공하는 비공식 종합 도감입니다.'}">
+    <meta name="description" th:attr="content=${pageDescription != null ? pageDescription : '두두타(두근두근타운) 공략 도감! 물고기, 곤충, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공하는 비공식 종합 도감입니다.'}">
     <meta name="keywords" content="두두타 도감, 두근두근타운, 두두타, heartopia, 공략, 도감, 지도, 주민 정보, 요리, 위키">
     <!-- Open Graph (카카오톡/디스코드 링크 공유 미리보기) -->
     <meta property="og:type" content="website">
     <meta property="og:url" th:content="${canonicalUrl != null ? canonicalUrl : 'https://heartopia-life.me/wiki'}">
     <meta property="og:title" th:attr="content=${pageTitle != null ? pageTitle + ' - 두두타 도감' : '두두타 도감 | heartopia life'}">
-    <meta property="og:description" th:attr="content=${pageDescription != null ? pageDescription : '두근두근라이프(하토피아) 공략 도감! 물고기, 벌레, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공합니다.'}">
+    <meta property="og:description" th:attr="content=${pageDescription != null ? pageDescription : '두근두근라이프(하토피아) 공략 도감! 물고기, 곤충, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공합니다.'}">
     <!-- CSRF Tokens for Frontend API Calls -->
     <meta name="_csrf" th:content="${_csrf?.token}" />
     <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
@@ -38,7 +38,7 @@
       "name": "두두타 도감",
       "alternateName": ["두근두근타운 도감", "Heartopia Life"],
       "url": "https://heartopia-life.me/",
-      "description": "두두타(두근두근타운) 공략 도감! 물고기, 벌레, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공하는 비공식 종합 도감입니다.",
+      "description": "두두타(두근두근타운) 공략 도감! 물고기, 곤충, 새, 동물, 요리, 작물 정보와 인터랙티브 지도를 제공하는 비공식 종합 도감입니다.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {

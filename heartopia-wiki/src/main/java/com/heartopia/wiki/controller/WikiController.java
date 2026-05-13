@@ -41,7 +41,7 @@ public class WikiController {
                 List<CategoryItemDto> basics = new ArrayList<>();
                 basics.add(new CategoryItemDto("물고기", "🐟", "/wiki/collections/fish",
                                 "/images/collections/fish_collection.png", collectionService.getFishCount()));
-                basics.add(new CategoryItemDto("벌레", "🦋", "/wiki/collections/bug",
+                basics.add(new CategoryItemDto("곤충", "🦋", "/wiki/collections/bug",
                                 "/images/collections/insect_collection.png", collectionService.getBugCount()));
                 basics.add(new CategoryItemDto("새", "🐦", "/wiki/collections/bird",
                                 "/images/collections/bird_collection.png", collectionService.getBirdCount()));
@@ -102,8 +102,8 @@ public class WikiController {
                                 .map(BugDto::from)
                                 .toList();
                 model.addAttribute("bugList", list);
-                model.addAttribute("pageTitle", "벌레 도감");
-                model.addAttribute("pageDescription", "두근두근라이프 벌레 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
+                model.addAttribute("pageTitle", "곤충 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 곤충 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/bug";
         }
 
@@ -215,7 +215,7 @@ public class WikiController {
                 // 1. 물고기
                 model.addAttribute("fishList", collectionService.getAllFish().stream()
                         .map(FishDto::from).toList());
-                // 2. 곤충 (벌레)
+                // 2. 곤충
                 model.addAttribute("bugList", collectionService.getAllBugs().stream()
                         .map(BugDto::from).toList());
                 // 3. 새
@@ -277,7 +277,7 @@ public class WikiController {
 
                 model.addAttribute("item", item);
                 model.addAttribute("category", "bug");
-                model.addAttribute("categoryLabel", "벌레");
+                model.addAttribute("categoryLabel", "곤충");
                 model.addAttribute("categoryIcon", "fas fa-bug");
                 model.addAttribute("listUrl", "/wiki/collections/bug");
                 model.addAttribute("prices", item.getPrices());
@@ -286,7 +286,7 @@ public class WikiController {
 
                 List<BugCollection> related = collectionService.getBugsByLocation(item.getLocation(), name);
                 model.addAttribute("relatedItems", related.stream()
-                                .map(b -> new SearchResultDto(b.getName(), "bug", "벌레",
+                                .map(b -> new SearchResultDto(b.getName(), "bug", "곤충",
                                                 "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv"))
                                 .toList());
@@ -452,7 +452,7 @@ public class WikiController {
                                                 f.getLocation() + " · " + f.getLevel() + " Lv")));
 
                 collectionService.searchBugs(searchKeyword)
-                                .forEach(b -> allResults.add(new SearchResultDto(b.getName(), "bug", "벌레",
+                                .forEach(b -> allResults.add(new SearchResultDto(b.getName(), "bug", "곤충",
                                                 "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                                 b.getLocation() + " · " + b.getLevel() + " Lv")));
 
@@ -530,7 +530,7 @@ public class WikiController {
                                 "sub", f.getLocation() + " · " + f.getLevel() + " Lv", "icon", "🐟")));
 
                 collectionService.searchBugs(q).forEach(b -> results.add(Map.of(
-                                "name", b.getName(), "category", "bug", "label", "벌레",
+                                "name", b.getName(), "category", "bug", "label", "곤충",
                                 "url", "/wiki/collections/bug/" + UriUtils.encodePathSegment(b.getName(), StandardCharsets.UTF_8),
                                 "sub", b.getLocation() + " · " + b.getLevel() + " Lv", "icon", "🦋")));
 

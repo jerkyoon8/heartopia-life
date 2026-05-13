@@ -88,11 +88,11 @@ public class AdminDataController {
         return "redirect:/wiki/collections/fish";
     }
 
-    // ======================== 벌레 ========================
+    // ======================== 곤충 ========================
     @PostMapping("/bug/add")
     public String addBug(BugCollection bug,
                          @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-        log.info("관리자 데이터 추가: 벌레 '{}'", bug.getName());
+        log.info("관리자 데이터 추가: 곤충 '{}'", bug.getName());
         handleImageUpload(bug, imageFile, "bug", null);
         collectionService.addBug(bug);
         return "redirect:/wiki/collections/bug";
@@ -102,7 +102,7 @@ public class AdminDataController {
     public String updateBug(BugCollection bug,
                             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                             @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
-        log.info("관리자 데이터 수정: 벌레 id={}", bug.getId());
+        log.info("관리자 데이터 수정: 곤충 id={}", bug.getId());
         handleImageUpload(bug, imageFile, "bug", existingImageUrl);
         collectionService.updateBug(bug);
         return "redirect:/wiki/collections/bug";
@@ -110,7 +110,7 @@ public class AdminDataController {
 
     @PostMapping("/bug/delete/{id}")
     public String deleteBug(@PathVariable Integer id) {
-        log.info("관리자 데이터 삭제: 벌레 id={}", id);
+        log.info("관리자 데이터 삭제: 곤충 id={}", id);
         collectionService.deleteBug(id);
         return "redirect:/wiki/collections/bug";
     }
