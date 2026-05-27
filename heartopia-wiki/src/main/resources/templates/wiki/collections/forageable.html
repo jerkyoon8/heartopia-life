@@ -83,7 +83,7 @@
                         <span th:if="${item.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${item.eventName}"></span>
                     </a>
                     <div class="mt-2 text-center">
-                        <a th:href="@{/wiki/map(cat='forageable', name=${item.name})}"
+                        <a th:href="${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})}"
                             class="wiki-item-tag location-link">
                             <i class="fas fa-map-marker-alt me-1"></i>
                             <span th:text="${item.location}">서식지</span>
@@ -145,7 +145,7 @@
                             </a>
                         </td>
                         <td>
-                            <a th:href="@{/wiki/map(cat='forageable', name=${item.name})}" class="table-location-link">
+                            <a th:href="${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})}" class="table-location-link">
                                 <i class="fas fa-map-marker-alt me-1"></i>
                                 <span th:text="${item.location}">장소</span>
                             </a>

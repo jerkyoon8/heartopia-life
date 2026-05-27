@@ -345,8 +345,10 @@ class WikiFilter {
 
                 const itemValue = element.dataset[f.key];
 
-                if (f.key === 'level' && selectedValue === '10') {
-                    if (parseInt(itemValue) < 10) isMatch = false;
+                if (f.key === 'level') {
+                    if (parseInt(itemValue) !== parseInt(selectedValue)) {
+                        isMatch = false;
+                    }
                 }
                 else if (f.key === 'weather' && selectedValue === 'only-무지개') {
                     if (!itemValue || String(itemValue).trim() !== '무지개') {

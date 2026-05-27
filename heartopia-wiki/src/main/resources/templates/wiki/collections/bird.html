@@ -84,7 +84,11 @@
                                 <option value="7">Lv.7</option>
                                 <option value="8">Lv.8</option>
                                 <option value="9">Lv.9</option>
-                                <option value="10">Lv.10+</option>
+                                <option value="10">Lv.10</option>
+                                <option value="11">Lv.11</option>
+                                <option value="12">Lv.12</option>
+                                <option value="13">Lv.13</option>
+                                <option value="14">Lv.14</option>
                             </select>
                         </div>
 
@@ -257,7 +261,7 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${bird.prices})}"></div>
                 <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
                     <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addBirdModal" data-edit-title="새 수정"
-                        th:data-item="${'{&quot;id&quot;:' + bird.id + ',&quot;name&quot;:&quot;' + bird.name + '&quot;,&quot;level&quot;:' + bird.level + ',&quot;location&quot;:&quot;' + bird.location + '&quot;,&quot;subLocation&quot;:&quot;' + (bird.subLocation != null ? bird.subLocation : '') + '&quot;,&quot;weather&quot;:&quot;' + (bird.weather != null ? bird.weather : '') + '&quot;,&quot;time&quot;:&quot;' + (bird.time != null ? bird.time : '') + '&quot;,&quot;type&quot;:&quot;' + (bird.type != null ? bird.type : '') + '&quot;,&quot;price1&quot;:' + (bird.price1 != null ? bird.price1 : 'null') + ',&quot;price2&quot;:' + (bird.price2 != null ? bird.price2 : 'null') + ',&quot;price3&quot;:' + (bird.price3 != null ? bird.price3 : 'null') + ',&quot;price4&quot;:' + (bird.price4 != null ? bird.price4 : 'null') + ',&quot;price5&quot;:' + (bird.price5 != null ? bird.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (bird.imageUrl != null ? bird.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (bird.eventName != null ? bird.eventName : '') + '&quot;}'}">
+                        th:data-item="${'{&quot;id&quot;:' + bird.id + ',&quot;name&quot;:&quot;' + bird.name + '&quot;,&quot;level&quot;:' + bird.level + ',&quot;location&quot;:&quot;' + bird.location + '&quot;,&quot;subLocation&quot;:&quot;' + (bird.subLocation != null ? bird.subLocation : '') + '&quot;,&quot;weather&quot;:&quot;' + (bird.weather != null ? bird.weather : '') + '&quot;,&quot;time&quot;:&quot;' + (bird.time != null ? bird.time : '') + '&quot;,&quot;type&quot;:&quot;' + (bird.type != null ? bird.type : '') + '&quot;,&quot;price1&quot;:' + (bird.price1 != null ? bird.price1 : 'null') + ',&quot;price2&quot;:' + (bird.price2 != null ? bird.price2 : 'null') + ',&quot;price3&quot;:' + (bird.price3 != null ? bird.price3 : 'null') + ',&quot;price4&quot;:' + (bird.price4 != null ? bird.price4 : 'null') + ',&quot;price5&quot;:' + (bird.price5 != null ? bird.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (bird.imageUrl != null ? bird.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (bird.eventName != null ? bird.eventName : '') + '&quot;,&quot;distance&quot;:&quot;' + (bird.distance != null ? bird.distance : '') + '&quot;,&quot;stretchTime&quot;:&quot;' + (bird.stretchTime != null ? bird.stretchTime : '') + '&quot;}'}">
                         <i class="fas fa-edit"></i></button>
                     <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${bird.name}" th:data-delete-url="${'/wiki/admin/data/bird/delete/' + bird.id}"><i class="fas fa-trash"></i></button>
                 </div>
@@ -374,6 +378,8 @@
                     <div class="col-md-6"><label class="form-label fw-bold">세부 장소</label><input type="text" name="subLocation" class="form-control"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">날씨</label><input type="text" name="weather" class="form-control" placeholder="상시"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">시간</label><input type="text" name="time" class="form-control" placeholder="상시"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">포착 거리</label><input type="text" name="distance" class="form-control" placeholder="예: 4.5m"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">펴기 시간</label><input type="text" name="stretchTime" class="form-control" placeholder="예: 3초"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
                     <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
                         <div class="mb-2">

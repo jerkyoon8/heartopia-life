@@ -64,16 +64,6 @@
                     <input type="text" id="searchInput" class="search-input" placeholder="요리 검색...">
                 </div>
                 
-                <!-- 몰티즈 스위치 -->
-                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
-                    <label class="toggle-switch-label">
-                        <label class="switch">
-                            <input type="checkbox" id="btn-maltese-event">
-                            <span class="slider"></span>
-                        </label>
-                        <i class="fas fa-dog text-info"></i> 몰티즈만 표시
-                    </label>
-                </div>
 
                 <!-- 블록 시가지 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
@@ -131,7 +121,11 @@
                                 <option value="7">Lv.7</option>
                                 <option value="8">Lv.8</option>
                                 <option value="9">Lv.9</option>
-                                <option value="10">Lv.10+</option>
+                                <option value="10">Lv.10</option>
+                                <option value="11">Lv.11</option>
+                                <option value="12">Lv.12</option>
+                                <option value="13">Lv.13</option>
+                                <option value="14">Lv.14</option>
                             </select>
                         </div>
                     </div>
@@ -269,54 +263,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const btnMaltese = document.getElementById('btn-maltese-event');
             const btnBlockCity = document.getElementById('btn-block-city-event');
             const eventFilter = document.getElementById('eventFilter');
-
-            const eventToggles = [
-                { btn: btnMaltese, value: '몰티즈' },
-                { btn: btnBlockCity, value: '블록 시가지' }
-            ];
-
-            function ensureOption(select, value) {
-                if (![...select.options].some(o => o.value === value)) {
-                    const opt = document.createElement('option');
-                    opt.value = value;
-                    opt.textContent = value;
-                    select.appendChild(opt);
-                }
-            }
-
-            // 토글 → 드롭다운 동기화 (다른 토글은 OFF)
-            eventToggles.forEach(({ btn, value }) => {
-                if (!btn || !eventFilter) return;
-                btn.addEventListener('change', function() {
+            if (btnBlockCity && eventFilter) {
+                btnBlockCity.addEventListener('change', function() {
                     if (this.checked) {
-                        eventToggles.forEach(t => { if (t.btn !== btn) t.btn.checked = false; });
-                        ensureOption(eventFilter, value);
-                        eventFilter.value = value;
+                        if (![...eventFilter.options].some(o => o.value === '블록 시가지')) {
+                            const opt = document.createElement('option');
+                            opt.value = '블록 시가지';
+                            opt.textContent = '블록 시가지';
+                            eventFilter.appendChild(opt);
+                        }
+                        eventFilter.value = '블록 시가지';
                     } else {
                         eventFilter.value = 'all';
                     }
                     eventFilter.dispatchEvent(new Event('change'));
                 });
-            });
-
-            // 드롭다운 → 토글 역방향 동기화
-            if (eventFilter) {
                 eventFilter.addEventListener('change', function() {
-                    eventToggles.forEach(({ btn, value }) => {
-                        if (btn) btn.checked = (this.value === value);
-                    });
+                    if (this.value !== '블록 시가지') btnBlockCity.checked = false;
                 });
             }
-
-            // 리셋 시 토글도 OFF
             const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    eventToggles.forEach(({ btn }) => { if (btn) btn.checked = false; });
-                });
+            if (resetBtn && btnBlockCity) {
+                resetBtn.addEventListener('click', () => { btnBlockCity.checked = false; });
             }
 
             new WikiFilter({
