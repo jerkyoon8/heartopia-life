@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
     <style>
         .wiki-item-image {
             background: #F7F6F6 !important;
@@ -66,7 +66,7 @@
             </div>
 
             <!-- Forageable Card Loop -->
-            <div th:each="item : ${forageableList}" class="wiki-item-card" th:data-name="${item.name}"
+            <div th:each="item, iterStat : ${forageableList}" class="wiki-item-card" th:data-id="${iterStat.index}" th:data-name="${item.name}"
                 th:data-location="${item.location}" th:data-price="${item.price}"
                 th:data-event="${item.eventName != null ? item.eventName : ''}">
 
@@ -129,7 +129,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="item : ${forageableList}" class="wiki-table-row"
+                    <tr th:each="item, iterStat : ${forageableList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${item.name}"
                         th:data-location="${item.location}"
                         th:data-price="${item.price}"

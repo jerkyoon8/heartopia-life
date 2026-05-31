@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
 </head>
 
@@ -180,7 +180,7 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="bird : ${birdList}" class="wiki-item-card sync-item" th:data-sync-key="'bird_' + ${bird.name}" th:data-name="${bird.name}"
+            <div th:each="bird, iterStat : ${birdList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'bird_' + ${bird.name}" th:data-name="${bird.name}"
                 th:data-level="${#strings.replace(bird.level, 'Lv.', '')}" th:data-price="${bird.prices[0]}"
                 th:data-type="${bird.type}" th:data-weather="${bird.weather}" th:data-time="${bird.time}" th:data-location="${bird.location}"
                 th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
@@ -284,7 +284,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="bird : ${birdList}" class="wiki-table-row"
+                    <tr th:each="bird, iterStat : ${birdList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${bird.name}"
                         th:data-level="${#strings.replace(bird.level, 'Lv.', '')}"
                         th:data-price="${bird.prices[0]}"

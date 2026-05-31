@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
 </head>
 
 <body>
@@ -115,7 +115,7 @@
             </div>
 
             <!-- Flower Card Loop -->
-            <div th:each="flower : ${flowerList}" class="wiki-item-card sync-item" th:data-sync-key="'flower_' + ${flower.name}" th:data-name="${flower.name}"
+            <div th:each="flower, iterStat : ${flowerList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'flower_' + ${flower.name}" th:data-name="${flower.name}"
                 th:data-level="${flower.level}" th:data-price="${flower.prices[0]}"
                 th:data-event="${flower.eventName != null ? flower.eventName : ''}">
 
@@ -207,7 +207,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="flower : ${flowerList}" class="wiki-table-row"
+                    <tr th:each="flower, iterStat : ${flowerList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${flower.name}"
                         th:data-level="${flower.level}"
                         th:data-price="${flower.prices[0]}"

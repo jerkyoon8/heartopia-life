@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
 </head>
 
 <body>
@@ -89,8 +89,9 @@
             </div>
 
             <!-- Achievement Card Loop -->
-            <div th:each="achievement : ${achievementList}"
+            <div th:each="achievement, iterStat : ${achievementList}"
                  class="wiki-item-card sync-item"
+                 th:data-id="${iterStat.index}"
                  th:data-sync-key="'achievement_' + ${achievement.name}"
                  th:data-name="${achievement.name}"
                  th:data-categories="${achievement.categories}">
@@ -152,7 +153,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="achievement : ${achievementList}" class="wiki-table-row"
+                    <tr th:each="achievement, iterStat : ${achievementList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${achievement.name}"
                         th:data-categories="${achievement.categories}">
                         <td>

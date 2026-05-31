@@ -5,7 +5,7 @@
 <head>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
     <style>
         /* 목록 페이지 재료 pill 태그 */
         .ing-pill-list {
@@ -148,7 +148,7 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="item : ${cookingList}" class="wiki-item-card sync-item" th:data-sync-key="'cooking_' + ${item.name}" th:data-name="${item.name}"
+            <div th:each="item, iterStat : ${cookingList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'cooking_' + ${item.name}" th:data-name="${item.name}"
                 th:data-level="${item.level}" th:data-price="${item.prices[0]}"
                 th:data-event="${item.eventName != null ? item.eventName : ''}">
 
@@ -226,7 +226,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="item : ${cookingList}" class="wiki-table-row"
+                    <tr th:each="item, iterStat : ${cookingList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${item.name}"
                         th:data-level="${item.level}"
                         th:data-price="${item.prices[0]}"

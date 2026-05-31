@@ -19,7 +19,7 @@ class WikiFilter {
         }, config);
 
         this.currentSort = {
-            key: 'name',
+            key: 'default',
             order: 'asc'
         };
 
@@ -450,12 +450,13 @@ class WikiFilter {
         const { key, order } = this.currentSort;
 
         const sortFn = (a, b) => {
-            let valA = a.dataset[key];
-            let valB = b.dataset[key];
+            const targetKey = key === 'default' ? 'id' : key;
+            let valA = a.dataset[targetKey];
+            let valB = b.dataset[targetKey];
 
-            if (key === 'level' || key === 'price') {
-                valA = parseInt(valA) || 0;
-                valB = parseInt(valB) || 0;
+            if (targetKey === 'id' || targetKey === 'level' || targetKey === 'price') {
+                valA = parseInt(valA, 10) || 0;
+                valB = parseInt(valB, 10) || 0;
                 return order === 'asc' ? valA - valB : valB - valA;
             }
 

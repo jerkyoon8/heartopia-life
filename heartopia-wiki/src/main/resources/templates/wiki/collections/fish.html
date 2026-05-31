@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
 </head>
 
 <body>
@@ -179,7 +179,7 @@
             </div>
 
             <!-- Fish Card Loop -->
-            <div th:each="fish : ${fishList}" class="wiki-item-card sync-item" th:data-sync-key="'fish_' + ${fish.name}" th:data-name="${fish.name}"
+            <div th:each="fish, iterStat : ${fishList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'fish_' + ${fish.name}" th:data-name="${fish.name}"
                 th:data-level="${#strings.replace(fish.level, 'Lv.', '')}" th:data-location="${fish.location}"
                 th:data-sub-location="${fish.subLocation != null ? fish.subLocation : ''}"
                 th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}"
@@ -277,7 +277,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="fish : ${fishList}" class="wiki-table-row"
+                    <tr th:each="fish, iterStat : ${fishList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${fish.name}"
                         th:data-level="${#strings.replace(fish.level, 'Lv.', '')}"
                         th:data-location="${fish.location}"

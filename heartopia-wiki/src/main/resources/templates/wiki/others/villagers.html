@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
 </head>
 
 <body>
@@ -55,7 +55,7 @@
             </div>
 
             <!-- NPC Card -->
-            <div th:each="npc, stat : ${villagers}" class="npc-card"
+            <div th:each="npc, stat : ${villagers}" class="npc-card" th:data-id="${stat.index}"
                 th:data-name="${#strings.arraySplit(npc.name, '(')[0].trim()}"
                 th:data-role="${#strings.listJoin(npc.roles.![type], ' ')}">
 

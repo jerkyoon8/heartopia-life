@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
     <style>
         :root {
             --content-bg: var(--content-bg, rgba(251, 251, 251, 0.95));
@@ -96,7 +96,7 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="animal : ${animalList}" class="wiki-item-card"
+            <div th:each="animal, iterStat : ${animalList}" class="wiki-item-card" th:data-id="${iterStat.index}"
                  th:data-event="${animal.eventName != null ? animal.eventName : ''}">
                 <div class="fish-image-wrapper">
                     <img th:if="${animal.imageUrl != null}" th:src="${animal.imageUrl}" th:alt="${animal.name}"

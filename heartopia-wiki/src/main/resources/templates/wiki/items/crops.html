@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.2" defer></script>
+    <script src="/js/wiki-filter.js?v=2.3" defer></script>
 </head>
 
 <body>
@@ -104,7 +104,7 @@
             </div>
 
             <!-- Crop Card Loop -->
-            <div th:each="crop : ${cropList}" class="wiki-item-card sync-item" th:data-sync-key="'crop_' + ${crop.name}" th:data-name="${crop.name}"
+            <div th:each="crop, iterStat : ${cropList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'crop_' + ${crop.name}" th:data-name="${crop.name}"
                 th:data-level="${crop.level}" th:data-price="${crop.prices[0]}"
                 th:data-event="${crop.eventName != null ? crop.eventName : ''}">
 
@@ -184,7 +184,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="crop : ${cropList}" class="wiki-table-row"
+                    <tr th:each="crop, iterStat : ${cropList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
                         th:data-name="${crop.name}"
                         th:data-level="${crop.level}"
                         th:data-price="${crop.prices[0]}"
