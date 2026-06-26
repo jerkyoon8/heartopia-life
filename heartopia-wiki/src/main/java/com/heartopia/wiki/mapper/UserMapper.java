@@ -26,4 +26,9 @@ public interface UserMapper {
      * 체크리스트 DB 동기화 opt-in 토글
      */
     void updateChecklistSyncEnabled(@Param("userId") Long userId, @Param("enabled") boolean enabled);
+
+    /**
+     * 펫 먹이 기록 DB 동기화 opt-in 토글
+     */
+    void updatePetFoodSyncEnabled(@Param("userId") Long userId, @Param("enabled") boolean enabled);
 }

@@ -5,7 +5,7 @@
 <head>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.3" defer></script>
+    <script src="/js/wiki-filter.js?v=2.4" defer></script>
     <style>
         /* 목록 페이지 재료 pill 태그 */
         .ing-pill-list {
@@ -108,25 +108,24 @@
                             </select>
                         </div>
 
-                        <div class="filter-select-wrapper">
+                        <div class="filter-select-wrapper filter-multi-select-wrapper" id="levelFilter">
                             <span class="prefix">레벨</span>
-                            <select id="levelFilter">
-                                <option value="all">모든 레벨</option>
-                                <option value="1">Lv.1</option>
-                                <option value="2">Lv.2</option>
-                                <option value="3">Lv.3</option>
-                                <option value="4">Lv.4</option>
-                                <option value="5">Lv.5</option>
-                                <option value="6">Lv.6</option>
-                                <option value="7">Lv.7</option>
-                                <option value="8">Lv.8</option>
-                                <option value="9">Lv.9</option>
-                                <option value="10">Lv.10</option>
-                                <option value="11">Lv.11</option>
-                                <option value="12">Lv.12</option>
-                                <option value="13">Lv.13</option>
-                                <option value="14">Lv.14</option>
-                            </select>
+                            <div class="multi-select-trigger" id="levelTrigger">
+                                <span class="trigger-label">모든 레벨</span>
+                                <i class="fas fa-chevron-down ms-2 text-muted" style="font-size: 0.75rem;"></i>
+                            </div>
+                            <div class="multi-select-dropdown" id="levelDropdown">
+                                <div class="dropdown-opt">
+                                    <label><input type="checkbox" value="all" checked> 모든 레벨</label>
+                                </div>
+                                <div class="dropdown-div"></div>
+                                <div class="dropdown-opt" th:each="i : ${#numbers.sequence(1, 14)}">
+                                    <label>
+                                        <input type="checkbox" class="lvl-checkbox" th:value="${i}">
+                                        [[${'Lv.' + i}]]
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,24 +172,12 @@
                         <i class="fas fa-star sync-star-icon" data-val="5"></i>
                     </div>
                     <!-- 재료 pill 태그 -->
-                    <div class="ing-pill-list" th:if="${item.ingredientList != null and !item.ingredientList.isEmpty()}">
-                        <th:block th:each="ing : ${item.ingredientList}">
-                            <a th:if="${ing.itemType != null}"
-                               th:href="@{/wiki/{t}/{n}(t=${ing.itemType == 'crop' ? 'items/crops' : 'collections/' + ing.itemType}, n=${ing.ingredientName})}"
-                               class="ing-pill linked">
-                                <span th:text="${ing.ingredientName}"></span>
-                                <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
-                            </a>
-                            <span th:unless="${ing.itemType != null}" class="ing-pill unlinked">
-                                <span th:text="${ing.ingredientName}"></span>
-                                <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                    <div class="ing-pill-list" th:if="${item.ingredients != null and !item.ingredients.isEmpty()}">
+                        <th:block th:each="rawIng : ${#strings.arraySplit(item.ingredients, ',')}">
+                            <span class="ing-pill unlinked">
+                                <span th:text="${#strings.trim(rawIng)}"></span>
                             </span>
                         </th:block>
-                    </div>
-                    <!-- 폴백: ingredientList 없으면 텍스트 -->
-                    <div th:unless="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
-                         class="text-muted small mt-1" th:text="${item.ingredients}"
-                         style="font-size: 0.85rem;">
                     </div>
                 </div>
 
@@ -244,16 +231,13 @@
                         </td>
                         <td th:text="${item.level}">1</td>
                         <td style="max-width: 220px;">
-                            <div class="ing-pill-list" th:if="${item.ingredientList != null and !item.ingredientList.isEmpty()}">
-                                <th:block th:each="ing : ${item.ingredientList}">
-                                    <span class="ing-pill" th:classappend="${ing.itemType != null ? 'linked' : 'unlinked'}">
-                                        <span th:text="${ing.ingredientName}"></span>
-                                        <span th:if="${ing.quantity > 1}" class="ing-qty" th:text="'×' + ${ing.quantity}"></span>
+                            <div class="ing-pill-list" th:if="${item.ingredients != null and !item.ingredients.isEmpty()}">
+                                <th:block th:each="rawIng : ${#strings.arraySplit(item.ingredients, ',')}">
+                                    <span class="ing-pill unlinked">
+                                        <span th:text="${#strings.trim(rawIng)}"></span>
                                     </span>
                                 </th:block>
                             </div>
-                            <span th:unless="${item.ingredientList != null and !item.ingredientList.isEmpty()}"
-                                  style="font-size: 0.85rem; color: var(--stat-label);" th:text="${item.ingredients}"></span>
                         </td>
                         <td class="table-price" th:text="${item.prices[0]}">0</td>
                     </tr>
@@ -296,7 +280,7 @@
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
-                    { id: 'levelFilter', dataKey: 'level' }
+                    { id: 'levelFilter', dataKey: 'level', type: 'multi' }
                 ]
             });
         });

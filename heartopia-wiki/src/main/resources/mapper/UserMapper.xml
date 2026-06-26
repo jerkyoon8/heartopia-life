@@ -25,4 +25,10 @@
         WHERE id = #{userId}
     </update>
 
+    <update id="updatePetFoodSyncEnabled">
+        UPDATE users
+        SET pet_food_sync_enabled = #{enabled}
+        WHERE id = #{userId}
+    </update>
+
 </mapper>

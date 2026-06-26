@@ -792,7 +792,7 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">물고기</span>
-                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">80+개의 데이터</span>
+                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">80+개의 데이터</span>
                         </div>
                     </div>
                 </a>
@@ -820,7 +820,7 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">도구</span>
-                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">20+개의 데이터</span>
+                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">20+개의 데이터</span>
                         </div>
                     </div>
                 </a>
@@ -848,7 +848,7 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">기타 항목</span>
-                            <span class="card-count" th:text="|${item.dataCount}+개의 데이터|">10+개의 데이터</span>
+                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">10+개의 데이터</span>
                         </div>
                     </div>
                 </a>

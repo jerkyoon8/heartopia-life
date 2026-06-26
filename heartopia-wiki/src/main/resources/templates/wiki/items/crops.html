@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.3" defer></script>
+    <script src="/js/wiki-filter.js?v=2.4" defer></script>
 </head>
 
 <body>
@@ -63,25 +63,24 @@
                             </select>
                         </div>
 
-                        <div class="filter-select-wrapper">
+                        <div class="filter-select-wrapper filter-multi-select-wrapper" id="levelFilter">
                             <span class="prefix">레벨</span>
-                            <select id="levelFilter">
-                                <option value="all">모든 레벨</option>
-                                <option value="1">Lv.1</option>
-                                <option value="2">Lv.2</option>
-                                <option value="3">Lv.3</option>
-                                <option value="4">Lv.4</option>
-                                <option value="5">Lv.5</option>
-                                <option value="6">Lv.6</option>
-                                <option value="7">Lv.7</option>
-                                <option value="8">Lv.8</option>
-                                <option value="9">Lv.9</option>
-                                <option value="10">Lv.10</option>
-                                <option value="11">Lv.11</option>
-                                <option value="12">Lv.12</option>
-                                <option value="13">Lv.13</option>
-                                <option value="14">Lv.14</option>
-                            </select>
+                            <div class="multi-select-trigger" id="levelTrigger">
+                                <span class="trigger-label">모든 레벨</span>
+                                <i class="fas fa-chevron-down ms-2 text-muted" style="font-size: 0.75rem;"></i>
+                            </div>
+                            <div class="multi-select-dropdown" id="levelDropdown">
+                                <div class="dropdown-opt">
+                                    <label><input type="checkbox" value="all" checked> 모든 레벨</label>
+                                </div>
+                                <div class="dropdown-div"></div>
+                                <div class="dropdown-opt" th:each="i : ${#numbers.sequence(1, 14)}">
+                                    <label>
+                                        <input type="checkbox" class="lvl-checkbox" th:value="${i}">
+                                        [[${'Lv.' + i}]]
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -228,7 +227,7 @@
                 itemSelector: '.wiki-item-card',
                 filters: [
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
-                    { id: 'levelFilter', dataKey: 'level' }
+                    { id: 'levelFilter', dataKey: 'level', type: 'multi' }
                 ]
             });
         });

@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        .pet-food-page {
+            max-width: 1180px;
+            margin: 0 auto 56px;
+        }
+
+        .pet-food-shell {
+            display: grid;
+            gap: 18px;
+        }
+
+        .pet-panel {
+            background: var(--card-bg, #fff);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.04);
+        }
+
+        .pet-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .pet-panel-title {
+            margin: 0;
+            color: #202124;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .pet-panel-subtitle {
+            margin: 4px 0 0;
+            color: #6b7280;
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .pet-action-btn,
+        .pet-secondary-btn,
+        .pet-danger-btn {
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 0.84rem;
+            font-weight: 800;
+            line-height: 1;
+            min-height: 38px;
+            padding: 0 14px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .pet-action-btn {
+            background: #222831;
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(34, 40, 49, 0.14);
+        }
+
+        .pet-action-btn:hover {
+            background: #111827;
+            transform: translateY(-1px);
+        }
+
+        .pet-secondary-btn {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .pet-secondary-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .pet-danger-btn {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+
+        .pet-danger-btn:hover {
+            background: #ffe4e6;
+        }
+
+        .pet-action-btn:active,
+        .pet-secondary-btn:active,
+        .pet-danger-btn:active,
+        .pet-kind-btn:active,
+        .pet-chip:active,
+        .food-state-btn:active {
+            transform: scale(0.98);
+        }
+
+        .pet-form {
+            display: none;
+            grid-template-columns: minmax(180px, 1fr) auto auto;
+            align-items: end;
+            gap: 12px;
+            padding: 16px 20px;
+            background: #fbfbfc;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .pet-form.is-open {
+            display: grid;
+        }
+
+        .pet-field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .pet-field label,
+        .pet-kind-label {
+            color: #6b7280;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .pet-input,
+        .pet-search-input {
+            width: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+            color: #1f2937;
+            font-size: 0.9rem;
+            font-weight: 700;
+            outline: none;
+            padding: 10px 12px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .pet-input:focus,
+        .pet-search-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.16);
+        }
+
+        .pet-kind-field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .pet-kind-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pet-kind-btn {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.84rem;
+            font-weight: 800;
+            min-height: 40px;
+            padding: 0 13px;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .pet-kind-btn.is-active[data-kind="dog"] {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: #fff;
+        }
+
+        .pet-kind-btn.is-active[data-kind="cat"] {
+            background: #0ea5e9;
+            border-color: #0ea5e9;
+            color: #fff;
+        }
+
+        .pet-message {
+            display: none;
+            margin: 0 20px 14px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .pet-message.is-visible {
+            display: block;
+        }
+
+        .my-pet-list-wrap {
+            padding: 16px 20px 18px;
+        }
+
+        .my-pet-list-title {
+            color: #f59e0b;
+            display: none;
+            font-size: 0.78rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .my-pet-list-title.is-visible {
+            display: block;
+        }
+
+        .my-pet-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pet-chip {
+            align-items: center;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            color: #374151;
+            cursor: pointer;
+            display: inline-flex;
+            gap: 9px;
+            min-height: 44px;
+            padding: 7px 12px;
+            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .pet-chip.is-active {
+            background: #fff7ed;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        }
+
+        .pet-chip-icon {
+            align-items: center;
+            background: #fff;
+            border-radius: 10px;
+            display: inline-flex;
+            height: 30px;
+            justify-content: center;
+            width: 30px;
+        }
+
+        .pet-chip-name {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .pet-chip-kind {
+            color: #9ca3af;
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 3px;
+        }
+
+        .empty-pets {
+            align-items: center;
+            border: 1px dashed #d1d5db;
+            border-radius: 14px;
+            color: #6b7280;
+            display: flex;
+            justify-content: center;
+            min-height: 92px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .empty-pets strong {
+            color: #374151;
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .selected-pet-toolbar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px 0;
+        }
+
+        .selected-pet-toolbar.is-visible {
+            display: flex;
+        }
+
+        .selected-pet-name {
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .selected-pet-meta {
+            color: #6b7280;
+            font-size: 0.78rem;
+            font-weight: 800;
+            margin: 3px 0 0;
+        }
+
+        .food-tools {
+            display: none;
+            grid-template-columns: minmax(180px, 1fr) auto;
+            gap: 12px;
+            padding: 16px 20px;
+            align-items: center;
+        }
+
+        .food-tools.is-visible {
+            display: grid;
+        }
+
+        .food-filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            justify-content: flex-end;
+        }
+
+        .food-filter-btn {
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            background: #f9fafb;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 900;
+            min-height: 34px;
+            padding: 0 12px;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .food-filter-btn.is-active {
+            background: #111827;
+            border-color: #111827;
+            color: #fff;
+        }
+
+        .food-summary {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 0 20px 16px;
+        }
+
+        .food-summary.is-visible {
+            display: grid;
+        }
+
+        .food-summary-card {
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 13px 14px;
+            background: #f9fafb;
+        }
+
+        .food-summary-label {
+            color: #6b7280;
+            font-size: 0.76rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .food-summary-count {
+            color: #111827;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .food-grid.is-empty,
+        .food-grid.is-disabled {
+            display: block;
+        }
+
+        .food-card {
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            background: #fff;
+            min-height: 86px;
+            padding: 12px 14px;
+            display: flex;
+            gap: 14px;
+            justify-content: flex-start;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            min-width: 0;
+        }
+
+        .food-card.is-like {
+            background: #ecfdf5;
+            border-color: #86efac;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+        }
+
+        .food-card.is-dislike {
+            background: #fff1f2;
+            border-color: #fda4af;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.08);
+        }
+
+        .food-image-wrap {
+            align-items: center;
+            background: #fff5f5;
+            border-radius: 14px;
+            display: flex;
+            height: 58px;
+            justify-content: center;
+            overflow: hidden;
+            width: 58px;
+            flex: 0 0 58px;
+        }
+
+        .food-image {
+            height: 48px;
+            object-fit: contain;
+            width: 48px;
+        }
+
+        .food-fallback-icon {
+            color: #9ca3af;
+            font-size: 1.45rem;
+        }
+
+        .food-name {
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 900;
+            line-height: 1.25;
+            margin: 0;
+            min-height: 0;
+            text-align: left;
+        }
+
+        .food-meta {
+            color: #6b7280;
+            font-size: 0.72rem;
+            font-weight: 800;
+            line-height: 1.4;
+            margin: 4px 0 0;
+            min-height: 0;
+            text-align: left;
+        }
+
+        .food-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+            flex: 0 0 auto;
+        }
+
+        .food-state-btn {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            background: #fff;
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 900;
+            height: 46px;
+            width: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .food-state-btn.is-tried {
+            background: #0ea5e9;
+            border-color: #0ea5e9;
+            color: #fff;
+        }
+
+        .food-preference-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .food-main {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .food-state-btn.is-like {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+        }
+
+        .food-state-btn.is-dislike {
+            background: #f43f5e;
+            border-color: #f43f5e;
+            color: #fff;
+        }
+
+        .empty-foods {
+            border: 1px dashed #d1d5db;
+            border-radius: 16px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 42px 20px;
+            text-align: center;
+        }
+
+        .guide-disabled {
+            display: none !important;
+        }
+
+        @media (max-width: 820px) {
+            .pet-form,
+            .food-tools {
+                grid-template-columns: 1fr;
+            }
+
+            .food-filter-tabs {
+                justify-content: flex-start;
+            }
+
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .pet-panel-header,
+            .selected-pet-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .food-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .food-card {
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .food-image-wrap {
+                height: 50px;
+                width: 50px;
+                flex-basis: 50px;
+            }
+
+            .food-image {
+                height: 42px;
+                width: 42px;
+            }
+
+            .food-state-btn {
+                height: 40px;
+                width: 40px;
+                border-radius: 13px;
+                font-size: 0.95rem;
+            }
+
+            .food-actions,
+            .food-preference-actions {
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="pet-food-page">
+            <div class="page-header">
+                <h1>반려동물 먹이 기록</h1>
+            </div>
+
+            <div class="pet-food-shell">
+                <section class="pet-panel">
+                    <div class="pet-panel-header">
+                        <div>
+                            <h2 class="pet-panel-title">반려동물이 선호하는 음식 찾기</h2>
+                            <p class="pet-panel-subtitle">반려동물을 등록하고, 먹여본 음식과 선호도를 따로 기록하세요.</p>
+                        </div>
+                        <button type="button" class="pet-action-btn" id="togglePetFormBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>반려동물 추가</span>
+                        </button>
+                    </div>
+
+                    <form class="pet-form" id="petForm">
+                        <div class="pet-field">
+                            <label for="petNameInput">반려동물 이름</label>
+                            <input type="text" id="petNameInput" class="pet-input" placeholder="예: 초코" autocomplete="off">
+                        </div>
+                        <div class="pet-kind-field">
+                            <span class="pet-kind-label">반려동물 종류</span>
+                            <div class="pet-kind-options">
+                                <button type="button" class="pet-kind-btn" data-kind="dog">강아지</button>
+                                <button type="button" class="pet-kind-btn" data-kind="cat">고양이</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="pet-action-btn">등록완료</button>
+                    </form>
+
+                    <div class="pet-message" id="petMessage"></div>
+
+                    <div class="my-pet-list-wrap">
+                        <div class="my-pet-list-title" id="myPetListTitle">등록된 반려동물 목록</div>
+                        <div class="my-pet-list" id="myPetList"></div>
+                    </div>
+                </section>
+
+                <section class="pet-panel">
+                    <div class="selected-pet-toolbar" id="selectedPetToolbar">
+                        <div>
+                            <h2 class="selected-pet-name" id="selectedPetName"></h2>
+                            <p class="selected-pet-meta" id="selectedPetMeta"></p>
+                        </div>
+                        <button type="button" class="pet-danger-btn" id="deletePetBtn">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>선택 펫 삭제</span>
+                        </button>
+                    </div>
+
+                    <div class="food-tools" id="foodTools">
+                        <div class="pet-search-wrapper">
+                            <input type="text" id="foodSearchInput" class="pet-search-input" placeholder="음식 이름 또는 재료 검색..." autocomplete="off">
+                        </div>
+                        <div class="food-filter-tabs" id="foodFilterTabs">
+                            <button type="button" class="food-filter-btn is-active" data-filter="all">전체</button>
+                            <button type="button" class="food-filter-btn" data-filter="tried">먹여본 음식</button>
+                            <button type="button" class="food-filter-btn" data-filter="like">좋아하는 음식</button>
+                            <button type="button" class="food-filter-btn" data-filter="dislike">싫어하는 음식</button>
+                        </div>
+                    </div>
+
+                    <div class="food-summary" id="foodSummary">
+                        <div class="food-summary-card">
+                            <div class="food-summary-label">먹여본 음식</div>
+                            <div class="food-summary-count" id="triedCount">0</div>
+                        </div>
+                        <div class="food-summary-card">
+                            <div class="food-summary-label">좋아하는 음식</div>
+                            <div class="food-summary-count" id="likeCount">0</div>
+                        </div>
+                        <div class="food-summary-card">
+                            <div class="food-summary-label">싫어하는 음식</div>
+                            <div class="food-summary-count" id="dislikeCount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="food-grid is-disabled" id="foodGrid">
+                        <div class="empty-foods">먼저 반려동물을 등록해 주세요.</div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="guide-disabled" aria-hidden="true">
+                기존 성격 가이드, 먹이 목록, 선호 음식 찾기 가이드는 확장 작업을 위해 비활성화되었습니다.
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script th:inline="javascript">
+        const STORAGE_KEY = 'heartopia_pet_food_profiles';
+        const petFoodSyncEnabled = window._heartopiaPetFoodSyncEnabled || false;
+
+        const dogFoodNames = [
+            '강아지 전용 사료', '동물 공용 음식', '사과', '느타리 버섯', '양송이 버섯', '표고 버섯',
+            '베지 샐러드', '믹스드 잼', '블루베리 잼', '사과 잼', '라즈베리 잼', '딸기 잼',
+            '케첩', '구운 버섯', '구운 느타리버섯', '구운 표고버섯', '구운 양송이버섯',
+            '버섯 파이', '느타리버섯 파이', '표고버섯 파이', '양송이버섯 파이',
+            '미트소스 파스타', '씨푸드 덮밥', '컨트리 스튜', '콘수프', '미트버거',
+            '미트소스 가지 그라탱', '럭셔리 씨푸드 플래터', '킹크랩찜', '황금 킹크랩찜'
+        ];
+
+        const catFoodNames = [
+            '고양이 전용 사료', '동물 공용 음식', '민물배스', '하늘종개', '바벨', '큰얼룩배스',
+            '미노우', '틸라피아', '왕새우', '민물잰더', '유럽잉어', '민물대구',
+            '레드벨리 피라냐', '민물베도라치', '후첸', '첨 연어', '큰가시고기', '유럽처브',
+            '텐치', '극지연어', '붕어', '유럽백조어', '백조어', '돌마자', '머드개복치',
+            '바다빙어', '매화농어', '홍합', '올챙이', '유럽민물가재', '큰입배스',
+            '민물게', '나비잉어', '송어', '루드', '큰진주조개', '사루기', '줄무늬송사리',
+            '둑중개', '펄 고기', '북유럽파란가재', '금붕어', '강꼬치고기', '펌프킨시드',
+            '유럽메기', '블루길', '북극곤들매기', '정어리', '배스', '가다랑어',
+            '갈치', '바다새우', '전갱이', '대서양은상어', '바다가시고기', '노랑촉수',
+            '노란전갱이', '아귀', '참문어', '대서양연어', '대서양난쟁이문어', '소라게',
+            '흰동가리', '망둥어', '대문짝넙치', '유럽가자미', '대서양고등어', '유럽가재',
+            '유럽날오징어', '복어', '등불성대', '산갈치', '검은점돔', '유럽장어',
+            '킹크랩', '해덕대구', '황금 킹크랩', '참다랑어', '붉은개복치', '황새치', '개복치'
+        ];
+
+        const foodImageAliases = {
+            '강아지 전용 사료': '',
+            '고양이 전용 사료': '',
+            '동물 공용 음식': '',
+            '느타리 버섯': '느타리버섯',
+            '양송이 버섯': '양송이버섯',
+            '표고 버섯': '표고버섯',
+            '콘수프': '콘스프',
+            '레드벨리 피라냐': '레드벨리피라냐',
+            '첨 연어': '첨연어'
+        };
+
+        const missingLocalFoodImages = [
+            '강아지 전용 사료', '고양이 전용 사료', '동물 공용 음식', '믹스드 잼',
+            '구운 느타리버섯', '구운 표고버섯', '구운 양송이버섯',
+            '느타리버섯 파이', '표고버섯 파이', '양송이버섯 파이',
+            '콘수프', '황금 킹크랩찜', '펄 고기'
+        ];
+
+        const state = {
+            pets: [],
+            selectedPetId: '',
+            selectedKind: '',
+            filter: 'all',
+            query: ''
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProfiles();
+            bindEvents();
+            render();
+        });
+
+        function bindEvents() {
+            document.getElementById('togglePetFormBtn').addEventListener('click', togglePetForm);
+            document.getElementById('petForm').addEventListener('submit', addPet);
+            document.getElementById('foodSearchInput').addEventListener('input', event => {
+                state.query = event.target.value.trim().toLowerCase();
+                renderFoods();
+            });
+            document.getElementById('deletePetBtn').addEventListener('click', deleteSelectedPet);
+
+            document.querySelectorAll('.pet-kind-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    state.selectedKind = button.dataset.kind;
+                    renderKindButtons();
+                });
+            });
+
+            document.querySelectorAll('.food-filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    state.filter = button.dataset.filter;
+                    renderFilterButtons();
+                    renderFoods();
+                });
+            });
+        }
+
+        function getCsrf() {
+            return {
+                token: document.querySelector('meta[name="_csrf"]')?.getAttribute('content'),
+                header: document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content')
+            };
+        }
+
+        async function loadProfiles() {
+            if (petFoodSyncEnabled) {
+                if (window._petFoodMergeOnLogin) await window._petFoodMergeOnLogin;
+                try {
+                    const response = await fetch('/api/user/pet-food');
+                    state.pets = response.ok ? await response.json() : [];
+                } catch (error) {
+                    state.pets = [];
+                }
+            } else {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    state.pets = saved ? JSON.parse(saved) : [];
+                } catch (error) {
+                    state.pets = [];
+                }
+            }
+
+            state.pets = Array.isArray(state.pets) ? state.pets.map(normalizePetProfile) : [];
+            state.selectedPetId = state.pets[0] ? state.pets[0].id : '';
+        }
+
+        function normalizePetProfile(pet) {
+            return {
+                id: pet.id || `pet-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                name: pet.name || '반려동물',
+                type: pet.type === 'cat' ? 'cat' : 'dog',
+                preferences: pet.preferences && typeof pet.preferences === 'object' ? pet.preferences : {},
+                tried: pet.tried && typeof pet.tried === 'object' ? pet.tried : {}
+            };
+        }
+
+        function saveProfiles() {
+            if (!petFoodSyncEnabled) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state.pets));
+                return;
+            }
+
+            const csrf = getCsrf();
+            if (!csrf.token || !csrf.header) return;
+            fetch('/api/user/pet-food', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                body: JSON.stringify(state.pets)
+            }).catch(() => {});
+        }
+
+        function togglePetForm() {
+            const form = document.getElementById('petForm');
+            form.classList.toggle('is-open');
+            hideMessage();
+        }
+
+        function addPet(event) {
+            event.preventDefault();
+            const input = document.getElementById('petNameInput');
+            const name = input.value.trim();
+
+            if (!name) {
+                showMessage('반려동물 이름을 입력해 주세요.');
+                input.focus();
+                return;
+            }
+
+            if (!state.selectedKind) {
+                showMessage('강아지 또는 고양이 중 하나를 선택해 주세요.');
+                return;
+            }
+
+            const pet = {
+                id: `pet-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                name,
+                type: state.selectedKind,
+                preferences: {},
+                tried: {}
+            };
+
+            state.pets.push(pet);
+            state.selectedPetId = pet.id;
+            state.selectedKind = '';
+            input.value = '';
+            document.getElementById('petForm').classList.remove('is-open');
+            hideMessage();
+            saveProfiles();
+            render();
+        }
+
+        function deleteSelectedPet() {
+            const pet = getSelectedPet();
+            if (!pet) return;
+            if (!confirm(`${pet.name} 기록을 삭제할까요?`)) return;
+
+            state.pets = state.pets.filter(item => item.id !== pet.id);
+            state.selectedPetId = state.pets[0] ? state.pets[0].id : '';
+            saveProfiles();
+            render();
+        }
+
+        function setSelectedPet(id) {
+            state.selectedPetId = id;
+            state.filter = 'all';
+            state.query = '';
+            document.getElementById('foodSearchInput').value = '';
+            render();
+        }
+
+        function getSelectedPet() {
+            return state.pets.find(pet => pet.id === state.selectedPetId) || null;
+        }
+
+        function getFoodsForPet(pet) {
+            const names = pet && pet.type === 'cat' ? catFoodNames : dogFoodNames;
+            return names.map(name => ({
+                id: makeFoodId(name),
+                name,
+                imageUrl: getFoodImageUrl(name, pet ? pet.type : 'dog'),
+                meta: getFoodMeta(name, pet ? pet.type : 'dog')
+            }));
+        }
+
+        function makeFoodId(name) {
+            return name.replace(/\s+/g, '').toLowerCase();
+        }
+
+        function getFoodImageUrl(name, petType) {
+            if (missingLocalFoodImages.includes(name)) return '';
+            const normalized = foodImageAliases[name] ?? name;
+            if (petType === 'cat' && !name.includes('공용')) {
+                return `/images/collections/fish/fish_${normalized}.webp`;
+            }
+            if (['사과', '느타리 버섯', '양송이 버섯', '표고 버섯'].includes(name)) {
+                return `/images/collections/forage/${normalized}.png`;
+            }
+            return `/images/collections/cook/cook_${normalized}.webp`;
+        }
+
+        function getFoodMeta(name, petType) {
+            if (name.includes('사료') || name.includes('공용')) {
+                return '펫샵 구매';
+            }
+            return petType === 'cat' ? '물고기/해산물' : '요리/채집 음식';
+        }
+
+        function setTried(foodId) {
+            const pet = getSelectedPet();
+            if (!pet) return;
+            pet.tried[foodId] = !pet.tried[foodId];
+            if (!pet.tried[foodId]) {
+                pet.preferences[foodId] = 'neutral';
+            }
+            saveProfiles();
+            renderFoods();
+        }
+
+        function setPreference(foodId, preference) {
+            const pet = getSelectedPet();
+            if (!pet) return;
+            const current = pet.preferences[foodId] || 'neutral';
+            pet.preferences[foodId] = current === preference ? 'neutral' : preference;
+            pet.tried[foodId] = pet.preferences[foodId] !== 'neutral';
+            saveProfiles();
+            renderFoods();
+        }
+
+        function render() {
+            renderKindButtons();
+            renderPetList();
+            renderSelectedPet();
+            renderFilterButtons();
+            renderFoods();
+        }
+
+        function renderKindButtons() {
+            document.querySelectorAll('.pet-kind-btn').forEach(button => {
+                button.classList.toggle('is-active', button.dataset.kind === state.selectedKind);
+            });
+        }
+
+        function renderPetList() {
+            const list = document.getElementById('myPetList');
+            const title = document.getElementById('myPetListTitle');
+            title.classList.toggle('is-visible', state.pets.length > 0);
+
+            if (state.pets.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-pets">
+                        <div>
+                            <strong>아직 등록된 반려동물이 없습니다.</strong>
+                            <span>반려동물 추가를 눌러 첫 기록을 시작하세요.</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = state.pets.map(pet => `
+                <button type="button" class="pet-chip ${pet.id === state.selectedPetId ? 'is-active' : ''}" onclick="setSelectedPet('${escapeAttr(pet.id)}')">
+                    <span class="pet-chip-icon">${pet.type === 'cat' ? '🐱' : '🐶'}</span>
+                    <span>
+                        <span class="pet-chip-name">${escapeHtml(pet.name)}</span>
+                        <span class="pet-chip-kind">${pet.type === 'cat' ? '고양이' : '강아지'}</span>
+                    </span>
+                </button>
+            `).join('');
+        }
+
+        function renderSelectedPet() {
+            const pet = getSelectedPet();
+            const toolbar = document.getElementById('selectedPetToolbar');
+            const tools = document.getElementById('foodTools');
+            const summary = document.getElementById('foodSummary');
+
+            toolbar.classList.toggle('is-visible', !!pet);
+            tools.classList.toggle('is-visible', !!pet);
+            summary.classList.toggle('is-visible', !!pet);
+
+            if (!pet) return;
+
+            document.getElementById('selectedPetName').textContent = `${pet.name}의 먹이 기록`;
+            const totalFoods = getFoodsForPet(pet).length;
+            document.getElementById('selectedPetMeta').textContent = pet.type === 'cat'
+                ? `고양이가 먹을 수 있는 음식 기준 · 전체 ${totalFoods}개`
+                : `강아지가 먹을 수 있는 음식 기준 · 전체 ${totalFoods}개`;
+        }
+
+        function renderFilterButtons() {
+            document.querySelectorAll('.food-filter-btn').forEach(button => {
+                button.classList.toggle('is-active', button.dataset.filter === state.filter);
+            });
+        }
+
+        function renderFoods() {
+            const pet = getSelectedPet();
+            const grid = document.getElementById('foodGrid');
+
+            if (!pet) {
+                grid.className = 'food-grid is-disabled';
+                grid.innerHTML = '<div class="empty-foods">먼저 반려동물을 등록해 주세요.</div>';
+                renderSummary(null, []);
+                return;
+            }
+
+            const foods = getFoodsForPet(pet);
+            renderSummary(pet, foods);
+            const filteredFoods = foods.filter(food => matchesFoodFilter(pet, food));
+
+            if (filteredFoods.length === 0) {
+                grid.className = 'food-grid is-empty';
+                grid.innerHTML = '<div class="empty-foods">조건에 맞는 음식이 없습니다.</div>';
+                return;
+            }
+
+            grid.className = 'food-grid';
+            grid.innerHTML = filteredFoods.map(food => renderFoodCard(pet, food)).join('');
+        }
+
+        function renderSummary(pet, foods) {
+            const totalCount = pet ? foods.length : 0;
+            const triedCount = pet ? foods.filter(food => pet.tried[food.id]).length : 0;
+            const likeCount = pet ? foods.filter(food => pet.preferences[food.id] === 'like').length : 0;
+            const dislikeCount = pet ? foods.filter(food => pet.preferences[food.id] === 'dislike').length : 0;
+
+            document.getElementById('triedCount').textContent = `${triedCount} / ${totalCount}`;
+            document.getElementById('likeCount').textContent = likeCount;
+            document.getElementById('dislikeCount').textContent = dislikeCount;
+        }
+
+        function matchesFoodFilter(pet, food) {
+            const query = state.query;
+            const preference = pet.preferences[food.id] || 'neutral';
+            const tried = !!pet.tried[food.id];
+            const textMatched = !query || `${food.name} ${food.meta}`.toLowerCase().includes(query);
+
+            if (!textMatched) return false;
+            if (state.filter === 'tried') return tried;
+            if (state.filter === 'like') return tried && preference === 'like';
+            if (state.filter === 'dislike') return tried && preference === 'dislike';
+            return true;
+        }
+
+        function renderFoodCard(pet, food) {
+            const preference = pet.preferences[food.id] || 'neutral';
+            const tried = !!pet.tried[food.id];
+            const preferenceClass = preference === 'like' ? 'is-like' : preference === 'dislike' ? 'is-dislike' : '';
+            const imageMarkup = food.imageUrl
+                ? `<img src="${escapeAttr(food.imageUrl)}" alt="${escapeAttr(food.name)}" class="food-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                   <i class="fas fa-utensils food-fallback-icon" style="display:none;"></i>`
+                : '<i class="fas fa-utensils food-fallback-icon"></i>';
+
+            return `
+                <article class="food-card ${preferenceClass}">
+                    <div class="food-image-wrap">
+                        ${imageMarkup}
+                    </div>
+                    <div class="food-main">
+                        <h3 class="food-name">${escapeHtml(food.name)}</h3>
+                        <p class="food-meta">${escapeHtml(food.meta)}</p>
+                    </div>
+                    <div class="food-actions">
+                        <button type="button" class="food-state-btn ${tried ? 'is-tried' : ''}" onclick="setTried('${escapeAttr(food.id)}')" title="${tried ? '먹여봄' : '먹여보기'}" aria-label="${tried ? '먹여봄' : '먹여보기'}">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <div class="food-preference-actions">
+                            <button type="button" class="food-state-btn ${preference === 'like' ? 'is-like' : ''}" onclick="setPreference('${escapeAttr(food.id)}', 'like')" title="좋아요" aria-label="좋아요">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button type="button" class="food-state-btn ${preference === 'dislike' ? 'is-dislike' : ''}" onclick="setPreference('${escapeAttr(food.id)}', 'dislike')" title="싫어요" aria-label="싫어요">
+                                <i class="fas fa-heart-broken"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function showMessage(message) {
+            const messageEl = document.getElementById('petMessage');
+            messageEl.textContent = message;
+            messageEl.classList.add('is-visible');
+        }
+
+        function hideMessage() {
+            const messageEl = document.getElementById('petMessage');
+            messageEl.textContent = '';
+            messageEl.classList.remove('is-visible');
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeAttr(value) {
+            return escapeHtml(value);
+        }
+    </script>
+</body>
+
+</html>

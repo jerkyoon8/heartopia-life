@@ -19,4 +19,5 @@ public class User {
     private String role;
     private LocalDateTime createdAt;
     private boolean checklistSyncEnabled;
+    private boolean petFoodSyncEnabled;
 }

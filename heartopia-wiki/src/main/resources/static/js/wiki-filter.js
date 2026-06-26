@@ -53,20 +53,94 @@ class WikiFilter {
         this.config.filters.forEach(f => {
             const el = document.getElementById(f.id);
             if (el) {
-                this.filterElements.push({
-                    element: el,
-                    key: f.dataKey,
-                    parentFilter: f.parentFilter || null,
-                    parentKey: f.parentKey || null,
-                    wrapper: f.wrapperId ? document.getElementById(f.wrapperId) : null,
-                    autoPopulate: !!f.autoPopulate
-                });
+                if (f.type === 'multi') {
+                    // 다중 선택 필터 객체화
+                    const filterObj = {
+                        element: el,
+                        key: f.dataKey,
+                        type: 'multi',
+                        allLabel: f.allLabel || '모든 레벨',
+                        valuePrefix: f.valuePrefix || 'Lv.',
+                        trigger: el.querySelector('.multi-select-trigger'),
+                        dropdown: el.querySelector('.multi-select-dropdown'),
+                        allCheckbox: el.querySelector('input[type="checkbox"][value="all"]'),
+                        checkboxes: Array.from(el.querySelectorAll('input[type="checkbox"]:not([value="all"])')),
+                        getCheckedValues: function() {
+                            if (this.allCheckbox && this.allCheckbox.checked) return [];
+                            return this.checkboxes.filter(cb => cb.checked).map(cb => cb.value);
+                        }
+                    };
+                    this.filterElements.push(filterObj);
 
-                if (f.autoPopulate && !f.parentFilter) {
-                    this.populateOptions(el, f.dataKey);
+                    const updateTriggerText = () => {
+                        const checkedList = filterObj.getCheckedValues();
+                        const labelSpan = filterObj.trigger ? filterObj.trigger.querySelector('.trigger-label') : null;
+                        if (labelSpan) {
+                            if (checkedList.length === 0) {
+                                labelSpan.textContent = filterObj.allLabel;
+                            } else if (checkedList.length <= 2) {
+                                labelSpan.textContent = checkedList.map(v => filterObj.valuePrefix + v).join(', ');
+                            } else {
+                                labelSpan.textContent = checkedList.length + '개 선택';
+                            }
+                        }
+                    };
+
+                    if (filterObj.trigger && filterObj.dropdown) {
+                        filterObj.trigger.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            this.filterElements.forEach(other => {
+                                if (other.type === 'multi' && other.element.id !== f.id && other.dropdown) {
+                                    other.dropdown.classList.remove('show');
+                                }
+                            });
+                            filterObj.dropdown.classList.toggle('show');
+                        });
+                    }
+
+                    if (filterObj.allCheckbox) {
+                        filterObj.allCheckbox.addEventListener('change', () => {
+                            if (filterObj.allCheckbox.checked) {
+                                filterObj.checkboxes.forEach(cb => cb.checked = false);
+                            } else {
+                                filterObj.allCheckbox.checked = true;
+                            }
+                            updateTriggerText();
+                            this.applyFilter();
+                        });
+                    }
+
+                    filterObj.checkboxes.forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            if (cb.checked) {
+                                if (filterObj.allCheckbox) filterObj.allCheckbox.checked = false;
+                            } else {
+                                const checkedCount = filterObj.checkboxes.filter(c => c.checked).length;
+                                if (checkedCount === 0 && filterObj.allCheckbox) {
+                                    filterObj.allCheckbox.checked = true;
+                                }
+                            }
+                            updateTriggerText();
+                            this.applyFilter();
+                        });
+                    });
+                } else {
+                    // 기존 단일 선택 필터 객체화
+                    this.filterElements.push({
+                        element: el,
+                        key: f.dataKey,
+                        parentFilter: f.parentFilter || null,
+                        parentKey: f.parentKey || null,
+                        wrapper: f.wrapperId ? document.getElementById(f.wrapperId) : null,
+                        autoPopulate: !!f.autoPopulate
+                    });
+
+                    if (f.autoPopulate && !f.parentFilter) {
+                        this.populateOptions(el, f.dataKey);
+                    }
+
+                    el.addEventListener('change', () => this.applyFilter());
                 }
-
-                el.addEventListener('change', () => this.applyFilter());
             }
         });
 
@@ -187,6 +261,15 @@ class WikiFilter {
 
         // View Toggle
         this.initViewToggle();
+
+        // 전역 클릭 이벤트 (다중 선택 드롭다운 외부 클릭 시 닫기)
+        document.addEventListener('click', (e) => {
+            this.filterElements.forEach(f => {
+                if (f.type === 'multi' && f.dropdown && !f.element.contains(e.target)) {
+                    f.dropdown.classList.remove('show');
+                }
+            });
+        });
     }
 
     initViewToggle() {
@@ -340,24 +423,35 @@ class WikiFilter {
         // 2. Custom Filters
         if (isMatch) {
             for (const f of this.filterElements) {
-                const selectedValue = f.element.value;
-                if (selectedValue === 'all') continue;
-
-                const itemValue = element.dataset[f.key];
-
-                if (f.key === 'level') {
-                    if (parseInt(itemValue) !== parseInt(selectedValue)) {
-                        isMatch = false;
+                if (f.type === 'multi') {
+                    const checkedValues = f.getCheckedValues();
+                    if (checkedValues.length > 0) {
+                        const itemValue = String(element.dataset[f.key] || '').trim();
+                        // 다중 선택 정밀 매칭
+                        if (!checkedValues.includes(itemValue)) {
+                            isMatch = false;
+                        }
                     }
-                }
-                else if (f.key === 'weather' && selectedValue === 'only-무지개') {
-                    if (!itemValue || String(itemValue).trim() !== '무지개') {
-                        isMatch = false;
+                } else {
+                    const selectedValue = f.element.value;
+                    if (selectedValue === 'all') continue;
+
+                    const itemValue = element.dataset[f.key];
+
+                    if (f.key === 'level') {
+                        if (parseInt(itemValue) !== parseInt(selectedValue)) {
+                            isMatch = false;
+                        }
                     }
-                }
-                else {
-                    if (!itemValue || !String(itemValue).includes(selectedValue)) {
-                        isMatch = false;
+                    else if (f.key === 'weather' && selectedValue === 'only-무지개') {
+                        if (!itemValue || String(itemValue).trim() !== '무지개') {
+                            isMatch = false;
+                        }
+                    }
+                    else {
+                        if (!itemValue || !String(itemValue).includes(selectedValue)) {
+                            isMatch = false;
+                        }
                     }
                 }
 
@@ -489,12 +583,19 @@ class WikiFilter {
         if (this.searchInput) this.searchInput.value = '';
 
         this.filterElements.forEach(f => {
-            f.element.value = 'all';
-            // Clear dependent child options and disable
-            if (f.parentFilter) {
-                while (f.element.options.length > 1) f.element.remove(1);
-                f.element.disabled = true;
-                if (f.wrapper) f.wrapper.classList.add('filter-disabled');
+            if (f.type === 'multi') {
+                if (f.allCheckbox) f.allCheckbox.checked = true;
+                f.checkboxes.forEach(cb => cb.checked = false);
+                const labelSpan = f.trigger ? f.trigger.querySelector('.trigger-label') : null;
+                if (labelSpan) labelSpan.textContent = f.allLabel || '모든 레벨';
+            } else {
+                f.element.value = 'all';
+                // Clear dependent child options and disable
+                if (f.parentFilter) {
+                    while (f.element.options.length > 1) f.element.remove(1);
+                    f.element.disabled = true;
+                    if (f.wrapper) f.wrapper.classList.add('filter-disabled');
+                }
             }
         });
 

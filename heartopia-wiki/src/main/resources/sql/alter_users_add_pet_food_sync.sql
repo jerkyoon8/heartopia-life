@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD COLUMN pet_food_sync_enabled BOOLEAN NOT NULL DEFAULT FALSE;

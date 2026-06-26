@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.UserPetFoodMapper">
+
+    <select id="findPetsJsonByUserId" resultType="string">
+        SELECT pets_json
+        FROM user_pet_food
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="upsertPetsJson">
+        INSERT INTO user_pet_food (user_id, pets_json)
+        VALUES (#{userId}, #{petsJson})
+        ON DUPLICATE KEY UPDATE pets_json = VALUES(pets_json), updated_at = NOW()
+    </insert>
+
+    <delete id="deleteByUserId">
+        DELETE FROM user_pet_food WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

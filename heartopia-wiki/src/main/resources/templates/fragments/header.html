@@ -534,6 +534,21 @@
                                     <div class="settings-item-desc danger">
                                         ※ 켠 동안엔 이 기기에 저장되지 않아요. 끄거나 로그아웃하면 그때 이 기기로 복사됩니다.
                                     </div>
+                                    <div class="settings-item">
+                                        <div class="settings-item-label">
+                                            <i class="fas fa-paw"></i>
+                                            <span class="settings-item-title">펫 먹이 동기화</span>
+                                        </div>
+                                        <label class="form-check form-switch m-0" style="padding-left: 2.5em; cursor: pointer;">
+                                            <input class="form-check-input" type="checkbox" id="petFoodSyncToggle"
+                                                   th:checked="${currentUser != null and currentUser.petFoodSyncEnabled}"
+                                                   style="cursor: pointer;">
+                                        </label>
+                                    </div>
+                                    <div class="settings-item-desc">
+                                        <strong>켜짐:</strong> 마이펫과 먹이 선호도 기록이 계정에 저장됩니다.<br>
+                                        <strong>꺼짐:</strong> 이 기기에서만 저장됩니다.
+                                    </div>
                                 </th:block>
                             </div>
                         </div>
@@ -619,6 +634,8 @@
                                 <ul>
                                     <li><a th:href="@{/wiki/others/villagers}" class="mega-link"><i
                                                 class="fas fa-user-group"></i> 주민들</a></li>
+                                    <li><a th:href="@{/wiki/others/pets}" class="mega-link"><i
+                                                class="fas fa-paw"></i> 반려동물</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -656,6 +673,7 @@
                 // --- 동기화 토글 + 발견성 유도 ---
                 document.addEventListener('DOMContentLoaded', () => {
                     const toggle = document.getElementById('checklistSyncToggle');
+                    const petFoodToggle = document.getElementById('petFoodSyncToggle');
 
                     // 드롭다운 내부 클릭은 닫히지 않도록 (토글 조작 중 닫힘 방지)
                     const dropdown = document.getElementById('settingsDropdown');
@@ -713,6 +731,51 @@
                         });
                     }
 
+                    if (petFoodToggle) {
+                        let petFoodToggleInFlight = false;
+                        petFoodToggle.addEventListener('change', async () => {
+                            if (petFoodToggleInFlight) {
+                                petFoodToggle.checked = !petFoodToggle.checked;
+                                return;
+                            }
+                            const enabled = petFoodToggle.checked;
+                            const localData = enabled
+                                ? JSON.parse(localStorage.getItem('heartopia_pet_food_profiles') || '[]')
+                                : null;
+
+                            if (enabled && Array.isArray(localData) && localData.length > 0) {
+                                if (!confirm('현재 이 기기의 펫 먹이 기록을 계정에 업로드합니다. 계속하시겠습니까?')) {
+                                    petFoodToggle.checked = false;
+                                    return;
+                                }
+                            }
+
+                            petFoodToggleInFlight = true;
+                            petFoodToggle.disabled = true;
+                            try {
+                                const res = await fetch('/api/user/pet-food/sync', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                                    body: JSON.stringify({ enabled, localData })
+                                });
+                                if (!res.ok) throw new Error('pet food sync toggle failed');
+                                const dbData = await res.json();
+
+                                if (!enabled) {
+                                    localStorage.setItem('heartopia_pet_food_profiles', JSON.stringify(dbData));
+                                } else {
+                                    localStorage.removeItem('heartopia_pet_food_profiles');
+                                }
+                                window.location.reload();
+                            } catch (e) {
+                                alert('펫 먹이 동기화 설정 변경에 실패했습니다.');
+                                petFoodToggle.checked = !enabled;
+                                petFoodToggle.disabled = false;
+                                petFoodToggleInFlight = false;
+                            }
+                        });
+                    }
+
                     // 로그아웃 시: 로그인 중 DB에만 있던 데이터를 localStorage로 복사
                     // (sync OFF 토글과 동일한 결과 — 로그아웃 후에도 데이터 보임)
                     const logoutForm = document.querySelector('form[action$="/wiki/logout"]');
@@ -731,6 +794,17 @@
                                         .then(r => r.ok ? r.json() : null)
                                         .then(data => {
                                             if (data) localStorage.setItem('heartopia_checklist', JSON.stringify(data));
+                                        })
+                                        .catch(() => {})
+                                );
+                            }
+
+                            if (window._heartopiaPetFoodSyncEnabled) {
+                                tasks.push(
+                                    fetch('/api/user/pet-food')
+                                        .then(r => r.ok ? r.json() : null)
+                                        .then(data => {
+                                            if (data) localStorage.setItem('heartopia_pet_food_profiles', JSON.stringify(data));
                                         })
                                         .catch(() => {})
                                 );

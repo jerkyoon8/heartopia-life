@@ -62,7 +62,8 @@ public class WikiController {
                 // 3. 기타 (Others)
                 List<CategoryItemDto> others = new ArrayList<>();
                 others.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/others/villages_icon.png", 21));
-                others.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", null, collectionService.getAchievementCount()));
+                others.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/others/achievement.webp?v=2", collectionService.getAchievementCount()));
+                others.add(new CategoryItemDto("반려동물", "🐱", "/wiki/others/pets", "/images/others/pets_icon.webp?v=2"));
 
                 model.addAttribute("basics", basics);
                 model.addAttribute("creative", creative);
@@ -185,6 +186,13 @@ public class WikiController {
                 model.addAttribute("pageTitle", "주민 정보");
                 model.addAttribute("pageDescription", "두근두근라이프 전체 주민 목록 - 이름, 역할, 선물 취향 정보를 확인하세요.");
                 return "wiki/others/villagers";
+        }
+
+        @GetMapping("/others/pets")
+        public String pets(Model model) {
+                model.addAttribute("pageTitle", "반려동물 먹이 기록");
+                model.addAttribute("pageDescription", "두근두근라이프 반려동물 먹이 기록 - 강아지와 고양이가 먹을 수 있는 음식과 선호도를 확인하세요.");
+                return "wiki/others/pets";
         }
 
         @GetMapping("/others/achievements")
