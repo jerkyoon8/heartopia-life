@@ -228,11 +228,23 @@ public class AdminDataController {
     public String addFlower(FlowerCollection flower,
                             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                             @RequestParam(value = "variantImageFiles", required = false) List<MultipartFile> variantImageFiles,
-                            @RequestParam(value = "existingVariantUrls", required = false) List<String> existingVariantUrls) throws IOException {
+                            @RequestParam(value = "variantExistingImageUrls", required = false) List<String> variantExistingImageUrls,
+                            @RequestParam(value = "variantStars", required = false) List<Integer> variantStars,
+                            @RequestParam(value = "variantColorNames", required = false) List<String> variantColorNames,
+                            @RequestParam(value = "breedingResultIndexes", required = false) List<Integer> breedingResultIndexes,
+                            @RequestParam(value = "breedingLeftIndexes", required = false) String[] breedingLeftIndexes,
+                            @RequestParam(value = "breedingRightIndexes", required = false) String[] breedingRightIndexes,
+                            @RequestParam(value = "breedingNotes", required = false) List<String> breedingNotes) throws IOException {
         log.info("관리자 데이터 추가: 꽃 '{}'", flower.getName());
         handleImageUpload(flower, imageFile, "flower", null);
         collectionService.addFlower(flower);
-        saveVariantImages(flower.getId(), variantImageFiles, existingVariantUrls);
+        if (hasFlowerDetailInput(variantImageFiles, variantExistingImageUrls, variantStars, variantColorNames)) {
+            saveFlowerDetails(
+                flower.getId(), variantImageFiles, variantExistingImageUrls,
+                variantStars, variantColorNames,
+                breedingResultIndexes, breedingLeftIndexes, breedingRightIndexes, breedingNotes
+            );
+        }
         return "redirect:/wiki/items/flowers";
     }
 
@@ -241,11 +253,23 @@ public class AdminDataController {
                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl,
                                @RequestParam(value = "variantImageFiles", required = false) List<MultipartFile> variantImageFiles,
-                               @RequestParam(value = "existingVariantUrls", required = false) List<String> existingVariantUrls) throws IOException {
+                               @RequestParam(value = "variantExistingImageUrls", required = false) List<String> variantExistingImageUrls,
+                               @RequestParam(value = "variantStars", required = false) List<Integer> variantStars,
+                               @RequestParam(value = "variantColorNames", required = false) List<String> variantColorNames,
+                               @RequestParam(value = "breedingResultIndexes", required = false) List<Integer> breedingResultIndexes,
+                               @RequestParam(value = "breedingLeftIndexes", required = false) String[] breedingLeftIndexes,
+                               @RequestParam(value = "breedingRightIndexes", required = false) String[] breedingRightIndexes,
+                               @RequestParam(value = "breedingNotes", required = false) List<String> breedingNotes) throws IOException {
         log.info("관리자 데이터 수정: 꽃 id={}", flower.getId());
         handleImageUpload(flower, imageFile, "flower", existingImageUrl);
         collectionService.updateFlower(flower);
-        saveVariantImages(flower.getId(), variantImageFiles, existingVariantUrls);
+        if (hasFlowerDetailInput(variantImageFiles, variantExistingImageUrls, variantStars, variantColorNames)) {
+            saveFlowerDetails(
+                flower.getId(), variantImageFiles, variantExistingImageUrls,
+                variantStars, variantColorNames,
+                breedingResultIndexes, breedingLeftIndexes, breedingRightIndexes, breedingNotes
+            );
+        }
         return "redirect:/wiki/items/flowers";
     }
 
@@ -291,6 +315,72 @@ public class AdminDataController {
             }
         }
         collectionService.saveFlowerImages(flowerId, urls);
+    }
+
+    private void saveFlowerDetails(
+            Long flowerId,
+            List<MultipartFile> files,
+            List<String> existingUrls,
+            List<Integer> stars,
+            List<String> colorNames,
+            List<Integer> resultIndexes,
+            String[] leftIndexes,
+            String[] rightIndexes,
+            List<String> notes
+    ) throws IOException {
+        List<FlowerVariant> variants = new ArrayList<>();
+        int total = maxSize(files, existingUrls, stars, colorNames);
+        for (int i = 0; i < total; i++) {
+            String imageUrl = getString(existingUrls, i);
+            MultipartFile file = getFile(files, i);
+            if (file != null && !file.isEmpty()) {
+                if (imageUrl != null && imageUrl.startsWith("/uploads/")) {
+                    fileUploadService.delete(imageUrl);
+                }
+                imageUrl = fileUploadService.upload(file, "flower");
+            }
+
+            FlowerVariant variant = new FlowerVariant();
+            variant.setStars(getInteger(stars, i));
+            variant.setColorName(getString(colorNames, i));
+            variant.setImageUrl(imageUrl);
+            variant.setSortOrder(i);
+            variants.add(variant);
+        }
+        collectionService.saveFlowerDetailsByIndexes(flowerId, variants, resultIndexes, leftIndexes, rightIndexes, notes);
+    }
+
+    @SafeVarargs
+    private final int maxSize(List<?>... lists) {
+        int max = 0;
+        for (List<?> list : lists) {
+            if (list != null && list.size() > max) max = list.size();
+        }
+        return max;
+    }
+
+    private MultipartFile getFile(List<MultipartFile> files, int index) {
+        return files != null && index >= 0 && index < files.size() ? files.get(index) : null;
+    }
+
+    private String getString(List<String> values, int index) {
+        return values != null && index >= 0 && index < values.size() ? values.get(index) : null;
+    }
+
+    private Integer getInteger(List<Integer> values, int index) {
+        return values != null && index >= 0 && index < values.size() ? values.get(index) : null;
+    }
+
+    private boolean hasFlowerDetailInput(
+            List<MultipartFile> files,
+            List<String> existingUrls,
+            List<Integer> stars,
+            List<String> colorNames
+    ) {
+        if (files != null && files.stream().anyMatch(file -> file != null && !file.isEmpty())) return true;
+        if (existingUrls != null && existingUrls.stream().anyMatch(url -> url != null && !url.isBlank())) return true;
+        if (stars != null && stars.stream().anyMatch(value -> value != null)) return true;
+        return colorNames != null && colorNames.stream().anyMatch(value -> value != null && !value.isBlank());
     }
 
     // ======================== 작물 ========================

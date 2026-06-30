@@ -57,6 +57,45 @@
         <result property="eventName"    column="event_name"/>
         <collection property="images" ofType="com.heartopia.wiki.model.FlowerImage"
                     select="findFlowerImages" column="id"/>
+        <collection property="variants" ofType="com.heartopia.wiki.model.FlowerVariant"
+                    select="findFlowerVariants" column="id"/>
+        <collection property="breedingRules" ofType="com.heartopia.wiki.model.FlowerBreedingRule"
+                    select="findFlowerBreedingRules" column="id"/>
+    </resultMap>
+
+    <resultMap id="flowerBreedingRuleResultMap" type="com.heartopia.wiki.model.FlowerBreedingRule">
+        <id     property="id"              column="id"/>
+        <result property="flowerId"        column="flower_id"/>
+        <result property="resultVariantId" column="result_variant_id"/>
+        <result property="note"            column="note"/>
+        <result property="sortOrder"       column="sort_order"/>
+        <association property="resultVariant" javaType="com.heartopia.wiki.model.FlowerVariant">
+            <id     property="id"        column="result_id"/>
+            <result property="flowerId"  column="result_flower_id"/>
+            <result property="stars"     column="result_stars"/>
+            <result property="colorName" column="result_color_name"/>
+            <result property="imageUrl"  column="result_image_url"/>
+            <result property="sortOrder" column="result_sort_order"/>
+        </association>
+        <collection property="leftOptions" ofType="com.heartopia.wiki.model.FlowerBreedingOption"
+                    select="findLeftFlowerBreedingOptions" column="id"/>
+        <collection property="rightOptions" ofType="com.heartopia.wiki.model.FlowerBreedingOption"
+                    select="findRightFlowerBreedingOptions" column="id"/>
+    </resultMap>
+
+    <resultMap id="flowerBreedingOptionResultMap" type="com.heartopia.wiki.model.FlowerBreedingOption">
+        <id     property="id"        column="id"/>
+        <result property="ruleId"    column="rule_id"/>
+        <result property="side"      column="side"/>
+        <result property="variantId" column="variant_id"/>
+        <association property="variant" javaType="com.heartopia.wiki.model.FlowerVariant">
+            <id     property="id"        column="variant_id"/>
+            <result property="flowerId"  column="flower_id"/>
+            <result property="stars"     column="stars"/>
+            <result property="colorName" column="color_name"/>
+            <result property="imageUrl"  column="image_url"/>
+            <result property="sortOrder" column="sort_order"/>
+        </association>
     </resultMap>
 
     <sql id="forageableColumns">
@@ -318,6 +357,73 @@
 
     <delete id="deleteFlowerImagesByFlowerId">
         DELETE FROM flower_images WHERE flower_id = #{flowerId}
+    </delete>
+
+    <!-- ========== flower variants / breeding CRUD ========== -->
+    <select id="findFlowerVariants" resultType="com.heartopia.wiki.model.FlowerVariant">
+        SELECT id, flower_id, stars, color_name, image_url, sort_order
+        FROM flower_variants
+        WHERE flower_id = #{flowerId}
+        ORDER BY sort_order ASC, stars ASC, id ASC
+    </select>
+
+    <select id="findFlowerBreedingRules" resultMap="flowerBreedingRuleResultMap">
+        SELECT r.id, r.flower_id, r.result_variant_id, r.note, r.sort_order,
+               v.id AS result_id,
+               v.flower_id AS result_flower_id,
+               v.stars AS result_stars,
+               v.color_name AS result_color_name,
+               v.image_url AS result_image_url,
+               v.sort_order AS result_sort_order
+        FROM flower_breeding_rules r
+        LEFT JOIN flower_variants v ON v.id = r.result_variant_id
+        WHERE r.flower_id = #{flowerId}
+        ORDER BY r.sort_order ASC, r.id ASC
+    </select>
+
+    <select id="findLeftFlowerBreedingOptions" resultMap="flowerBreedingOptionResultMap">
+        SELECT o.id, o.rule_id, o.side, o.variant_id,
+               v.flower_id, v.stars, v.color_name, v.image_url, v.sort_order
+        FROM flower_breeding_rule_options o
+        JOIN flower_variants v ON v.id = o.variant_id
+        WHERE o.rule_id = #{ruleId} AND o.side = 'LEFT'
+        ORDER BY v.sort_order ASC, v.id ASC
+    </select>
+
+    <select id="findRightFlowerBreedingOptions" resultMap="flowerBreedingOptionResultMap">
+        SELECT o.id, o.rule_id, o.side, o.variant_id,
+               v.flower_id, v.stars, v.color_name, v.image_url, v.sort_order
+        FROM flower_breeding_rule_options o
+        JOIN flower_variants v ON v.id = o.variant_id
+        WHERE o.rule_id = #{ruleId} AND o.side = 'RIGHT'
+        ORDER BY v.sort_order ASC, v.id ASC
+    </select>
+
+    <insert id="insertFlowerVariant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO flower_variants (
+            flower_id, stars, color_name, image_url, sort_order
+        )
+        VALUES (
+            #{flowerId}, #{stars}, #{colorName}, #{imageUrl}, #{sortOrder}
+        )
+    </insert>
+
+    <delete id="deleteFlowerVariantsByFlowerId">
+        DELETE FROM flower_variants WHERE flower_id = #{flowerId}
+    </delete>
+
+    <insert id="insertFlowerBreedingRule" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO flower_breeding_rules (flower_id, result_variant_id, note, sort_order)
+        VALUES (#{flowerId}, #{resultVariantId}, #{note}, #{sortOrder})
+    </insert>
+
+    <insert id="insertFlowerBreedingOption" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO flower_breeding_rule_options (rule_id, side, variant_id)
+        VALUES (#{ruleId}, #{side}, #{variantId})
+    </insert>
+
+    <delete id="deleteFlowerBreedingRulesByFlowerId">
+        DELETE FROM flower_breeding_rules WHERE flower_id = #{flowerId}
     </delete>
     <delete id="deleteCrop">DELETE FROM crop_collections WHERE id=#{id}</delete>
     <delete id="deleteForageable">DELETE FROM forageable_collections WHERE id=#{id}</delete>

@@ -9,13 +9,17 @@ import com.heartopia.wiki.model.CookingCollection;
 import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
+import com.heartopia.wiki.model.FlowerBreedingOption;
+import com.heartopia.wiki.model.FlowerBreedingRule;
 import com.heartopia.wiki.model.FlowerImage;
+import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -355,6 +359,117 @@ public class CollectionService {
 
     public void deleteFlowerImage(Long id) {
         collectionMapper.deleteFlowerImage(id);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers", "flowerDetail"}, allEntries = true)
+    public void saveFlowerDetails(Long flowerId, List<FlowerVariant> variants, List<FlowerBreedingRule> rules) {
+        collectionMapper.deleteFlowerBreedingRulesByFlowerId(flowerId);
+        collectionMapper.deleteFlowerVariantsByFlowerId(flowerId);
+
+        if (variants == null || variants.isEmpty()) return;
+
+        for (int i = 0; i < variants.size(); i++) {
+            FlowerVariant variant = variants.get(i);
+            if (variant == null || variant.getImageUrl() == null || variant.getImageUrl().isBlank()) continue;
+            variant.setFlowerId(flowerId);
+            variant.setSortOrder(i);
+            collectionMapper.insertFlowerVariant(variant);
+        }
+
+        if (rules == null || rules.isEmpty()) return;
+
+        for (int i = 0; i < rules.size(); i++) {
+            FlowerBreedingRule rule = rules.get(i);
+            if (rule == null || rule.getResultVariantId() == null) continue;
+            rule.setFlowerId(flowerId);
+            rule.setSortOrder(i);
+            collectionMapper.insertFlowerBreedingRule(rule);
+            insertBreedingOptions(rule.getId(), "LEFT", rule.getLeftOptions());
+            insertBreedingOptions(rule.getId(), "RIGHT", rule.getRightOptions());
+        }
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers", "flowerDetail"}, allEntries = true)
+    public void saveFlowerDetailsByIndexes(
+            Long flowerId,
+            List<FlowerVariant> variants,
+            List<Integer> ruleResultIndexes,
+            String[] ruleLeftIndexes,
+            String[] ruleRightIndexes,
+            List<String> ruleNotes
+    ) {
+        collectionMapper.deleteFlowerBreedingRulesByFlowerId(flowerId);
+        collectionMapper.deleteFlowerVariantsByFlowerId(flowerId);
+
+        List<FlowerVariant> savedVariants = new ArrayList<>();
+        if (variants != null) {
+            for (int i = 0; i < variants.size(); i++) {
+                FlowerVariant variant = variants.get(i);
+                if (variant == null || variant.getImageUrl() == null || variant.getImageUrl().isBlank()) continue;
+                variant.setFlowerId(flowerId);
+                variant.setSortOrder(i);
+                collectionMapper.insertFlowerVariant(variant);
+                savedVariants.add(variant);
+            }
+        }
+
+        if (savedVariants.isEmpty() || ruleResultIndexes == null) return;
+
+        for (int i = 0; i < ruleResultIndexes.size(); i++) {
+            Integer resultIndex = ruleResultIndexes.get(i);
+            if (resultIndex == null || resultIndex < 0 || resultIndex >= savedVariants.size()) continue;
+
+            FlowerBreedingRule rule = new FlowerBreedingRule();
+            rule.setFlowerId(flowerId);
+            rule.setResultVariantId(savedVariants.get(resultIndex).getId());
+            rule.setNote(getOrBlank(ruleNotes, i));
+            rule.setSortOrder(i);
+            collectionMapper.insertFlowerBreedingRule(rule);
+
+            insertBreedingOptionsByIndexes(rule.getId(), "LEFT", getOrBlank(ruleLeftIndexes, i), savedVariants);
+            insertBreedingOptionsByIndexes(rule.getId(), "RIGHT", getOrBlank(ruleRightIndexes, i), savedVariants);
+        }
+    }
+
+    private String getOrBlank(List<String> values, int index) {
+        return values != null && index >= 0 && index < values.size() && values.get(index) != null
+            ? values.get(index)
+            : "";
+    }
+
+    private String getOrBlank(String[] values, int index) {
+        return values != null && index >= 0 && index < values.length && values[index] != null
+            ? values[index]
+            : "";
+    }
+
+    private void insertBreedingOptionsByIndexes(Long ruleId, String side, String indexes, List<FlowerVariant> savedVariants) {
+        if (indexes == null || indexes.isBlank()) return;
+        for (String raw : indexes.split("[|,]")) {
+            if (raw == null || raw.isBlank()) continue;
+            try {
+                int index = Integer.parseInt(raw.trim());
+                if (index < 0 || index >= savedVariants.size()) continue;
+                FlowerBreedingOption option = new FlowerBreedingOption();
+                option.setRuleId(ruleId);
+                option.setSide(side);
+                option.setVariantId(savedVariants.get(index).getId());
+                collectionMapper.insertFlowerBreedingOption(option);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+    }
+
+    private void insertBreedingOptions(Long ruleId, String side, List<FlowerBreedingOption> options) {
+        if (options == null || options.isEmpty()) return;
+        for (FlowerBreedingOption option : options) {
+            if (option == null || option.getVariantId() == null) continue;
+            option.setRuleId(ruleId);
+            option.setSide(side);
+            collectionMapper.insertFlowerBreedingOption(option);
+        }
     }
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allCrops", "countCrops", "searchCrops"}, allEntries = true)

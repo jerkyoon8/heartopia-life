@@ -19,4 +19,6 @@ public class FlowerCollection {
     private String imageUrl;
     private String eventName;
     private List<FlowerImage> images;
+    private List<FlowerVariant> variants;
+    private List<FlowerBreedingRule> breedingRules;
 }

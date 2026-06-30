@@ -23,17 +23,6 @@
             </h1>
         </div>
 
-        <!-- 꽃 교배 가이드 (임시 비활성화) -->
-        <div class="flower-guide-accordion" style="display: none;">
-            <button class="flower-guide-toggle" id="flowerGuideToggle" type="button" aria-expanded="true">
-                <span><i class="fas fa-book-open me-2"></i>꽃 교배 가이드</span>
-                <i class="fas fa-chevron-up toggle-icon"></i>
-            </button>
-            <div class="flower-guide-body" id="flowerGuideBody">
-                <img src="/images/items/flower-guide.webp" alt="꽃 교배 가이드" class="flower-guide-img">
-            </div>
-        </div>
-
         <!-- Filter Bar (Redesign) -->
         <div class="wiki-filter-container">
             <div class="filter-top-tier">
@@ -41,6 +30,11 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="꽃 이름 검색...">
                 </div>
+
+                <button type="button" class="btn-flower-guide" data-bs-toggle="modal" data-bs-target="#flowerGuideImageModal">
+                    <i class="fas fa-book-open"></i>
+                    꽃 교배 가이드
+                </button>
                 
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
@@ -122,19 +116,15 @@
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                     <img class="flower-main-img"
                          th:if="${flower.imageUrl != null}"
-                         th:src="${flower.imageUrls != null and !flower.imageUrls.isEmpty()} ? ${flower.imageUrls[0]} : ${flower.imageUrl}"
+                         th:src="${flower.imageUrl}"
                          th:alt="${flower.name}"
                          style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-fan fa-4x text-danger fallback-icon'"
                         th:style="${flower.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
-                    <!-- 레벨별 이미지 스와치 -->
-                    <div class="flower-swatches" th:if="${flower.imageUrls != null and flower.imageUrls.size() > 1}">
-                        <div th:each="imgUrl, stat : ${flower.imageUrls}"
-                             class="flower-swatch"
-                             th:classappend="${stat.index == 0} ? ' active' : ''"
-                             th:style="'background-image: url(' + ${imgUrl} + ')'"
-                             th:data-src="${imgUrl}"
-                             title="이미지 변경"></div>
+                    <div class="d-none" th:if="${flower.imageUrls != null and !flower.imageUrls.isEmpty()}">
+                        <span th:each="imgUrl : ${flower.imageUrls}"
+                              class="flower-legacy-image-data"
+                              th:data-src="${imgUrl}"></span>
                     </div>
                 </div>
 
@@ -149,6 +139,32 @@
                         <i class="fas fa-star sync-star-icon" data-val="3"></i>
                         <i class="fas fa-star sync-star-icon" data-val="4"></i>
                         <i class="fas fa-star sync-star-icon" data-val="5"></i>
+                    </div>
+                    <button type="button" class="flower-breeding-btn" th:data-flower-name="${flower.name}"
+                        th:data-growth-time="${flower.growthTime != null ? flower.growthTime : '-'}"
+                        th:data-level="${flower.level != null ? flower.level : ''}">
+                        <i class="fas fa-seedling"></i>
+                        <span>상세정보 및 교배 표</span>
+                    </button>
+                </div>
+
+                <div class="flower-structured-data d-none">
+                    <div th:each="variant, stat : ${flower.variants}"
+                         class="flower-variant-data"
+                         th:data-sort="${variant.sortOrder != null ? variant.sortOrder : stat.index}"
+                         th:data-stars="${variant.stars != null ? variant.stars : ''}"
+                         th:data-color-name="${variant.colorName != null ? variant.colorName : ''}"
+                         th:data-image-url="${variant.imageUrl != null ? variant.imageUrl : ''}"></div>
+                    <div th:each="rule, stat : ${flower.breedingRules}"
+                         class="flower-rule-data"
+                         th:data-result-sort="${rule.result != null && rule.result.sortOrder != null ? rule.result.sortOrder : ''}"
+                         th:data-note="${rule.note != null ? rule.note : ''}">
+                        <span th:each="option : ${rule.leftOptions}"
+                              class="rule-left-option"
+                              th:data-sort="${option.sortOrder != null ? option.sortOrder : ''}"></span>
+                        <span th:each="option : ${rule.rightOptions}"
+                              class="rule-right-option"
+                              th:data-sort="${option.sortOrder != null ? option.sortOrder : ''}"></span>
                     </div>
                 </div>
 
@@ -243,90 +259,485 @@
     </div>
 
     <style>
-        .flower-guide-accordion {
-            margin: 0 0 16px 0;
-            border: 1px solid #e8d5f0;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #fdf8ff;
-        }
-        .flower-guide-toggle {
-            width: 100%;
+        .btn-flower-guide {
+            min-height: 42px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 14px 20px;
-            background: linear-gradient(90deg, #f3e6fc, #fdf8ff);
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #6a3fa6;
-        }
-        .flower-guide-toggle .toggle-icon {
-            transition: transform 0.25s;
-        }
-        .flower-guide-toggle[aria-expanded="false"] .toggle-icon {
-            transform: rotate(180deg);
-        }
-        .flower-guide-body {
-            padding: 12px 16px 16px;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .flower-guide-body.collapsed {
-            display: none;
-        }
-        .flower-guide-img {
-            width: 100%;
-            border-radius: 10px;
-            display: block;
-        }
-        /* 스와치 */
-        .flower-swatches {
-            display: flex;
-            gap: 5px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 6px;
+            gap: 8px;
+            padding: 0 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-weight: 800;
+            white-space: nowrap;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
         }
-        .flower-swatch {
-            width: 30px;
-            height: 30px;
+        .btn-flower-guide:hover {
+            transform: translateY(-1px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+        .btn-flower-guide i {
+            color: var(--accent-color);
+        }
+        .flower-guide-image-modal .modal-dialog {
+            max-width: min(1120px, calc(100vw - 32px));
+        }
+        .flower-guide-image-modal .modal-content {
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: 0 22px 70px var(--shadow);
+        }
+        .flower-guide-image-modal .modal-header {
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--filter-bg);
+            padding: 16px 20px;
+        }
+        .flower-guide-image-modal .modal-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 900;
+        }
+        .flower-guide-image-modal .modal-body {
+            padding: 16px;
+            background: var(--card-bg);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .flower-guide-full-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            background: #fff;
+        }
+        [data-theme='dark'] .flower-guide-image-modal .btn-close {
+            filter: invert(1);
+        }
+        @media (max-width: 575.98px) {
+            .flower-guide-image-modal .modal-body {
+                padding: 12px;
+            }
+            .flower-guide-full-img {
+                min-width: 720px;
+            }
+        }
+        .flower-breeding-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 9px 12px;
+            border: 1px solid #ffd6e0;
+            border-radius: 999px;
+            background: #fff7fa;
+            color: #e83e66;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: background 0.15s, border-color 0.15s, transform 0.15s;
+        }
+        .flower-breeding-btn:hover {
+            background: #ffeaf0;
+            border-color: #ff9db4;
+            transform: translateY(-1px);
+        }
+        .flower-breeding-modal .modal-content {
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: 0 22px 70px var(--shadow);
+        }
+        .flower-breeding-modal .modal-header {
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 18px 22px;
+            background: var(--filter-bg);
+        }
+        .flower-breeding-modal .modal-dialog {
+            max-width: 576px;
+        }
+        .flower-breeding-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+        .flower-breeding-title img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
             border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: border-color 0.15s, transform 0.15s;
+            background: var(--main-bg-color);
+            padding: 4px;
         }
-        .flower-swatch:hover { transform: scale(1.15); }
-        .flower-swatch.active { border-color: #7c3aed; }
+        .flower-breeding-modal .btn-close {
+            opacity: 0.8;
+        }
+        .flower-breeding-modal .modal-body {
+            max-height: min(72vh, 780px);
+            overflow-y: auto;
+            padding: 20px 22px;
+        }
+        .breeding-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .breeding-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--main-bg-color);
+            color: var(--stat-value);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .breeding-section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0 10px;
+            padding: 6px 10px;
+            border: 1px solid #ffd6e0;
+            border-radius: 999px;
+            background: #fff7fa;
+            color: #d63384;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+        .breeding-grade-strip {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 2px 2px 10px;
+            margin-bottom: 20px;
+        }
+        .breeding-grade {
+            flex: 0 0 78px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 92px;
+            padding: 10px 7px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            background: var(--filter-bg);
+        }
+        .breeding-grade img,
+        .breeding-flower-node img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: var(--main-bg-color);
+            padding: 5px;
+        }
+        .breeding-grade-stars {
+            color: #f8c64d;
+            font-size: 0.78rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .breeding-grade-label {
+            color: var(--stat-label);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .breeding-combo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .breeding-combo {
+            display: grid;
+            grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr) auto minmax(92px, 0.75fr);
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #efd6a4;
+            border-radius: 16px;
+            background: linear-gradient(180deg, var(--card-bg), var(--filter-bg));
+        }
+        .breeding-op {
+            color: #d9480f;
+            font-size: 1.35rem;
+            font-weight: 900;
+            text-align: center;
+        }
+        .breeding-option-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-width: 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #f4e3c7;
+        }
+        .breeding-option-divider {
+            color: var(--stat-label);
+            font-size: 0.72rem;
+            font-weight: 900;
+        }
+        .breeding-flower-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            text-align: center;
+        }
+        .breeding-flower-node span {
+            max-width: 100%;
+            color: var(--stat-value);
+            font-size: 0.72rem;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+        .breeding-empty {
+            padding: 18px;
+            border: 1px dashed var(--border-subtle);
+            border-radius: 14px;
+            color: var(--stat-label);
+            text-align: center;
+            font-weight: 700;
+        }
+        .flower-breeding-modal .modal-footer {
+            border-top: 1px solid var(--border-subtle);
+            background: var(--filter-bg);
+            padding: 14px 18px;
+        }
+        .flower-breeding-modal .btn-breeding-close {
+            width: 100%;
+            border: 0;
+            border-radius: 999px;
+            padding: 12px 16px;
+            background: var(--text-color);
+            color: var(--card-bg);
+            font-weight: 900;
+        }
+        [data-theme='dark'] .flower-breeding-modal .modal-content {
+            border-color: var(--border-subtle);
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+        [data-theme='dark'] .flower-breeding-modal .btn-close {
+            filter: invert(1);
+        }
+        [data-theme='dark'] .breeding-section-label {
+            border-color: rgba(255, 214, 224, 0.24);
+            background: rgba(255, 247, 250, 0.05);
+            color: #ff9fb1;
+        }
+        [data-theme='dark'] .breeding-combo {
+            border-color: rgba(245, 158, 11, 0.32);
+            background: linear-gradient(180deg, var(--card-bg), var(--filter-bg));
+        }
+        [data-theme='dark'] .breeding-op {
+            color: #ffc078;
+        }
+        [data-theme='dark'] .breeding-option-group {
+            border-bottom-color: rgba(255, 255, 255, 0.12);
+        }
+        @media (max-width: 575.98px) {
+            .flower-breeding-modal .modal-dialog {
+                margin: 12px;
+            }
+            .breeding-combo {
+                grid-template-columns: 1fr;
+            }
+            .breeding-op {
+                line-height: 1;
+            }
+        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 가이드 accordion
-            const guideToggle = document.getElementById('flowerGuideToggle');
-            const guideBody   = document.getElementById('flowerGuideBody');
-            if (guideToggle && guideBody) {
-                guideToggle.addEventListener('click', function () {
-                    const expanded = this.getAttribute('aria-expanded') === 'true';
-                    this.setAttribute('aria-expanded', String(!expanded));
-                    guideBody.classList.toggle('collapsed', expanded);
-                });
+            const breedingModalEl = document.getElementById('flowerBreedingModal');
+            const breedingTitleEl = document.getElementById('flowerBreedingTitleText');
+            const breedingIconEl = document.getElementById('flowerBreedingTitleImg');
+            const breedingBodyEl = document.getElementById('flowerBreedingBody');
+
+            function stars(count) {
+                const safeCount = Math.min(Math.max(count, 1), 5);
+                return '★'.repeat(safeCount) + '☆'.repeat(5 - safeCount);
             }
 
-            // 스와치 클릭 → 메인 이미지 교체
-            document.querySelectorAll('.flower-swatches').forEach(function (swatchGroup) {
-                swatchGroup.addEventListener('click', function (e) {
-                    const swatch = e.target.closest('.flower-swatch');
-                    if (!swatch) return;
-                    const card     = swatch.closest('.wiki-item-card');
-                    const mainImg  = card.querySelector('.flower-main-img');
-                    if (mainImg) mainImg.src = swatch.dataset.src;
-                    swatchGroup.querySelectorAll('.flower-swatch').forEach(s => s.classList.remove('active'));
-                    swatch.classList.add('active');
+            function collectFlowerImages(card) {
+                const legacyUrls = Array.from(card.querySelectorAll('.flower-legacy-image-data'))
+                    .map(s => s.dataset.src)
+                    .filter(Boolean);
+                if (legacyUrls.length > 0) return legacyUrls;
+
+                const mainImg = card.querySelector('.flower-main-img');
+                return mainImg && mainImg.getAttribute('src') ? [mainImg.getAttribute('src')] : [];
+            }
+
+            function collectFlowerVariants(card, name) {
+                const variants = Array.from(card.querySelectorAll('.flower-variant-data'))
+                    .map((el, index) => ({
+                        sort: Number(el.dataset.sort || index),
+                        stars: Number(el.dataset.stars || index + 1),
+                        colorName: el.dataset.colorName || `${index + 1}성`,
+                        imageUrl: el.dataset.imageUrl || ''
+                    }))
+                    .filter(v => v.imageUrl);
+                if (variants.length > 0) return variants;
+
+                return collectFlowerImages(card).map((src, index) => ({
+                    sort: index,
+                    stars: index + 1,
+                    colorName: `${name} ${index + 1}성`,
+                    imageUrl: src
+                }));
+            }
+
+            function collectFlowerRules(card, variantMap) {
+                return Array.from(card.querySelectorAll('.flower-rule-data'))
+                    .map(ruleEl => {
+                        const result = variantMap.get(Number(ruleEl.dataset.resultSort));
+                        const leftOptions = Array.from(ruleEl.querySelectorAll('.rule-left-option'))
+                            .map(el => variantMap.get(Number(el.dataset.sort)))
+                            .filter(Boolean);
+                        const rightOptions = Array.from(ruleEl.querySelectorAll('.rule-right-option'))
+                            .map(el => variantMap.get(Number(el.dataset.sort)))
+                            .filter(Boolean);
+                        return {
+                            result,
+                            leftOptions,
+                            rightOptions,
+                            note: ruleEl.dataset.note || ''
+                        };
+                    })
+                    .filter(rule => rule.result && rule.leftOptions.length > 0 && rule.rightOptions.length > 0);
+            }
+
+            function nodeHtml(src, label) {
+                return `
+                    <div class="breeding-flower-node">
+                        <img src="${src}" alt="${label}">
+                        <span>${label}</span>
+                    </div>
+                `;
+            }
+
+            function optionGroupHtml(items) {
+                return `
+                    <div class="breeding-option-group">
+                        ${items.map((item, index) => `
+                            ${index > 0 ? '<span class="breeding-option-divider">or</span>' : ''}
+                            ${nodeHtml(item.imageUrl || item.src, item.colorName || item.label)}
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            function buildBreedingHtml(button) {
+                const card = button.closest('.wiki-item-card');
+                const name = button.dataset.flowerName || card.dataset.name || '꽃';
+                const level = button.dataset.level || '-';
+                const growthTime = button.dataset.growthTime || '-';
+                const variants = collectFlowerVariants(card, name);
+                const variantMap = new Map(variants.map(v => [v.sort, v]));
+                const structuredRules = collectFlowerRules(card, variantMap);
+                const mainImage = variants[0] ? variants[0].imageUrl : '';
+
+                breedingTitleEl.textContent = `${name} 교배 가이드`;
+                breedingIconEl.src = mainImage;
+                breedingIconEl.alt = name;
+                breedingIconEl.style.display = mainImage ? 'block' : 'none';
+
+                const gradeHtml = variants.length
+                    ? variants.map((variant, index) => `
+                        <div class="breeding-grade">
+                            <img src="${variant.imageUrl}" alt="${variant.colorName || name}">
+                            <div class="breeding-grade-stars">${stars(variant.stars || index + 1)}</div>
+                            <div class="breeding-grade-label">${variant.colorName || `${index + 1}성`}</div>
+                        </div>
+                    `).join('')
+                    : '<div class="breeding-empty">등록된 꽃 이미지가 없습니다.</div>';
+
+                let comboHtml = '';
+                if (structuredRules.length > 0) {
+                    comboHtml = structuredRules.map(rule => `
+                        <div class="breeding-combo">
+                            ${optionGroupHtml(rule.leftOptions)}
+                            <div class="breeding-op">×</div>
+                            ${optionGroupHtml(rule.rightOptions)}
+                            <div class="breeding-op">=</div>
+                            ${nodeHtml(rule.result.imageUrl, rule.result.colorName || '결과')}
+                        </div>
+                    `).join('');
+                } else if (variants.length >= 3) {
+                    comboHtml = variants.slice(2, 6).map((result, index) => {
+                        const left = variants[Math.max(index, 0)] || variants[0];
+                        const right = variants[index + 1] || variants[1] || variants[0];
+                        const leftOptions = [
+                            left
+                        ];
+                        const rightOptions = [
+                            right
+                        ];
+                        if (variants[index + 2] && variants[index + 2] !== right && index > 0) {
+                            rightOptions.push(variants[index + 2]);
+                        }
+                        return `
+                            <div class="breeding-combo">
+                                ${optionGroupHtml(leftOptions)}
+                                <div class="breeding-op">×</div>
+                                ${optionGroupHtml(rightOptions)}
+                                <div class="breeding-op">=</div>
+                                ${nodeHtml(result.imageUrl, result.colorName || `${name} ${index + 3}성`)}
+                            </div>
+                        `;
+                    }).join('');
+                } else if (variants.length === 2) {
+                    comboHtml = `
+                        <div class="breeding-combo">
+                            ${optionGroupHtml([variants[0]])}
+                            <div class="breeding-op">×</div>
+                            ${optionGroupHtml([variants[1]])}
+                            <div class="breeding-op">=</div>
+                            ${nodeHtml(variants[1].imageUrl, variants[1].colorName || '교배 결과')}
+                        </div>
+                    `;
+                } else {
+                    comboHtml = '<div class="breeding-empty">교배 조합을 표시하려면 꽃 이미지를 2개 이상 등록해주세요.</div>';
+                }
+
+                return `
+                    <div class="breeding-meta-row">
+                        <span class="breeding-chip"><i class="fas fa-layer-group"></i> Lv.${level}</span>
+                        <span class="breeding-chip"><i class="far fa-clock"></i> 성장시간: ${growthTime}</span>
+                        <span class="breeding-chip"><i class="fas fa-images"></i> 꽃 ${variants.length}종</span>
+                    </div>
+                    <div class="breeding-section-label"><i class="fas fa-star"></i> 성급별 꽃 요약</div>
+                    <div class="breeding-grade-strip">${gradeHtml}</div>
+                    <div class="breeding-section-label"><i class="fas fa-seedling"></i> 교배 조합표</div>
+                    <div class="breeding-combo-list">${comboHtml}</div>
+                `;
+            }
+
+            document.querySelectorAll('.flower-breeding-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    if (!breedingModalEl || !breedingBodyEl) return;
+                    breedingBodyEl.innerHTML = buildBreedingHtml(button);
+                    bootstrap.Modal.getOrCreateInstance(breedingModalEl).show();
                 });
             });
 
@@ -341,6 +752,41 @@
             });
         });
     </script>
+
+    <div class="modal fade flower-guide-image-modal" id="flowerGuideImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-book-open"></i>
+                        꽃 교배 가이드
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="/images/flowers/flowers_guide.webp" alt="꽃 교배 가이드" class="flower-guide-full-img">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade flower-breeding-modal" id="flowerBreedingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title flower-breeding-title">
+                        <img id="flowerBreedingTitleImg" src="" alt="">
+                        <span id="flowerBreedingTitleText">꽃 교배 가이드</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body" id="flowerBreedingBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-breeding-close" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 관리자 전용: 꽃 추가 모달 -->
     <div sec:authorize="hasRole('ADMIN')">
@@ -370,12 +816,20 @@
                         </div>
                     </div>
                     <div class="col-md-4"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control"></div>
-                    <!-- 레벨별 이미지 슬롯 -->
+                    <!-- 성급별 꽃 -->
                     <div class="col-12">
-                        <label class="form-label fw-bold">레벨별 이미지 <small class="text-muted fw-normal">(스와치로 표시됨, 순서대로 등록)</small></label>
+                        <label class="form-label fw-bold">성급별 꽃 <small class="text-muted fw-normal">(교배표와 상세정보에 표시)</small></label>
                         <div id="variantSlotList" class="d-flex flex-column gap-2"></div>
                         <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addVariantSlotBtn">
-                            <i class="fas fa-plus me-1"></i>이미지 슬롯 추가
+                            <i class="fas fa-plus me-1"></i>성급 꽃 추가
+                        </button>
+                    </div>
+                    <!-- 교배 조합 -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold">교배 조합 <small class="text-muted fw-normal">(후보는 여러 개 선택 가능)</small></label>
+                        <div id="breedingRuleList" class="d-flex flex-column gap-2"></div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addBreedingRuleBtn">
+                            <i class="fas fa-plus me-1"></i>조합 추가
                         </button>
                     </div>
                 </div></div>
@@ -396,35 +850,166 @@
 
         const slotList = document.getElementById('variantSlotList');
         const addBtn   = document.getElementById('addVariantSlotBtn');
+        const ruleList = document.getElementById('breedingRuleList');
+        const addRuleBtn = document.getElementById('addBreedingRuleBtn');
+        let pendingEditTrigger = null;
 
-        function createSlot(existingUrl) {
+        function variantLabel(row, index) {
+            const stars = row.querySelector('[name="variantStars"]')?.value || '?';
+            const color = row.querySelector('[name="variantColorNames"]')?.value || `꽃 ${index + 1}`;
+            return `${index + 1}. ${stars}성 ${color}`;
+        }
+
+        function createSlot(data = {}) {
             const wrap = document.createElement('div');
-            wrap.className = 'd-flex align-items-center gap-2';
+            wrap.className = 'flower-variant-editor border rounded-3 p-2';
             wrap.innerHTML = `
-                <span class="text-muted" style="min-width:20px;font-size:.85rem;">${slotList.children.length + 1}</span>
-                <input type="hidden" name="existingVariantUrls" value="${existingUrl || ''}">
-                <input type="file" name="variantImageFiles" class="form-control form-control-sm" accept="image/*" style="flex:1;">
-                ${existingUrl ? `<img src="${existingUrl}" alt="" style="height:36px;object-fit:contain;border-radius:4px;">` : ''}
-                <button type="button" class="btn btn-outline-danger btn-sm remove-slot-btn"><i class="fas fa-times"></i></button>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-1">
+                        <label class="form-label small text-muted mb-1">순서</label>
+                        <div class="variant-number fw-bold text-muted">${slotList.children.length + 1}</div>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label small text-muted mb-1">성급</label>
+                        <input type="number" name="variantStars" class="form-control form-control-sm" min="1" max="5" value="${data.stars || ''}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">색상명</label>
+                        <input type="text" name="variantColorNames" class="form-control form-control-sm" value="${data.colorName || ''}" placeholder="빨간색">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted mb-1">이미지</label>
+                        <input type="hidden" name="variantExistingImageUrls" value="${data.imageUrl || ''}">
+                        <input type="file" name="variantImageFiles" class="form-control form-control-sm" accept="image/*">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-slot-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    ${data.imageUrl ? `<div class="col-12"><img src="${data.imageUrl}" alt="" style="height:42px;object-fit:contain;border-radius:6px;"></div>` : ''}
+                </div>
             `;
             wrap.querySelector('.remove-slot-btn').addEventListener('click', function () {
                 wrap.remove();
                 renumberSlots();
+                refreshRuleOptions();
+            });
+            wrap.querySelectorAll('[name="variantStars"], [name="variantColorNames"]').forEach(input => {
+                input.addEventListener('input', refreshRuleOptions);
             });
             slotList.appendChild(wrap);
+            refreshRuleOptions();
         }
 
         function renumberSlots() {
-            slotList.querySelectorAll('span').forEach((s, i) => s.textContent = i + 1);
+            slotList.querySelectorAll('.flower-variant-editor').forEach((row, i) => {
+                row.querySelector('.variant-number').textContent = i + 1;
+            });
         }
 
-        addBtn && addBtn.addEventListener('click', () => createSlot(''));
+        addBtn && addBtn.addEventListener('click', () => createSlot({}));
+
+        function createRule(data = {}) {
+            const wrap = document.createElement('div');
+            wrap.className = 'flower-rule-editor border rounded-3 p-2';
+            wrap.innerHTML = `
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">왼쪽 후보</label>
+                        <select class="form-select form-select-sm rule-left-select" multiple size="3"></select>
+                        <input type="hidden" name="breedingLeftIndexes" value="${data.left || ''}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">오른쪽 후보</label>
+                        <select class="form-select form-select-sm rule-right-select" multiple size="3"></select>
+                        <input type="hidden" name="breedingRightIndexes" value="${data.right || ''}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">결과</label>
+                        <select class="form-select form-select-sm rule-result-select" name="breedingResultIndexes"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">메모</label>
+                        <input type="text" name="breedingNotes" class="form-control form-control-sm" value="${data.note || ''}" placeholder="그저 가능 등">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-rule-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            `;
+            wrap.querySelector('.remove-rule-btn').addEventListener('click', () => wrap.remove());
+            wrap.querySelectorAll('select').forEach(select => select.addEventListener('change', syncRuleHiddenInputs));
+            ruleList.appendChild(wrap);
+            refreshRuleOptions();
+            if (data.left) selectCsv(wrap.querySelector('.rule-left-select'), data.left);
+            if (data.right) selectCsv(wrap.querySelector('.rule-right-select'), data.right);
+            if (data.result !== undefined && data.result !== null && data.result !== '') {
+                wrap.querySelector('.rule-result-select').value = String(data.result);
+            }
+            syncRuleHiddenInputs();
+        }
+
+        function selectCsv(select, csv) {
+            String(csv).split(/[|,]/).forEach(value => {
+                const option = select.querySelector(`option[value="${value.trim()}"]`);
+                if (option) option.selected = true;
+            });
+        }
+
+        function refreshRuleOptions() {
+            const variantRows = Array.from(slotList.querySelectorAll('.flower-variant-editor'));
+            const options = variantRows.map((row, index) => ({ value: String(index), label: variantLabel(row, index) }));
+            ruleList.querySelectorAll('.flower-rule-editor').forEach(rule => {
+                const selects = [
+                    rule.querySelector('.rule-left-select'),
+                    rule.querySelector('.rule-right-select'),
+                    rule.querySelector('.rule-result-select')
+                ];
+                selects.forEach(select => {
+                    const selected = Array.from(select.selectedOptions).map(option => option.value);
+                    select.innerHTML = options.map(option => `<option value="${option.value}">${option.label}</option>`).join('');
+                    selected.forEach(value => {
+                        const option = select.querySelector(`option[value="${value}"]`);
+                        if (option) option.selected = true;
+                    });
+                });
+            });
+            syncRuleHiddenInputs();
+        }
+
+        function syncRuleHiddenInputs() {
+            ruleList.querySelectorAll('.flower-rule-editor').forEach(rule => {
+                const left = Array.from(rule.querySelector('.rule-left-select').selectedOptions).map(option => option.value).join('|');
+                const right = Array.from(rule.querySelector('.rule-right-select').selectedOptions).map(option => option.value).join('|');
+                rule.querySelector('[name="breedingLeftIndexes"]').value = left;
+                rule.querySelector('[name="breedingRightIndexes"]').value = right;
+            });
+        }
+
+        addRuleBtn && addRuleBtn.addEventListener('click', () => createRule());
+
+        document.addEventListener('click', function (e) {
+            const editBtn = e.target.closest('.btn-admin-edit[data-modal-target="addFlowerModal"]');
+            if (editBtn) {
+                pendingEditTrigger = editBtn;
+                return;
+            }
+
+            const addFlowerBtn = e.target.closest('.btn-admin-add[data-bs-target="#addFlowerModal"]');
+            if (addFlowerBtn) {
+                pendingEditTrigger = null;
+                slotList.innerHTML = '';
+                ruleList.innerHTML = '';
+            }
+        }, true);
 
         // 수정 모달 열릴 때 flowerId로 API 호출 → 기존 variant 이미지 슬롯 복원
         modal.addEventListener('show.bs.modal', function (e) {
             slotList.innerHTML = '';
-            const trigger = e.relatedTarget;
-            if (!trigger) return;
+            ruleList.innerHTML = '';
+            const trigger = e.relatedTarget || pendingEditTrigger;
+            if (!trigger) {
+                return;
+            }
 
             const itemJson = trigger.dataset.item;
             if (!itemJson) return;
@@ -433,13 +1018,50 @@
             try { item = JSON.parse(itemJson); } catch { return; }
             if (!item.id) return;
 
+            const card = trigger.closest('.wiki-item-card');
+            const variantNodes = card ? Array.from(card.querySelectorAll('.flower-variant-data')) : [];
+            if (variantNodes.length > 0) {
+                const sortToIndex = new Map();
+                variantNodes.forEach((node, index) => {
+                    sortToIndex.set(String(node.dataset.sort || index), index);
+                    createSlot({
+                        stars: node.dataset.stars || '',
+                        colorName: node.dataset.colorName || '',
+                        imageUrl: node.dataset.imageUrl || ''
+                    });
+                });
+                card.querySelectorAll('.flower-rule-data').forEach(rule => {
+                    const left = Array.from(rule.querySelectorAll('.rule-left-option'))
+                        .map(option => sortToIndex.get(String(option.dataset.sort)))
+                        .filter(index => index !== undefined)
+                        .join('|');
+                    const right = Array.from(rule.querySelectorAll('.rule-right-option'))
+                        .map(option => sortToIndex.get(String(option.dataset.sort)))
+                        .filter(index => index !== undefined)
+                        .join('|');
+                    createRule({
+                        left,
+                        right,
+                        result: sortToIndex.get(String(rule.dataset.resultSort)),
+                        note: rule.dataset.note || ''
+                    });
+                });
+                return;
+            }
+
             fetch(`/wiki/admin/data/flower/${item.id}/images`)
                 .then(r => r.json())
                 .then(images => {
-                    images.forEach(img => createSlot(img.imageUrl));
+                    images.forEach((img, index) => createSlot({ imageUrl: img.imageUrl, stars: index + 1 }));
                 })
                 .catch(() => {});
         });
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            pendingEditTrigger = null;
+        });
+
+        modal.querySelector('form').addEventListener('submit', syncRuleHiddenInputs);
     })();
     </script>
 </body>

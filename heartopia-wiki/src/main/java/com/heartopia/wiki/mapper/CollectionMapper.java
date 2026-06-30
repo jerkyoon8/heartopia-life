@@ -8,7 +8,10 @@ import com.heartopia.wiki.model.CookingCollection;
 import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
+import com.heartopia.wiki.model.FlowerBreedingOption;
+import com.heartopia.wiki.model.FlowerBreedingRule;
 import com.heartopia.wiki.model.FlowerImage;
+import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import org.apache.ibatis.annotations.Mapper;
@@ -141,6 +144,17 @@ public interface CollectionMapper {
     void insertFlowerImage(FlowerImage image);
     void deleteFlowerImage(@Param("id") Long id);
     void deleteFlowerImagesByFlowerId(@Param("flowerId") Long flowerId);
+
+    // === flower variants / breeding ===
+    List<FlowerVariant> findFlowerVariants(@Param("flowerId") Long flowerId);
+    List<FlowerBreedingRule> findFlowerBreedingRules(@Param("flowerId") Long flowerId);
+    List<FlowerBreedingOption> findLeftFlowerBreedingOptions(@Param("ruleId") Long ruleId);
+    List<FlowerBreedingOption> findRightFlowerBreedingOptions(@Param("ruleId") Long ruleId);
+    void insertFlowerVariant(FlowerVariant variant);
+    void deleteFlowerVariantsByFlowerId(@Param("flowerId") Long flowerId);
+    void insertFlowerBreedingRule(FlowerBreedingRule rule);
+    void insertFlowerBreedingOption(FlowerBreedingOption option);
+    void deleteFlowerBreedingRulesByFlowerId(@Param("flowerId") Long flowerId);
 
     // === 업적 (Achievement) ===
     List<Achievement> findAllAchievements();
