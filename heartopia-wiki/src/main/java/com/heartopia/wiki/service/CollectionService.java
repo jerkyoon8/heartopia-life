@@ -15,6 +15,7 @@ import com.heartopia.wiki.model.FlowerImage;
 import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
+import com.heartopia.wiki.model.SandboxCollection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,11 @@ public class CollectionService {
     @Cacheable("allForageables")
     public List<ForageableCollection> getAllForageables() {
         return collectionMapper.findAllForageables();
+    }
+
+    @Cacheable("allSandboxes")
+    public List<SandboxCollection> getAllSandboxes() {
+        return collectionMapper.findAllSandboxes();
     }
 
     // ===================================================================
@@ -245,6 +251,11 @@ public class CollectionService {
     @Cacheable("countForageables")
     public int getForageableCount() {
         return collectionMapper.countAllForageables();
+    }
+
+    @Cacheable("countSandboxes")
+    public int getSandboxCount() {
+        return collectionMapper.countAllSandboxes();
     }
 
     // ===================================================================

@@ -14,6 +14,7 @@ import com.heartopia.wiki.model.FlowerImage;
 import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
+import com.heartopia.wiki.model.SandboxCollection;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -36,6 +37,8 @@ public interface CollectionMapper {
     List<GardeningCollection> findAllGardening();
 
     List<ForageableCollection> findAllForageables();
+
+    List<SandboxCollection> findAllSandboxes();
 
     // === 이름으로 개별 조회 (상세보기) ===
     FishCollection findFishByName(@Param("name") String name);
@@ -108,6 +111,8 @@ public interface CollectionMapper {
     int countAllGardening();
 
     int countAllForageables();
+
+    int countAllSandboxes();
 
     // === INSERT (관리자 데이터 추가) ===
     void insertFish(FishCollection fish);

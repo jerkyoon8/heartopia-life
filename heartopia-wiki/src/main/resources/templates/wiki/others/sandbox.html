@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <script src="/js/wiki-filter.js?v=2.5" defer></script>
+    <style>
+        .sandbox-image {
+            background: #f8f1df !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sandbox-shape-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            border: 1px solid rgba(138, 90, 0, 0.18);
+            background: rgba(255, 250, 235, 0.94);
+            box-shadow: 0 6px 14px rgba(85, 58, 18, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            z-index: 2;
+        }
+
+        .sandbox-shape-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .table-thumb-wrap {
+            position: relative;
+            width: fit-content;
+        }
+
+        .table-shape-badge {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 7px;
+            border: 1px solid rgba(138, 90, 0, 0.18);
+            background: rgba(255, 250, 235, 0.96);
+            padding: 2px;
+            box-shadow: 0 3px 8px rgba(85, 58, 18, 0.16);
+        }
+
+        .table-shape-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .sandbox-shape {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid var(--border-subtle, #eee);
+            border-radius: 10px;
+            background: var(--nav-hover, #fafafa);
+            color: var(--text-color);
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .sandbox-option {
+            color: #8a5a00;
+            font-weight: 800;
+        }
+
+        .sandbox-table-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .sandbox-temp-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: -8px 0 22px;
+            padding: 14px 16px;
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            border-radius: 12px;
+            background: rgba(255, 251, 235, 0.78);
+            color: #7a4a00;
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .sandbox-temp-notice i {
+            margin-top: 2px;
+            color: #d97706;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="mw-body">
+        <div class="page-header">
+            <i class="fas fa-umbrella-beach fa-2x text-warning"></i>
+            <h1>모래 조각 도감 (Sandbox Collection)</h1>
+        </div>
+
+        <div class="sandbox-temp-notice">
+            <i class="fas fa-circle-info"></i>
+            <span>현재 모래 조각 도감은 임시로 구성된 자료입니다. 이미지와 일부 정보는 확인 후 수정될 수 있습니다.</span>
+        </div>
+
+        <div class="wiki-filter-container">
+            <div class="filter-top-tier" style="justify-content: space-between;">
+                <div class="search-wrapper" style="flex: 1; max-width: 320px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="모래 조각 검색...">
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <div class="filter-select-wrapper">
+                        <span class="prefix">레벨</span>
+                        <select id="levelFilter">
+                            <option value="all">모든 레벨</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-select-wrapper">
+                        <span class="prefix">날씨</span>
+                        <select id="weatherFilter">
+                            <option value="all">모든 날씨</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-select-wrapper">
+                        <span class="prefix">조형물</span>
+                        <select id="shapeFilter">
+                            <option value="all">모든 조형물</option>
+                        </select>
+                    </div>
+
+                    <div th:replace="~{fragments/wiki-components :: sortAndReset}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wiki-grid-layout" id="wikiGrid">
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                <p>검색 결과가 없습니다.</p>
+            </div>
+
+            <div th:each="item, iterStat : ${sandboxList}" class="wiki-item-card"
+                 th:data-id="${iterStat.index}"
+                 th:data-name="${item.name}"
+                 th:data-level="${item.level}"
+                 th:data-weather="${item.weather}"
+                 th:data-shape="${item.shape}"
+                 th:data-price="${item.price}">
+
+                <div class="wiki-item-image sandbox-image">
+                    <div class="sandbox-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
+                        <img th:src="${item.shapeImageUrl}" th:alt="${item.shape}">
+                    </div>
+                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
+                         style="max-height: 112px; object-fit: contain;">
+                    <i th:class="'fas fa-umbrella-beach fa-4x text-warning fallback-icon'"
+                       th:style="${item.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
+                </div>
+
+                <div class="wiki-item-info">
+                    <div class="wiki-item-name mb-0">
+                        <span th:text="${item.name}">모래 조각</span>
+                    </div>
+                    <div class="mt-2 text-center" th:if="${item.dialogueOption != null and !item.dialogueOption.isEmpty()}">
+                        <span class="sandbox-option" th:text="'선택지 : ' + ${item.dialogueOption}">선택지 : 대화 선택지</span>
+                    </div>
+                </div>
+
+                <table class="wiki-item-stats">
+                    <tr>
+                        <td class="stat-label">요구 레벨</td>
+                        <td class="stat-value">
+                            <span th:if="${item.level != null}" th:text="${item.level} + ' Lv.'">1 Lv.</span>
+                            <span th:unless="${item.level != null}">-</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">시간</td>
+                        <td class="stat-value" th:text="${item.time}">상시</td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">날씨</td>
+                        <td class="stat-value" th:text="${item.weather}">상시</td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">조형물</td>
+                        <td class="stat-value">
+                            <span class="sandbox-shape">
+                                <i class="fas fa-layer-group"></i>
+                                <span th:text="${item.shape}">모래더미</span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stat-label">판매가</td>
+                        <td class="stat-value">
+                            <i class="fas fa-coins text-warning me-1"></i>
+                            <span th:text="${item.price != null ? #numbers.formatInteger(item.price, 0, 'COMMA') : '-'}">0</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="wiki-table-container" id="wikiTable">
+            <table class="wiki-table-layout">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>이름</th>
+                        <th>레벨</th>
+                        <th>시간</th>
+                        <th>날씨</th>
+                        <th>조형물</th>
+                        <th>대화 선택지</th>
+                        <th>판매가</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, iterStat : ${sandboxList}" class="wiki-table-row"
+                        th:data-id="${iterStat.index}"
+                        th:data-name="${item.name}"
+                        th:data-level="${item.level}"
+                        th:data-weather="${item.weather}"
+                        th:data-shape="${item.shape}"
+                        th:data-price="${item.price}">
+                        <td>
+                            <div class="table-thumb-wrap">
+                                <span class="table-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
+                                    <img th:src="${item.shapeImageUrl}" th:alt="${item.shape}">
+                                </span>
+                                <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb">
+                                <div th:unless="${item.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-umbrella-beach"></i></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sandbox-table-meta">
+                                <span class="table-name-link" th:text="${item.name}">이름</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span th:if="${item.level != null}" th:text="${item.level} + ' Lv.'">1 Lv.</span>
+                            <span th:unless="${item.level != null}">-</span>
+                        </td>
+                        <td th:text="${item.time}">상시</td>
+                        <td th:text="${item.weather}">상시</td>
+                        <td th:text="${item.shape}">모래더미</td>
+                        <td th:text="${item.dialogueOption != null ? '선택지 : ' + item.dialogueOption : '-'}">-</td>
+                        <td class="table-price">
+                            <i class="fas fa-coins text-warning me-1"></i>
+                            <span th:text="${item.price != null ? #numbers.formatInteger(item.price, 0, 'COMMA') : '-'}">0</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new WikiFilter({
+                gridId: 'wikiGrid',
+                tableId: 'wikiTable',
+                itemSelector: '.wiki-item-card',
+                filters: [
+                    { id: 'levelFilter', dataKey: 'level', autoPopulate: true },
+                    { id: 'weatherFilter', dataKey: 'weather', autoPopulate: true },
+                    { id: 'shapeFilter', dataKey: 'shape', autoPopulate: true }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

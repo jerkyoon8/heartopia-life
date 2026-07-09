@@ -111,6 +111,11 @@
         id, name, location, price, energy, image_url, event_name, show_on_map
     </sql>
 
+    <sql id="sandboxColumns">
+        id, name, level, time, weather, shape, shape_image_url, dialogue_option,
+        price, image_url, sort_order, event_name
+    </sql>
+
     <!-- ========== 전체 조회 ========== -->
     <select id="findAllFish" resultType="com.heartopia.wiki.model.FishCollection">
         SELECT <include refid="fishColumns"/> FROM fish_collections ORDER BY id ASC
@@ -135,6 +140,9 @@
     </select>
     <select id="findAllForageables" resultType="com.heartopia.wiki.model.ForageableCollection">
         SELECT <include refid="forageableColumns"/> FROM forageable_collections ORDER BY id ASC
+    </select>
+    <select id="findAllSandboxes" resultType="com.heartopia.wiki.model.SandboxCollection">
+        SELECT <include refid="sandboxColumns"/> FROM sandbox_collections ORDER BY sort_order ASC, id ASC
     </select>
 
     <!-- ========== 이름으로 개별 조회 (상세보기) ========== -->
@@ -234,6 +242,7 @@
     <select id="countAllFlowers" resultType="int">SELECT count(*) FROM flower_collections</select>
     <select id="countAllGardening" resultType="int">SELECT count(*) FROM crop_collections</select>
     <select id="countAllForageables" resultType="int">SELECT count(*) FROM forageable_collections</select>
+    <select id="countAllSandboxes" resultType="int">SELECT count(*) FROM sandbox_collections</select>
 
     <!-- ========== INSERT (관리자 데이터 추가) ========== -->
     <insert id="insertFish" useGeneratedKeys="true" keyProperty="id">
