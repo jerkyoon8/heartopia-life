@@ -73,7 +73,7 @@ UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, m
 UPDATE fish_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '펌프킨시드';
 UPDATE fish_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '후첸';
 UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '귀상어';
-UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '북극곤들메기';
+UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '북극곤들매기';
 UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '블루길';
 UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '유럽메기';
 UPDATE fish_collections SET mastery_beginner_max = 30, mastery_intro_min = 30, mastery_expert_min = 90, mastery_master_min = 180 WHERE name = '청상아리';
@@ -87,11 +87,11 @@ UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, 
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '슬코스키몰포나비';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '아스파라거스벌레';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '아폴로모시나비';
-UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '오아시스 메뚜기';
+UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '오아시스메뚜기';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '유럽갈고리나비';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '큰고추잠자리';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '호랑나비';
-UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '넉잠박이잠자리';
+UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '넉점박이잠자리';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '녹색호랑풍뎅이';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '말벌호랑하늘소';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '망치다리메뚜기';
@@ -106,10 +106,10 @@ UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, 
 UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '붉은목제비나비';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '여치';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '홍날개';
-UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '흰점꼬린털벌';
+UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '흰점꼬리털벌';
 UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '매미';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '무지개사마귀';
-UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '밑잠자리';
+UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '밀잠자리';
 UPDATE bug_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '사성 무당벌레';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '큰줄무늬메뚜기';
 UPDATE bug_collections SET mastery_beginner_max = 200, mastery_intro_min = 200, mastery_expert_min = 600, mastery_master_min = 1200 WHERE name = '표범무늬네발나비';
@@ -169,7 +169,7 @@ UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240,
 UPDATE bird_collections SET mastery_beginner_max = 400, mastery_intro_min = 400, mastery_expert_min = 1200, mastery_master_min = 2400 WHERE name = '호사북방오리';
 UPDATE bird_collections SET mastery_beginner_max = 400, mastery_intro_min = 400, mastery_expert_min = 1200, mastery_master_min = 2400 WHERE name = '홍금강앵무';
 UPDATE bird_collections SET mastery_beginner_max = 400, mastery_intro_min = 400, mastery_expert_min = 1200, mastery_master_min = 2400 WHERE name = '황오리';
-UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '노랑머리바우어새';
+UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '노란머리바우어새';
 UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '솔양진이';
 UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '알락할미새';
 UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '흰비오리';
@@ -177,7 +177,7 @@ UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240,
 UPDATE bird_collections SET mastery_beginner_max = 180, mastery_intro_min = 180, mastery_expert_min = 540, mastery_master_min = 1080 WHERE name = '올리브비둘기';
 UPDATE bird_collections SET mastery_beginner_max = 180, mastery_intro_min = 180, mastery_expert_min = 540, mastery_master_min = 1080 WHERE name = '유럽벌잡이새';
 UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '작은홍학';
-UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '붉음뺨가마우지';
+UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '붉은뺨가마우지';
 UPDATE bird_collections SET mastery_beginner_max = 180, mastery_intro_min = 180, mastery_expert_min = 540, mastery_master_min = 1080 WHERE name = '칡부엉이';
 UPDATE bird_collections SET mastery_beginner_max = 240, mastery_intro_min = 240, mastery_expert_min = 720, mastery_master_min = 1440 WHERE name = '콩새';
 UPDATE bird_collections SET mastery_beginner_max = 180, mastery_intro_min = 180, mastery_expert_min = 540, mastery_master_min = 1080 WHERE name = '푸른박새';
@@ -188,7 +188,7 @@ UPDATE bird_collections SET mastery_beginner_max = 180, mastery_intro_min = 180,
 UPDATE bird_collections SET mastery_beginner_max = 100, mastery_intro_min = 100, mastery_expert_min = 300, mastery_master_min = 600 WHERE name = '녹공작';
 UPDATE bird_collections SET mastery_beginner_max = 100, mastery_intro_min = 100, mastery_expert_min = 300, mastery_master_min = 600 WHERE name = '황제가마우지';
 UPDATE bird_collections SET mastery_beginner_max = 100, mastery_intro_min = 100, mastery_expert_min = 300, mastery_master_min = 600 WHERE name = '수리부엉이';
-UPDATE bird_collections SET mastery_beginner_max = 100, mastery_intro_min = 100, mastery_expert_min = 300, mastery_master_min = 600 WHERE name = '아조레스멋쟁이';
+UPDATE bird_collections SET mastery_beginner_max = 100, mastery_intro_min = 100, mastery_expert_min = 300, mastery_master_min = 600 WHERE name = '아조레스멋쟁이새';
 
 -- 명인 cooking.txt
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '검은 트러플 파이';
@@ -199,25 +199,25 @@ UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 1
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '구운 표고버섯';
 UPDATE cooking_collections SET mastery_beginner_max = 15, mastery_intro_min = 15, mastery_expert_min = 45, mastery_master_min = 90 WHERE name = '그린 롤케이크';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '그물버섯 파이';
-UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '느타리버섯파이';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '딸기잼';
+UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '느타리버섯 파이';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '딸기 잼';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '라즈베리 잼';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '레드롤케이크';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '레드 롤케이크';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '리트리버 카눌레';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '리트리버 콘파나';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '몰티즈 카눌레';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '물티즈 콘파나';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '믹스드 잼';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '몰티즈 콘파나';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '믹스 잼';
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '버섯 파이';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '베지 샐러드';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 달걀';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 보라 달걀';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 에스터에그 파티';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 이스터에그 파티';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 주황 달걀';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '부활절 초록 달걀';
 UPDATE cooking_collections SET mastery_beginner_max = 45, mastery_intro_min = 45, mastery_expert_min = 135, mastery_master_min = 270 WHERE name = '블루 롤케이크';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '블루베리 잼';
-UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '사과';
+UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '사과 잼';
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '양송이버섯 파이';
 UPDATE cooking_collections SET mastery_beginner_max = 15, mastery_intro_min = 15, mastery_expert_min = 45, mastery_master_min = 90 WHERE name = '옐로우 롤케이크';
 UPDATE cooking_collections SET mastery_beginner_max = 160, mastery_intro_min = 160, mastery_expert_min = 480, mastery_master_min = 960 WHERE name = '오렌지 롤케이크';
@@ -242,18 +242,18 @@ UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 1
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '씨푸드 피자';
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '당근 케이크';
 UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '애플파이';
-UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '콘수프';
+UPDATE cooking_collections SET mastery_beginner_max = 120, mastery_intro_min = 120, mastery_expert_min = 360, mastery_master_min = 720 WHERE name = '콘스프';
 UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '럭셔리 씨푸드 플래터';
 UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '티라미수';
 UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '잉글리시 애프터눈 티';
 UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '캠핑 세트';
 UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '랍스터 냉채';
 UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '미트버거';
-UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '북유럽 파란가재 냉채';
+UPDATE cooking_collections SET mastery_beginner_max = 80, mastery_intro_min = 80, mastery_expert_min = 240, mastery_master_min = 480 WHERE name = '북유럽파란가재 냉채';
 UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '미트소스 가지 그라탱';
 UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '캔들라이트 디너';
 UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '킹크랩 찜';
-UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '황금 킹크랩 찜';
+UPDATE cooking_collections SET mastery_beginner_max = 60, mastery_intro_min = 60, mastery_expert_min = 180, mastery_master_min = 360 WHERE name = '황금 킹크랩';
 
 -- 명인 crop.txt
 UPDATE crop_collections SET mastery_beginner_max = 900, mastery_intro_min = 900, mastery_expert_min = 2700, mastery_master_min = 5400 WHERE name = '감자';
