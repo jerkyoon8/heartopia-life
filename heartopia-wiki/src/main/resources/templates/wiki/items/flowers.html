@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.4" defer></script>
+    <script src="/js/wiki-filter.js?v=2.5" defer></script>
 </head>
 
 <body>
@@ -108,12 +108,17 @@
             </div>
 
             <!-- Flower Card Loop -->
-            <div th:each="flower, iterStat : ${flowerList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'flower_' + ${flower.name}" th:data-name="${flower.name}"
+            <div th:each="flower, iterStat : ${flowerList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'flower_' + ${flower.name}" th:data-has-mastery="${flower.hasMasteryData() ? 'true' : 'false'}" th:data-name="${flower.name}"
                 th:data-level="${flower.level}" th:data-price="${flower.prices[0]}"
                 th:data-event="${flower.eventName != null ? flower.eventName : ''}">
 
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                    <div class="sync-mastery-btn"
+                         th:classappend="${flower.hasMasteryData() ? '' : ' disabled'}"
+                         th:attr="aria-disabled=${flower.hasMasteryData() ? 'false' : 'true'}"
+                         th:title="${flower.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                         aria-pressed="false"><i class="fas fa-medal"></i></div>
                     <img class="flower-main-img"
                          th:if="${flower.imageUrl != null}"
                          th:src="${flower.imageUrl}"
@@ -224,6 +229,8 @@
                 <tbody>
                     <tr th:each="flower, iterStat : ${flowerList}" class="wiki-table-row"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'flower_' + ${flower.name}"
+                        th:data-has-mastery="${flower.hasMasteryData() ? 'true' : 'false'}"
                         th:data-name="${flower.name}"
                         th:data-level="${flower.level}"
                         th:data-price="${flower.prices[0]}"

@@ -18,7 +18,22 @@ public class FlowerCollection {
     private Integer seedSellPrice;
     private String imageUrl;
     private String eventName;
+    private Integer masteryBeginnerMax;
+    private Integer masteryIntroMin;
+    private Integer masteryExpertMin;
+    private Integer masteryMasterMin;
     private List<FlowerImage> images;
     private List<FlowerVariant> variants;
     private List<FlowerBreedingRule> breedingRules;
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+                && masteryIntroMin != null
+                && masteryExpertMin != null
+                && masteryMasterMin != null;
+    }
+
+    public List<Integer> getMasteryThresholds() {
+        return java.util.Arrays.asList(masteryBeginnerMax, masteryIntroMin, masteryExpertMin, masteryMasterMin);
+    }
 }

@@ -5,7 +5,7 @@
 <head>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.4" defer></script>
+    <script src="/js/wiki-filter.js?v=2.5" defer></script>
     <style>
         /* 목록 페이지 재료 pill 태그 */
         .ing-pill-list {
@@ -147,12 +147,17 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="item, iterStat : ${cookingList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'cooking_' + ${item.name}" th:data-name="${item.name}"
+            <div th:each="item, iterStat : ${cookingList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'cooking_' + ${item.name}" th:data-has-mastery="${item.hasMasteryData() ? 'true' : 'false'}" th:data-name="${item.name}"
                 th:data-level="${item.level}" th:data-price="${item.prices[0]}"
                 th:data-event="${item.eventName != null ? item.eventName : ''}">
 
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                    <div class="sync-mastery-btn"
+                         th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                         th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                         th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                         aria-pressed="false"><i class="fas fa-medal"></i></div>
                     <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-utensils fa-4x text-danger fallback-icon'"
@@ -215,6 +220,8 @@
                 <tbody>
                     <tr th:each="item, iterStat : ${cookingList}" class="wiki-table-row"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'cooking_' + ${item.name}"
+                        th:data-has-mastery="${item.hasMasteryData() ? 'true' : 'false'}"
                         th:data-name="${item.name}"
                         th:data-level="${item.level}"
                         th:data-price="${item.prices[0]}"

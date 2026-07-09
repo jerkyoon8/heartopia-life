@@ -41,6 +41,63 @@
     box-shadow: 0 0 10px rgba(255,179,0,0.4);
 }
 
+.sync-mastery-btn {
+    position: absolute;
+    top: 44px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #9fb0c8;
+    background: transparent;
+    color: #9fb0c8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.sync-mastery-btn i {
+    font-size: 0.95rem !important;
+    opacity: 1 !important;
+}
+
+.sync-mastery-btn:hover {
+    border-color: #9c4dff;
+    color: #9c4dff;
+    background: transparent;
+}
+
+.sync-item.mastered .sync-mastery-btn {
+    border-color: #9c4dff;
+    background: transparent;
+    color: #9c4dff;
+    box-shadow: 0 0 10px rgba(156, 77, 255, 0.34);
+}
+
+.sync-mastery-btn.disabled,
+.sync-mastery-btn[aria-disabled="true"] {
+    border-color: #d5dbe5;
+    background: transparent;
+    color: #c2cad7;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.sync-mastery-btn.disabled::after,
+.sync-mastery-btn[aria-disabled="true"]::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 2px;
+    border-radius: 999px;
+    background: #c2cad7;
+    transform: rotate(-42deg);
+    opacity: 0.9;
+}
+
 /* 별점 컨테이너 */
 .sync-stars {
     display: flex;

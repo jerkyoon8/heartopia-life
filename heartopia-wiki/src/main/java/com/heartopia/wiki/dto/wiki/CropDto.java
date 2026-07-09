@@ -13,7 +13,11 @@ public record CropDto(
     Integer seedSellPrice,
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
-    String eventName
+    String eventName,
+    Integer masteryBeginnerMax,
+    Integer masteryIntroMin,
+    Integer masteryExpertMin,
+    Integer masteryMasterMin
 ) {
     public static CropDto from(GardeningCollection c) {
         return new CropDto(
@@ -32,7 +36,18 @@ public record CropDto(
                 c.getPrice5() != null ? c.getPrice5() : 0
             ),
             c.getPrice1(), c.getPrice2(), c.getPrice3(), c.getPrice4(), c.getPrice5(),
-            c.getEventName()
+            c.getEventName(),
+            c.getMasteryBeginnerMax(),
+            c.getMasteryIntroMin(),
+            c.getMasteryExpertMin(),
+            c.getMasteryMasterMin()
         );
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+            && masteryIntroMin != null
+            && masteryExpertMin != null
+            && masteryMasterMin != null;
     }
 }

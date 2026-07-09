@@ -244,6 +244,12 @@ class WikiFilter {
             }
         };
         window.addEventListener('heartopia:hide-threshold-changed', this._onHideThresholdChanged);
+        this._onHideMasteryRequirementChanged = () => {
+            if (this.hideCollectedBtn && this.hideCollectedBtn.checked) {
+                this.applyFilter();
+            }
+        };
+        window.addEventListener('heartopia:hide-mastery-requirement-changed', this._onHideMasteryRequirementChanged);
 
         // Time Filter setup
         this.timeStartFilter = document.getElementById('timeStartFilter');
@@ -464,18 +470,23 @@ class WikiFilter {
             const rawThreshold = localStorage.getItem('wikiHideThreshold');
             const threshold = rawThreshold === null ? 0 : parseInt(rawThreshold, 10);
             const syncKey = element.dataset.syncKey;
+            const checklistValue = syncKey && typeof window.ChecklistCore !== 'undefined'
+                ? window.ChecklistCore.getItem(syncKey)
+                : undefined;
+            const isCollected = element.classList.contains('checked')
+                || (checklistValue !== undefined && checklistValue !== null);
+            let shouldHideCollected = false;
 
             if (threshold === 0) {
                 // 기본: 수집된 모든 항목(별점 무관) 숨김 — 기존 동작과 동일
-                if (element.classList.contains('checked')) {
-                    isMatch = false;
-                }
-            } else if (syncKey && typeof window.ChecklistCore !== 'undefined') {
+                shouldHideCollected = isCollected;
+            } else {
                 // N★ 이상만 숨김 (체크만 한 0★ 항목은 보임)
-                const val = window.ChecklistCore.getItem(syncKey);
-                if (typeof val === 'number' && val >= threshold) {
-                    isMatch = false;
-                }
+                shouldHideCollected = typeof checklistValue === 'number' && checklistValue >= threshold;
+            }
+
+            if (shouldHideCollected && this._matchesMasteryHideRequirement(element, syncKey)) {
+                isMatch = false;
             }
         }
 
@@ -538,6 +549,26 @@ class WikiFilter {
         }
 
         return isMatch;
+    }
+
+    _matchesMasteryHideRequirement(element, syncKey) {
+        if (localStorage.getItem('wikiRequireMasteryForHide') !== 'true') {
+            return true;
+        }
+
+        const hasMastery = element.dataset.hasMastery === 'true'
+            || element.querySelector('.sync-mastery-btn:not(.disabled)[aria-disabled="false"]') !== null;
+        if (!hasMastery) {
+            return true;
+        }
+
+        if (!syncKey || typeof window.ChecklistCore === 'undefined') {
+            return element.classList.contains('mastered');
+        }
+
+        const masteryValue = window.ChecklistCore.getItem('mastery_' + syncKey);
+        return element.classList.contains('mastered')
+            || (masteryValue !== undefined && masteryValue !== null);
     }
 
     applySort() {

@@ -19,6 +19,10 @@ public record FlowerDto(
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
     String eventName,
+    Integer masteryBeginnerMax,
+    Integer masteryIntroMin,
+    Integer masteryExpertMin,
+    Integer masteryMasterMin,
     List<String> imageUrls,
     List<VariantDto> variants,
     List<BreedingRuleDto> breedingRules
@@ -99,9 +103,20 @@ public record FlowerDto(
             ),
             f.getPrice1(), f.getPrice2(), f.getPrice3(), f.getPrice4(), f.getPrice5(),
             f.getEventName(),
+            f.getMasteryBeginnerMax(),
+            f.getMasteryIntroMin(),
+            f.getMasteryExpertMin(),
+            f.getMasteryMasterMin(),
             imageUrls,
             variants,
             breedingRules
         );
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+            && masteryIntroMin != null
+            && masteryExpertMin != null
+            && masteryMasterMin != null;
     }
 }

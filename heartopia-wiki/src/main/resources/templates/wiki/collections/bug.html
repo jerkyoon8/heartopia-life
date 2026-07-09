@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.4" defer></script>
+    <script src="/js/wiki-filter.js?v=2.5" defer></script>
     <script src="/js/admin-data.js?v=1.1" defer></script>
 </head>
 
@@ -168,7 +168,7 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="bug, iterStat : ${bugList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'bug_' + ${bug.name}" th:data-name="${bug.name}"
+            <div th:each="bug, iterStat : ${bugList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'bug_' + ${bug.name}" th:data-has-mastery="${bug.hasMasteryData() ? 'true' : 'false'}" th:data-name="${bug.name}"
                 th:data-level="${#strings.replace(bug.level, 'Lv.', '')}" th:data-price="${bug.prices[0]}"
                 th:data-weather="${bug.weather}" th:data-time="${bug.time}" th:data-location="${bug.location}"
                 th:data-sub-location="${bug.subLocation != null ? bug.subLocation : ''}"
@@ -176,6 +176,11 @@
 
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                    <div class="sync-mastery-btn"
+                         th:classappend="${bug.hasMasteryData() ? '' : ' disabled'}"
+                         th:attr="aria-disabled=${bug.hasMasteryData() ? 'false' : 'true'}"
+                         th:title="${bug.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                         aria-pressed="false"><i class="fas fa-medal"></i></div>
                     <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-bug fa-4x text-success fallback-icon'"
@@ -257,6 +262,8 @@
                 <tbody>
                     <tr th:each="bug, iterStat : ${bugList}" class="wiki-table-row"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'bug_' + ${bug.name}"
+                        th:data-has-mastery="${bug.hasMasteryData() ? 'true' : 'false'}"
                         th:data-name="${bug.name}"
                         th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
                         th:data-price="${bug.prices[0]}"

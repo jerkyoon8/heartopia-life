@@ -14,7 +14,11 @@ public record BugDto(
     String time,
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
-    String eventName
+    String eventName,
+    Integer masteryBeginnerMax,
+    Integer masteryIntroMin,
+    Integer masteryExpertMin,
+    Integer masteryMasterMin
 ) {
     public static BugDto from(BugCollection b) {
         return new BugDto(
@@ -34,7 +38,18 @@ public record BugDto(
                 b.getPrice5() != null ? b.getPrice5() : 0
             ),
             b.getPrice1(), b.getPrice2(), b.getPrice3(), b.getPrice4(), b.getPrice5(),
-            b.getEventName()
+            b.getEventName(),
+            b.getMasteryBeginnerMax(),
+            b.getMasteryIntroMin(),
+            b.getMasteryExpertMin(),
+            b.getMasteryMasterMin()
         );
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+            && masteryIntroMin != null
+            && masteryExpertMin != null
+            && masteryMasterMin != null;
     }
 }

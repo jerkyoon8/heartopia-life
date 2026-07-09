@@ -17,7 +17,11 @@ public record BirdDto(
     String type,
     String eventName,
     String distance,
-    String stretchTime
+    String stretchTime,
+    Integer masteryBeginnerMax,
+    Integer masteryIntroMin,
+    Integer masteryExpertMin,
+    Integer masteryMasterMin
 ) {
     public static BirdDto from(BirdCollection b) {
         return new BirdDto(
@@ -40,7 +44,18 @@ public record BirdDto(
             b.getType(),
             b.getEventName(),
             b.getDistance(),
-            b.getStretchTime()
+            b.getStretchTime(),
+            b.getMasteryBeginnerMax(),
+            b.getMasteryIntroMin(),
+            b.getMasteryExpertMin(),
+            b.getMasteryMasterMin()
         );
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+            && masteryIntroMin != null
+            && masteryExpertMin != null
+            && masteryMasterMin != null;
     }
 }

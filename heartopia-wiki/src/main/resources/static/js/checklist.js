@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = getCollectionData();
         allItems.forEach(itemEl => {
             const key = itemEl.getAttribute('data-key');
+            const masteryKey = 'mastery_' + key;
+            const masteryBtn = itemEl.querySelector('.item-mastery-btn');
+
             if (data.hasOwnProperty(key)) {
                 const starVal = data[key];
                 itemEl.classList.add('checked');
@@ -56,12 +59,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 itemEl.classList.remove('checked');
                 itemEl.querySelectorAll('.star-icon').forEach(s => s.classList.remove('filled'));
             }
+
+            if (masteryBtn) {
+                if (masteryBtn.getAttribute('aria-disabled') === 'true') {
+                    itemEl.classList.remove('mastered');
+                    masteryBtn.setAttribute('aria-pressed', 'false');
+                } else if (data.hasOwnProperty(masteryKey)) {
+                    itemEl.classList.add('mastered');
+                    masteryBtn.setAttribute('aria-pressed', 'true');
+                } else {
+                    itemEl.classList.remove('mastered');
+                    masteryBtn.setAttribute('aria-pressed', 'false');
+                }
+            }
         });
         updateProgressUI();
     }
 
     function updateProgressUI() {
-        let totalCollected = Object.keys(getCollectionData()).length;
+        const collectionKeys = Object.keys(getCollectionData()).filter(k => !k.startsWith('mastery_'));
+        let totalCollected = collectionKeys.length;
 
         document.getElementById('overall-collected').textContent = totalCollected;
         document.getElementById('overall-total').textContent = totalItemsCount;
@@ -72,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         categoryCards.forEach(card => {
             const catName = card.getAttribute('data-target');
             const totalInCat = parseInt(card.getAttribute('data-total')) || 0;
-            const collectedInCat = Object.keys(getCollectionData()).filter(k => k.startsWith(catName + '_')).length;
+            const collectedInCat = collectionKeys.filter(k => k.startsWith(catName + '_')).length;
 
             card.querySelector('#count-' + catName).textContent = collectedInCat;
             let catPercent = totalInCat > 0 ? (collectedInCat / totalInCat) * 100 : 0;
@@ -149,15 +166,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     allItems.forEach(itemEl => {
         const key = itemEl.getAttribute('data-key');
         const stars = itemEl.querySelectorAll('.star-icon');
+        const masteryBtn = itemEl.querySelector('.item-mastery-btn');
 
         itemEl.style.userSelect = 'none';
 
         // 아이템 클릭 = 토글 (별점 영역은 별도 처리)
         itemEl.addEventListener('click', (e) => {
             if (e.target.closest('.star-icon')) return;
+            if (e.target.closest('.item-mastery-btn')) return;
             const mode = itemEl.classList.contains('checked') ? 'uncheck' : 'check';
             setItemStatus(itemEl, mode);
         });
+
+        if (masteryBtn) {
+            masteryBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (masteryBtn.getAttribute('aria-disabled') === 'true') return;
+
+                const masteryKey = 'mastery_' + key;
+                const isMastered = itemEl.classList.contains('mastered');
+
+                if (isMastered) {
+                    window.ChecklistCore.removeItem(masteryKey);
+                    itemEl.classList.remove('mastered');
+                    masteryBtn.setAttribute('aria-pressed', 'false');
+                } else {
+                    window.ChecklistCore.setItem(masteryKey, 1);
+                    itemEl.classList.add('mastered');
+                    masteryBtn.setAttribute('aria-pressed', 'true');
+                }
+
+                if (syncEnabled) {
+                    const csrf = getCsrf();
+                    if (isMastered) {
+                        fetch('/api/user/checklist/item', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key: masteryKey })
+                        }).catch(() => {});
+                    } else {
+                        fetch('/api/user/checklist/item', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key: masteryKey, val: 1 })
+                        }).catch(() => {});
+                    }
+                }
+            });
+        }
 
         // 별점 클릭 = 평점 세팅 + 즉시 DB 동기화
         stars.forEach(starEl => {

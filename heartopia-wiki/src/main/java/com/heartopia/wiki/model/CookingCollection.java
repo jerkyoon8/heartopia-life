@@ -18,11 +18,26 @@ public class CookingCollection {
     private Integer price5;
     private String imageUrl;
     private String eventName;
+    private Integer masteryBeginnerMax;
+    private Integer masteryIntroMin;
+    private Integer masteryExpertMin;
+    private Integer masteryMasterMin;
 
     // 신규: 관계형 재료 목록 (cooking_ingredients 테이블)
     private List<CookingIngredient> ingredientList;
 
     public List<Integer> getPrices() {
         return Arrays.asList(price1, price2, price3, price4, price5);
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+                && masteryIntroMin != null
+                && masteryExpertMin != null
+                && masteryMasterMin != null;
+    }
+
+    public List<Integer> getMasteryThresholds() {
+        return Arrays.asList(masteryBeginnerMax, masteryIntroMin, masteryExpertMin, masteryMasterMin);
     }
 }

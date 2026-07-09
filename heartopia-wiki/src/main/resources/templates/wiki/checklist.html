@@ -5,7 +5,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Checklist Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/checklist.css}">
+    <link rel="stylesheet" th:href="@{/css/checklist.css(v=1.1)}">
 </head>
 <body>
 
@@ -131,6 +131,11 @@
                     <div class="item-row collectible-item" th:each="item : ${fishList}" th:attr="data-key=|fish_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -152,6 +157,11 @@
                     <div class="item-row collectible-item" th:each="item : ${bugList}" th:attr="data-key=|bug_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -173,6 +183,11 @@
                     <div class="item-row collectible-item" th:each="item : ${birdList}" th:attr="data-key=|bird_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -194,6 +209,11 @@
                     <div class="item-row collectible-item" th:each="item : ${flowerList}" th:attr="data-key=|flower_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -215,6 +235,11 @@
                     <div class="item-row collectible-item" th:each="item : ${cropList}" th:attr="data-key=|crop_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -236,6 +261,11 @@
                     <div class="item-row collectible-item" th:each="item : ${cookingList}" th:attr="data-key=|cooking_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
                         <div class="item-stars">
                             <i class="fas fa-star star-icon" data-val="1"></i>
                             <i class="fas fa-star star-icon" data-val="2"></i>
@@ -275,7 +305,7 @@
     <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
     <!-- Checklist Logic Script -->
-    <script th:src="@{/js/checklist.js}"></script>
+    <script th:src="@{/js/checklist.js(v=1.1)}"></script>
 
 </body>
 </html>

@@ -347,6 +347,58 @@ body {
     text-decoration: line-through;
 }
 
+.item-mastery-btn {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #9fb0c8;
+    border-radius: 50%;
+    background: transparent;
+    color: #9fb0c8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 8px;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.item-mastery-btn i {
+    font-size: 11px;
+}
+
+.item-mastery-btn:hover {
+    border-color: #9c4dff;
+    color: #9c4dff;
+}
+
+.item-row.mastered .item-mastery-btn {
+    border-color: #9c4dff;
+    color: #9c4dff;
+    box-shadow: 0 0 8px rgba(156, 77, 255, 0.28);
+}
+
+.item-mastery-btn.disabled,
+.item-mastery-btn[aria-disabled="true"] {
+    border-color: #d5dbe5;
+    color: #c2cad7;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.item-mastery-btn.disabled::after,
+.item-mastery-btn[aria-disabled="true"]::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #c2cad7;
+    transform: rotate(-42deg);
+}
+
 .item-stars {
     display: flex;
     gap: 2px;

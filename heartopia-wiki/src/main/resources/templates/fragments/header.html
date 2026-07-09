@@ -512,6 +512,19 @@
                                 <div class="settings-item-desc">
                                     페이지의 "수집된 항목 숨기기"가 켜져 있을 때, 여기서 정한 기준 이상만 숨깁니다.
                                 </div>
+                                <div class="settings-item">
+                                    <div class="settings-item-label">
+                                        <i class="fas fa-medal"></i>
+                                        <span class="settings-item-title">명인까지 완료해야 숨김</span>
+                                    </div>
+                                    <label class="form-check form-switch m-0" style="padding-left: 2.5em; cursor: pointer;">
+                                        <input class="form-check-input" type="checkbox" id="requireMasteryForHideToggle"
+                                               style="cursor: pointer;">
+                                    </label>
+                                </div>
+                                <div class="settings-item-desc">
+                                    켜면 명인 정보가 있는 항목은 명인 체크까지 완료해야 숨김 처리됩니다. 명인 정보가 없는 항목은 수집만 완료해도 숨겨집니다.
+                                </div>
 
                                 <th:block sec:authorize="isAuthenticated()">
                                     <div class="settings-divider"></div>
@@ -576,7 +589,7 @@
                         <div class="visitor-counter" th:if="${weeklyVisitors != null}">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="d-flex align-items-center gap-1" title="주간 조회수">
-                                    <i class="fas fa-eye" style="color: #889;"></i>
+                                    <i class="fas fa-calendar-week" style="color: #6c8cff;"></i>
                                     <span class="visitor-count-num"
                                         th:text="${#numbers.formatInteger(weeklyVisitors, 0, 'COMMA')}">1,234</span>
                                 </div>
@@ -584,7 +597,7 @@
                                     style="width: 1px; height: 10px; background-color: var(--border-subtle, #ddd); margin: 0 4px;">
                                 </div>
                                 <div class="d-flex align-items-center gap-1" title="오늘 조회수">
-                                    <i class="fas fa-fire" style="color: #ff6b6b;"></i>
+                                    <i class="fas fa-sun" style="color: #f5a623;"></i>
                                     <span class="visitor-count-num"
                                         th:text="${#numbers.formatInteger(todayVisitors, 0, 'COMMA')}">56</span>
                                 </div>
@@ -896,6 +909,16 @@
                         // 현재 페이지의 WikiFilter에 즉시 반영
                         window.dispatchEvent(new CustomEvent('heartopia:hide-threshold-changed', {
                             detail: { threshold: parseInt(hideThresholdSelect.value, 10) }
+                        }));
+                    });
+                }
+                const requireMasteryToggle = document.getElementById('requireMasteryForHideToggle');
+                if (requireMasteryToggle) {
+                    requireMasteryToggle.checked = localStorage.getItem('wikiRequireMasteryForHide') === 'true';
+                    requireMasteryToggle.addEventListener('change', () => {
+                        localStorage.setItem('wikiRequireMasteryForHide', requireMasteryToggle.checked);
+                        window.dispatchEvent(new CustomEvent('heartopia:hide-mastery-requirement-changed', {
+                            detail: { required: requireMasteryToggle.checked }
                         }));
                     });
                 }

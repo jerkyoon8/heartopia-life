@@ -18,8 +18,23 @@ public class BugCollection {
     private Integer price5;
     private String imageUrl;
     private String eventName;
+    private Integer masteryBeginnerMax;
+    private Integer masteryIntroMin;
+    private Integer masteryExpertMin;
+    private Integer masteryMasterMin;
 
     public java.util.List<Integer> getPrices() {
         return java.util.Arrays.asList(price1, price2, price3, price4, price5);
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+                && masteryIntroMin != null
+                && masteryExpertMin != null
+                && masteryMasterMin != null;
+    }
+
+    public java.util.List<Integer> getMasteryThresholds() {
+        return java.util.Arrays.asList(masteryBeginnerMax, masteryIntroMin, masteryExpertMin, masteryMasterMin);
     }
 }

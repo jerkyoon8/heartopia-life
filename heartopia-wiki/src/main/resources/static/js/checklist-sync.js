@@ -52,12 +52,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    function renderMasteryStatus(itemEl, val) {
+        const masteryBtn = itemEl.querySelector('.sync-mastery-btn');
+        if (!masteryBtn) return;
+        if (masteryBtn.getAttribute('aria-disabled') === 'true') {
+            itemEl.classList.remove('mastered');
+            return;
+        }
+        if (val !== undefined && val !== null) {
+            itemEl.classList.add('mastered');
+            masteryBtn.setAttribute('aria-pressed', 'true');
+        } else {
+            itemEl.classList.remove('mastered');
+            masteryBtn.setAttribute('aria-pressed', 'false');
+        }
+    }
+
     // 한 화면 내의 모든 아이템 스캔 후 최신화
     function syncAll() {
         const data = core.getData();
         syncItems.forEach(itemEl => {
             const key = itemEl.getAttribute('data-sync-key');
             renderItemStatus(itemEl, data[key]);
+            renderMasteryStatus(itemEl, data['mastery_' + key]);
         });
     }
 
@@ -75,6 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!key) return;
 
         const checkBtn = itemEl.querySelector('.sync-check-btn');
+        const masteryBtn = itemEl.querySelector('.sync-mastery-btn');
         const stars = itemEl.querySelectorAll('.sync-star-icon');
 
         // 체크 버튼 토글
@@ -101,6 +119,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
                             body: JSON.stringify({ key, val: 0 })
+                        }).catch(() => {});
+                    }
+                }
+            });
+        }
+
+        // 명인 토글
+        if (masteryBtn) {
+            masteryBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (masteryBtn.getAttribute('aria-disabled') === 'true') return;
+
+                const masteryKey = 'mastery_' + key;
+                if (itemEl.classList.contains('mastered')) {
+                    core.removeItem(masteryKey);
+                    if (syncEnabled) {
+                        const csrf = getCsrf();
+                        fetch('/api/user/checklist/item', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key: masteryKey })
+                        }).catch(() => {});
+                    }
+                } else {
+                    core.setItem(masteryKey, 1);
+                    if (syncEnabled) {
+                        const csrf = getCsrf();
+                        fetch('/api/user/checklist/item', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                            body: JSON.stringify({ key: masteryKey, val: 1 })
                         }).catch(() => {});
                     }
                 }

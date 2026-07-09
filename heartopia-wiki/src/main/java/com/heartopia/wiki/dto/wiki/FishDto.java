@@ -15,7 +15,11 @@ public record FishDto(
     List<Integer> prices,
     Integer price1, Integer price2, Integer price3, Integer price4, Integer price5,
     String size,
-    String eventName
+    String eventName,
+    Integer masteryBeginnerMax,
+    Integer masteryIntroMin,
+    Integer masteryExpertMin,
+    Integer masteryMasterMin
 ) {
     public static FishDto from(FishCollection f) {
         return new FishDto(
@@ -36,7 +40,18 @@ public record FishDto(
             ),
             f.getPrice1(), f.getPrice2(), f.getPrice3(), f.getPrice4(), f.getPrice5(),
             f.getSize() != null ? f.getSize() : "-",
-            f.getEventName()
+            f.getEventName(),
+            f.getMasteryBeginnerMax(),
+            f.getMasteryIntroMin(),
+            f.getMasteryExpertMin(),
+            f.getMasteryMasterMin()
         );
+    }
+
+    public boolean hasMasteryData() {
+        return masteryBeginnerMax != null
+            && masteryIntroMin != null
+            && masteryExpertMin != null
+            && masteryMasterMin != null;
     }
 }

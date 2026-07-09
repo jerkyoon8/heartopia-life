@@ -8,20 +8,23 @@
     <sql id="fishColumns">
         id, location, sub_location, name, level, weather, time, 
         price_1, price_2, price_3, price_4, price_5,
-        size, image_url, event_name
+        size, image_url, event_name,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
     <sql id="birdColumns">
         id, location, sub_location, name, level, weather, time,
         price_1, price_2, price_3, price_4, price_5,
         type, image_url, event_name,
-        distance, stretch_time
+        distance, stretch_time,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
     <sql id="bugColumns">
         id, location, sub_location, name, level, weather, time, 
         price_1, price_2, price_3, price_4, price_5,
-        image_url, event_name
+        image_url, event_name,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
     <sql id="animalColumns">
@@ -31,13 +34,15 @@
     <sql id="cookingColumns">
         id, name, level, ingredients, buy_price,
         price_1, price_2, price_3, price_4, price_5,
-        image_url, event_name
+        image_url, event_name,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
     <sql id="flowerAndCropColumns">
         id, name, price_1, price_2, price_3, price_4, price_5,
         level, growth_time, seed_buy_price, seed_sell_price,
-        image_url, event_name
+        image_url, event_name,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
     <!-- flower_images 포함한 FlowerCollection resultMap -->
@@ -55,6 +60,10 @@
         <result property="seedSellPrice" column="seed_sell_price"/>
         <result property="imageUrl"     column="image_url"/>
         <result property="eventName"    column="event_name"/>
+        <result property="masteryBeginnerMax" column="mastery_beginner_max"/>
+        <result property="masteryIntroMin"    column="mastery_intro_min"/>
+        <result property="masteryExpertMin"   column="mastery_expert_min"/>
+        <result property="masteryMasterMin"   column="mastery_master_min"/>
         <collection property="images" ofType="com.heartopia.wiki.model.FlowerImage"
                     select="findFlowerImages" column="id"/>
         <collection property="variants" ofType="com.heartopia.wiki.model.FlowerVariant"

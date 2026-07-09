@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.4" defer></script>
+    <script src="/js/wiki-filter.js?v=2.5" defer></script>
 </head>
 
 <body>
@@ -178,7 +178,7 @@
             </div>
 
             <!-- Fish Card Loop -->
-            <div th:each="fish, iterStat : ${fishList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'fish_' + ${fish.name}" th:data-name="${fish.name}"
+            <div th:each="fish, iterStat : ${fishList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'fish_' + ${fish.name}" th:data-has-mastery="${fish.hasMasteryData() ? 'true' : 'false'}" th:data-name="${fish.name}"
                 th:data-level="${#strings.replace(fish.level, 'Lv.', '')}" th:data-location="${fish.location}"
                 th:data-sub-location="${fish.subLocation != null ? fish.subLocation : ''}"
                 th:data-shadow="${fish.size}" th:data-price="${fish.prices[0]}"
@@ -188,6 +188,11 @@
                 <!-- sync-container 적용 -->
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                    <div class="sync-mastery-btn"
+                         th:classappend="${fish.hasMasteryData() ? '' : ' disabled'}"
+                         th:attr="aria-disabled=${fish.hasMasteryData() ? 'false' : 'true'}"
+                         th:title="${fish.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                         aria-pressed="false"><i class="fas fa-medal"></i></div>
                     
                     <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}"
                         style="max-height: 100px; object-fit: contain;">
@@ -278,6 +283,8 @@
                 <tbody>
                     <tr th:each="fish, iterStat : ${fishList}" class="wiki-table-row"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'fish_' + ${fish.name}"
+                        th:data-has-mastery="${fish.hasMasteryData() ? 'true' : 'false'}"
                         th:data-name="${fish.name}"
                         th:data-level="${#strings.replace(fish.level, 'Lv.', '')}"
                         th:data-location="${fish.location}"
