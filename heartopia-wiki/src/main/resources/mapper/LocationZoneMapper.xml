@@ -6,6 +6,7 @@
 
     <resultMap id="zoneResultMap" type="com.heartopia.wiki.model.LocationZone">
         <id property="id" column="id"/>
+        <result property="mapKey" column="map_key"/>
         <result property="zoneKey" column="zone_key"/>
         <result property="displayName" column="display_name"/>
         <result property="polygonPoints" column="polygon_points"/>
@@ -16,19 +17,33 @@
     </resultMap>
 
     <select id="findAll" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
+        SELECT id, map_key, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         ORDER BY id ASC
     </select>
 
+    <select id="findAllByMapKey" resultMap="zoneResultMap">
+        SELECT id, map_key, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
+        FROM location_zones
+        WHERE COALESCE(NULLIF(map_key, ''), 'town') = #{mapKey}
+        ORDER BY id ASC
+    </select>
+
     <select id="findByZoneKey" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
+        SELECT id, map_key, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         WHERE zone_key = #{zoneKey}
     </select>
 
+    <select id="findByZoneKeyAndMapKey" resultMap="zoneResultMap">
+        SELECT id, map_key, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
+        FROM location_zones
+        WHERE zone_key = #{zoneKey}
+          AND COALESCE(NULLIF(map_key, ''), 'town') = #{mapKey}
+    </select>
+
     <select id="findByZoneKeys" resultMap="zoneResultMap">
-        SELECT id, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
+        SELECT id, map_key, zone_key, display_name, polygon_points, map_x, map_y, color, parent_zone_key
         FROM location_zones
         WHERE zone_key IN
         <foreach item="key" collection="zoneKeys" open="(" separator="," close=")">
@@ -40,12 +55,14 @@
         UPDATE location_zones
         SET polygon_points = #{polygonPoints}
         WHERE zone_key = #{zoneKey}
+          AND COALESCE(NULLIF(map_key, ''), 'town') = #{mapKey}
     </update>
 
     <update id="updateMapPosition">
         UPDATE location_zones
         SET map_x = #{mapX}, map_y = #{mapY}
         WHERE zone_key = #{zoneKey}
+          AND COALESCE(NULLIF(map_key, ''), 'town') = #{mapKey}
     </update>
 
 </mapper>

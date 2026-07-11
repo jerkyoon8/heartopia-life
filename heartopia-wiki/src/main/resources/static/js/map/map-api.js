@@ -6,6 +6,7 @@ const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 window.MapApp.api = {
     saveNewPin: async function (pinData) {
         try {
+            pinData.mapKey = pinData.mapKey || window.MapApp.state.activeMapKey || 'town';
             const headers = { 'Content-Type': 'application/json' };
             if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
@@ -39,20 +40,23 @@ window.MapApp.api = {
     },
     loadAllZones: async function () {
         try {
-            const res = await fetch('/wiki/map/api/zones');
-            window.MapApp.state.allZones = await res.json();
+            const mapKey = window.MapApp.state.activeMapKey || 'town';
+            const res = await fetch('/wiki/map/api/zones?mapKey=' + encodeURIComponent(mapKey));
+            const zones = await res.json();
+            window.MapApp.state.allZones = zones.filter(window.MapApp.belongsToActiveMap);
         } catch (e) {
             console.error('Zone 로드 실패:', e);
         }
     },
     saveZonePosition: async function (zoneKey, mapX, mapY) {
         try {
+            const mapKey = window.MapApp.state.activeMapKey || 'town';
             const headers = { 'Content-Type': 'application/json' };
             if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
             const response = await fetch('/wiki/map/api/zones/' + zoneKey + '/position', {
                 method: 'PUT',
                 headers: headers,
-                body: JSON.stringify({ mapX: mapX, mapY: mapY })
+                body: JSON.stringify({ mapKey: mapKey, mapX: mapX, mapY: mapY })
             });
             if (!response.ok) throw new Error('Zone 위치 저장 실패');
             return await response.json();

@@ -123,6 +123,15 @@
                     <input type="text" id="pinSearch" placeholder="검색..." />
                 </div>
 
+                <div class="map-switcher" aria-label="지도 선택">
+                    <a th:href="@{/wiki/map(mapKey='town')}" class="map-switch-btn" data-map-key="town">
+                        두근두근 타운
+                    </a>
+                    <a th:href="@{/wiki/map(mapKey='second')}" class="map-switch-btn" data-map-key="second">
+                        고래 탐사 시즌
+                    </a>
+                </div>
+
                 <div class="side-panel-controls">
                     <button class="btn-control" id="showAll" title="전체 표시">
                         <i class="fas fa-eye"></i> 전체 표시
@@ -190,11 +199,11 @@
         /*]]>*/
     </script>
     <!-- Map Modules -->
-    <script th:src="@{/js/map/map-state.js(v=1.16)}"></script>
-    <script th:src="@{/js/map/map-api.js(v=1.16)}"></script>
-    <script th:src="@{/js/map/map-zone.js(v=1.16)}"></script>
-    <script th:src="@{/js/map/map-ui.js(v=1.16)}"></script>
-    <script th:src="@{/js/map/map-core.js(v=1.16)}"></script>
+    <script th:src="@{/js/map/map-state.js(v=1.19)}"></script>
+    <script th:src="@{/js/map/map-api.js(v=1.19)}"></script>
+    <script th:src="@{/js/map/map-zone.js(v=1.19)}"></script>
+    <script th:src="@{/js/map/map-ui.js(v=1.19)}"></script>
+    <script th:src="@{/js/map/map-core.js(v=1.19)}"></script>
 </body>
 
 </html>

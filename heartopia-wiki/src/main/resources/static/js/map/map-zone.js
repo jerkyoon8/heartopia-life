@@ -71,7 +71,7 @@ window.MapApp.zone = {
                 points = typeof zone.polygonPoints === 'string' ? JSON.parse(zone.polygonPoints) : zone.polygonPoints;
             } catch (e) { return; }
 
-            const mapHeight = 3000;
+            const mapHeight = state.mapHeight || 3000;
             const latLngs = points.map(([px, py]) => [mapHeight - py, px]);
             const isParent = zoneKeys.some(k => {
                 const z = state.allZones.find(z2 => z2.zoneKey === k);

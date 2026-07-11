@@ -12,4 +12,5 @@ public class ForageableCollection {
     private String imageUrl;
     private String eventName;
     private Boolean showOnMap;
+    private String mapKey;
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 @Data
 public class MapPin {
     private Long id;
+    private String mapKey;
 
     @NotBlank(message = "카테고리는 필수 입력값입니다.")
     private String category;

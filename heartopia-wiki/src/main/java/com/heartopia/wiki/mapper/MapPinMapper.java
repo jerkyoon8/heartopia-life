@@ -10,7 +10,11 @@ import java.util.List;
 public interface MapPinMapper {
     List<MapPin> findAllPins();
 
+    List<MapPin> findPinsByMapKey(@Param("mapKey") String mapKey);
+
     List<MapPin> findPinsByCategory(@Param("category") String category);
+
+    List<MapPin> findPinsByMapKeyAndCategory(@Param("mapKey") String mapKey, @Param("category") String category);
 
     MapPin findPinByCategoryAndName(@Param("category") String category, @Param("name") String name);
 

@@ -12,8 +12,42 @@ window.MapApp.CATEGORY_CONFIG = {
     forageable: { icon: '🌿', color: '#37b24d', label: '채집물' }
 };
 
+window.MapApp.MAPS = {
+    town: {
+        key: 'town',
+        label: '두근두근 타운',
+        description: '기존 두근두근 타운 지도',
+        imageUrl: '/images/map/heartopia-map.png',
+        isDefault: true
+    },
+    second: {
+        key: 'second',
+        label: '고래 탐사 시즌',
+        description: '고래 탐사 시즌 지도',
+        imageUrl: '/images/map/second-map.webp',
+        isDefault: false
+    }
+};
+
+window.MapApp.getInitialMapKey = function () {
+    const params = new URLSearchParams(window.location.search);
+    const mapKey = params.get('mapKey') || 'town';
+    return window.MapApp.MAPS[mapKey] ? mapKey : 'town';
+};
+
+window.MapApp.getActiveMap = function () {
+    return window.MapApp.MAPS[window.MapApp.state.activeMapKey] || window.MapApp.MAPS.town;
+};
+
+window.MapApp.belongsToActiveMap = function (item) {
+    const activeMap = window.MapApp.getActiveMap();
+    if (!item || !activeMap) return false;
+    return activeMap.isDefault ? (!item.mapKey || item.mapKey === activeMap.key) : item.mapKey === activeMap.key;
+};
+
 window.MapApp.state = {
     map: null,
+    activeMapKey: window.MapApp.getInitialMapKey(),
     allPins: [],
     masterForageables: [],
     masterFish: [],
@@ -40,4 +74,4 @@ window.MapApp.state = {
     }
 };
 
-window.MapApp.imageUrl = '/images/map/heartopia-map.png';
+window.MapApp.imageUrl = window.MapApp.getActiveMap().imageUrl;

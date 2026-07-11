@@ -51,10 +51,13 @@ public class MapController {
 
     @GetMapping("/api/forageables")
     @ResponseBody
-    public List<ForageableCollection> getForageableMasterList() {
+    public List<ForageableCollection> getForageableMasterList(@RequestParam(required = false) String mapKey) {
+        String normalizedMapKey = normalizeMapKey(mapKey);
         List<ForageableCollection> all = collectionService.getAllForageables();
         return all.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getShowOnMap()))
+                .filter(f -> belongsToForageableMap(f, normalizedMapKey))
+                .peek(f -> f.setMapKey(normalizedMapKey))
                 .collect(Collectors.toList());
     }
 
@@ -90,12 +93,15 @@ public class MapController {
 
     @GetMapping("/api/pins")
     @ResponseBody
-    public List<MapPin> getPins(@RequestParam(required = false) String category) {
+    public List<MapPin> getPins(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String mapKey) {
+        String normalizedMapKey = normalizeMapKey(mapKey);
         List<MapPin> pins;
         if (category != null && !category.isEmpty()) {
-            pins = mapPinService.getPinsByCategory(category);
+            pins = mapPinService.getPinsByMapKeyAndCategory(normalizedMapKey, category);
         } else {
-            pins = mapPinService.getAllPins();
+            pins = mapPinService.getPinsByMapKey(normalizedMapKey);
         }
 
         // --- 성능 최적화: 사전 메모리 매핑 (O(n) 사전 변환) ---
@@ -264,14 +270,16 @@ public class MapController {
 
     @GetMapping("/api/zones")
     @ResponseBody
-    public List<LocationZone> getAllZones() {
-        return locationZoneMapper.findAll();
+    public List<LocationZone> getAllZones(@RequestParam(required = false) String mapKey) {
+        return locationZoneMapper.findAllByMapKey(normalizeMapKey(mapKey));
     }
 
     @GetMapping("/api/zones/{zoneKey}")
     @ResponseBody
-    public LocationZone getZoneByKey(@PathVariable String zoneKey) {
-        return locationZoneMapper.findByZoneKey(zoneKey);
+    public LocationZone getZoneByKey(
+            @PathVariable String zoneKey,
+            @RequestParam(required = false) String mapKey) {
+        return locationZoneMapper.findByZoneKeyAndMapKey(zoneKey, normalizeMapKey(mapKey));
     }
 
     @PutMapping("/api/zones/{zoneKey}/polygon")
@@ -280,7 +288,8 @@ public class MapController {
             @PathVariable String zoneKey,
             @RequestBody Map<String, String> body) {
         String polygonPoints = body.get("polygonPoints");
-        locationZoneMapper.updatePolygon(zoneKey, polygonPoints);
+        String mapKey = normalizeMapKey(body.get("mapKey"));
+        locationZoneMapper.updatePolygon(zoneKey, mapKey, polygonPoints);
         return Map.of("success", true, "zoneKey", zoneKey);
     }
 
@@ -288,10 +297,11 @@ public class MapController {
     @ResponseBody
     public Map<String, Object> updateZonePosition(
             @PathVariable String zoneKey,
-            @RequestBody Map<String, Integer> body) {
-        Integer mapX = body.get("mapX");
-        Integer mapY = body.get("mapY");
-        locationZoneMapper.updateMapPosition(zoneKey, mapX, mapY);
+            @RequestBody Map<String, Object> body) {
+        Integer mapX = toInteger(body.get("mapX"));
+        Integer mapY = toInteger(body.get("mapY"));
+        String mapKey = normalizeMapKey(toStringOrNull(body.get("mapKey")));
+        locationZoneMapper.updateMapPosition(zoneKey, mapKey, mapX, mapY);
         return Map.of("success", true, "zoneKey", zoneKey, "mapX", mapX, "mapY", mapY);
     }
 
@@ -309,6 +319,7 @@ public class MapController {
     @PostMapping("/api/pins")
     @ResponseBody
     public MapPin addPin(@Valid @RequestBody MapPin pin) {
+        pin.setMapKey(normalizeMapKey(pin.getMapKey()));
         log.info("새로운 핀 추가 API 호출됨: {}", pin.getName());
         MapPin saved = mapPinService.addPin(pin);
         enrichPinDetails(saved); // 새 핀에도 도감 상세 정보 즉시 연동
@@ -320,5 +331,35 @@ public class MapController {
     public Map<String, Object> deletePin(@PathVariable Long id) {
         mapPinService.deletePin(id);
         return Map.of("success", true, "id", id);
+    }
+
+    private String normalizeMapKey(String mapKey) {
+        if (mapKey == null || mapKey.isBlank()) {
+            return "town";
+        }
+        return mapKey;
+    }
+
+    private boolean belongsToForageableMap(ForageableCollection forageable, String mapKey) {
+        boolean isSecondMapForageable = List.of("미역", "바다 아스파라거스", "바다 포도")
+                .contains(forageable.getName());
+        return "second".equals(mapKey) ? isSecondMapForageable : !isSecondMapForageable;
+    }
+
+    private Integer toInteger(Object value) {
+        if (value instanceof Integer integer) {
+            return integer;
+        }
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        if (value instanceof String text && !text.isBlank()) {
+            return Integer.parseInt(text);
+        }
+        return null;
+    }
+
+    private String toStringOrNull(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 }

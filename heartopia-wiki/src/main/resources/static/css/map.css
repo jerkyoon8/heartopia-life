@@ -106,6 +106,44 @@
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+.map-switcher {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 2px 14px 10px;
+}
+
+.map-switch-btn {
+    min-height: 36px;
+    padding: 8px 6px;
+    border: 1px solid var(--border-subtle, #ddd);
+    border-radius: 8px;
+    background: var(--card-bg, white);
+    color: var(--text-color, #333);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Paperlogy', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.map-switch-btn:hover {
+    background: #f0f8ff;
+    border-color: #4dabf7;
+    color: #0d6efd;
+}
+
+.map-switch-btn.active {
+    background: #e7f1ff;
+    border-color: #0d6efd;
+    color: #0b5ed7;
+}
+
 /* Controls */
 .side-panel-controls {
     padding: 0 14px 10px;
@@ -919,4 +957,4 @@
 .zone-label-toggle:hover {
     background: #f0f4ff;
 }
-
+

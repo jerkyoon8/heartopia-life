@@ -21,8 +21,16 @@ public class MapPinService {
         return mapPinMapper.findAllPins();
     }
 
+    public List<MapPin> getPinsByMapKey(String mapKey) {
+        return mapPinMapper.findPinsByMapKey(mapKey);
+    }
+
     public List<MapPin> getPinsByCategory(String category) {
         return mapPinMapper.findPinsByCategory(category);
+    }
+
+    public List<MapPin> getPinsByMapKeyAndCategory(String mapKey, String category) {
+        return mapPinMapper.findPinsByMapKeyAndCategory(mapKey, category);
     }
 
     public MapPin getPinByCategoryAndName(String category, String name) {

@@ -417,6 +417,7 @@ window.MapApp.ui = {
                 const existing = state.allPins.find(p => p.category === category && p.name === name);
                 const master = state.masterForageables.find(m => m.name === name);
                 const template = existing ? { ...existing } : {
+                    mapKey: state.activeMapKey || 'town',
                     category: category, name: name, iconUrl: master ? master.imageUrl : null, description: null, linkUrl: null
                 };
                 if (state.placementMode.active && state.placementMode.pinTemplate && state.placementMode.pinTemplate.name === name) {

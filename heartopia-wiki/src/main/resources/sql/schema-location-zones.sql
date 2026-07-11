@@ -1,13 +1,15 @@
 -- Location Zone 테이블: 맵 위치 표시용
 CREATE TABLE IF NOT EXISTS location_zones (
     id              INT AUTO_INCREMENT PRIMARY KEY,
-    zone_key        VARCHAR(50)  NOT NULL UNIQUE COMMENT '고유 키 (예: 거목강, 온천산)',
+    map_key         VARCHAR(50)  NOT NULL DEFAULT 'town' COMMENT '지도 키 (예: town, second)',
+    zone_key        VARCHAR(50)  NOT NULL COMMENT '고유 키 (예: 거목강, 온천산)',
     display_name    VARCHAR(100) NOT NULL COMMENT '표시 이름 (예: 거목 강)',
     polygon_points  JSON         NULL     COMMENT '맵 픽셀 좌표 [[x1,y1],[x2,y2],...]',
     map_x           INT          NULL     COMMENT '위치 x좌표 (픽셀)',
     map_y           INT          NULL     COMMENT '위치 y좌표 (픽셀)',
     color           VARCHAR(20)  NOT NULL DEFAULT '#4dabf7' COMMENT '색상',
-    parent_zone_key VARCHAR(50)  NULL     COMMENT '상위 zone 키 (NULL이면 최상위)'
+    parent_zone_key VARCHAR(50)  NULL     COMMENT '상위 zone 키 (NULL이면 최상위)',
+    UNIQUE KEY uk_location_zones_map_zone (map_key, zone_key)
 );
 
 -- 기본 Zone 데이터 삽입 (polygon_points는 NULL → 나중에 맵에서 좌표 수집 후 업데이트)

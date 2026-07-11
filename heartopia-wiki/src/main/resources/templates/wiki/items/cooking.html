@@ -65,14 +65,14 @@
                 </div>
                 
 
-                <!-- 블록 시가지 스위치 -->
+                <!-- 고래 탐사 시즌 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
                         <label class="switch">
                             <input type="checkbox" id="btn-block-city-event">
                             <span class="slider"></span>
                         </label>
-                        <i class="fas fa-city text-warning"></i> 블록 시가지만 표시
+                        <i class="fas fa-water text-info"></i> 고래 탐사 시즌만 표시
                     </label>
                 </div>
 
@@ -260,20 +260,20 @@
             if (btnBlockCity && eventFilter) {
                 btnBlockCity.addEventListener('change', function() {
                     if (this.checked) {
-                        if (![...eventFilter.options].some(o => o.value === '블록 시가지')) {
+                        if (![...eventFilter.options].some(o => o.value === '고래 탐사 시즌')) {
                             const opt = document.createElement('option');
-                            opt.value = '블록 시가지';
-                            opt.textContent = '블록 시가지';
+                            opt.value = '고래 탐사 시즌';
+                            opt.textContent = '고래 탐사 시즌';
                             eventFilter.appendChild(opt);
                         }
-                        eventFilter.value = '블록 시가지';
+                        eventFilter.value = '고래 탐사 시즌';
                     } else {
                         eventFilter.value = 'all';
                     }
                     eventFilter.dispatchEvent(new Event('change'));
                 });
                 eventFilter.addEventListener('change', function() {
-                    if (this.value !== '블록 시가지') btnBlockCity.checked = false;
+                    if (this.value !== '고래 탐사 시즌') btnBlockCity.checked = false;
                 });
             }
             const resetBtn = document.getElementById('resetBtn');

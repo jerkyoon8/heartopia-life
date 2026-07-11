@@ -43,6 +43,10 @@
                         </select>
                     </div>
 
+                    <button type="button" id="whaleSeasonFilterBtn" class="btn btn-sm btn-outline-info rounded-pill">
+                        <i class="fas fa-water me-1"></i>고래 탐사 시즌만 표시
+                    </button>
+
                     <select id="locationFilter" style="border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 12px; font-weight: 500; font-size: 0.85rem; outline: none; background: var(--card-bg);">
                         <option value="all">모든 장소</option>
                         <!-- Options populated by JS -->
@@ -83,7 +87,7 @@
                         <span th:if="${item.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${item.eventName}"></span>
                     </a>
                     <div class="mt-2 text-center">
-                        <a th:href="${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})}"
+                        <a th:href="${#lists.contains({'미역', '바다 아스파라거스', '바다 포도'}, item.name)} ? @{/wiki/map(mapKey='second', cat='forageable', name=${item.name})} : (${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})})"
                             class="wiki-item-tag location-link">
                             <i class="fas fa-map-marker-alt me-1"></i>
                             <span th:text="${item.location}">서식지</span>
@@ -146,7 +150,7 @@
                             </a>
                         </td>
                         <td>
-                            <a th:href="${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})}" class="table-location-link">
+                            <a th:href="${#lists.contains({'미역', '바다 아스파라거스', '바다 포도'}, item.name)} ? @{/wiki/map(mapKey='second', cat='forageable', name=${item.name})} : (${#lists.contains({'야생 고사리', '산마늘', '산우엉', '산겨자'}, item.name)} ? @{/wiki/map} : @{/wiki/map(cat='forageable', name=${item.name})})" class="table-location-link">
                                 <i class="fas fa-map-marker-alt me-1"></i>
                                 <span th:text="${item.location}">장소</span>
                             </a>
@@ -210,6 +214,22 @@
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true }
                     ]
                 });
+
+                const whaleSeasonFilterBtn = document.getElementById('whaleSeasonFilterBtn');
+                const eventFilter = document.getElementById('eventFilter');
+                if (whaleSeasonFilterBtn && eventFilter) {
+                    whaleSeasonFilterBtn.addEventListener('click', function () {
+                        const whaleSeasonName = '고래 탐사 시즌';
+                        if (!Array.from(eventFilter.options).some(option => option.value === whaleSeasonName)) {
+                            const option = document.createElement('option');
+                            option.value = whaleSeasonName;
+                            option.textContent = whaleSeasonName;
+                            eventFilter.appendChild(option);
+                        }
+                        eventFilter.value = whaleSeasonName;
+                        eventFilter.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                }
             });
         </script>
     <script src="/js/admin-data.js?v=1.1" defer></script>

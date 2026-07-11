@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    const activeMap = window.MapApp.getActiveMap();
+    document.querySelectorAll('.map-switch-btn').forEach(btn => {
+        const isActive = btn.dataset.mapKey === state.activeMapKey;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-current', isActive ? 'page' : 'false');
+    });
+
     // Header buttons (ShowAll / HideAll / Search)
     const setAllVisibility = (isVisible) => {
         Object.keys(window.MapApp.CATEGORY_CONFIG).forEach(cat => state.categoryVisible[cat] = isVisible);
@@ -305,16 +312,16 @@ document.addEventListener('DOMContentLoaded', function () {
         state.map.fitBounds(bounds);
 
         Promise.all([
-            fetch('/wiki/map/api/pins?t=' + new Date().getTime()).then(res => res.json()),
+            fetch('/wiki/map/api/pins?mapKey=' + encodeURIComponent(state.activeMapKey || 'town') + '&t=' + new Date().getTime()).then(res => res.json()),
             api.loadAllZones()
         ]).then(([pins]) => {
-            state.allPins = pins;
+            state.allPins = pins.filter(window.MapApp.belongsToActiveMap);
 
             // --- UI 핀 개수 렌더링 (CI/CD용 배포 확인) ---
             const countEl = document.getElementById('mapTotalPinCount');
-            if (countEl) countEl.innerText = `총 ${pins.length}개 핀`;
+            if (countEl) countEl.innerText = `${activeMap.label} · 총 ${state.allPins.length}개 핀`;
 
-            pins.forEach(pin => {
+            state.allPins.forEach(pin => {
                 if (state.categoryVisible[pin.category] === undefined) {
                     const defaultVisible = ['villager', 'animal', 'bus'];
                     state.categoryVisible[pin.category] = defaultVisible.includes(pin.category);
@@ -323,26 +330,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[pin.category];
             });
 
-            pins.forEach(pin => { if (pin.mapX && pin.mapY) createMarker(pin, state.map, mapHeight); });
+            state.allPins.forEach(pin => { if (pin.mapX && pin.mapY) createMarker(pin, state.map, mapHeight); });
             ui.updateMarkerVisibility();
             ui.renderCategoryList();
 
             Promise.all([
-                fetch('/wiki/map/api/forageables').then(res => res.json()),
-                fetch('/wiki/map/api/fish').then(res => res.json()),
-                fetch('/wiki/map/api/birds').then(res => res.json()),
-                fetch('/wiki/map/api/insects').then(res => res.json()),
-                fetch('/wiki/map/api/animals').then(res => res.json()),
-                fetch('/wiki/map/api/villagers').then(res => res.json())
+                fetch('/wiki/map/api/forageables?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
+                fetch('/wiki/map/api/fish?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
+                fetch('/wiki/map/api/birds?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
+                fetch('/wiki/map/api/insects?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
+                fetch('/wiki/map/api/animals?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
+                fetch('/wiki/map/api/villagers?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json())
             ]).then(([forageables, fish, birds, insects, animals, villagers]) => {
-                state.masterForageables = forageables;
-                state.masterFish = fish;
-                state.masterBirds = birds;
-                state.masterInsects = insects;
-                state.masterAnimals = animals;
-                state.masterVillagers = villagers;
+                state.masterForageables = forageables.filter(window.MapApp.belongsToActiveMap);
+                state.masterFish = fish.filter(window.MapApp.belongsToActiveMap);
+                state.masterBirds = birds.filter(window.MapApp.belongsToActiveMap);
+                state.masterInsects = insects.filter(window.MapApp.belongsToActiveMap);
+                state.masterAnimals = animals.filter(window.MapApp.belongsToActiveMap);
+                state.masterVillagers = villagers.filter(window.MapApp.belongsToActiveMap);
 
-                const masterMapInit = { 'forageable': forageables, 'fish': fish, 'bird': birds, 'insect': insects, 'animal': animals, 'villager': villagers };
+                const masterMapInit = {
+                    'forageable': state.masterForageables,
+                    'fish': state.masterFish,
+                    'bird': state.masterBirds,
+                    'insect': state.masterInsects,
+                    'animal': state.masterAnimals,
+                    'villager': state.masterVillagers
+                };
                 Object.entries(masterMapInit).forEach(([cat, masters]) => {
                     if (state.categoryVisible[cat] === undefined) {
                         const defaultVisible = ['villager', 'animal', 'bus'];
@@ -458,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     function addNewPin() {
-                        const newPin = { ...template, id: null, mapX: x, mapY: y };
+                        const newPin = { ...template, id: null, mapKey: state.activeMapKey || 'town', mapX: x, mapY: y };
                         api.saveNewPin(newPin).then(savedPin => {
                             state.allPins.push(savedPin);
                             createMarker(savedPin, state.map, mapHeight);

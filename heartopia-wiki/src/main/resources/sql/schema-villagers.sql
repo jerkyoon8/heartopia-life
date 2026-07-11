@@ -33,11 +33,13 @@ CREATE TABLE IF NOT EXISTS villager_gifts (
 
 CREATE TABLE IF NOT EXISTS map_pins (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    map_key VARCHAR(50) NOT NULL DEFAULT 'town',
     category VARCHAR(50),
     name VARCHAR(100),
     icon_url VARCHAR(255),
     map_x INT DEFAULT 0,
     map_y INT DEFAULT 0,
     link_url VARCHAR(255),
-    description TEXT
+    description TEXT,
+    INDEX idx_map_pins_map_key_category (map_key, category)
 );
