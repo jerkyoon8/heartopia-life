@@ -64,6 +64,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            max-width: 100%;
             padding: 6px 10px;
             border: 1px solid var(--border-subtle, #eee);
             border-radius: 10px;
@@ -72,6 +73,15 @@
             font-size: 0.82rem;
             font-weight: 700;
             line-height: 1.25;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: keep-all;
+            text-align: left;
+        }
+
+        .sandbox-shape-row .stat-label {
+            display: block;
+            margin-bottom: 6px;
         }
 
         .sandbox-option {
@@ -204,9 +214,9 @@
                         <td class="stat-label">날씨</td>
                         <td class="stat-value" th:text="${item.weather}">상시</td>
                     </tr>
-                    <tr>
-                        <td class="stat-label">조형물</td>
-                        <td class="stat-value">
+                    <tr class="sandbox-shape-row">
+                        <td colspan="2">
+                            <span class="stat-label">조형물</span>
                             <span class="sandbox-shape">
                                 <i class="fas fa-layer-group"></i>
                                 <span th:text="${item.shape}">모래더미</span>
