@@ -76,6 +76,17 @@
                     </label>
                 </div>
 
+                <!-- SANRIO CHARACTERS 스위치 -->
+                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <label class="switch">
+                            <input type="checkbox" id="btn-sanrio-event">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fas fa-heart text-danger"></i> SANRIO만 표시
+                    </label>
+                </div>
+
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -256,29 +267,50 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnBlockCity = document.getElementById('btn-block-city-event');
+            const btnSanrio = document.getElementById('btn-sanrio-event');
             const eventFilter = document.getElementById('eventFilter');
-            if (btnBlockCity && eventFilter) {
-                btnBlockCity.addEventListener('change', function() {
-                    if (this.checked) {
-                        if (![...eventFilter.options].some(o => o.value === '고래 탐사 시즌')) {
-                            const opt = document.createElement('option');
-                            opt.value = '고래 탐사 시즌';
-                            opt.textContent = '고래 탐사 시즌';
-                            eventFilter.appendChild(opt);
-                        }
-                        eventFilter.value = '고래 탐사 시즌';
-                    } else {
-                        eventFilter.value = 'all';
+            if (eventFilter) {
+                const eventToggles = [
+                    { button: btnBlockCity, eventName: '고래 탐사 시즌' },
+                    { button: btnSanrio, eventName: 'SANRIO CHARACTERS' }
+                ].filter(item => item.button);
+
+                function ensureEventOption(eventName) {
+                    if (![...eventFilter.options].some(o => o.value === eventName)) {
+                        const opt = document.createElement('option');
+                        opt.value = eventName;
+                        opt.textContent = eventName;
+                        eventFilter.appendChild(opt);
                     }
-                    eventFilter.dispatchEvent(new Event('change'));
+                }
+
+                eventToggles.forEach(({ button, eventName }) => {
+                    button.addEventListener('change', function() {
+                        if (this.checked) {
+                            eventToggles.forEach(item => {
+                                if (item.button !== this) item.button.checked = false;
+                            });
+                            ensureEventOption(eventName);
+                            eventFilter.value = eventName;
+                        } else if (eventFilter.value === eventName) {
+                            eventFilter.value = 'all';
+                        }
+                        eventFilter.dispatchEvent(new Event('change'));
+                    });
                 });
+
                 eventFilter.addEventListener('change', function() {
-                    if (this.value !== '고래 탐사 시즌') btnBlockCity.checked = false;
+                    eventToggles.forEach(({ button, eventName }) => {
+                        button.checked = this.value === eventName;
+                    });
                 });
             }
             const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn && btnBlockCity) {
-                resetBtn.addEventListener('click', () => { btnBlockCity.checked = false; });
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (btnBlockCity) btnBlockCity.checked = false;
+                    if (btnSanrio) btnSanrio.checked = false;
+                });
             }
 
             new WikiFilter({

@@ -15,8 +15,8 @@ window.MapApp.CATEGORY_CONFIG = {
 window.MapApp.MAPS = {
     town: {
         key: 'town',
-        label: '두근두근 타운',
-        description: '기존 두근두근 타운 지도',
+        label: '고래섬',
+        description: '기본 고래섬 지도',
         imageUrl: '/images/map/heartopia-map.png',
         isDefault: true
     },
