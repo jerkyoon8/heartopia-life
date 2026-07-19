@@ -134,10 +134,18 @@
             margin-top: 40px;
         }
 
+        .top-write-btn-wrap {
+            max-width: 800px;
+            margin: 24px auto 0;
+            padding: 0 20px;
+            text-align: right;
+        }
+
         .write-btn {
             background: #4D342E;
             color: #fff;
-            padding: 14px 36px;
+            width: min(100%, 660px);
+            padding: 14px 48px;
             border-radius: 30px;
             border: none;
             font-weight: 800;
@@ -145,6 +153,7 @@
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
+            text-align: center;
             transition: all 0.2s;
         }
 
@@ -274,6 +283,13 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="mw-body">
+        <!-- 상단 문의하기 버튼 -->
+        <div class="top-write-btn-wrap">
+            <a th:href="@{/wiki/reports/write}" class="write-btn">
+                <i class="fas fa-paper-plane me-2"></i>문의하기
+            </a>
+        </div>
+
         <div class="board-header">
             <h1 class="board-title"><i class="fas fa-comments me-2" style="color:#f06292;"></i>문의 게시판</h1>
             <p class="board-subtitle">공개된 문의 내역과 답변을 확인하실 수 있습니다.</p>

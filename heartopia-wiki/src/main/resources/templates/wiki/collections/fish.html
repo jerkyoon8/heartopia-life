@@ -194,7 +194,7 @@
                          th:title="${fish.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
                          aria-pressed="false"><i class="fas fa-medal"></i></div>
                     
-                    <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}"
+                    <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" loading="lazy" decoding="async"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-fish fa-4x text-primary fallback-icon'"
                         th:style="${fish.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
@@ -295,7 +295,7 @@
                         th:data-time="${fish.time}"
                         th:data-event="${fish.eventName != null ? fish.eventName : ''}">
                         <td>
-                            <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" class="table-thumb">
+                            <img th:if="${fish.imageUrl != null}" th:src="${fish.imageUrl}" th:alt="${fish.name}" class="table-thumb" loading="lazy" decoding="async">
                             <div th:unless="${fish.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-fish"></i></div>
                         </td>
                         <td>

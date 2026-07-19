@@ -92,22 +92,6 @@
                         </div>
 
                         <div class="filter-select-wrapper">
-                            <span class="prefix">종류</span>
-                            <select id="typeFilter">
-                                <option value="all">모든 종류</option>
-                                <option value="소형">소형</option>
-                                <option value="비둘기">비둘기</option>
-                                <option value="앵무">앵무</option>
-                                <option value="오리">오리</option>
-                                <option value="홍학">홍학</option>
-                                <option value="갈매기">갈매기</option>
-                                <option value="가마우지">가마우지</option>
-                                <option value="매">매/부엉이</option>
-                                <option value="중형">중형</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-select-wrapper">
                             <span class="prefix">장소</span>
                             <select id="locationFilter">
                                 <option value="all">모든 장소</option>
@@ -181,7 +165,7 @@
 
             <div th:each="bird, iterStat : ${birdList}" class="wiki-item-card sync-item" th:data-id="${iterStat.index}" th:data-sync-key="'bird_' + ${bird.name}" th:data-has-mastery="${bird.hasMasteryData() ? 'true' : 'false'}" th:data-name="${bird.name}"
                 th:data-level="${#strings.replace(bird.level, 'Lv.', '')}" th:data-price="${bird.prices[0]}"
-                th:data-type="${bird.type}" th:data-weather="${bird.weather}" th:data-time="${bird.time}" th:data-location="${bird.location}"
+                th:data-weather="${bird.weather}" th:data-time="${bird.time}" th:data-location="${bird.location}"
                 th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
                 th:data-event="${bird.eventName != null ? bird.eventName : ''}">
 
@@ -192,7 +176,7 @@
                          th:attr="aria-disabled=${bird.hasMasteryData() ? 'false' : 'true'}"
                          th:title="${bird.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
                          aria-pressed="false"><i class="fas fa-medal"></i></div>
-                    <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}"
+                    <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}" loading="lazy" decoding="async"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-dove fa-4x text-info fallback-icon'"
                         th:style="${bird.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
@@ -200,7 +184,6 @@
 
                 <div class="wiki-item-info">
                     <div class="d-flex align-items-center justify-content-center gap-2 mb-0">
-                        <span class="wiki-item-tag mb-0" th:text="${bird.type}">종류</span>
                         <a th:href="@{/wiki/collections/bird/{name}(name=${bird.name})}" class="wiki-item-name mb-0">
                             <span th:text="${bird.name}"></span>
                             <span th:if="${bird.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${bird.eventName}"></span>
@@ -279,7 +262,6 @@
                     <tr>
                         <th></th>
                         <th>이름</th>
-                        <th>종류</th>
                         <th>레벨</th>
                         <th>장소</th>
                         <th>날씨</th>
@@ -295,13 +277,12 @@
                         th:data-name="${bird.name}"
                         th:data-level="${#strings.replace(bird.level, 'Lv.', '')}"
                         th:data-price="${bird.prices[0]}"
-                        th:data-type="${bird.type}"
                         th:data-weather="${bird.weather}"
                         th:data-location="${bird.location}"
                         th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
                         th:data-event="${bird.eventName != null ? bird.eventName : ''}">
                         <td>
-                            <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}" class="table-thumb">
+                            <img th:if="${bird.imageUrl != null}" th:src="${bird.imageUrl}" th:alt="${bird.name}" class="table-thumb" loading="lazy" decoding="async">
                             <div th:unless="${bird.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-dove"></i></div>
                         </td>
                         <td>
@@ -310,7 +291,6 @@
                                 <span th:if="${bird.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.7em;" th:text="${bird.eventName}"></span>
                             </a>
                         </td>
-                        <td><span class="wiki-item-tag mb-0" th:text="${bird.type}" style="font-size:0.8rem; padding:2px 8px;">종류</span></td>
                         <td th:text="${bird.level}">1</td>
                         <td>
                             <a th:href="@{/wiki/map(cat='bird', name=${bird.name})}" class="table-location-link">
@@ -362,7 +342,6 @@
                 filters: [
                     { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
                     { id: 'levelFilter', dataKey: 'level', type: 'multi' },
-                    { id: 'typeFilter', dataKey: 'type' },
                     { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
                     { id: 'subLocationFilter', dataKey: 'subLocation', parentFilter: 'locationFilter', parentKey: 'location', wrapperId: 'subLocationWrapper' },
                     { id: 'weatherFilter', dataKey: 'weather' },
@@ -380,7 +359,7 @@
                 <div class="modal-body" style="padding:24px;"><div class="row g-3">
                     <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
                     <div class="col-md-3"><label class="form-label fw-bold">레벨 *</label><input type="number" name="level" class="form-control" required></div>
-                    <div class="col-md-3"><label class="form-label fw-bold">종류(type)</label><input type="text" name="type" class="form-control" placeholder="소형"></div>
+                    <input type="hidden" name="type" value="">
                     <div class="col-md-6"><label class="form-label fw-bold">장소 *</label><input type="text" name="location" class="form-control" required></div>
                     <div class="col-md-6"><label class="form-label fw-bold">세부 장소</label><input type="text" name="subLocation" class="form-control"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">날씨</label><input type="text" name="weather" class="form-control" placeholder="상시"></div>

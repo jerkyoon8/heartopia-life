@@ -181,7 +181,7 @@
                          th:attr="aria-disabled=${bug.hasMasteryData() ? 'false' : 'true'}"
                          th:title="${bug.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
                          aria-pressed="false"><i class="fas fa-medal"></i></div>
-                    <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}"
+                    <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" loading="lazy" decoding="async"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-bug fa-4x text-success fallback-icon'"
                         th:style="${bug.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
@@ -272,7 +272,7 @@
                         th:data-sub-location="${bug.subLocation != null ? bug.subLocation : ''}"
                         th:data-event="${bug.eventName != null ? bug.eventName : ''}">
                         <td>
-                            <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb">
+                            <img th:if="${bug.imageUrl != null}" th:src="${bug.imageUrl}" th:alt="${bug.name}" class="table-thumb" loading="lazy" decoding="async">
                             <div th:unless="${bug.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-bug"></i></div>
                         </td>
                         <td>

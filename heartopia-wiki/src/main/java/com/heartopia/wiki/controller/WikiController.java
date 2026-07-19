@@ -37,38 +37,40 @@ public class WikiController {
                 List<Notice> notices = noticeService.getActiveNotices();
                 model.addAttribute("notices", notices);
 
-                // 2. 컬렉션 (Collections)
-                List<CategoryItemDto> basics = new ArrayList<>();
-                basics.add(new CategoryItemDto("물고기", "🐟", "/wiki/collections/fish",
-                                "/images/collections/fish_collection.png", collectionService.getFishCount()));
-                basics.add(new CategoryItemDto("곤충", "🦋", "/wiki/collections/bug",
-                                "/images/collections/insect_collection.png", collectionService.getBugCount()));
-                basics.add(new CategoryItemDto("새", "🐦", "/wiki/collections/bird",
-                                "/images/collections/bird_collection.png", collectionService.getBirdCount()));
-                basics.add(new CategoryItemDto("동물", "🐾", "/wiki/collections/animal",
-                                "/images/collections/animal_collection.png", collectionService.getAnimalCount()));
-
-                // 2. 아이템들 (Items)
-                List<CategoryItemDto> creative = new ArrayList<>();
-                creative.add(new CategoryItemDto("요리", "🍳", "/wiki/items/cooking", "/images/activity/cooking.png",
+                // 2. 도감 (Collections)
+                List<CategoryItemDto> collections = new ArrayList<>();
+                collections.add(new CategoryItemDto("물고기", "🐟", "/wiki/collections/fish",
+                                "/images/main-index/main_index_icon_fishing.webp?v=2", collectionService.getFishCount()));
+                collections.add(new CategoryItemDto("곤충", "🦋", "/wiki/collections/bug",
+                                "/images/main-index/main_index_icon_bug.webp?v=2", collectionService.getBugCount()));
+                collections.add(new CategoryItemDto("새", "🐦", "/wiki/collections/bird",
+                                "/images/main-index/main_index_icon_bird_watching.webp?v=2", collectionService.getBirdCount()));
+                collections.add(new CategoryItemDto("동물", "🐾", "/wiki/collections/animal",
+                                "/images/main-index/main_index_icon_animal.webp?v=2", collectionService.getAnimalCount()));
+                collections.add(new CategoryItemDto("요리", "🍳", "/wiki/items/cooking", "/images/main-index/main_index_icon_cooking.webp?v=2",
                                 collectionService.getCookingCount()));
-                creative.add(new CategoryItemDto("작물", "🌽", "/wiki/items/crops", "/images/items/crops.png",
+                collections.add(new CategoryItemDto("작물", "🌽", "/wiki/items/crops", "/images/main-index/main_index_icon_gardening.webp?v=2",
                                 collectionService.getCropCount()));
-                creative.add(new CategoryItemDto("꽃", "🌻", "/wiki/items/flowers", "/images/activity/gardning.png",
+                collections.add(new CategoryItemDto("꽃", "🌻", "/wiki/items/flowers", "/images/main-index/main_index_icon_flower.webp?v=2",
                                 collectionService.getFlowerCount()));
-                creative.add(new CategoryItemDto("채집", "🥐", "/wiki/collections/forageable", "/images/items/forage.png",
+                collections.add(new CategoryItemDto("채집", "🥐", "/wiki/collections/forageable", "/images/main-index/main_index_icon_forageable.webp?v=2",
                                 collectionService.getForageableCount()));
 
-                // 3. 기타 (Others)
-                List<CategoryItemDto> others = new ArrayList<>();
-                others.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/others/villages_icon.png", 21));
-                others.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/others/achievement.webp?v=2", collectionService.getAchievementCount()));
-                others.add(new CategoryItemDto("반려동물", "🐱", "/wiki/others/pets", "/images/others/pets_icon.webp?v=2"));
-                others.add(new CategoryItemDto("모래 조각", "🏖️", "/wiki/others/sandbox", "/images/others/sandbox/02_자동차.webp", collectionService.getSandboxCount()));
+                // 3. 취미 (Hobbies)
+                List<CategoryItemDto> hobbies = new ArrayList<>();
+                hobbies.add(new CategoryItemDto("모래 조각", "🏖️", "/wiki/others/sandbox",
+                                "/images/main-index/main_index_icon_sand_sculpture.webp?v=2", collectionService.getSandboxCount()));
+                hobbies.add(new CategoryItemDto("바다 청소", "🌊", null));
+                hobbies.add(new CategoryItemDto("반려동물", "🐱", "/wiki/others/pets", "/images/main-index/main_index_icon_pet.webp?v=2"));
 
-                model.addAttribute("basics", basics);
-                model.addAttribute("creative", creative);
-                model.addAttribute("others", others);
+                // 4. 기타 정보 (Utilities)
+                List<CategoryItemDto> utilities = new ArrayList<>();
+                utilities.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/main-index/main_index_icon_villager.webp?v=2", 21));
+                utilities.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/main-index/main_index_icon_achievement.webp?v=2", collectionService.getAchievementCount()));
+
+                model.addAttribute("collections", collections);
+                model.addAttribute("hobbies", hobbies);
+                model.addAttribute("utilities", utilities);
 
                 // 4. 최근 기프트코드 업데이트 일자 (SQL 단일 쿼리로 최적화)
                 java.time.LocalDateTime latestDate = giftCodeService.getLatestGiftCodeDate();

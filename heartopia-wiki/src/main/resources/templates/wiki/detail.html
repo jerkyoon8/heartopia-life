@@ -632,11 +632,6 @@
                         <td class="info-label"><i class="fas fa-ruler me-1"></i>사이즈</td>
                         <td class="info-value" th:text="${item.size ?: '-'}">중형</td>
                     </tr>
-                    <!-- Bird: Type -->
-                    <tr th:if="${category == 'bird'}">
-                        <td class="info-label"><i class="fas fa-tag me-1"></i>종류</td>
-                        <td class="info-value" th:text="${item.type ?: '-'}">종류</td>
-                    </tr>
                     <!-- Bird: Distance -->
                     <tr th:if="${category == 'bird'}">
                         <td class="info-label"><i class="fas fa-ruler me-1"></i>거리</td>

@@ -169,7 +169,7 @@
                          th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
                          th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
                          aria-pressed="false"><i class="fas fa-medal"></i></div>
-                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}"
+                    <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" loading="lazy" decoding="async"
                         style="max-height: 100px; object-fit: contain;">
                     <i th:class="'fas fa-utensils fa-4x text-danger fallback-icon'"
                         th:style="${item.imageUrl != null ? 'display: none; opacity: 0.7;' : 'display: flex; opacity: 0.7;'}"></i>
@@ -238,7 +238,7 @@
                         th:data-price="${item.prices[0]}"
                         th:data-event="${item.eventName != null ? item.eventName : ''}">
                         <td>
-                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb">
+                            <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb" loading="lazy" decoding="async">
                             <div th:unless="${item.imageUrl != null}" class="table-thumb-placeholder"><i class="fas fa-utensils"></i></div>
                         </td>
                         <td>
