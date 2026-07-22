@@ -22,7 +22,7 @@
         <div class="checklist-header">
             <div class="checklist-icon"><i class="fas fa-clipboard-list"></i></div>
             <h1 class="checklist-title">수집 도감</h1>
-            <p class="checklist-desc">물고기, 곤충, 새, 요리 등 나만의 하토피아 수집품을 체크하고 퍼센티지를 채워보세요!</p>
+            <p class="checklist-desc">물고기, 곤충, 새, 바다청소, 요리 등 나만의 하토피아 수집품을 체크하고 퍼센티지를 채워보세요!</p>
         </div>
 
         <!-- 전체 진척도 (Red Area) -->
@@ -93,7 +93,16 @@
                 <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-cooking"></div></div>
                 <div class="cat-counts"><span id="count-cooking">0</span> / <span th:text="${cookingList.size()}">0</span></div>
             </div>
-            <!-- 7. 업적 -->
+            <!-- 7. 바다청소 -->
+            <div class="category-card" data-target="sea_cleaning" th:attr="data-total=${seaCleaningList.size()}">
+                <div class="category-header">
+                    <i class="category-icon fas fa-water"></i>
+                    <span class="category-name">바다청소</span>
+                </div>
+                <div class="cat-progress-bg"><div class="cat-progress-fill" id="progress-bar-sea_cleaning"></div></div>
+                <div class="cat-counts"><span id="count-sea_cleaning">0</span> / <span th:text="${seaCleaningList.size()}">0</span></div>
+            </div>
+            <!-- 8. 업적 -->
             <div class="category-card" data-target="achievement" th:attr="data-total=${achievementList.size()}">
                 <div class="category-header">
                     <i class="category-icon fas fa-trophy"></i>
@@ -260,6 +269,32 @@
                 <div class="items-grid">
                     <div class="item-row collectible-item" th:each="item : ${cookingList}" th:attr="data-key=|cooking_${item.name}|" th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 수집 처리 (0별)"><i class="fas fa-check"></i></div>
+                        <div class="item-name" th:text="${item.name}">이름</div>
+                        <button type="button" class="item-mastery-btn"
+                                th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"
+                                th:attr="aria-disabled=${item.hasMasteryData() ? 'false' : 'true'}"
+                                th:title="${item.hasMasteryData() ? '명인 체크' : '명인 정보 없음'}"
+                                aria-pressed="false"><i class="fas fa-medal"></i></button>
+                        <div class="item-stars">
+                            <i class="fas fa-star star-icon" data-val="1"></i>
+                            <i class="fas fa-star star-icon" data-val="2"></i>
+                            <i class="fas fa-star star-icon" data-val="3"></i>
+                            <i class="fas fa-star star-icon" data-val="4"></i>
+                            <i class="fas fa-star star-icon" data-val="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 바다청소 컨테이너 -->
+            <div class="category-container" id="container-sea-cleaning" data-category="sea_cleaning">
+                <div class="list-header">
+                    <i class="fas fa-water"></i>
+                    <h3>바다청소 도감</h3>
+                </div>
+                <div class="items-grid">
+                    <div class="item-row collectible-item" th:each="item : ${seaCleaningList}" th:attr="data-key=|sea_cleaning_${item.name}|" th:data-searchname="${item.name}">
+                        <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
                         <button type="button" class="item-mastery-btn"
                                 th:classappend="${item.hasMasteryData() ? '' : ' disabled'}"

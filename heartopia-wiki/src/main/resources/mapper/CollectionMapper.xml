@@ -116,6 +116,13 @@
         price, image_url, sort_order, event_name
     </sql>
 
+    <sql id="seaCleaningColumns">
+        id, name, level, time, weather, location, proficiency,
+        gold_price_1, gold_price_2, gold_price_3, gold_price_4, gold_price_5,
+        image_url, sort_order, event_name,
+        mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
+    </sql>
+
     <!-- ========== 전체 조회 ========== -->
     <select id="findAllFish" resultType="com.heartopia.wiki.model.FishCollection">
         SELECT <include refid="fishColumns"/> FROM fish_collections ORDER BY id ASC
@@ -143,6 +150,11 @@
     </select>
     <select id="findAllSandboxes" resultType="com.heartopia.wiki.model.SandboxCollection">
         SELECT <include refid="sandboxColumns"/> FROM sandbox_collections ORDER BY sort_order ASC, id ASC
+    </select>
+    <select id="findAllSeaCleaningCollections" resultType="com.heartopia.wiki.model.SeaCleaningCollection">
+        SELECT <include refid="seaCleaningColumns"/>
+        FROM sea_cleaning_collections
+        ORDER BY sort_order ASC, id ASC
     </select>
 
     <!-- ========== 이름으로 개별 조회 (상세보기) ========== -->
@@ -243,6 +255,9 @@
     <select id="countAllGardening" resultType="int">SELECT count(*) FROM crop_collections</select>
     <select id="countAllForageables" resultType="int">SELECT count(*) FROM forageable_collections</select>
     <select id="countAllSandboxes" resultType="int">SELECT count(*) FROM sandbox_collections</select>
+    <select id="countAllSeaCleaningCollections" resultType="int">
+        SELECT count(*) FROM sea_cleaning_collections
+    </select>
 
     <!-- ========== INSERT (관리자 데이터 추가) ========== -->
     <insert id="insertFish" useGeneratedKeys="true" keyProperty="id">
@@ -299,6 +314,25 @@
         VALUES (#{name}, #{location}, #{price}, #{energy}, #{imageUrl}, #{eventName}, #{showOnMap})
     </insert>
 
+    <insert id="insertSeaCleaning" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sea_cleaning_collections (
+            name, level, time, weather, location, proficiency,
+            gold_price_1, gold_price_2, gold_price_3, gold_price_4, gold_price_5,
+            image_url, sort_order, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
+        )
+        VALUES (
+            #{name}, #{level},
+            COALESCE(NULLIF(#{time}, ''), '미공개'),
+            COALESCE(NULLIF(#{weather}, ''), '미공개'),
+            COALESCE(NULLIF(#{location}, ''), '미공개'),
+            #{proficiency},
+            #{goldPrice1}, #{goldPrice2}, #{goldPrice3}, #{goldPrice4}, #{goldPrice5},
+            #{imageUrl}, COALESCE(#{sortOrder}, 0), NULLIF(#{eventName}, ''),
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin}
+        )
+    </insert>
+
     <!-- ========== UPDATE (관리자 데이터 수정) ========== -->
     <update id="updateFish">
         UPDATE fish_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
@@ -345,6 +379,29 @@
     <update id="updateForageable">
         UPDATE forageable_collections SET name=#{name}, location=#{location}, price=#{price},
             energy=#{energy}, image_url=#{imageUrl}, event_name=#{eventName}, show_on_map=#{showOnMap}
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateSeaCleaning">
+        UPDATE sea_cleaning_collections
+        SET name=#{name},
+            level=#{level},
+            time=COALESCE(NULLIF(#{time}, ''), '미공개'),
+            weather=COALESCE(NULLIF(#{weather}, ''), '미공개'),
+            location=COALESCE(NULLIF(#{location}, ''), '미공개'),
+            proficiency=#{proficiency},
+            gold_price_1=#{goldPrice1},
+            gold_price_2=#{goldPrice2},
+            gold_price_3=#{goldPrice3},
+            gold_price_4=#{goldPrice4},
+            gold_price_5=#{goldPrice5},
+            image_url=#{imageUrl},
+            sort_order=COALESCE(#{sortOrder}, 0),
+            event_name=NULLIF(#{eventName}, ''),
+            mastery_beginner_max=#{masteryBeginnerMax},
+            mastery_intro_min=#{masteryIntroMin},
+            mastery_expert_min=#{masteryExpertMin},
+            mastery_master_min=#{masteryMasterMin}
         WHERE id=#{id}
     </update>
 
@@ -484,5 +541,6 @@
     </update>
 
     <delete id="deleteAchievement">DELETE FROM achievements WHERE id=#{id}</delete>
+    <delete id="deleteSeaCleaning">DELETE FROM sea_cleaning_collections WHERE id=#{id}</delete>
 
 </mapper>

@@ -16,6 +16,7 @@ import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import com.heartopia.wiki.model.SandboxCollection;
+import com.heartopia.wiki.model.SeaCleaningCollection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,11 @@ public class CollectionService {
     @Cacheable("allSandboxes")
     public List<SandboxCollection> getAllSandboxes() {
         return collectionMapper.findAllSandboxes();
+    }
+
+    @Cacheable("allSeaCleaningCollections")
+    public List<SeaCleaningCollection> getAllSeaCleaningCollections() {
+        return collectionMapper.findAllSeaCleaningCollections();
     }
 
     // ===================================================================
@@ -258,6 +264,11 @@ public class CollectionService {
         return collectionMapper.countAllSandboxes();
     }
 
+    @Cacheable("countSeaCleaningCollections")
+    public int getSeaCleaningCount() {
+        return collectionMapper.countAllSeaCleaningCollections();
+    }
+
     // ===================================================================
     // INSERT (관리자 데이터 추가) - @CacheEvict로 관련 캐시 무효화
     // ===================================================================
@@ -302,6 +313,11 @@ public class CollectionService {
         collectionMapper.insertForageable(forageable);
     }
 
+    @org.springframework.cache.annotation.CacheEvict(value = {"allSeaCleaningCollections", "countSeaCleaningCollections"}, allEntries = true)
+    public void addSeaCleaning(SeaCleaningCollection seaCleaning) {
+        collectionMapper.insertSeaCleaning(seaCleaning);
+    }
+
     // ===================================================================
     // UPDATE (관리자 데이터 수정) - @CacheEvict로 관련 캐시 무효화
     // ===================================================================
@@ -328,6 +344,9 @@ public class CollectionService {
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
     public void updateForageable(ForageableCollection forageable) { collectionMapper.updateForageable(forageable); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allSeaCleaningCollections", "countSeaCleaningCollections"}, allEntries = true)
+    public void updateSeaCleaning(SeaCleaningCollection seaCleaning) { collectionMapper.updateSeaCleaning(seaCleaning); }
 
     // ===================================================================
     // DELETE (관리자 데이터 삭제) - @CacheEvict로 관련 캐시 무효화
@@ -488,6 +507,9 @@ public class CollectionService {
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allForageables", "countForageables", "searchForageables"}, allEntries = true)
     public void deleteForageable(Integer id) { collectionMapper.deleteForageable(id); }
+
+    @org.springframework.cache.annotation.CacheEvict(value = {"allSeaCleaningCollections", "countSeaCleaningCollections"}, allEntries = true)
+    public void deleteSeaCleaning(Integer id) { collectionMapper.deleteSeaCleaning(id); }
 
     // ===================================================================
     // 업적 (Achievement)

@@ -15,6 +15,7 @@ import com.heartopia.wiki.model.FlowerVariant;
 import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import com.heartopia.wiki.model.SandboxCollection;
+import com.heartopia.wiki.model.SeaCleaningCollection;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -39,6 +40,8 @@ public interface CollectionMapper {
     List<ForageableCollection> findAllForageables();
 
     List<SandboxCollection> findAllSandboxes();
+
+    List<SeaCleaningCollection> findAllSeaCleaningCollections();
 
     // === 이름으로 개별 조회 (상세보기) ===
     FishCollection findFishByName(@Param("name") String name);
@@ -114,6 +117,8 @@ public interface CollectionMapper {
 
     int countAllSandboxes();
 
+    int countAllSeaCleaningCollections();
+
     // === INSERT (관리자 데이터 추가) ===
     void insertFish(FishCollection fish);
     void insertBug(BugCollection bug);
@@ -123,6 +128,7 @@ public interface CollectionMapper {
     void insertFlower(FlowerCollection flower);
     void insertCrop(GardeningCollection crop);
     void insertForageable(ForageableCollection forageable);
+    void insertSeaCleaning(SeaCleaningCollection seaCleaning);
 
     // === UPDATE (관리자 데이터 수정) ===
     void updateFish(FishCollection fish);
@@ -133,6 +139,7 @@ public interface CollectionMapper {
     void updateFlower(FlowerCollection flower);
     void updateCrop(GardeningCollection crop);
     void updateForageable(ForageableCollection forageable);
+    void updateSeaCleaning(SeaCleaningCollection seaCleaning);
 
     // === DELETE (관리자 데이터 삭제) ===
     void deleteFish(Integer id);
@@ -143,6 +150,7 @@ public interface CollectionMapper {
     void deleteFlower(Long id);
     void deleteCrop(Long id);
     void deleteForageable(Integer id);
+    void deleteSeaCleaning(Integer id);
 
     // === flower_images ===
     List<FlowerImage> findFlowerImages(@Param("flowerId") Long flowerId);

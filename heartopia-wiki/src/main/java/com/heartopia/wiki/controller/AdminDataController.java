@@ -196,6 +196,33 @@ public class AdminDataController {
         return "redirect:/wiki/collections/forageable";
     }
 
+    // ======================== 바다 청소 ========================
+    @PostMapping("/sea-cleaning/add")
+    public String addSeaCleaning(SeaCleaningCollection seaCleaning,
+                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        log.info("관리자 데이터 추가: 바다 청소 '{}'", seaCleaning.getName());
+        handleImageUpload(seaCleaning, imageFile, "sea-cleaning", null);
+        collectionService.addSeaCleaning(seaCleaning);
+        return "redirect:/wiki/others/sea-cleaning";
+    }
+
+    @PostMapping("/sea-cleaning/update")
+    public String updateSeaCleaning(SeaCleaningCollection seaCleaning,
+                                    @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                    @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        log.info("관리자 데이터 수정: 바다 청소 id={}", seaCleaning.getId());
+        handleImageUpload(seaCleaning, imageFile, "sea-cleaning", existingImageUrl);
+        collectionService.updateSeaCleaning(seaCleaning);
+        return "redirect:/wiki/others/sea-cleaning";
+    }
+
+    @PostMapping("/sea-cleaning/delete/{id}")
+    public String deleteSeaCleaning(@PathVariable Integer id) {
+        log.info("관리자 데이터 삭제: 바다 청소 id={}", id);
+        collectionService.deleteSeaCleaning(id);
+        return "redirect:/wiki/others/sea-cleaning";
+    }
+
     // ======================== 요리 ========================
     @PostMapping("/cooking/add")
     public String addCooking(CookingCollection cooking,
@@ -502,10 +529,14 @@ public class AdminDataController {
         else if (entity instanceof FlowerCollection e) return e.getName();
         else if (entity instanceof GardeningCollection e) return e.getName();
         else if (entity instanceof Achievement e) return e.getName();
+        else if (entity instanceof SeaCleaningCollection e) return e.getName();
         return "unknown";
     }
 
     private String generateDefaultImageUrl(String category, String itemName) {
+        if ("sea-cleaning".equals(category)) {
+            return "/images/others/sea-cleaning/" + itemName + ".webp";
+        }
         if ("cook".equals(category) || "flower".equals(category) || "crop".equals(category)) {
             return "/images/items/" + category + "/" + category + "_" + itemName + ".webp";
         }
@@ -531,5 +562,6 @@ public class AdminDataController {
         else if (entity instanceof FlowerCollection e) e.setImageUrl(imageUrl);
         else if (entity instanceof GardeningCollection e) e.setImageUrl(imageUrl);
         else if (entity instanceof Achievement e) e.setImageUrl(imageUrl);
+        else if (entity instanceof SeaCleaningCollection e) e.setImageUrl(imageUrl);
     }
 }

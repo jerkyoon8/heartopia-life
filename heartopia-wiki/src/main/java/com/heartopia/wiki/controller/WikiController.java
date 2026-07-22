@@ -60,7 +60,8 @@ public class WikiController {
                 List<CategoryItemDto> hobbies = new ArrayList<>();
                 hobbies.add(new CategoryItemDto("모래 조각", "🏖️", "/wiki/others/sandbox",
                                 "/images/main-index/main_index_icon_sand_sculpture.webp?v=2", collectionService.getSandboxCount()));
-                hobbies.add(new CategoryItemDto("바다 청소", "🌊", null));
+                hobbies.add(new CategoryItemDto("바다 청소", "🌊", "/wiki/others/sea-cleaning", null,
+                                collectionService.getSeaCleaningCount()));
                 hobbies.add(new CategoryItemDto("반려동물", "🐱", "/wiki/others/pets", "/images/main-index/main_index_icon_pet.webp?v=2"));
 
                 // 4. 기타 정보 (Utilities)
@@ -209,6 +210,14 @@ public class WikiController {
                 return "wiki/others/sandbox";
         }
 
+        @GetMapping("/others/sea-cleaning")
+        public String seaCleaning(Model model) {
+                model.addAttribute("seaCleaningList", collectionService.getAllSeaCleaningCollections());
+                model.addAttribute("pageTitle", "바다 청소 도감");
+                model.addAttribute("pageDescription", "두근두근라이프 바다 청소 도감 - 조개와 고둥의 등장 시간, 레벨, 숙련도를 확인하세요.");
+                return "wiki/others/sea-cleaning";
+        }
+
         @GetMapping("/others/achievements")
         public String achievements(Model model) {
                 List<AchievementDto> list = collectionService.getAllAchievements().stream()
@@ -259,6 +268,9 @@ public class WikiController {
 
                 // 7. 업적 (Achievement) - 별점 없이 체크만
                 model.addAttribute("achievementList", collectionService.getAllAchievements());
+
+                // 8. 바다 청소
+                model.addAttribute("seaCleaningList", collectionService.getAllSeaCleaningCollections());
 
                 model.addAttribute("pageTitle", "수집 도감 (Checklist)");
                 model.addAttribute("pageDescription", "두근두근라이프 전체 수집품 진행도를 확인하고 나만의 도감을 완성해 보세요.");
