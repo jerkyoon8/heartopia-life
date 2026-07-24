@@ -61,6 +61,8 @@
     <script th:inline="javascript">
         window._heartopiaChecklistSyncEnabled = /*[[${currentUser != null ? currentUser.checklistSyncEnabled : false}]]*/ false;
         window._heartopiaPetFoodSyncEnabled = /*[[${currentUser != null ? currentUser.petFoodSyncEnabled : false}]]*/ false;
+        window._heartopiaCurrentUserId = /*[[${currentUser != null ? currentUser.userId : null}]]*/ null;
+        window._heartopiaPetFoodStorageKey = 'heartopia_pet_food_profiles';
 
         // 동기화 ON 상태로 로그인 + localStorage에 데이터 있으면 1회 머지 후 비움.
         // ChecklistCore가 localStorage를 wipe하기 전에 fetch body에 캡처해야 한다.
@@ -96,7 +98,10 @@
                 return;
             }
             let localData = [];
-            try { localData = JSON.parse(localStorage.getItem('heartopia_pet_food_profiles') || '[]'); } catch (e) {}
+            const sourceKey = window._heartopiaPetFoodStorageKey;
+            try {
+                localData = JSON.parse(localStorage.getItem(sourceKey) || '[]');
+            } catch (e) {}
             if (!Array.isArray(localData) || localData.length === 0) {
                 window._petFoodMergeOnLogin = Promise.resolve();
                 return;
@@ -112,7 +117,7 @@
                 headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
                 body: JSON.stringify(localData)
             }).then(r => {
-                if (r.ok) localStorage.removeItem('heartopia_pet_food_profiles');
+                if (r.ok) localStorage.removeItem(sourceKey);
             }).catch(() => {});
         })();
     </script>

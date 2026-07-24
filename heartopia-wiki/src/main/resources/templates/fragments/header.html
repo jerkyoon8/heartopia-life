@@ -757,8 +757,9 @@
                                 return;
                             }
                             const enabled = petFoodToggle.checked;
+                            const petFoodStorageKey = window._heartopiaPetFoodStorageKey || 'heartopia_pet_food_profiles';
                             const localData = enabled
-                                ? JSON.parse(localStorage.getItem('heartopia_pet_food_profiles') || '[]')
+                                ? JSON.parse(localStorage.getItem(petFoodStorageKey) || '[]')
                                 : null;
 
                             if (enabled && Array.isArray(localData) && localData.length > 0) {
@@ -780,9 +781,9 @@
                                 const dbData = await res.json();
 
                                 if (!enabled) {
-                                    localStorage.setItem('heartopia_pet_food_profiles', JSON.stringify(dbData));
+                                    localStorage.setItem(petFoodStorageKey, JSON.stringify(dbData));
                                 } else {
-                                    localStorage.removeItem('heartopia_pet_food_profiles');
+                                    localStorage.removeItem(petFoodStorageKey);
                                 }
                                 window.location.reload();
                             } catch (e) {
@@ -822,7 +823,8 @@
                                     fetch('/api/user/pet-food')
                                         .then(r => r.ok ? r.json() : null)
                                         .then(data => {
-                                            if (data) localStorage.setItem('heartopia_pet_food_profiles', JSON.stringify(data));
+                                            const key = window._heartopiaPetFoodStorageKey || 'heartopia_pet_food_profiles';
+                                            if (data) localStorage.setItem(key, JSON.stringify(data));
                                         })
                                         .catch(() => {})
                                 );

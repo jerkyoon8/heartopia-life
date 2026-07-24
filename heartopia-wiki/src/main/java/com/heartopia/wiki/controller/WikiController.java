@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -194,9 +195,28 @@ public class WikiController {
 
         @GetMapping("/others/pets")
         public String pets(Model model) {
+                Map<String, String> petFoodImageMap = new LinkedHashMap<>();
+                collectionService.getAllCookings().forEach(item ->
+                                addPetFoodImage(petFoodImageMap, item.getName(), item.getImageUrl()));
+                collectionService.getAllFish().forEach(item ->
+                                addPetFoodImage(petFoodImageMap, item.getName(), item.getImageUrl()));
+                collectionService.getAllForageables().forEach(item ->
+                                addPetFoodImage(petFoodImageMap, item.getName(), item.getImageUrl()));
+                collectionService.getAllCrops().forEach(item ->
+                                addPetFoodImage(petFoodImageMap, item.getName(), item.getImageUrl()));
+
+                model.addAttribute("petFoodImageMap", petFoodImageMap);
                 model.addAttribute("pageTitle", "반려동물 먹이 기록");
                 model.addAttribute("pageDescription", "두근두근라이프 반려동물 먹이 기록 - 강아지와 고양이가 먹을 수 있는 음식과 선호도를 확인하세요.");
                 return "wiki/others/pets";
+        }
+
+        private void addPetFoodImage(Map<String, String> imageMap, String name, String imageUrl) {
+                if (name == null || name.isBlank() || imageUrl == null || imageUrl.isBlank()) {
+                        return;
+                }
+                String normalizedName = name.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+                imageMap.putIfAbsent(normalizedName, imageUrl);
         }
 
         @GetMapping("/others/sandbox")

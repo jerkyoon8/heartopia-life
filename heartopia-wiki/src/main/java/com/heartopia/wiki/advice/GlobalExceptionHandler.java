@@ -1,5 +1,6 @@
 package com.heartopia.wiki.advice;
 
+import com.heartopia.wiki.exception.PetFoodValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,17 @@ public class GlobalExceptionHandler {
         errorResponse.put("message", "데이터 검증 실패: " + errorMsg);
         
         log.warn("API 데이터 검증 에러 차단됨: {}", errorMsg);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(PetFoodValidationException.class)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handlePetFoodValidationException(PetFoodValidationException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("success", false);
+        errorResponse.put("message", ex.getMessage());
+
+        log.warn("펫 먹이 데이터 검증 에러 차단됨: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

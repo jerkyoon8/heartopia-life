@@ -328,6 +328,26 @@
             display: grid;
         }
 
+        .food-add-form {
+            display: none;
+            grid-template-columns: minmax(180px, 1fr) auto;
+            gap: 10px;
+            padding: 16px 20px 0;
+            align-items: end;
+        }
+
+        .food-add-form.is-visible {
+            display: grid;
+        }
+
+        .food-storage-note {
+            grid-column: 1 / -1;
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
         .food-filter-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -517,6 +537,15 @@
             color: #fff;
         }
 
+        .food-delete-btn {
+            color: #e11d48;
+        }
+
+        .food-delete-btn:hover {
+            background: #fff1f2;
+            border-color: #fda4af;
+        }
+
         .empty-foods {
             border: 1px dashed #d1d5db;
             border-radius: 16px;
@@ -531,8 +560,105 @@
             display: none !important;
         }
 
+        [data-theme='dark'] .pet-panel {
+            border-color: var(--border-subtle, #3a3a3a);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
+        }
+
+        [data-theme='dark'] .pet-panel-header,
+        [data-theme='dark'] .pet-form {
+            background: var(--card-bg, #242424);
+            border-color: var(--border-subtle, #3a3a3a);
+        }
+
+        [data-theme='dark'] .pet-panel-title,
+        [data-theme='dark'] .selected-pet-name,
+        [data-theme='dark'] .empty-pets strong,
+        [data-theme='dark'] .food-summary-count,
+        [data-theme='dark'] .food-name {
+            color: var(--text-color, #e2e2e2);
+        }
+
+        [data-theme='dark'] .pet-panel-subtitle,
+        [data-theme='dark'] .pet-field label,
+        [data-theme='dark'] .pet-kind-label,
+        [data-theme='dark'] .pet-chip-kind,
+        [data-theme='dark'] .selected-pet-meta,
+        [data-theme='dark'] .food-summary-label,
+        [data-theme='dark'] .food-meta,
+        [data-theme='dark'] .empty-pets,
+        [data-theme='dark'] .empty-foods {
+            color: var(--stat-label, #a0a0a0);
+        }
+
+        [data-theme='dark'] .pet-input,
+        [data-theme='dark'] .pet-search-input,
+        [data-theme='dark'] .pet-kind-btn,
+        [data-theme='dark'] .pet-chip,
+        [data-theme='dark'] .food-filter-btn,
+        [data-theme='dark'] .food-summary-card,
+        [data-theme='dark'] .food-card,
+        [data-theme='dark'] .food-state-btn {
+            background: var(--filter-bg, #2a2a2a);
+            border-color: var(--border-subtle, #3a3a3a);
+            color: var(--text-color, #e2e2e2);
+        }
+
+        [data-theme='dark'] .food-delete-btn {
+            color: #fb7185;
+        }
+
+        [data-theme='dark'] .food-delete-btn:hover {
+            background: #3a171d;
+            border-color: #f43f5e;
+        }
+
+        [data-theme='dark'] .food-storage-note {
+            color: var(--stat-label, #a0a0a0);
+        }
+
+        [data-theme='dark'] .pet-input::placeholder,
+        [data-theme='dark'] .pet-search-input::placeholder {
+            color: #8a8a8a;
+        }
+
+        [data-theme='dark'] .pet-secondary-btn,
+        [data-theme='dark'] .pet-chip-icon,
+        [data-theme='dark'] .food-image-wrap {
+            background: #303030;
+            border-color: var(--border-subtle, #3a3a3a);
+            color: var(--text-color, #e2e2e2);
+        }
+
+        [data-theme='dark'] .empty-pets,
+        [data-theme='dark'] .empty-foods {
+            border-color: #555;
+        }
+
+        [data-theme='dark'] .pet-chip.is-active {
+            background: #3a2a17;
+            border-color: #f59e0b;
+        }
+
+        [data-theme='dark'] .food-filter-btn.is-active {
+            background: #e5e7eb;
+            border-color: #e5e7eb;
+            color: #111827;
+        }
+
+        [data-theme='dark'] .food-card.is-like {
+            background: #123322;
+            border-color: #22c55e;
+        }
+
+        [data-theme='dark'] .food-card.is-dislike {
+            background: #3a171d;
+            border-color: #f43f5e;
+        }
+
         @media (max-width: 820px) {
             .pet-form,
+            .food-add-form,
             .food-tools {
                 grid-template-columns: 1fr;
             }
@@ -646,6 +772,21 @@
                         </button>
                     </div>
 
+                    <form class="food-add-form" id="foodAddForm">
+                        <div class="pet-field">
+                            <label for="customFoodNameInput">이 반려동물에 먹이 추가</label>
+                            <input type="text" id="customFoodNameInput" class="pet-input"
+                                   placeholder="예: 닭가슴살" autocomplete="off" maxlength="80">
+                        </div>
+                        <button type="submit" class="pet-action-btn">
+                            <i class="fas fa-plus"></i>
+                            <span>먹이 추가</span>
+                        </button>
+                        <p class="food-storage-note" th:if="${currentUser == null}">
+                            로그인하지 않은 기록은 현재 브라우저에만 저장됩니다.
+                        </p>
+                    </form>
+
                     <div class="food-tools" id="foodTools">
                         <div class="pet-search-wrapper">
                             <input type="text" id="foodSearchInput" class="pet-search-input" placeholder="음식 이름 또는 재료 검색..." autocomplete="off">
@@ -692,6 +833,8 @@
     <script th:inline="javascript">
         const STORAGE_KEY = 'heartopia_pet_food_profiles';
         const petFoodSyncEnabled = window._heartopiaPetFoodSyncEnabled || false;
+        const dbFoodImages = /*[[${petFoodImageMap}]]*/ {};
+        let saveQueue = Promise.resolve();
 
         const dogFoodNames = [
             '강아지 전용 사료', '동물 공용 음식', '사과', '느타리 버섯', '양송이 버섯', '표고 버섯',
@@ -754,6 +897,7 @@
         function bindEvents() {
             document.getElementById('togglePetFormBtn').addEventListener('click', togglePetForm);
             document.getElementById('petForm').addEventListener('submit', addPet);
+            document.getElementById('foodAddForm')?.addEventListener('submit', addCustomFood);
             document.getElementById('foodSearchInput').addEventListener('input', event => {
                 state.query = event.target.value.trim().toLowerCase();
                 renderFoods();
@@ -811,23 +955,46 @@
                 name: pet.name || '반려동물',
                 type: pet.type === 'cat' ? 'cat' : 'dog',
                 preferences: pet.preferences && typeof pet.preferences === 'object' ? pet.preferences : {},
-                tried: pet.tried && typeof pet.tried === 'object' ? pet.tried : {}
+                tried: pet.tried && typeof pet.tried === 'object' ? pet.tried : {},
+                customFoods: Array.isArray(pet.customFoods)
+                    ? pet.customFoods.filter(food => food && food.id && food.name).map(food => ({
+                        id: String(food.id),
+                        name: String(food.name).trim()
+                    }))
+                    : [],
+                hiddenFoodIds: Array.isArray(pet.hiddenFoodIds)
+                    ? [...new Set(pet.hiddenFoodIds.map(String))]
+                    : []
             };
         }
 
         function saveProfiles() {
             if (!petFoodSyncEnabled) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state.pets));
-                return;
+                return Promise.resolve();
             }
 
             const csrf = getCsrf();
-            if (!csrf.token || !csrf.header) return;
-            fetch('/api/user/pet-food', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
-                body: JSON.stringify(state.pets)
-            }).catch(() => {});
+            if (!csrf.token || !csrf.header) {
+                showMessage('로그인 정보를 확인할 수 없어 저장하지 못했습니다.');
+                return Promise.resolve();
+            }
+
+            const snapshot = JSON.stringify(state.pets);
+            saveQueue = saveQueue
+                .catch(() => {})
+                .then(async () => {
+                    const response = await fetch('/api/user/pet-food', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', [csrf.header]: csrf.token },
+                        body: snapshot
+                    });
+                    if (!response.ok) throw new Error('pet food save failed');
+                })
+                .catch(() => {
+                    showMessage('먹이 기록을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+                });
+            return saveQueue;
         }
 
         function togglePetForm() {
@@ -851,13 +1018,19 @@
                 showMessage('강아지 또는 고양이 중 하나를 선택해 주세요.');
                 return;
             }
+            if (state.pets.length >= 20) {
+                showMessage('반려동물은 최대 20마리까지 등록할 수 있습니다.');
+                return;
+            }
 
             const pet = {
                 id: `pet-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 name,
                 type: state.selectedKind,
                 preferences: {},
-                tried: {}
+                tried: {},
+                customFoods: [],
+                hiddenFoodIds: []
             };
 
             state.pets.push(pet);
@@ -895,12 +1068,22 @@
 
         function getFoodsForPet(pet) {
             const names = pet && pet.type === 'cat' ? catFoodNames : dogFoodNames;
-            return names.map(name => ({
+            const hiddenFoodIds = new Set(pet ? pet.hiddenFoodIds : []);
+            const defaultFoods = names.map(name => ({
                 id: makeFoodId(name),
                 name,
                 imageUrl: getFoodImageUrl(name, pet ? pet.type : 'dog'),
-                meta: getFoodMeta(name, pet ? pet.type : 'dog')
-            }));
+                meta: getFoodMeta(name, pet ? pet.type : 'dog'),
+                isCustom: false
+            })).filter(food => !hiddenFoodIds.has(food.id));
+            const customFoods = pet ? pet.customFoods.map(food => ({
+                id: food.id,
+                name: food.name,
+                imageUrl: dbFoodImages[normalizeFoodName(food.name)] || '',
+                meta: dbFoodImages[normalizeFoodName(food.name)] ? '도감 등록 먹이' : '직접 추가한 먹이',
+                isCustom: true
+            })) : [];
+            return [...defaultFoods, ...customFoods];
         }
 
         function makeFoodId(name) {
@@ -924,6 +1107,81 @@
                 return '펫샵 구매';
             }
             return petType === 'cat' ? '물고기/해산물' : '요리/채집 음식';
+        }
+
+        function normalizeFoodName(name) {
+            return String(name).replace(/\s+/g, '').toLowerCase();
+        }
+
+        function addCustomFood(event) {
+            event.preventDefault();
+
+            const pet = getSelectedPet();
+            const input = document.getElementById('customFoodNameInput');
+            const name = input.value.trim();
+            if (!pet) {
+                showMessage('먼저 반려동물을 선택해 주세요.');
+                return;
+            }
+            if (!name) {
+                showMessage('추가할 먹이 이름을 입력해 주세요.');
+                input.focus();
+                return;
+            }
+
+            const nameKey = normalizeFoodName(name);
+            const defaultNames = pet.type === 'cat' ? catFoodNames : dogFoodNames;
+            const matchedDefaultName = defaultNames.find(item => normalizeFoodName(item) === nameKey);
+            if (matchedDefaultName) {
+                const defaultId = makeFoodId(matchedDefaultName);
+                if (pet.hiddenFoodIds.includes(defaultId)) {
+                    pet.hiddenFoodIds = pet.hiddenFoodIds.filter(id => id !== defaultId);
+                    input.value = '';
+                    hideMessage();
+                    saveProfiles();
+                    render();
+                    return;
+                }
+                showMessage('이미 목록에 있는 먹이입니다.');
+                return;
+            }
+
+            const duplicated = pet.customFoods.some(food => normalizeFoodName(food.name) === nameKey);
+            if (duplicated) {
+                showMessage('이미 직접 추가한 먹이입니다.');
+                return;
+            }
+            if (pet.customFoods.length >= 100) {
+                showMessage('직접 추가하는 먹이는 반려동물당 최대 100개까지 등록할 수 있습니다.');
+                return;
+            }
+
+            pet.customFoods.push({
+                id: `custom-food-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                name
+            });
+            input.value = '';
+            hideMessage();
+            saveProfiles();
+            render();
+        }
+
+        function deleteFood(foodId) {
+            const pet = getSelectedPet();
+            if (!pet) return;
+
+            const food = getFoodsForPet(pet).find(item => item.id === foodId);
+            if (!food || !confirm(`${food.name} 먹이 정보를 삭제할까요?`)) return;
+
+            if (food.isCustom) {
+                pet.customFoods = pet.customFoods.filter(item => item.id !== foodId);
+            } else if (!pet.hiddenFoodIds.includes(foodId)) {
+                pet.hiddenFoodIds.push(foodId);
+            }
+            delete pet.preferences[foodId];
+            delete pet.tried[foodId];
+            saveProfiles();
+            renderFoods();
         }
 
         function setTried(foodId) {
@@ -994,10 +1252,12 @@
             const toolbar = document.getElementById('selectedPetToolbar');
             const tools = document.getElementById('foodTools');
             const summary = document.getElementById('foodSummary');
+            const addForm = document.getElementById('foodAddForm');
 
             toolbar.classList.toggle('is-visible', !!pet);
             tools.classList.toggle('is-visible', !!pet);
             summary.classList.toggle('is-visible', !!pet);
+            addForm?.classList.toggle('is-visible', !!pet);
 
             if (!pet) return;
 
@@ -1067,10 +1327,14 @@
             const preference = pet.preferences[food.id] || 'neutral';
             const tried = !!pet.tried[food.id];
             const preferenceClass = preference === 'like' ? 'is-like' : preference === 'dislike' ? 'is-dislike' : '';
+            const escapedFoodId = escapeAttr(food.id);
             const imageMarkup = food.imageUrl
                 ? `<img src="${escapeAttr(food.imageUrl)}" alt="${escapeAttr(food.name)}" class="food-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                    <i class="fas fa-utensils food-fallback-icon" style="display:none;"></i>`
                 : '<i class="fas fa-utensils food-fallback-icon"></i>';
+            const deleteMarkup = `<button type="button" class="food-state-btn food-delete-btn" data-food-id="${escapedFoodId}" onclick="deleteFood(this.dataset.foodId)" title="먹이 삭제" aria-label="${escapeAttr(food.name)} 삭제">
+                    <i class="fas fa-trash-alt"></i>
+                </button>`;
 
             return `
                 <article class="food-card ${preferenceClass}">
@@ -1082,17 +1346,18 @@
                         <p class="food-meta">${escapeHtml(food.meta)}</p>
                     </div>
                     <div class="food-actions">
-                        <button type="button" class="food-state-btn ${tried ? 'is-tried' : ''}" onclick="setTried('${escapeAttr(food.id)}')" title="${tried ? '먹여봄' : '먹여보기'}" aria-label="${tried ? '먹여봄' : '먹여보기'}">
+                        <button type="button" class="food-state-btn ${tried ? 'is-tried' : ''}" data-food-id="${escapedFoodId}" onclick="setTried(this.dataset.foodId)" title="${tried ? '먹여봄' : '먹여보기'}" aria-label="${tried ? '먹여봄' : '먹여보기'}">
                             <i class="fas fa-check"></i>
                         </button>
                         <div class="food-preference-actions">
-                            <button type="button" class="food-state-btn ${preference === 'like' ? 'is-like' : ''}" onclick="setPreference('${escapeAttr(food.id)}', 'like')" title="좋아요" aria-label="좋아요">
+                            <button type="button" class="food-state-btn ${preference === 'like' ? 'is-like' : ''}" data-food-id="${escapedFoodId}" onclick="setPreference(this.dataset.foodId, 'like')" title="좋아요" aria-label="좋아요">
                                 <i class="far fa-heart"></i>
                             </button>
-                            <button type="button" class="food-state-btn ${preference === 'dislike' ? 'is-dislike' : ''}" onclick="setPreference('${escapeAttr(food.id)}', 'dislike')" title="싫어요" aria-label="싫어요">
+                            <button type="button" class="food-state-btn ${preference === 'dislike' ? 'is-dislike' : ''}" data-food-id="${escapedFoodId}" onclick="setPreference(this.dataset.foodId, 'dislike')" title="싫어요" aria-label="싫어요">
                                 <i class="fas fa-heart-broken"></i>
                             </button>
                         </div>
+                        ${deleteMarkup}
                     </div>
                 </article>
             `;
