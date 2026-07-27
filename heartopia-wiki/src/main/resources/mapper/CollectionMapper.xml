@@ -183,25 +183,6 @@
         SELECT <include refid="forageableColumns"/> FROM forageable_collections WHERE name = #{name}
     </select>
 
-    <!-- ========== 요리 재료 특수 조회 ========== -->
-    <select id="findIngredientsByCookingId" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT ci.id, ci.cooking_id, ci.ingredient_name, ci.quantity, ci.item_type, ci.item_id,
-            CASE ci.item_type
-                WHEN 'crop'       THEN (SELECT image_url FROM crop_collections       WHERE id = ci.item_id)
-                WHEN 'forageable' THEN (SELECT image_url FROM forageable_collections WHERE id = ci.item_id)
-                WHEN 'fish'       THEN (SELECT image_url FROM fish_collections       WHERE id = ci.item_id)
-                WHEN 'bug'        THEN (SELECT image_url FROM bug_collections        WHERE id = ci.item_id)
-                WHEN 'bird'       THEN (SELECT image_url FROM bird_collections       WHERE id = ci.item_id)
-                WHEN 'flower'     THEN (SELECT image_url FROM flower_collections     WHERE id = ci.item_id)
-                ELSE NULL
-            END AS imageUrl
-        FROM cooking_ingredients ci WHERE ci.cooking_id = #{cookingId} ORDER BY ci.id ASC
-    </select>
-    <select id="findAllCookingIngredients" resultType="com.heartopia.wiki.model.CookingIngredient">
-        SELECT ci.id, ci.cooking_id, ci.ingredient_name, ci.quantity, ci.item_type, ci.item_id, NULL AS imageUrl
-        FROM cooking_ingredients ci ORDER BY ci.cooking_id, ci.id ASC
-    </select>
-
     <!-- ========== 같은 장소 관련 아이템 조회 ========== -->
     <select id="findFishByLocation" resultType="com.heartopia.wiki.model.FishCollection">
         SELECT <include refid="fishColumns"/> FROM fish_collections WHERE location = #{location} AND name != #{excludeName} ORDER BY level LIMIT 6

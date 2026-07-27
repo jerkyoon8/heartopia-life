@@ -28,7 +28,7 @@ public class UserPetFoodService {
     private static final int MAX_HIDDEN_FOODS = 200;
     private static final int MAX_FOOD_STATES = 300;
     private static final Set<String> PROFILE_FIELDS = Set.of(
-            "id", "name", "type", "preferences", "tried", "customFoods", "hiddenFoodIds"
+            "id", "name", "type", "preferences", "tried", "customFoods", "hiddenFoodIds", "inHotel"
     );
     private static final Set<String> CUSTOM_FOOD_FIELDS = Set.of("id", "name");
     private static final Set<String> PET_TYPES = Set.of("dog", "cat");
@@ -139,6 +139,12 @@ public class UserPetFoodService {
             validateTried(profile.get("tried"));
             validateCustomFoods(profile.get("customFoods"));
             validateHiddenFoodIds(profile.get("hiddenFoodIds"));
+            if (profile.containsKey("inHotel")) {
+                Object inHotel = profile.get("inHotel");
+                if (!(inHotel instanceof Boolean)) {
+                    throw validationError("호텔 입실 상태는 true 또는 false여야 합니다.");
+                }
+            }
         }
     }
 

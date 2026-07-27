@@ -87,6 +87,14 @@
             background: #e5e7eb;
         }
 
+        .pet-secondary-btn:disabled {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+            color: #c4c8cf;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .pet-danger-btn {
             background: #fff1f2;
             color: #e11d48;
@@ -245,6 +253,18 @@
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
         }
 
+        .pet-chip.is-in-hotel {
+            background: #eff6ff;
+            border-color: #60a5fa;
+            box-shadow: inset 4px 0 0 #3b82f6;
+        }
+
+        .pet-chip.is-active.is-in-hotel {
+            background: #dbeafe;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14), inset 4px 0 0 #2563eb;
+        }
+
         .pet-chip-icon {
             align-items: center;
             background: #fff;
@@ -269,6 +289,20 @@
             font-weight: 800;
             line-height: 1.1;
             margin-top: 3px;
+        }
+
+        .pet-hotel-badge {
+            align-items: center;
+            background: #2563eb;
+            border-radius: 999px;
+            color: #fff;
+            display: inline-flex;
+            font-size: 0.64rem;
+            font-weight: 900;
+            gap: 4px;
+            margin-left: 5px;
+            padding: 2px 6px;
+            vertical-align: 1px;
         }
 
         .empty-pets {
@@ -300,6 +334,89 @@
 
         .selected-pet-toolbar.is-visible {
             display: flex;
+        }
+
+        .selected-pet-toolbar.is-hotel {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            margin: 14px 20px 0;
+            padding: 12px;
+        }
+
+        .selected-pet-info {
+            flex: 1 1 260px;
+            min-width: 0;
+        }
+
+        .selected-pet-display.is-hidden,
+        .pet-rename-form {
+            display: none;
+        }
+
+        .pet-rename-form.is-visible {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pet-rename-form .pet-input {
+            max-width: 260px;
+        }
+
+        .selected-pet-actions {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .pet-order-controls {
+            display: inline-flex;
+            gap: 5px;
+        }
+
+        .pet-order-controls .pet-secondary-btn {
+            min-width: 74px;
+            padding: 0 10px;
+        }
+
+        .pet-hotel-toggle {
+            align-items: center;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            color: #4b5563;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 0.82rem;
+            font-weight: 900;
+            gap: 7px;
+            min-height: 38px;
+            padding: 0 12px;
+        }
+
+        .pet-hotel-toggle.is-active {
+            background: #dbeafe;
+            border-color: #60a5fa;
+            color: #1d4ed8;
+        }
+
+        .pet-hotel-toggle input {
+            accent-color: #2563eb;
+            height: 16px;
+            width: 16px;
+        }
+
+        .pet-hotel-note {
+            color: #6b7280;
+            flex-basis: 100%;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+            text-align: right;
         }
 
         .selected-pet-name {
@@ -640,6 +757,23 @@
             border-color: #f59e0b;
         }
 
+        [data-theme='dark'] .pet-chip.is-in-hotel,
+        [data-theme='dark'] .selected-pet-toolbar.is-hotel,
+        [data-theme='dark'] .pet-hotel-toggle.is-active {
+            background: #172a46;
+            border-color: #3b82f6;
+        }
+
+        [data-theme='dark'] .pet-hotel-toggle {
+            background: var(--filter-bg, #2a2a2a);
+            border-color: var(--border-subtle, #3a3a3a);
+            color: var(--text-color, #e2e2e2);
+        }
+
+        [data-theme='dark'] .pet-hotel-note {
+            color: var(--stat-label, #a0a0a0);
+        }
+
         [data-theme='dark'] .food-filter-btn.is-active {
             background: #e5e7eb;
             border-color: #e5e7eb;
@@ -677,6 +811,10 @@
             .selected-pet-toolbar {
                 align-items: stretch;
                 flex-direction: column;
+            }
+
+            .selected-pet-actions {
+                justify-content: flex-start;
             }
 
             .food-summary {
@@ -762,14 +900,48 @@
 
                 <section class="pet-panel">
                     <div class="selected-pet-toolbar" id="selectedPetToolbar">
-                        <div>
-                            <h2 class="selected-pet-name" id="selectedPetName"></h2>
-                            <p class="selected-pet-meta" id="selectedPetMeta"></p>
+                        <div class="selected-pet-info">
+                            <div class="selected-pet-display" id="selectedPetDisplay">
+                                <h2 class="selected-pet-name" id="selectedPetName"></h2>
+                                <p class="selected-pet-meta" id="selectedPetMeta"></p>
+                            </div>
+                            <form class="pet-rename-form" id="petRenameForm">
+                                <input type="text" id="petRenameInput" class="pet-input"
+                                       maxlength="80" autocomplete="off" aria-label="새 반려동물 이름">
+                                <button type="submit" class="pet-action-btn">저장</button>
+                                <button type="button" class="pet-secondary-btn" id="cancelPetRenameBtn">취소</button>
+                            </form>
                         </div>
-                        <button type="button" class="pet-danger-btn" id="deletePetBtn">
-                            <i class="fas fa-trash-alt"></i>
-                            <span>선택 펫 삭제</span>
-                        </button>
+                        <div class="selected-pet-actions">
+                            <div class="pet-order-controls" role="group" aria-label="반려동물 표시 순서">
+                                <button type="button" class="pet-secondary-btn" id="movePetLeftBtn"
+                                        title="선택한 반려동물을 왼쪽으로 한 칸 이동">
+                                    <i class="fas fa-arrow-left"></i>
+                                    <span>왼쪽</span>
+                                </button>
+                                <button type="button" class="pet-secondary-btn" id="movePetRightBtn"
+                                        title="선택한 반려동물을 오른쪽으로 한 칸 이동">
+                                    <span>오른쪽</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <button type="button" class="pet-secondary-btn" id="editPetNameBtn">
+                                <i class="fas fa-pen"></i>
+                                <span>이름 수정</span>
+                            </button>
+                            <label class="pet-hotel-toggle" id="hotelToggleLabel">
+                                <input type="checkbox" id="hotelStatusCheckbox">
+                                <i class="fas fa-hotel"></i>
+                                <span id="hotelStatusText">호텔 입실</span>
+                            </label>
+                            <button type="button" class="pet-danger-btn" id="deletePetBtn">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>선택 펫 삭제</span>
+                            </button>
+                            <p class="pet-hotel-note">
+                                게임 내 캐릭터당 호텔 정원은 5마리이며, 이 기록의 체크 개수에는 제한이 없습니다.
+                            </p>
+                        </div>
                     </div>
 
                     <form class="food-add-form" id="foodAddForm">
@@ -868,16 +1040,20 @@
             '느타리 버섯': '느타리버섯',
             '양송이 버섯': '양송이버섯',
             '표고 버섯': '표고버섯',
+            '구운 느타리버섯': '구운 버섯',
+            '구운 표고버섯': '구운 버섯',
+            '구운 양송이버섯': '구운 버섯',
+            '느타리버섯 파이': '버섯 파이',
+            '표고버섯 파이': '버섯 파이',
+            '양송이버섯 파이': '버섯 파이',
             '콘수프': '콘스프',
+            '황금 킹크랩찜': '킹크랩찜',
             '레드벨리 피라냐': '레드벨리피라냐',
             '첨 연어': '첨연어'
         };
 
         const missingLocalFoodImages = [
-            '강아지 전용 사료', '고양이 전용 사료', '동물 공용 음식', '믹스드 잼',
-            '구운 느타리버섯', '구운 표고버섯', '구운 양송이버섯',
-            '느타리버섯 파이', '표고버섯 파이', '양송이버섯 파이',
-            '콘수프', '황금 킹크랩찜', '펄 고기'
+            '강아지 전용 사료', '고양이 전용 사료', '동물 공용 음식', '믹스드 잼', '펄 고기'
         ];
 
         const state = {
@@ -885,7 +1061,8 @@
             selectedPetId: '',
             selectedKind: '',
             filter: 'all',
-            query: ''
+            query: '',
+            isEditingName: false
         };
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -903,6 +1080,12 @@
                 renderFoods();
             });
             document.getElementById('deletePetBtn').addEventListener('click', deleteSelectedPet);
+            document.getElementById('editPetNameBtn').addEventListener('click', startEditingPetName);
+            document.getElementById('cancelPetRenameBtn').addEventListener('click', cancelEditingPetName);
+            document.getElementById('petRenameForm').addEventListener('submit', saveEditedPetName);
+            document.getElementById('hotelStatusCheckbox').addEventListener('change', toggleSelectedPetHotel);
+            document.getElementById('movePetLeftBtn').addEventListener('click', () => moveSelectedPet(-1));
+            document.getElementById('movePetRightBtn').addEventListener('click', () => moveSelectedPet(1));
 
             document.querySelectorAll('.pet-kind-btn').forEach(button => {
                 button.addEventListener('click', () => {
@@ -954,6 +1137,7 @@
                 id: pet.id || `pet-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
                 name: pet.name || '반려동물',
                 type: pet.type === 'cat' ? 'cat' : 'dog',
+                inHotel: pet.inHotel === true,
                 preferences: pet.preferences && typeof pet.preferences === 'object' ? pet.preferences : {},
                 tried: pet.tried && typeof pet.tried === 'object' ? pet.tried : {},
                 customFoods: Array.isArray(pet.customFoods)
@@ -1027,6 +1211,7 @@
                 id: `pet-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
                 name,
                 type: state.selectedKind,
+                inHotel: false,
                 preferences: {},
                 tried: {},
                 customFoods: [],
@@ -1050,12 +1235,14 @@
 
             state.pets = state.pets.filter(item => item.id !== pet.id);
             state.selectedPetId = state.pets[0] ? state.pets[0].id : '';
+            state.isEditingName = false;
             saveProfiles();
             render();
         }
 
         function setSelectedPet(id) {
             state.selectedPetId = id;
+            state.isEditingName = false;
             state.filter = 'all';
             state.query = '';
             document.getElementById('foodSearchInput').value = '';
@@ -1064,6 +1251,69 @@
 
         function getSelectedPet() {
             return state.pets.find(pet => pet.id === state.selectedPetId) || null;
+        }
+
+        function moveSelectedPet(offset) {
+            const currentIndex = state.pets.findIndex(pet => pet.id === state.selectedPetId);
+            const targetIndex = currentIndex + offset;
+            if (currentIndex < 0 || targetIndex < 0 || targetIndex >= state.pets.length) return;
+
+            [state.pets[currentIndex], state.pets[targetIndex]] =
+                [state.pets[targetIndex], state.pets[currentIndex]];
+            saveProfiles();
+            render();
+        }
+
+        function startEditingPetName() {
+            const pet = getSelectedPet();
+            if (!pet) return;
+            state.isEditingName = true;
+            renderSelectedPet();
+            const input = document.getElementById('petRenameInput');
+            input.focus();
+            input.select();
+        }
+
+        function cancelEditingPetName() {
+            state.isEditingName = false;
+            hideMessage();
+            renderSelectedPet();
+        }
+
+        function saveEditedPetName(event) {
+            event.preventDefault();
+            const pet = getSelectedPet();
+            const input = document.getElementById('petRenameInput');
+            if (!pet) return;
+
+            const name = input.value.trim();
+            if (!name) {
+                showMessage('반려동물 이름을 입력해 주세요.');
+                input.focus();
+                return;
+            }
+            if ([...name].length > 80) {
+                showMessage('반려동물 이름은 80자 이하로 입력해 주세요.');
+                input.focus();
+                return;
+            }
+
+            pet.name = name;
+            state.isEditingName = false;
+            hideMessage();
+            saveProfiles();
+            render();
+        }
+
+        function toggleSelectedPetHotel(event) {
+            const pet = getSelectedPet();
+            if (!pet) return;
+
+            const shouldEnterHotel = event.target.checked;
+            pet.inHotel = shouldEnterHotel;
+            hideMessage();
+            saveProfiles();
+            render();
         }
 
         function getFoodsForPet(pet) {
@@ -1237,10 +1487,13 @@
             }
 
             list.innerHTML = state.pets.map(pet => `
-                <button type="button" class="pet-chip ${pet.id === state.selectedPetId ? 'is-active' : ''}" onclick="setSelectedPet('${escapeAttr(pet.id)}')">
+                <button type="button" class="pet-chip ${pet.id === state.selectedPetId ? 'is-active' : ''} ${pet.inHotel ? 'is-in-hotel' : ''}" onclick="setSelectedPet('${escapeAttr(pet.id)}')">
                     <span class="pet-chip-icon">${pet.type === 'cat' ? '🐱' : '🐶'}</span>
                     <span>
-                        <span class="pet-chip-name">${escapeHtml(pet.name)}</span>
+                        <span class="pet-chip-name">
+                            ${escapeHtml(pet.name)}
+                            ${pet.inHotel ? '<span class="pet-hotel-badge"><i class="fas fa-hotel"></i> 호텔</span>' : ''}
+                        </span>
                         <span class="pet-chip-kind">${pet.type === 'cat' ? '고양이' : '강아지'}</span>
                     </span>
                 </button>
@@ -1253,19 +1506,41 @@
             const tools = document.getElementById('foodTools');
             const summary = document.getElementById('foodSummary');
             const addForm = document.getElementById('foodAddForm');
+            const display = document.getElementById('selectedPetDisplay');
+            const renameForm = document.getElementById('petRenameForm');
+            const editButton = document.getElementById('editPetNameBtn');
+            const hotelCheckbox = document.getElementById('hotelStatusCheckbox');
+            const hotelToggle = document.getElementById('hotelToggleLabel');
+            const hotelStatusText = document.getElementById('hotelStatusText');
+            const moveLeftButton = document.getElementById('movePetLeftBtn');
+            const moveRightButton = document.getElementById('movePetRightBtn');
+            const currentIndex = pet ? state.pets.findIndex(item => item.id === pet.id) : -1;
 
             toolbar.classList.toggle('is-visible', !!pet);
             tools.classList.toggle('is-visible', !!pet);
             summary.classList.toggle('is-visible', !!pet);
             addForm?.classList.toggle('is-visible', !!pet);
+            moveLeftButton.disabled = currentIndex <= 0;
+            moveRightButton.disabled = currentIndex < 0 || currentIndex >= state.pets.length - 1;
 
             if (!pet) return;
 
+            toolbar.classList.toggle('is-hotel', pet.inHotel);
+            display.classList.toggle('is-hidden', state.isEditingName);
+            renameForm.classList.toggle('is-visible', state.isEditingName);
+            editButton.disabled = state.isEditingName;
+            document.getElementById('petRenameInput').value = pet.name;
+            hotelCheckbox.checked = pet.inHotel;
+            hotelToggle.classList.toggle('is-active', pet.inHotel);
+            hotelStatusText.textContent = pet.inHotel ? '호텔 입실 중' : '호텔 입실';
             document.getElementById('selectedPetName').textContent = `${pet.name}의 먹이 기록`;
             const totalFoods = getFoodsForPet(pet).length;
-            document.getElementById('selectedPetMeta').textContent = pet.type === 'cat'
+            const petMeta = pet.type === 'cat'
                 ? `고양이가 먹을 수 있는 음식 기준 · 전체 ${totalFoods}개`
                 : `강아지가 먹을 수 있는 음식 기준 · 전체 ${totalFoods}개`;
+            document.getElementById('selectedPetMeta').textContent = pet.inHotel
+                ? `${petMeta} · 호텔 입실 중`
+                : petMeta;
         }
 
         function renderFilterButtons() {

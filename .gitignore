@@ -86,3 +86,6 @@ docs/
 
 # --- Gradle 캐시 ---
 heartopia-wiki/.gradle-user-home/
+
+# --- Local Safety Backups ---
+/ignore/

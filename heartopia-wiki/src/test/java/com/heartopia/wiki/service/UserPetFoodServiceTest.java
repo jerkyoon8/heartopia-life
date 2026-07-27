@@ -174,6 +174,54 @@ class UserPetFoodServiceTest {
         verify(mapper).upsertPetsJson(org.mockito.ArgumentMatchers.eq(1L), anyString());
     }
 
+    @Test
+    @DisplayName("호텔 입실 상태는 불리언으로 저장할 수 있다")
+    void savePetFoodProfiles_acceptsHotelStatus() {
+        Map<String, Object> profile = baseProfile();
+        profile.put("inHotel", true);
+
+        service.savePetFoodProfiles(1L, List.of(profile));
+
+        ArgumentCaptor<String> jsonCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mapper).upsertPetsJson(org.mockito.ArgumentMatchers.eq(1L), jsonCaptor.capture());
+        assertTrue(jsonCaptor.getValue().contains("\"inHotel\":true"));
+    }
+
+    @Test
+    @DisplayName("호텔 입실 상태는 전체 프로필 20마리까지 저장할 수 있다")
+    void savePetFoodProfiles_acceptsTwentyPetsInHotel() {
+        service.savePetFoodProfiles(1L, hotelProfiles(20));
+
+        verify(mapper).upsertPetsJson(org.mockito.ArgumentMatchers.eq(1L), anyString());
+    }
+
+    @Test
+    @DisplayName("호텔 입실 상태는 불리언이어야 한다")
+    void savePetFoodProfiles_rejectsInvalidHotelStatusType() {
+        Map<String, Object> profile = baseProfile();
+        profile.put("inHotel", "true");
+
+        PetFoodValidationException exception = assertThrows(
+                PetFoodValidationException.class,
+                () -> service.savePetFoodProfiles(1L, List.of(profile))
+        );
+
+        assertTrue(exception.getMessage().contains("true 또는 false"));
+        verify(mapper, never()).upsertPetsJson(anyLong(), anyString());
+    }
+
+    private List<Map<String, Object>> hotelProfiles(int count) {
+        List<Map<String, Object>> profiles = new ArrayList<>();
+        for (int index = 0; index < count; index++) {
+            Map<String, Object> profile = baseProfile();
+            profile.put("id", "pet-" + index);
+            profile.put("name", "반려동물" + index);
+            profile.put("inHotel", true);
+            profiles.add(profile);
+        }
+        return profiles;
+    }
+
     private Map<String, Object> baseProfile() {
         Map<String, Object> profile = new LinkedHashMap<>();
         profile.put("id", "pet-1");

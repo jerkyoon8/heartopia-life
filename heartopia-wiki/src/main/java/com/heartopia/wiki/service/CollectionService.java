@@ -6,7 +6,6 @@ import com.heartopia.wiki.model.AnimalCollection;
 import com.heartopia.wiki.model.BirdCollection;
 import com.heartopia.wiki.model.BugCollection;
 import com.heartopia.wiki.model.CookingCollection;
-import com.heartopia.wiki.model.CookingIngredient;
 import com.heartopia.wiki.model.FishCollection;
 import com.heartopia.wiki.model.FlowerCollection;
 import com.heartopia.wiki.model.FlowerBreedingOption;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -114,17 +111,6 @@ public class CollectionService {
     @Cacheable(value = "cookingDetail", key = "#name")
     public CookingCollection getCookingByName(String name) {
         return collectionMapper.findCookingByName(name);
-    }
-
-    @Cacheable(value = "cookingIngredients", key = "#cookingId")
-    public List<CookingIngredient> getIngredientsByCookingId(Integer cookingId) {
-        return collectionMapper.findIngredientsByCookingId(cookingId);
-    }
-
-    @Cacheable("allCookingIngredients")
-    public Map<Integer, List<CookingIngredient>> getAllCookingIngredientMap() {
-        return collectionMapper.findAllCookingIngredients().stream()
-                .collect(Collectors.groupingBy(CookingIngredient::getCookingId));
     }
 
     @Cacheable(value = "flowerDetail", key = "#name")

@@ -278,6 +278,7 @@
                         th:data-level="${#strings.replace(bird.level, 'Lv.', '')}"
                         th:data-price="${bird.prices[0]}"
                         th:data-weather="${bird.weather}"
+                        th:data-time="${bird.time}"
                         th:data-location="${bird.location}"
                         th:data-sub-location="${bird.subLocation != null ? bird.subLocation : ''}"
                         th:data-event="${bird.eventName != null ? bird.eventName : ''}">

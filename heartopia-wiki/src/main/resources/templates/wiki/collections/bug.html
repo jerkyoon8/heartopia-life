@@ -268,6 +268,7 @@
                         th:data-level="${#strings.replace(bug.level, 'Lv.', '')}"
                         th:data-price="${bug.prices[0]}"
                         th:data-weather="${bug.weather}"
+                        th:data-time="${bug.time}"
                         th:data-location="${bug.location}"
                         th:data-sub-location="${bug.subLocation != null ? bug.subLocation : ''}"
                         th:data-event="${bug.eventName != null ? bug.eventName : ''}">

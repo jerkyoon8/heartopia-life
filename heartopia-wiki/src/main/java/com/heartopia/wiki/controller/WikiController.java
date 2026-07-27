@@ -139,12 +139,6 @@ public class WikiController {
         public String cookingList(Model model) {
                 List<CookingCollection> list = collectionService.getAllCookings();
 
-                java.util.Map<Integer, List<com.heartopia.wiki.model.CookingIngredient>> ingredientMap =
-                        collectionService.getAllCookingIngredientMap();
-                list.forEach(c -> c.setIngredientList(
-                        ingredientMap.getOrDefault(c.getId(), List.of())
-                ));
-
                 model.addAttribute("cookingList", list);
                 model.addAttribute("pageTitle", "요리 레시피");
                 model.addAttribute("pageDescription", "두근두근라이프 요리 전체 목록 - 필요 재료, 레벨, 판매 가격 정보를 확인하세요.");
@@ -279,11 +273,8 @@ public class WikiController {
                 model.addAttribute("cropList", collectionService.getAllCrops().stream()
                         .map(CropDto::from).toList());
                 
-                // 6. 요리 (재료 포함)
+                // 6. 요리
                 List<CookingCollection> cookings = collectionService.getAllCookings();
-                java.util.Map<Integer, List<com.heartopia.wiki.model.CookingIngredient>> ingredientMap =
-                        collectionService.getAllCookingIngredientMap();
-                cookings.forEach(c -> c.setIngredientList(ingredientMap.getOrDefault(c.getId(), List.of())));
                 model.addAttribute("cookingList", cookings);
 
                 // 7. 업적 (Achievement) - 별점 없이 체크만
@@ -424,10 +415,6 @@ public class WikiController {
         public String cookingDetail(@PathVariable String name, Model model) {
                 CookingCollection item = collectionService.getCookingByName(name);
                 if (item == null) return "redirect:/wiki/items/cooking";
-
-                List<com.heartopia.wiki.model.CookingIngredient> ingredientList =
-                        collectionService.getIngredientsByCookingId(item.getId());
-                item.setIngredientList(ingredientList);
 
                 model.addAttribute("item", item);
                 model.addAttribute("category", "cooking");
