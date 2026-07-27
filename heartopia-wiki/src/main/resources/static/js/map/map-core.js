@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const activeMap = window.MapApp.getActiveMap();
+    const showAllByDefault = state.activeMapKey === 'second';
     document.querySelectorAll('.map-switch-btn').forEach(btn => {
         const isActive = btn.dataset.mapKey === state.activeMapKey;
         btn.classList.toggle('active', isActive);
@@ -317,6 +318,13 @@ document.addEventListener('DOMContentLoaded', function () {
         ]).then(([pins]) => {
             state.allPins = pins.filter(window.MapApp.belongsToActiveMap);
 
+            if (showAllByDefault && state.allZones) {
+                if (!state.zoneVisible) state.zoneVisible = {};
+                state.allZones.forEach(zoneEntry => {
+                    state.zoneVisible[zoneEntry.zoneKey] = true;
+                });
+            }
+
             // --- UI 핀 개수 렌더링 (CI/CD용 배포 확인) ---
             const countEl = document.getElementById('mapTotalPinCount');
             if (countEl) countEl.innerText = `${activeMap.label} · 총 ${state.allPins.length}개 핀`;
@@ -324,7 +332,9 @@ document.addEventListener('DOMContentLoaded', function () {
             state.allPins.forEach(pin => {
                 if (state.categoryVisible[pin.category] === undefined) {
                     const defaultVisible = ['villager', 'animal', 'bus'];
-                    state.categoryVisible[pin.category] = defaultVisible.includes(pin.category);
+                    state.categoryVisible[pin.category] = showAllByDefault
+                        ? true
+                        : defaultVisible.includes(pin.category);
                 }
                 const key = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
                 if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[pin.category];
@@ -360,7 +370,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 Object.entries(masterMapInit).forEach(([cat, masters]) => {
                     if (state.categoryVisible[cat] === undefined) {
                         const defaultVisible = ['villager', 'animal', 'bus'];
-                        state.categoryVisible[cat] = defaultVisible.includes(cat);
+                        state.categoryVisible[cat] = showAllByDefault
+                            ? true
+                            : defaultVisible.includes(cat);
                     }
                     if (masters) {
                         masters.forEach(m => {

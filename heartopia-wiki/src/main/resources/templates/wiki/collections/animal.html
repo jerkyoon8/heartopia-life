@@ -109,7 +109,7 @@
                         <span th:text="${animal.name}"></span>
                         <span th:if="${animal.eventName != null}" class="badge bg-warning text-dark ms-2 event-badge" style="font-size: 0.65em; vertical-align: middle;" th:text="${animal.eventName}"></span>
                     </a>
-                    <a th:href="@{/wiki/map(cat='animal', name=${animal.name})}" class="wiki-item-tag location-link">
+                    <a th:href="${animal.location == '고래낙하 협곡'} ? @{/wiki/map(mapKey='second', cat='animal', name=${animal.name})} : @{/wiki/map(cat='animal', name=${animal.name})}" class="wiki-item-tag location-link">
                         <i class="fas fa-map-marker-alt me-1"></i>
                         <span th:text="${animal.location}"></span>
                     </a>
@@ -161,7 +161,13 @@
             <form th:action="@{/wiki/admin/data/animal/add}" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/animal/add" data-update-action="/wiki/admin/data/animal/update"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
                 <div class="modal-body" style="padding:24px;"><div class="row g-3">
                     <div class="col-12"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
-                    <div class="col-md-6"><label class="form-label fw-bold">장소 *</label><input type="text" name="location" class="form-control" required></div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">장소 *</label>
+                        <input type="text" name="location" class="form-control" list="animalLocationOptions" required>
+                        <datalist id="animalLocationOptions">
+                            <option value="고래낙하 협곡">
+                        </datalist>
+                    </div>
                     <div class="col-md-6"><label class="form-label fw-bold">좋아하는 음식</label><input type="text" name="favoriteFood" class="form-control"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">좋아하는 날씨</label><input type="text" name="favoriteWeather" class="form-control"></div>
                     <div class="col-md-6"><label class="form-label fw-bold">이미지 등록 방식</label>

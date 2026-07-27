@@ -32,6 +32,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MapController {
 
+    private static final String DEFAULT_MAP_KEY = "town";
+    private static final String SECOND_MAP_KEY = "second";
+    private static final String WHALE_FALL_CANYON = "고래낙하 협곡";
+
     private final MapPinService mapPinService;
     private final CollectionService collectionService;
     private final VillagerService villagerService;
@@ -81,8 +85,13 @@ public class MapController {
 
     @GetMapping("/api/animals")
     @ResponseBody
-    public List<AnimalCollection> getAnimalMasterList() {
-        return collectionService.getAllAnimals();
+    public List<AnimalCollection> getAnimalMasterList(
+            @RequestParam(required = false) String mapKey) {
+        String normalizedMapKey = normalizeMapKey(mapKey);
+        return collectionService.getAllAnimals().stream()
+                .filter(animal -> belongsToAnimalMap(animal, normalizedMapKey))
+                .peek(animal -> animal.setMapKey(normalizedMapKey))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/api/villagers")
@@ -335,9 +344,17 @@ public class MapController {
 
     private String normalizeMapKey(String mapKey) {
         if (mapKey == null || mapKey.isBlank()) {
-            return "town";
+            return DEFAULT_MAP_KEY;
         }
         return mapKey;
+    }
+
+    private boolean belongsToAnimalMap(AnimalCollection animal, String mapKey) {
+        boolean isSecondMapAnimal = WHALE_FALL_CANYON.equals(animal.getLocation());
+        if (SECOND_MAP_KEY.equals(mapKey)) {
+            return isSecondMapAnimal;
+        }
+        return DEFAULT_MAP_KEY.equals(mapKey) && !isSecondMapAnimal;
     }
 
     private boolean belongsToForageableMap(ForageableCollection forageable, String mapKey) {

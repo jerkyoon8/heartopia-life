@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class AnimalCollection {
     private Integer id;
+    private String mapKey;
     private String name;
     private String location;
     private String description;

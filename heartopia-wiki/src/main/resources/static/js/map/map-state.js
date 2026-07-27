@@ -22,7 +22,7 @@ window.MapApp.MAPS = {
     },
     second: {
         key: 'second',
-        label: '고래 탐사 시즌',
+        label: '고래낙하 협곡',
         description: '고래 탐사 시즌 지도',
         imageUrl: '/images/map/second-map.webp',
         isDefault: false

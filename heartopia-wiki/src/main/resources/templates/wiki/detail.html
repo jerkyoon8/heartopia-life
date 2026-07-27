@@ -574,7 +574,8 @@
                 <!-- Map Link (for items with location field) -->
                 <div
                     th:if="${category == 'fish' or category == 'bug' or category == 'bird' or category == 'animal' or category == 'forageable'}">
-                    <a th:if="${item.location != null}" th:href="@{/wiki/map(cat=${category}, name=${item.name})}"
+                    <a th:if="${item.location != null}"
+                        th:href="${category == 'animal' and item.location == '고래낙하 협곡'} ? @{/wiki/map(mapKey='second', cat=${category}, name=${item.name})} : @{/wiki/map(cat=${category}, name=${item.name})}"
                         class="detail-map-link">
                         <i class="fas fa-map-marker-alt"></i>
                         <span th:text="${item.location}">장소</span>

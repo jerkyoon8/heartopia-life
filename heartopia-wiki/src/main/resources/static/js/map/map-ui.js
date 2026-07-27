@@ -434,10 +434,38 @@ window.MapApp.ui = {
                 e.stopPropagation();
                 const id = btn.dataset.id;
                 const pin = state.allPins.find(p => p.id == id);
-                if (state.placementMode.active && state.placementMode.pinTemplate && state.placementMode.pinTemplate.id == id) {
+                const item = btn.closest('.pin-item');
+                const category = item?.dataset.category;
+                const name = item?.dataset.name;
+                let template = pin ? { ...pin } : null;
+
+                if (!template && category === 'animal') {
+                    const master = state.masterAnimals.find(animal => animal.name === name);
+                    if (master) {
+                        template = {
+                            mapKey: state.activeMapKey || 'town',
+                            category: 'animal',
+                            name: master.name,
+                            iconUrl: master.imageUrl || null,
+                            description: master.description || null,
+                            linkUrl: null
+                        };
+                    }
+                }
+
+                if (!template) {
+                    ui.showToast('❌ 배치할 동물 정보를 찾지 못했습니다.');
+                    return;
+                }
+
+                const activeTemplate = state.placementMode.pinTemplate;
+                const isSameTemplate = activeTemplate
+                    && activeTemplate.category === template.category
+                    && activeTemplate.name === template.name;
+                if (state.placementMode.active && isSameTemplate) {
                     ui.exitPlacementMode();
                 } else {
-                    ui.enterPlacementMode({ ...pin }, false);
+                    ui.enterPlacementMode(template, false);
                 }
             });
         });
