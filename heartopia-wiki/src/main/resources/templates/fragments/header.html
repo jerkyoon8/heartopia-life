@@ -293,8 +293,11 @@
                 z-index: 999;
             }
 
-            /* Show Mega Menu when hovering over the wrapper */
-            .nav-mega-wrapper:hover .mega-menu-container {
+            /* 도감 링크와 메가 메뉴 위에서만 펼침 */
+            .nav-mega-wrapper:has(.encyclopedia-menu-trigger:hover) .mega-menu-container,
+            .nav-mega-wrapper:has(.encyclopedia-menu-trigger:focus-visible) .mega-menu-container,
+            .mega-menu-container:hover,
+            .mega-menu-container:focus-within {
                 opacity: 1;
                 visibility: visible;
                 transform: translateY(0);
@@ -304,8 +307,8 @@
 
             .mega-menu-grid {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 40px;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 36px;
             }
 
             .mega-column h5 {
@@ -319,6 +322,9 @@
             }
 
             .mega-column ul {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 6px;
                 list-style: none;
                 padding: 0;
                 margin: 0;
@@ -354,30 +360,6 @@
                 color: var(--text-color, #333);
             }
 
-            /* --- Visitor Counter --- */
-            .visitor-counter {
-                font-size: 0.85rem;
-                color: var(--stat-label, #777);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background: var(--nav-hover, #f8f9fa);
-                padding: 4px 12px;
-                border-radius: 12px;
-                margin-left: auto;
-                /* Push to right in flex parent */
-                border: 1px solid var(--border-subtle, #eee);
-            }
-
-            .visitor-counter i {
-                color: #ff80ab;
-            }
-
-            .visitor-count-num {
-                font-weight: 700;
-                color: var(--text-color, #333);
-            }
-
             /* Mobile Menu (Hidden for now as requested simple) */
             @media (max-width: 991px) {
                 .mega-menu-container {
@@ -408,11 +390,6 @@
 
                 .navbar-nav::-webkit-scrollbar {
                     display: none;
-                }
-
-                .visitor-counter {
-                    display: none;
-                    /* Hide visitor counter on small screens in the nav bar */
                 }
 
                 .brand-logo img:first-child {
@@ -577,41 +554,85 @@
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki/codes}">쿠폰</a></li>
 
                             <!-- Trigger Links (Hovering these keeps menu open because they are in wrapper) -->
-                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">컬렉션</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">아이템들</a></li>
-                            <li class="nav-item"><a class="nav-link" th:href="@{/wiki}">기타</a></li>
+                            <li class="nav-item"><a class="nav-link encyclopedia-menu-trigger" th:href="@{/wiki}">도감</a></li>
                             <!-- 추가 링크 -->
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki/checklist}">수집 도감</a></li>
                             <li class="nav-item"><a class="nav-link" th:href="@{/wiki/reports}" style="color: #d81b60; font-weight: 700;">문의 게시판</a></li>
                             <!-- 지도 link removed from here as it is already above in some cases or redundant -->
                         </ul>
 
-                        <!-- Visitor Counter (Icons only) -->
-                        <div class="visitor-counter" th:if="${weeklyVisitors != null}">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="d-flex align-items-center gap-1" title="주간 조회수">
-                                    <i class="fas fa-calendar-week" style="color: #6c8cff;"></i>
-                                    <span class="visitor-count-num"
-                                        th:text="${#numbers.formatInteger(weeklyVisitors, 0, 'COMMA')}">1,234</span>
-                                </div>
-                                <div
-                                    style="width: 1px; height: 10px; background-color: var(--border-subtle, #ddd); margin: 0 4px;">
-                                </div>
-                                <div class="d-flex align-items-center gap-1" title="오늘 조회수">
-                                    <i class="fas fa-sun" style="color: #f5a623;"></i>
-                                    <span class="visitor-count-num"
-                                        th:text="${#numbers.formatInteger(todayVisitors, 0, 'COMMA')}">56</span>
-                                </div>
-                            </div>
+                        <div class="header-weather" id="headerWeather">
+                            <button type="button" class="header-weather__button" id="headerWeatherButton"
+                                    aria-expanded="false" aria-controls="weatherForecastPanel">
+                                <span class="header-weather__clock">
+                                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                    <span id="headerServerDay">아시아 서버</span>
+                                    <strong id="headerServerTime">--:--</strong>
+                                </span>
+                                <span class="header-weather__divider" aria-hidden="true"></span>
+                                <span class="header-weather__current">
+                                    <img id="headerWeatherIcon" alt="" hidden>
+                                    <span id="headerWeatherText">날씨 불러오는 중</span>
+                                </span>
+                                <i class="fa-solid fa-chevron-down header-weather__chevron" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
+
+                    <section class="weather-panel" id="weatherForecastPanel" hidden
+                             aria-label="아시아 서버 날씨 예보">
+                        <div class="weather-panel__header">
+                            <div>
+                                <p>ASIA SERVER · UTC+9</p>
+                                <h2>시간과 날씨</h2>
+                            </div>
+                            <button type="button" class="weather-icon-button" id="weatherPanelClose"
+                                    aria-label="날씨 패널 닫기">
+                                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        <div class="weather-panel__body">
+                            <section class="weather-section" aria-labelledby="weather-detail-title">
+                                <div class="weather-section__heading">
+                                    <div>
+                                        <h3 id="weather-detail-title">앞으로의 날씨</h3>
+                                        <p>현재 구간을 포함해 확인 가능한 5개 구간입니다.</p>
+                                    </div>
+                                    <span>6시간 단위</span>
+                                </div>
+                                <div class="weather-detail-list" id="weatherDetailList" aria-live="polite"></div>
+                            </section>
+
+                            <section class="weather-section" aria-labelledby="weather-week-title">
+                                <div class="weather-section__heading">
+                                    <div>
+                                        <h3 id="weather-week-title">7일 기본 예보</h3>
+                                        <p>상세 예보가 없는 구간에 적용되는 날짜별 날씨입니다.</p>
+                                    </div>
+                                </div>
+                                <div class="weather-week-list" id="weatherDailyList" aria-live="polite"></div>
+                            </section>
+                        </div>
+
+                        <div class="weather-panel__footer">
+                            <p id="weatherUpdatedText">사용자 제보를 모아 표시합니다.</p>
+                            <button sec:authorize="isAuthenticated()" type="button"
+                                    class="weather-primary-button" id="weatherVoteStart" disabled>
+                                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                                날씨 제보
+                            </button>
+                            <a sec:authorize="isAnonymous()" th:href="@{/wiki/login}"
+                               class="weather-login-link">로그인 후 제보할 수 있어요</a>
+                        </div>
+                    </section>
 
                     <!-- Mega Dropdown (Full Width Content) -->
                     <div class="mega-menu-container">
                         <div class="mega-menu-grid">
-                            <!-- Column 1: 컬렉션 -->
+                            <!-- Column 1: 도감 -->
                             <div class="mega-column">
-                                <h5>컬렉션</h5>
+                                <h5>도감</h5>
                                 <ul>
                                     <li><a th:href="@{/wiki/collections/fish}" class="mega-link"><i
                                                 class="fas fa-fish"></i> 물고기</a></li>
@@ -624,27 +645,24 @@
                                 </ul>
                             </div>
 
-                            <!-- Column 2: 아이템들 -->
+                            <!-- Column 2: 취미 -->
                             <div class="mega-column">
-                                <h5>아이템들</h5>
+                                <h5>취미</h5>
                                 <ul>
                                     <li><a th:href="@{/wiki/items/cooking}" class="mega-link"><i
-                                                class="fas fa-utensils"></i>
-                                            요리</a></li>
+                                                class="fas fa-utensils"></i> 요리</a></li>
                                     <li><a th:href="@{/wiki/items/crops}" class="mega-link"><i
-                                                class="fas fa-carrot"></i>
-                                            작물</a></li>
+                                                class="fas fa-carrot"></i> 작물</a></li>
                                     <li><a th:href="@{/wiki/items/flowers}" class="mega-link"><i
-                                                class="fas fa-seedling"></i>
-                                            꽃</a></li>
+                                                class="fas fa-seedling"></i> 꽃</a></li>
                                     <li><a th:href="@{/wiki/collections/forageable}" class="mega-link"><i
                                                 class="fas fa-leaf"></i> 채집물</a></li>
                                 </ul>
                             </div>
 
-                            <!-- Column 3: 기타 -->
+                            <!-- Column 3: 기타정보 -->
                             <div class="mega-column">
-                                <h5>기타</h5>
+                                <h5>기타정보</h5>
                                 <ul>
                                     <li><a th:href="@{/wiki/others/villagers}" class="mega-link"><i
                                                 class="fas fa-user-group"></i> 주민들</a></li>
@@ -660,6 +678,62 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="weather-vote-modal" id="weatherVoteModal" hidden>
+            <button type="button" class="weather-vote-modal__backdrop" id="weatherVoteBackdrop"
+                    aria-label="날씨 제보 닫기"></button>
+            <section class="weather-vote-dialog" role="dialog" aria-modal="true"
+                     aria-labelledby="weather-vote-title">
+                <div class="weather-vote-dialog__header">
+                    <div>
+                        <p>COMMUNITY FORECAST</p>
+                        <h2 id="weather-vote-title">날씨 정보 제보</h2>
+                    </div>
+                    <button type="button" class="weather-icon-button" id="weatherVoteClose"
+                            aria-label="날씨 제보 닫기">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="weather-vote-dialog__body">
+                    <div class="weather-vote-guide">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                        <p>게임에서 확인한 칸만 선택해 주세요. 선택하지 않은 기존 제보는 바뀌지 않습니다.</p>
+                    </div>
+
+                    <section class="weather-vote-section" aria-labelledby="weather-vote-detail-title">
+                        <div class="weather-section__heading">
+                            <div>
+                                <h3 id="weather-vote-detail-title">상세 예보</h3>
+                                <p>현재 구간부터 이어지는 5개 구간</p>
+                            </div>
+                            <span>6시간 단위</span>
+                        </div>
+                        <div id="weatherVoteDetailGrid"></div>
+                    </section>
+
+                    <section class="weather-vote-section" aria-labelledby="weather-vote-daily-title">
+                        <div class="weather-section__heading">
+                            <div>
+                                <h3 id="weather-vote-daily-title">날짜별 기본 날씨</h3>
+                                <p>상세 시간이 제공되지 않는 기간의 기본값</p>
+                            </div>
+                        </div>
+                        <div id="weatherVoteDailyGrid"></div>
+                    </section>
+                </div>
+
+                <div class="weather-vote-dialog__footer">
+                    <p id="weatherVoteSelectionCount">새로 선택한 예보가 없습니다.</p>
+                    <div>
+                        <button type="button" class="weather-secondary-button" id="weatherVoteCancel">취소</button>
+                        <button type="button" class="weather-primary-button" id="weatherVoteSubmit" disabled>
+                            제보 적용하기
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <!-- 로그인 상태 플래그 (sync 플래그는 common-head.html에서 이미 설정됨) -->
@@ -957,6 +1031,7 @@
                 }
             });
         </script>
+        <script th:src="@{/js/header-weather.js(v=1.0)}" defer></script>
     </nav>
 </body>
 

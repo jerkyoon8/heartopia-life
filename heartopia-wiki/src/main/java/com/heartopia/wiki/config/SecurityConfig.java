@@ -42,6 +42,12 @@ public class SecurityConfig {
                         // 유저 API는 로그인 필수
                         .requestMatchers("/api/user/**").authenticated()
 
+                        // 날씨 조회는 공개, 제보는 로그인 필수
+                        .requestMatchers(AntPathRequestMatcher.antMatcher(
+                                org.springframework.http.HttpMethod.GET, "/api/weather/**"))
+                        .permitAll()
+                        .requestMatchers("/api/weather/**").authenticated()
+
                         // 개인정보처리방침/OAuth2는 비로그인 포함 모두 허용
                         .requestMatchers("/wiki/privacy", "/oauth2/**", "/login/oauth2/**").permitAll()
 

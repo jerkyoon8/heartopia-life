@@ -1,26 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<footer th:fragment="footer" class="mt-5 py-4" style="background-color: var(--footer-bg, #f8f9fa); border-top: 1px solid var(--border-subtle, #f0f0f0) !important;">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-12">
-                <p class="small mb-1" style="color: var(--stat-label, #6c757d);">
-                    이 웹사이트는 팬에 의해 제작된 비공식 데이터베이스이며, XD Interactive와 직접적인 관련이 없습니다.
+<footer th:fragment="footer" class="site-footer">
+    <div class="site-footer__glow site-footer__glow--left" aria-hidden="true"></div>
+    <div class="site-footer__glow site-footer__glow--right" aria-hidden="true"></div>
+
+    <div class="site-footer__container">
+        <div class="site-footer__main">
+            <section class="site-footer__brand" aria-labelledby="footer-brand-title">
+                <a class="site-footer__brand-link" th:href="@{/wiki}">
+                    <span class="site-footer__logo">
+                        <img th:src="@{/images/logo/favicon.webp(v=3)}" alt="">
+                    </span>
+                    <span>
+                        <strong id="footer-brand-title">두두타 도감</strong>
+                        <small>HEARTOPIA LIFE GUIDE</small>
+                    </span>
+                </a>
+                <p class="site-footer__description">
+                    두근두근타운의 수집과 생활 정보를 한곳에 정리한<br class="site-footer__desktop-break">
+                    비공식 팬 가이드입니다.
                 </p>
-                <p class="small mb-3" style="color: var(--stat-label, #888888);">
-                    사이트 내 모든 게임 맵 이미지 및 데이터의 저작권은 XD Interactive Entertainment Co., Ltd.에 있습니다.<br>
-                    Copyright &copy; XD Interactive Entertainment Co., Ltd. All rights reserved.
-                </p>
-                <p class="small mb-3" style="color: var(--stat-label, #888888);">
-                    저작권자의 요청이 있을 경우 해당 콘텐츠는 삭제될 수 있습니다.
-                </p>
-                <p class="small fw-medium mb-0" style="color: var(--stat-label, #6c757d);">
-                    <i class="far fa-envelope me-1"></i> 문의 및 제보: khazan098@naver.com
-                </p>
-                <p class="small mt-2 mb-0">
-                    <a th:href="@{/wiki/privacy}" style="color: var(--stat-label, #999); text-decoration: none;">소셜 로그인 개인정보 처리방침</a>
-                </p>
+            </section>
+
+            <nav class="site-footer__nav" aria-label="푸터 바로가기">
+                <div class="site-footer__nav-group">
+                    <p class="site-footer__eyebrow">EXPLORE</p>
+                    <h2>도감 둘러보기</h2>
+                    <a th:href="@{/wiki}"><i class="fa-solid fa-layer-group"></i> 전체 컬렉션</a>
+                    <a th:href="@{/wiki/map}"><i class="fa-regular fa-map"></i> 인터랙티브 지도</a>
+                    <a th:href="@{/wiki/checklist}"><i class="fa-solid fa-list-check"></i> 수집 도감</a>
+                    <a th:href="@{/wiki/codes}"><i class="fa-solid fa-ticket"></i> 쿠폰 정보</a>
+                </div>
+
+                <div class="site-footer__nav-group">
+                    <p class="site-footer__eyebrow">SERVICE</p>
+                    <h2>운영 안내</h2>
+                    <a th:href="@{/wiki/reports}"><i class="fa-regular fa-comments"></i> 문의 게시판</a>
+                    <a href="mailto:khazan098@naver.com"><i class="fa-regular fa-envelope"></i> 이메일 문의</a>
+                    <a th:href="@{/wiki/privacy}"><i class="fa-solid fa-shield-halved"></i> 개인정보 처리방침</a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="site-footer__bottom">
+            <div class="site-footer__legal">
+                <p>팬이 제작한 비공식 정보 서비스이며 XD Interactive와 직접적인 관련이 없습니다.</p>
+                <p>게임 이미지와 데이터의 권리는 각 원저작권자에게 있으며, 요청 시 관련 콘텐츠는 삭제될 수 있습니다.</p>
+                <p class="site-footer__copyright">&copy; 2026 두두타 도감</p>
+            </div>
+
+            <div class="footer-visitor-stats" th:if="${weeklyVisitors != null}" aria-label="접속자 통계">
+                <div class="footer-visitor-stat" title="오늘 접속자">
+                    <span class="footer-visitor-stat__icon footer-visitor-stat__icon--today">
+                        <i class="fa-solid fa-sun" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <small>오늘</small>
+                        <strong th:text="${#numbers.formatInteger(todayVisitors, 0, 'COMMA')}">56</strong>
+                    </span>
+                </div>
+                <span class="footer-visitor-stats__divider" aria-hidden="true"></span>
+                <div class="footer-visitor-stat" title="주간 접속자">
+                    <span class="footer-visitor-stat__icon footer-visitor-stat__icon--weekly">
+                        <i class="fa-solid fa-calendar-week" aria-hidden="true"></i>
+                    </span>
+                    <span>
+                        <small>이번 주</small>
+                        <strong th:text="${#numbers.formatInteger(weeklyVisitors, 0, 'COMMA')}">1,234</strong>
+                    </span>
+                </div>
             </div>
         </div>
     </div>

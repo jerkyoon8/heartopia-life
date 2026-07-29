@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.WeatherVoteMapper">
+
+    <select id="findTallies" resultType="com.heartopia.wiki.model.WeatherVoteTally">
+        SELECT forecast_date,
+               slot_hour,
+               weather_code,
+               SUM(vote_weight) AS score,
+               COUNT(*) AS voter_count
+        FROM weather_votes
+        WHERE forecast_date BETWEEN #{fromDate} AND #{toDate}
+        GROUP BY forecast_date, slot_hour, weather_code
+        ORDER BY forecast_date, slot_hour, score DESC, weather_code
+    </select>
+
+    <select id="findUserVotes" resultType="com.heartopia.wiki.model.WeatherVote">
+        SELECT id, user_id, forecast_date, slot_hour, weather_code, vote_weight, created_at, updated_at
+        FROM weather_votes
+        WHERE user_id = #{userId}
+          AND forecast_date BETWEEN #{fromDate} AND #{toDate}
+    </select>
+
+    <select id="findUserVote" resultType="com.heartopia.wiki.model.WeatherVote">
+        SELECT id, user_id, forecast_date, slot_hour, weather_code, vote_weight, created_at, updated_at
+        FROM weather_votes
+        WHERE user_id = #{userId}
+          AND forecast_date = #{forecastDate}
+          AND slot_hour = #{slotHour}
+    </select>
+
+    <insert id="upsertVote" parameterType="com.heartopia.wiki.model.WeatherVote">
+        INSERT INTO weather_votes
+            (user_id, forecast_date, slot_hour, weather_code, vote_weight)
+        VALUES
+            (#{userId}, #{forecastDate}, #{slotHour}, #{weatherCode}, #{voteWeight})
+        ON DUPLICATE KEY UPDATE
+            weather_code = VALUES(weather_code),
+            vote_weight = VALUES(vote_weight),
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <insert id="insertHistory">
+        INSERT INTO weather_vote_history
+            (user_id, forecast_date, slot_hour, previous_weather_code, new_weather_code)
+        VALUES
+            (#{userId}, #{forecastDate}, #{slotHour}, #{previousWeatherCode}, #{newWeatherCode})
+    </insert>
+
+    <delete id="deleteVotesBefore">
+        DELETE FROM weather_votes
+        WHERE forecast_date &lt; #{cutoffDate}
+    </delete>
+
+    <delete id="deleteHistoryBefore">
+        DELETE FROM weather_vote_history
+        WHERE changed_at &lt; #{cutoffDateTime}
+    </delete>
+
+</mapper>
