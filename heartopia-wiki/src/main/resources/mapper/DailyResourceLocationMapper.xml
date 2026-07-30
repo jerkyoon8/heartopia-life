@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.DailyResourceLocationMapper">
+
+    <sql id="dailyResourceLocationColumns">
+        id, game_date,
+        fluorite_location_type, fluorite_house_number,
+        oak_location_type, oak_house_number,
+        is_active,
+        created_at, updated_at
+    </sql>
+
+    <select id="findByGameDate" resultType="com.heartopia.wiki.model.DailyResourceLocation">
+        SELECT <include refid="dailyResourceLocationColumns"/>
+        FROM daily_resource_locations
+        WHERE game_date = #{gameDate}
+          AND is_active = TRUE
+    </select>
+
+    <select id="findAll" resultType="com.heartopia.wiki.model.DailyResourceLocation">
+        SELECT <include refid="dailyResourceLocationColumns"/>
+        FROM daily_resource_locations
+        WHERE is_active = TRUE
+        ORDER BY game_date ASC
+    </select>
+
+    <insert id="upsert" parameterType="com.heartopia.wiki.model.DailyResourceLocation">
+        INSERT INTO daily_resource_locations (
+            game_date,
+            fluorite_location_type, fluorite_house_number,
+            oak_location_type, oak_house_number
+        ) VALUES (
+            #{gameDate},
+            #{fluoriteLocationType}, #{fluoriteHouseNumber},
+            #{oakLocationType}, #{oakHouseNumber}
+        ) AS new
+        ON DUPLICATE KEY UPDATE
+            fluorite_location_type = new.fluorite_location_type,
+            fluorite_house_number = new.fluorite_house_number,
+            oak_location_type = new.oak_location_type,
+            oak_house_number = new.oak_house_number,
+            is_active = TRUE,
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <delete id="deleteById">
+        UPDATE daily_resource_locations
+        SET is_active = FALSE,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

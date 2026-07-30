@@ -68,7 +68,7 @@ class AnimalSecondMapTemplateTest {
         assertTrue(mapCore.contains("state.categoryVisible[pin.category] = showAllByDefault"));
         assertTrue(mapCore.contains("state.categoryVisible[cat] = showAllByDefault"));
         assertTrue(mapCore.contains("state.zoneVisible[zoneEntry.zoneKey] = true"));
-        assertTrue(mapTemplate.contains("map-core.js(v=1.20)"));
+        assertTrue(mapTemplate.contains("map-core.js(v=1.21)"));
     }
 
     private String read(String relativePath) throws IOException {

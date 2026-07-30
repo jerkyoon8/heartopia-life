@@ -17,7 +17,8 @@ window.MapApp.MAPS = {
         key: 'town',
         label: '고래섬',
         description: '기본 고래섬 지도',
-        imageUrl: '/images/map/heartopia-map.png',
+        imageUrl: '/images/map/heartopia-map.webp',
+        dataCategories: ['forageable', 'fish', 'bird', 'insect', 'animal', 'villager'],
         isDefault: true
     },
     second: {
@@ -25,6 +26,7 @@ window.MapApp.MAPS = {
         label: '고래낙하 협곡',
         description: '고래 탐사 시즌 지도',
         imageUrl: '/images/map/second-map.webp',
+        dataCategories: ['forageable', 'animal'],
         isDefault: false
     }
 };
@@ -37,6 +39,11 @@ window.MapApp.getInitialMapKey = function () {
 
 window.MapApp.getActiveMap = function () {
     return window.MapApp.MAPS[window.MapApp.state.activeMapKey] || window.MapApp.MAPS.town;
+};
+
+window.MapApp.getActiveDataCategories = function () {
+    const activeMap = window.MapApp.getActiveMap();
+    return activeMap.dataCategories || window.MapApp.MAPS.town.dataCategories;
 };
 
 window.MapApp.belongsToActiveMap = function (item) {

@@ -15,6 +15,7 @@ import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import com.heartopia.wiki.model.SandboxCollection;
 import com.heartopia.wiki.model.SeaCleaningCollection;
+import com.heartopia.wiki.model.PuzzleCollection;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -41,6 +42,8 @@ public interface CollectionMapper {
     List<SandboxCollection> findAllSandboxes();
 
     List<SeaCleaningCollection> findAllSeaCleaningCollections();
+
+    List<PuzzleCollection> findAllPuzzles();
 
     // === 이름으로 개별 조회 (상세보기) ===
     FishCollection findFishByName(@Param("name") String name);
@@ -112,6 +115,8 @@ public interface CollectionMapper {
     int countAllSandboxes();
 
     int countAllSeaCleaningCollections();
+
+    int countAllPuzzles();
 
     // === INSERT (관리자 데이터 추가) ===
     void insertFish(FishCollection fish);

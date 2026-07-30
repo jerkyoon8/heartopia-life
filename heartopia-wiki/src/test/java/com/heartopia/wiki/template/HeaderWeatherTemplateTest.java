@@ -40,6 +40,7 @@ class HeaderWeatherTemplateTest {
         assertTrue(header.contains("@{/wiki/others/sandbox}"));
         assertTrue(header.contains("@{/wiki/others/sea-cleaning}"));
         assertTrue(header.contains("@{/wiki/others/pets}"));
+        assertTrue(header.contains("@{/wiki/others/puzzles}"));
     }
 
     @Test

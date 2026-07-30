@@ -69,6 +69,7 @@ public class WikiController {
                 List<CategoryItemDto> utilities = new ArrayList<>();
                 utilities.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/main-index/main_index_icon_villager.webp?v=2", 21));
                 utilities.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/main-index/main_index_icon_achievement.webp?v=2", collectionService.getAchievementCount()));
+                utilities.add(new CategoryItemDto("퍼즐", "🧩", "/wiki/others/puzzles", null, collectionService.getPuzzleCount()));
 
                 model.addAttribute("collections", collections);
                 model.addAttribute("hobbies", hobbies);
@@ -230,6 +231,14 @@ public class WikiController {
                 model.addAttribute("pageTitle", "바다 청소 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 바다 청소 도감 - 조개와 고둥의 등장 시간, 레벨, 숙련도를 확인하세요.");
                 return "wiki/others/sea-cleaning";
+        }
+
+        @GetMapping("/others/puzzles")
+        public String puzzles(Model model) {
+                model.addAttribute("puzzleList", collectionService.getAllPuzzles());
+                model.addAttribute("pageTitle", "퍼즐 도감");
+                model.addAttribute("pageDescription", "두근두근타운 퍼즐 도감 - 퍼즐 이미지, 크기와 획득 방법을 확인하세요.");
+                return "wiki/others/puzzles";
         }
 
         @GetMapping("/others/achievements")

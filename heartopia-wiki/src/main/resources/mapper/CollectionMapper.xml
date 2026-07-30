@@ -524,4 +524,20 @@
     <delete id="deleteAchievement">DELETE FROM achievements WHERE id=#{id}</delete>
     <delete id="deleteSeaCleaning">DELETE FROM sea_cleaning_collections WHERE id=#{id}</delete>
 
+    <!-- ========== 퍼즐 (Puzzle) ========== -->
+    <sql id="puzzleColumns">
+        id, image_id, catalog_order, category, name, english_name, size,
+        acquisition_method, purchase_price, image_url, sort_order
+    </sql>
+
+    <select id="findAllPuzzles" resultType="com.heartopia.wiki.model.PuzzleCollection">
+        SELECT <include refid="puzzleColumns"/>
+        FROM puzzle_collections
+        ORDER BY sort_order ASC, catalog_order ASC
+    </select>
+
+    <select id="countAllPuzzles" resultType="int">
+        SELECT count(*) FROM puzzle_collections
+    </select>
+
 </mapper>

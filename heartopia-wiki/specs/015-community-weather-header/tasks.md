@@ -36,7 +36,7 @@
   Files: `src/main/java/com/heartopia/wiki/model/WeatherVote.java`, `src/main/java/com/heartopia/wiki/model/WeatherVoteTally.java`, `src/main/java/com/heartopia/wiki/dto/weather/*.java`, `src/main/java/com/heartopia/wiki/mapper/WeatherVoteMapper.java`, `src/main/resources/mapper/WeatherVoteMapper.xml`
   Verify: `compileJava` 성공 및 매퍼 메서드/SQL ID 일치
 
-- [x] T007 시간 구간·합의·대체·배치 수정·정리를 구현한다.
+- [x] T007 시간 구간·독립 합의·배치 수정·정리를 구현한다.
   Files: `src/main/java/com/heartopia/wiki/service/WeatherForecastService.java`
   Verify: T003 서비스 테스트 통과
 
@@ -76,6 +76,10 @@
 
 ## Completion Notes
 
+- 2026-07-30 correction:
+  - 상세 시간대와 날짜별 기본 날씨의 대체 관계를 제거했다.
+  - 새 오른쪽 끝 상세 칸은 해당 시간대 제보가 없으면 `제보 필요`를 유지한다.
+  - 날짜별 기본 예보 범위를 오늘 포함 7일에서 내일부터 7일 후까지로 변경했다.
 - Tests run:
   - `.\gradlew.bat test`: 성공
   - `node --check src/main/resources/static/js/header-weather.js`: 성공

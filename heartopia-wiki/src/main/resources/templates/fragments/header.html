@@ -562,6 +562,24 @@
                         </ul>
 
                         <div class="header-weather" id="headerWeather">
+                            <div class="header-daily-locations" id="headerDailyResourceLocations"
+                                 aria-label="오늘의 자원 위치" aria-live="polite">
+                                <span class="header-daily-location header-daily-location--oak">
+                                    <img class="header-daily-location__icon"
+                                         th:src="@{/images/header/oak.webp}" alt="그자리 참나무">
+                                    <strong id="headerOakLocation">위치 정보 없음</strong>
+                                </span>
+                                <span class="header-daily-location header-daily-location--fluorite">
+                                    <img class="header-daily-location__icon"
+                                         th:src="@{/images/header/fluorite.webp}" alt="형광석">
+                                    <strong id="headerFluoriteLocation">위치 정보 없음</strong>
+                                </span>
+                                <a sec:authorize="hasRole('ADMIN')" class="header-daily-locations__admin"
+                                   th:href="@{/wiki/admin/daily-resource-locations}" title="일일 위치 관리"
+                                   aria-label="일일 자원 위치 관리">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </a>
+                            </div>
                             <button type="button" class="header-weather__button" id="headerWeatherButton"
                                     aria-expanded="false" aria-controls="weatherForecastPanel">
                                 <span class="header-weather__clock">
@@ -672,6 +690,8 @@
                                                 class="fas fa-water"></i> 바다 청소</a></li>
                                     <li><a th:href="@{/wiki/others/pets}" class="mega-link"><i
                                                 class="fas fa-paw"></i> 반려동물</a></li>
+                                    <li><a th:href="@{/wiki/others/puzzles}" class="mega-link"><i
+                                                class="fas fa-puzzle-piece"></i> 퍼즐</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -1031,7 +1051,8 @@
                 }
             });
         </script>
-        <script th:src="@{/js/header-weather.js(v=1.0)}" defer></script>
+        <script th:src="@{/js/header-daily-resources.js(v=1.0)}" defer></script>
+        <script th:src="@{/js/header-weather.js(v=1.2)}" defer></script>
     </nav>
 </body>
 

@@ -42,10 +42,13 @@ window.MapApp.api = {
         try {
             const mapKey = window.MapApp.state.activeMapKey || 'town';
             const res = await fetch('/wiki/map/api/zones?mapKey=' + encodeURIComponent(mapKey));
+            if (!res.ok) throw new Error('Zone 로드 실패');
             const zones = await res.json();
             window.MapApp.state.allZones = zones.filter(window.MapApp.belongsToActiveMap);
+            return window.MapApp.state.allZones;
         } catch (e) {
             console.error('Zone 로드 실패:', e);
+            throw e;
         }
     },
     saveZonePosition: async function (zoneKey, mapX, mapY) {

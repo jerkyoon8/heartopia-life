@@ -51,7 +51,7 @@ public class WeatherForecastService {
     public WeatherForecastResponse getForecast(Long userId) {
         ZonedDateTime now = ZonedDateTime.now(clock).withZoneSameInstant(ASIA_SERVER_ZONE);
         LocalDate today = now.toLocalDate();
-        LocalDate lastDate = today.plusDays(6);
+        LocalDate lastDate = today.plusDays(7);
 
         List<WeatherVoteTally> tallies = mapper.findTallies(today, lastDate);
         Map<ForecastKey, List<WeatherVoteTally>> talliesByKey = safeList(tallies).stream()
@@ -64,30 +64,17 @@ public class WeatherForecastService {
             }
         }
 
-        Map<LocalDate, WeatherForecastResponse.ForecastResult> dailyResults = new HashMap<>();
         List<WeatherForecastResponse.DailyForecast> dailyForecasts = new ArrayList<>(7);
-        for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
+        for (int dayOffset = 1; dayOffset <= 7; dayOffset++) {
             LocalDate date = today.plusDays(dayOffset);
             ForecastKey key = new ForecastKey(date, DAILY_SLOT);
-            WeatherForecastResponse.ForecastResult result = resolve(talliesByKey.get(key), false);
-            dailyResults.put(date, result);
+            WeatherForecastResponse.ForecastResult result = resolve(talliesByKey.get(key));
             dailyForecasts.add(new WeatherForecastResponse.DailyForecast(date, result, myVotes.get(key)));
         }
 
         List<WeatherForecastResponse.DetailSlot> detailSlots = new ArrayList<>(5);
         for (ForecastKey key : detailKeys(now)) {
-            WeatherForecastResponse.ForecastResult detail = resolve(talliesByKey.get(key), false);
-            if ("EMPTY".equals(detail.status())) {
-                WeatherForecastResponse.ForecastResult daily = dailyResults.get(key.forecastDate());
-                if (daily != null && !"EMPTY".equals(daily.status())) {
-                    detail = new WeatherForecastResponse.ForecastResult(
-                            daily.status(),
-                            daily.weatherCode(),
-                            daily.score(),
-                            daily.voterCount(),
-                            true);
-                }
-            }
+            WeatherForecastResponse.ForecastResult detail = resolve(talliesByKey.get(key));
             detailSlots.add(new WeatherForecastResponse.DetailSlot(
                     key.forecastDate(),
                     key.slotHour(),
@@ -148,8 +135,8 @@ public class WeatherForecastService {
 
         Set<ForecastKey> allowedDetailKeys = new HashSet<>(detailKeys(now));
         Set<LocalDate> allowedDailyDates = new HashSet<>();
-        for (int i = 0; i < 7; i++) {
-            allowedDailyDates.add(now.toLocalDate().plusDays(i));
+        for (int dayOffset = 1; dayOffset <= 7; dayOffset++) {
+            allowedDailyDates.add(now.toLocalDate().plusDays(dayOffset));
         }
 
         Set<ForecastKey> seen = new HashSet<>();
@@ -181,10 +168,10 @@ public class WeatherForecastService {
         return keys;
     }
 
-    private WeatherForecastResponse.ForecastResult resolve(List<WeatherVoteTally> rows, boolean fallback) {
+    private WeatherForecastResponse.ForecastResult resolve(List<WeatherVoteTally> rows) {
         List<WeatherVoteTally> safeRows = safeList(rows);
         if (safeRows.isEmpty()) {
-            return new WeatherForecastResponse.ForecastResult("EMPTY", null, 0, 0, fallback);
+            return new WeatherForecastResponse.ForecastResult("EMPTY", null, 0, 0, false);
         }
 
         int maxScore = safeRows.stream().mapToInt(WeatherVoteTally::getScore).max().orElse(0);
@@ -194,14 +181,14 @@ public class WeatherForecastService {
                 .toList();
 
         if (leaders.size() != 1) {
-            return new WeatherForecastResponse.ForecastResult("TIED", null, maxScore, totalVoters, fallback);
+            return new WeatherForecastResponse.ForecastResult("TIED", null, maxScore, totalVoters, false);
         }
         return new WeatherForecastResponse.ForecastResult(
                 "CONFIRMED",
                 leaders.get(0).getWeatherCode(),
                 maxScore,
                 totalVoters,
-                fallback);
+                false);
     }
 
     private <T> List<T> safeList(List<T> value) {

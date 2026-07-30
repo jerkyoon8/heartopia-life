@@ -116,8 +116,15 @@
         }
 
         function dateBadge(dateString) {
-            const today = state.forecast?.dailyForecasts?.[0]?.forecastDate;
-            const tomorrow = state.forecast?.dailyForecasts?.[1]?.forecastDate;
+            const parts = asiaParts(currentServerDate());
+            const todayDate = new Date(Date.UTC(
+                Number(parts.year),
+                Number(parts.month) - 1,
+                Number(parts.day)
+            ));
+            const today = todayDate.toISOString().slice(0, 10);
+            todayDate.setUTCDate(todayDate.getUTCDate() + 1);
+            const tomorrow = todayDate.toISOString().slice(0, 10);
             if (dateString === today) return '오늘';
             if (dateString === tomorrow) return '내일';
             const date = dateParts(dateString);
@@ -147,7 +154,6 @@
 
             elements.detailList.innerHTML = forecast.detailSlots.map((slot, index) => {
                 const view = resultPresentation(slot.result);
-                const source = slot.result?.fallback ? '<small>기본 예보</small>' : '';
                 const voters = slot.result?.voterCount
                     ? `<span>${slot.result.voterCount}명 제보</span>`
                     : '<span>첫 제보를 기다려요</span>';
@@ -160,7 +166,6 @@
                         <div class="weather-detail-card__weather">
                             ${weatherImage(view.code, 'weather-detail-card__icon')}
                             <strong>${view.label}</strong>
-                            ${source}
                         </div>
                         ${voters}
                     </article>`;
@@ -172,7 +177,7 @@
                 const weekday = KOREAN_WEEKDAYS[date.weekday];
                 return `
                     <article class="weather-day-card ${view.stateClass}">
-                        <span>${index === 0 ? '오늘' : weekday}</span>
+                        <span>${index === 0 ? '내일' : weekday}</span>
                         <small>${date.month}/${date.day}</small>
                         ${weatherImage(view.code, 'weather-day-card__icon')}
                         <strong>${view.label}</strong>
@@ -272,7 +277,7 @@
                 return `
                     <article class="weather-vote-row weather-vote-row--daily">
                         <div class="weather-vote-row__label">
-                            <span>${index === 0 ? '오늘' : KOREAN_WEEKDAYS[date.weekday] + '요일'}</span>
+                            <span>${index === 0 ? '내일' : KOREAN_WEEKDAYS[date.weekday] + '요일'}</span>
                             <strong>${date.month}/${date.day}</strong>
                         </div>
                         <div class="weather-choice-list">${weatherOptions({

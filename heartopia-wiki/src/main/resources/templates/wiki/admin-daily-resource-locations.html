@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        .daily-location-admin {
+            width: min(980px, calc(100% - 32px));
+            margin: 120px auto 56px;
+        }
+
+        .daily-location-admin__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .daily-location-admin__header h1 {
+            margin: 0;
+            font-size: clamp(1.45rem, 3vw, 2rem);
+        }
+
+        .daily-location-card {
+            margin-bottom: 24px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 28px var(--shadow);
+        }
+
+        .daily-location-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .daily-location-form__full {
+            grid-column: 1 / -1;
+        }
+
+        .daily-location-fields {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) minmax(100px, 0.65fr);
+            gap: 10px;
+        }
+
+        .daily-location-form__actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .daily-location-table td,
+        .daily-location-table th {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 720px) {
+            .daily-location-admin {
+                margin-top: 96px;
+            }
+
+            .daily-location-form {
+                grid-template-columns: 1fr;
+            }
+
+            .daily-location-form__full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="daily-location-admin">
+        <div class="daily-location-admin__header">
+            <div>
+                <p class="text-secondary mb-1">ADMIN · 오전 6시 자동 전환</p>
+                <h1><i class="fa-solid fa-location-dot text-primary me-2"></i>일일 자원 위치 관리</h1>
+            </div>
+            <a th:href="@{/wiki}" class="btn btn-outline-secondary btn-sm">메인으로</a>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <section class="daily-location-card" aria-labelledby="daily-location-form-title">
+            <h2 id="daily-location-form-title" class="h5 mb-3">날짜별 위치 등록·수정</h2>
+            <p class="text-secondary small">
+                선택한 날짜 오전 6시부터 다음 날 오전 5시 59분까지 적용됩니다. 같은 날짜를 다시 저장하면 수정됩니다.
+            </p>
+
+            <form class="daily-location-form" th:action="@{/wiki/admin/daily-resource-locations/save}" method="post"
+                  id="dailyLocationForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="daily-location-form__full">
+                    <label class="form-label" for="gameDate">적용 날짜</label>
+                    <input class="form-control" id="gameDate" name="gameDate" type="date"
+                           th:value="${currentGameDate}" required>
+                </div>
+
+                <fieldset>
+                    <legend class="h6">형광석</legend>
+                    <div class="daily-location-fields">
+                        <select class="form-select location-type" id="fluoriteLocationType"
+                                name="fluoriteLocationType" data-house-input="fluoriteHouseNumber" required>
+                            <option value="HOUSE_FRONT">집 앞</option>
+                            <option value="RUINS">유적</option>
+                        </select>
+                        <input class="form-control" id="fluoriteHouseNumber" name="fluoriteHouseNumber"
+                               type="number" min="1" step="1" placeholder="집 번호" required>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend class="h6">그자리 참나무</legend>
+                    <div class="daily-location-fields">
+                        <select class="form-select location-type" id="oakLocationType"
+                                name="oakLocationType" data-house-input="oakHouseNumber" required>
+                            <option value="HOUSE_FRONT">집 앞</option>
+                            <option value="RUINS">유적</option>
+                        </select>
+                        <input class="form-control" id="oakHouseNumber" name="oakHouseNumber"
+                               type="number" min="1" step="1" placeholder="집 번호" required>
+                    </div>
+                </fieldset>
+
+                <div class="daily-location-form__actions daily-location-form__full">
+                    <button type="button" class="btn btn-outline-secondary" id="dailyLocationReset">초기화</button>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="daily-location-card" aria-labelledby="daily-location-list-title">
+            <h2 id="daily-location-list-title" class="h5 mb-3">등록된 예약</h2>
+            <div class="table-responsive">
+                <table class="table table-hover daily-location-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>적용 날짜</th>
+                            <th>형광석</th>
+                            <th>그자리 참나무</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${dailyLocations}">
+                            <td th:text="${#temporals.format(item.gameDate, 'yyyy-MM-dd')}">2026-07-30</td>
+                            <td th:text="${item.fluoriteLocationLabel}">8번 집 앞</td>
+                            <td th:text="${item.oakLocationLabel}">유적</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-primary daily-location-edit"
+                                        th:data-game-date="${item.gameDate}"
+                                        th:data-fluorite-type="${item.fluoriteLocationType}"
+                                        th:data-fluorite-house="${item.fluoriteHouseNumber}"
+                                        th:data-oak-type="${item.oakLocationType}"
+                                        th:data-oak-house="${item.oakHouseNumber}">수정</button>
+                                <form th:action="@{/wiki/admin/daily-resource-locations/delete}" method="post"
+                                      class="d-inline" onsubmit="return confirm('이 예약을 삭제하시겠습니까?');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(dailyLocations)}">
+                            <td colspan="4" class="py-4 text-center text-secondary">등록된 위치 예약이 없습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('dailyLocationForm');
+            const initialDate = document.getElementById('gameDate').value;
+
+            function syncHouseInput(select) {
+                const input = document.getElementById(select.dataset.houseInput);
+                const houseFront = select.value === 'HOUSE_FRONT';
+                input.disabled = !houseFront;
+                input.required = houseFront;
+                if (!houseFront) input.value = '';
+            }
+
+            document.querySelectorAll('.location-type').forEach(select => {
+                select.addEventListener('change', () => syncHouseInput(select));
+                syncHouseInput(select);
+            });
+
+            document.querySelectorAll('.daily-location-edit').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('gameDate').value = button.dataset.gameDate;
+                    document.getElementById('fluoriteLocationType').value = button.dataset.fluoriteType;
+                    document.getElementById('fluoriteHouseNumber').value = button.dataset.fluoriteHouse || '';
+                    document.getElementById('oakLocationType').value = button.dataset.oakType;
+                    document.getElementById('oakHouseNumber').value = button.dataset.oakHouse || '';
+                    document.querySelectorAll('.location-type').forEach(syncHouseInput);
+                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            });
+
+            document.getElementById('dailyLocationReset').addEventListener('click', () => {
+                form.reset();
+                document.getElementById('gameDate').value = initialDate;
+                document.querySelectorAll('.location-type').forEach(syncHouseInput);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -16,6 +16,7 @@ import com.heartopia.wiki.model.GardeningCollection;
 import com.heartopia.wiki.model.ForageableCollection;
 import com.heartopia.wiki.model.SandboxCollection;
 import com.heartopia.wiki.model.SeaCleaningCollection;
+import com.heartopia.wiki.model.PuzzleCollection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -82,6 +83,11 @@ public class CollectionService {
     @Cacheable("allSeaCleaningCollections")
     public List<SeaCleaningCollection> getAllSeaCleaningCollections() {
         return collectionMapper.findAllSeaCleaningCollections();
+    }
+
+    @Cacheable("allPuzzles")
+    public List<PuzzleCollection> getAllPuzzles() {
+        return collectionMapper.findAllPuzzles();
     }
 
     // ===================================================================
@@ -253,6 +259,11 @@ public class CollectionService {
     @Cacheable("countSeaCleaningCollections")
     public int getSeaCleaningCount() {
         return collectionMapper.countAllSeaCleaningCollections();
+    }
+
+    @Cacheable("countPuzzles")
+    public int getPuzzleCount() {
+        return collectionMapper.countAllPuzzles();
     }
 
     // ===================================================================

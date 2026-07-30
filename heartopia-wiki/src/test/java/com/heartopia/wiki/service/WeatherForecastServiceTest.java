@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -62,38 +63,51 @@ class WeatherForecastServiceTest {
         assertEquals(List.of(TODAY, TODAY, TODAY, TODAY.plusDays(1), TODAY.plusDays(1)),
                 response.detailSlots().stream().map(WeatherForecastResponse.DetailSlot::forecastDate).toList());
         assertEquals(7, response.dailyForecasts().size());
+        assertEquals(
+                List.of(
+                        TODAY.plusDays(1),
+                        TODAY.plusDays(2),
+                        TODAY.plusDays(3),
+                        TODAY.plusDays(4),
+                        TODAY.plusDays(5),
+                        TODAY.plusDays(6),
+                        TODAY.plusDays(7)),
+                response.dailyForecasts().stream()
+                        .map(WeatherForecastResponse.DailyForecast::forecastDate)
+                        .toList());
     }
 
     @Test
-    @DisplayName("상세 제보가 비어 있으면 같은 날짜의 기본 날씨를 사용한다")
-    void fallsBackToDailyWeatherOnlyWhenDetailIsEmpty() {
+    @DisplayName("상세 제보가 비어 있으면 날짜별 기본 날씨와 무관하게 빈 상태를 유지한다")
+    void keepsDetailEmptyWhenOnlyDailyWeatherExists() {
         when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY, -1, "SUNNY", 3, 3)
+                tally(TODAY.plusDays(1), -1, "SUNNY", 3, 3)
         ));
 
         WeatherForecastResponse response = service.getForecast(null);
-        WeatherForecastResponse.ForecastResult first = response.detailSlots().get(0).result();
+        WeatherForecastResponse.ForecastResult firstTomorrowSlot = response.detailSlots().get(3).result();
 
-        assertEquals("CONFIRMED", first.status());
-        assertEquals("SUNNY", first.weatherCode());
-        assertTrue(first.fallback());
+        assertEquals("EMPTY", firstTomorrowSlot.status());
+        assertNull(firstTomorrowSlot.weatherCode());
+        assertFalse(firstTomorrowSlot.fallback());
+        assertEquals("SUNNY", response.dailyForecasts().get(0).result().weatherCode());
     }
 
     @Test
-    @DisplayName("상세 제보가 동점이면 기본 날씨로 덮어쓰지 않는다")
-    void doesNotFallbackWhenDetailIsTied() {
+    @DisplayName("상세 제보가 동점이면 날짜별 기본 날씨와 무관하게 동점을 유지한다")
+    void keepsDetailTiedWhenDailyWeatherExists() {
         when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY, 6, "SUNNY", 2, 2),
-                tally(TODAY, 6, "RAIN", 2, 2),
-                tally(TODAY, -1, "SUNNY", 4, 4)
+                tally(TODAY.plusDays(1), 0, "SUNNY", 2, 2),
+                tally(TODAY.plusDays(1), 0, "RAIN", 2, 2),
+                tally(TODAY.plusDays(1), -1, "SUNNY", 4, 4)
         ));
 
         WeatherForecastResponse response = service.getForecast(null);
-        WeatherForecastResponse.ForecastResult first = response.detailSlots().get(0).result();
+        WeatherForecastResponse.ForecastResult firstTomorrowSlot = response.detailSlots().get(3).result();
 
-        assertEquals("TIED", first.status());
-        assertNull(first.weatherCode());
-        assertFalse(first.fallback());
+        assertEquals("TIED", firstTomorrowSlot.status());
+        assertNull(firstTomorrowSlot.weatherCode());
+        assertFalse(firstTomorrowSlot.fallback());
     }
 
     @Test
@@ -184,6 +198,11 @@ class WeatherForecastServiceTest {
     @Test
     @DisplayName("현재 상세 다섯 칸과 7일 기본 범위 밖의 제보는 거부한다")
     void rejectsVotesOutsideVisibleForecastKeys() {
+        assertDoesNotThrow(() ->
+                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
+                        new WeatherVoteRequest(TODAY.plusDays(7), -1, "SUNNY")
+                ))));
+
         assertThrows(IllegalArgumentException.class, () ->
                 service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
                         new WeatherVoteRequest(TODAY.plusDays(2), 6, "SUNNY")
@@ -191,7 +210,12 @@ class WeatherForecastServiceTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY.plusDays(7), -1, "SUNNY")
+                        new WeatherVoteRequest(TODAY, -1, "SUNNY")
+                ))));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
+                        new WeatherVoteRequest(TODAY.plusDays(8), -1, "SUNNY")
                 ))));
     }
 

@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 iconSize: [36, 36],
                 iconAnchor: [18, 18]
             })
-        }).addTo(map);
+        });
 
         let popupHtml = `<div class="map-popup-container">`;
         popupHtml += `<div class="map-popup-title">${pin.name}</div>`;
@@ -131,6 +131,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         marker.bindPopup(popupHtml);
         state.markers[pin.id] = marker;
+        const visibilityKey = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+        const shouldBeVisible = state.categoryVisible[pin.category] !== false
+            && state.itemVisible[visibilityKey] !== false;
+        if (shouldBeVisible) marker.addTo(map);
     }
 
     // Global listener for popup delete
@@ -301,21 +305,70 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // INIT MAP
-    const img = new Image();
-    img.onload = function () {
-        const mapWidth = this.naturalWidth;
-        const mapHeight = this.naturalHeight;
+    const MASTER_DATA_SOURCES = {
+        forageable: { stateKey: 'masterForageables', url: '/wiki/map/api/forageables' },
+        fish: { stateKey: 'masterFish', url: '/wiki/map/api/fish' },
+        bird: { stateKey: 'masterBirds', url: '/wiki/map/api/birds' },
+        insect: { stateKey: 'masterInsects', url: '/wiki/map/api/insects' },
+        animal: { stateKey: 'masterAnimals', url: '/wiki/map/api/animals' },
+        villager: { stateKey: 'masterVillagers', url: '/wiki/map/api/villagers' }
+    };
+    const mapKey = state.activeMapKey || 'town';
+    const requestedCategories = window.MapApp.getActiveDataCategories()
+        .filter(category => MASTER_DATA_SOURCES[category]);
+
+    function fetchJson(url) {
+        return fetch(url).then(response => {
+            if (!response.ok) throw new Error(`요청 실패 (${response.status}): ${url}`);
+            return response.json();
+        });
+    }
+
+    const imageReadyPromise = new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function () {
+            resolve({ width: this.naturalWidth, height: this.naturalHeight });
+        };
+        img.onerror = function () {
+            reject(new Error(`지도 이미지 로드 실패: ${window.MapApp.imageUrl}`));
+        };
+        img.src = window.MapApp.imageUrl;
+    });
+
+    const masterDataPromise = Promise.all(requestedCategories.map(category => {
+        const source = MASTER_DATA_SOURCES[category];
+        const url = source.url + '?mapKey=' + encodeURIComponent(mapKey);
+        return fetchJson(url).then(items => ({
+            category: category,
+            stateKey: source.stateKey,
+            items: items.filter(window.MapApp.belongsToActiveMap)
+        }));
+    }));
+
+    const initialDataPromise = Promise.all([
+        fetchJson('/wiki/map/api/pins?mapKey=' + encodeURIComponent(mapKey)),
+        api.loadAllZones(),
+        masterDataPromise
+    ]);
+
+    Promise.all([imageReadyPromise, initialDataPromise]).then(([imageSize, initialData]) => {
+        const mapWidth = imageSize.width;
+        const mapHeight = imageSize.height;
+        const [pins, zones, masterResults] = initialData;
         state.mapHeight = mapHeight;
+        state.allZones = zones;
+        Object.values(MASTER_DATA_SOURCES).forEach(source => {
+            state[source.stateKey] = [];
+        });
+        masterResults.forEach(result => {
+            state[result.stateKey] = result.items;
+        });
         const bounds = [[0, 0], [mapHeight, mapWidth]];
 
         state.map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 2, zoomSnap: 0.25, attributionControl: false, maxBounds: bounds, maxBoundsViscosity: 1.0 });
         L.imageOverlay(window.MapApp.imageUrl, bounds).addTo(state.map);
         state.map.fitBounds(bounds);
 
-        Promise.all([
-            fetch('/wiki/map/api/pins?mapKey=' + encodeURIComponent(state.activeMapKey || 'town') + '&t=' + new Date().getTime()).then(res => res.json()),
-            api.loadAllZones()
-        ]).then(([pins]) => {
             state.allPins = pins.filter(window.MapApp.belongsToActiveMap);
 
             if (showAllByDefault && state.allZones) {
@@ -341,51 +394,32 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             state.allPins.forEach(pin => { if (pin.mapX && pin.mapY) createMarker(pin, state.map, mapHeight); });
+
+            const masterMapInit = {
+                'forageable': state.masterForageables,
+                'fish': state.masterFish,
+                'bird': state.masterBirds,
+                'insect': state.masterInsects,
+                'animal': state.masterAnimals,
+                'villager': state.masterVillagers
+            };
+            Object.entries(masterMapInit).forEach(([cat, masters]) => {
+                if (state.categoryVisible[cat] === undefined) {
+                    const defaultVisible = ['villager', 'animal', 'bus'];
+                    state.categoryVisible[cat] = showAllByDefault
+                        ? true
+                        : defaultVisible.includes(cat);
+                }
+                masters.forEach(m => {
+                    const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                    if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[cat];
+                });
+            });
+
             ui.updateMarkerVisibility();
             ui.renderCategoryList();
-
-            Promise.all([
-                fetch('/wiki/map/api/forageables?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
-                fetch('/wiki/map/api/fish?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
-                fetch('/wiki/map/api/birds?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
-                fetch('/wiki/map/api/insects?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
-                fetch('/wiki/map/api/animals?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json()),
-                fetch('/wiki/map/api/villagers?mapKey=' + encodeURIComponent(state.activeMapKey || 'town')).then(res => res.json())
-            ]).then(([forageables, fish, birds, insects, animals, villagers]) => {
-                state.masterForageables = forageables.filter(window.MapApp.belongsToActiveMap);
-                state.masterFish = fish.filter(window.MapApp.belongsToActiveMap);
-                state.masterBirds = birds.filter(window.MapApp.belongsToActiveMap);
-                state.masterInsects = insects.filter(window.MapApp.belongsToActiveMap);
-                state.masterAnimals = animals.filter(window.MapApp.belongsToActiveMap);
-                state.masterVillagers = villagers.filter(window.MapApp.belongsToActiveMap);
-
-                const masterMapInit = {
-                    'forageable': state.masterForageables,
-                    'fish': state.masterFish,
-                    'bird': state.masterBirds,
-                    'insect': state.masterInsects,
-                    'animal': state.masterAnimals,
-                    'villager': state.masterVillagers
-                };
-                Object.entries(masterMapInit).forEach(([cat, masters]) => {
-                    if (state.categoryVisible[cat] === undefined) {
-                        const defaultVisible = ['villager', 'animal', 'bus'];
-                        state.categoryVisible[cat] = showAllByDefault
-                            ? true
-                            : defaultVisible.includes(cat);
-                    }
-                    if (masters) {
-                        masters.forEach(m => {
-                            const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
-                            if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[cat];
-                        });
-                    }
-                });
-
-                ui.renderCategoryList();
-                handleDeepLink(state.map, mapHeight);
-                renderZoneLabels(state.map, mapHeight);
-            });
+            handleDeepLink(state.map, mapHeight);
+            renderZoneLabels(state.map, mapHeight);
 
     // Zone 위치명 라벨 표시
     function renderZoneLabels(map, mapHeight) {
@@ -503,7 +537,5 @@ document.addEventListener('DOMContentLoaded', function () {
                     `).openOn(state.map);
                 }
             });
-        }).catch(err => console.error('Error loading pins/zones:', err));
-    };
-    img.src = window.MapApp.imageUrl;
+    }).catch(err => console.error('지도 초기화 실패:', err));
 });
