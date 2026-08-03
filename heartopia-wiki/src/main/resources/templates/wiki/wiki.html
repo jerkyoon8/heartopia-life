@@ -378,9 +378,80 @@
         }
 
         @media (max-width: 576px) {
-            .wiki-grid {
-                grid-template-columns: 1fr;
+            .quick-access-section {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                align-items: stretch;
+                gap: 10px;
+                margin-bottom: 30px;
+                padding: 0 12px;
             }
+
+            .quick-card {
+                display: grid;
+                grid-template-rows: auto auto 1fr auto;
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+                min-height: 138px;
+                padding: 12px 8px;
+            }
+
+            .quick-card-icon {
+                width: 36px;
+                height: 36px;
+                margin: 0 auto 8px;
+                font-size: 15px;
+            }
+
+            .quick-card-title {
+                font-size: 14px;
+            }
+
+            .quick-card-subtitle {
+                min-width: 0;
+                margin: 3px 0 8px;
+                font-size: 10px;
+                line-height: 1.35;
+            }
+
+            .q-action-btn.primary {
+                min-width: 68px;
+                height: 26px;
+                padding: 0 9px;
+                font-size: 10px;
+            }
+
+            .section-container {
+                padding: 20px 12px;
+                border-radius: 22px;
+            }
+
+            .section-header {
+                gap: 10px;
+                margin-bottom: 16px;
+                padding-left: 0;
+            }
+
+            .section-icon {
+                width: 32px;
+                font-size: 26px;
+            }
+
+            .section-title {
+                font-size: 22px;
+            }
+
+            .section-desc {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            .wiki-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 6px;
+            }
+
         }
 
         .wiki-card {
@@ -504,6 +575,59 @@
         .card-status {
             color: #BCB1AE;
             font-weight: 700;
+        }
+
+        @media (max-width: 576px) {
+            .wiki-card {
+                height: auto;
+                min-height: 84px;
+                padding: 7px 3px;
+                border-radius: 11px;
+            }
+
+            .wiki-card-content {
+                flex-direction: column;
+                justify-content: center;
+                gap: 4px;
+                text-align: center;
+            }
+
+            .card-img-wrapper {
+                width: 34px;
+                height: 34px;
+            }
+
+            .card-icon-text {
+                font-size: 25px;
+            }
+
+            .card-text-info {
+                width: 100%;
+                min-width: 0;
+                align-items: center;
+            }
+
+            .card-title {
+                max-width: 100%;
+                margin-bottom: 0;
+                font-size: 11px;
+                line-height: 1.25;
+                overflow-wrap: anywhere;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+
+            .card-count:not(.card-status) {
+                display: none;
+            }
+
+            .card-status {
+                max-width: 100%;
+                font-size: 9px;
+                line-height: 1.2;
+            }
         }
 
         /* Footer */

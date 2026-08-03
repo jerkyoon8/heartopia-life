@@ -50,6 +50,28 @@ class PetManagementTemplateTest {
                 .contains("moveRightButton.disabled = currentIndex < 0 || currentIndex >= state.pets.length - 1");
     }
 
+    @Test
+    void darkThemeKeepsSelectedFoodStateButtonsVisuallyDistinct() throws IOException {
+        String template = petTemplate();
+
+        assertThat(template)
+                .contains("[data-theme='dark'] .food-state-btn.is-tried")
+                .contains("[data-theme='dark'] .food-state-btn.is-like")
+                .contains("[data-theme='dark'] .food-state-btn.is-dislike");
+    }
+
+    @Test
+    void darkThemeAndMobileLayoutKeepPetControlsDistinctAndReadable() throws IOException {
+        String template = petTemplate();
+
+        assertThat(template)
+                .contains("[data-theme='dark'] .pet-secondary-btn:disabled")
+                .contains(".selected-pet-info {")
+                .contains("flex: 0 1 auto;")
+                .contains("grid-template-columns: 50px minmax(0, 1fr);")
+                .contains("grid-column: 1 / -1;");
+    }
+
     private String petTemplate() throws IOException {
         return new ClassPathResource("templates/wiki/others/pets.html")
                 .getContentAsString(StandardCharsets.UTF_8);
