@@ -76,14 +76,14 @@
                     </label>
                 </div>
 
-                <!-- SANRIO CHARACTERS 스위치 -->
+                <!-- 데이브 더 다이버 콜라보 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
                         <label class="switch">
-                            <input type="checkbox" id="btn-sanrio-event">
+                            <input type="checkbox" id="btn-dave-event">
                             <span class="slider"></span>
                         </label>
-                        <i class="fas fa-heart text-danger"></i> SANRIO만 표시
+                        <i class="fas fa-swimmer text-info"></i> 데더다만 표시
                     </label>
                 </div>
 
@@ -267,12 +267,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnBlockCity = document.getElementById('btn-block-city-event');
-            const btnSanrio = document.getElementById('btn-sanrio-event');
+            const btnDave = document.getElementById('btn-dave-event');
             const eventFilter = document.getElementById('eventFilter');
             if (eventFilter) {
                 const eventToggles = [
                     { button: btnBlockCity, eventName: '고래 탐사 시즌' },
-                    { button: btnSanrio, eventName: 'SANRIO CHARACTERS' }
+                    { button: btnDave, eventName: '데이브 더 다이버' }
                 ].filter(item => item.button);
 
                 function ensureEventOption(eventName) {
@@ -309,7 +309,7 @@
             if (resetBtn) {
                 resetBtn.addEventListener('click', () => {
                     if (btnBlockCity) btnBlockCity.checked = false;
-                    if (btnSanrio) btnSanrio.checked = false;
+                    if (btnDave) btnDave.checked = false;
                 });
             }
 
