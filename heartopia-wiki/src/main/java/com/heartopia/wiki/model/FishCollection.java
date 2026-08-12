@@ -23,6 +23,7 @@ public class FishCollection {
     private Integer masteryIntroMin;
     private Integer masteryExpertMin;
     private Integer masteryMasterMin;
+    private Boolean masteryFieldsPresent;
 
     public String getEventName() {
         return eventName;

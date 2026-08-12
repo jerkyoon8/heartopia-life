@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.EventSettingsMapper">
+
+    <select id="findAvailableEventNames" resultType="string">
+        SELECT event_name
+        FROM (
+            SELECT TRIM(event_name) AS event_name FROM fish_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM bug_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM bird_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM animal_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM cooking_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM flower_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM crop_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM forageable_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM sandbox_collections
+            UNION
+            SELECT TRIM(event_name) AS event_name FROM sea_cleaning_collections
+        ) event_names
+        WHERE event_name IS NOT NULL
+          AND event_name != ''
+        ORDER BY event_name
+    </select>
+
+    <select id="findCurrentEventNames" resultType="string">
+        SELECT event_name
+        FROM wiki_current_events
+        ORDER BY event_name
+    </select>
+
+    <delete id="deleteAllCurrentEvents">
+        DELETE FROM wiki_current_events
+    </delete>
+
+    <insert id="insertCurrentEvents">
+        INSERT INTO wiki_current_events (event_name)
+        VALUES
+        <foreach collection="eventNames" item="eventName" separator=",">
+            (#{eventName})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -4,11 +4,13 @@ import com.heartopia.wiki.model.*;
 import com.heartopia.wiki.service.CollectionService;
 import com.heartopia.wiki.service.FileUploadService;
 import com.heartopia.wiki.service.GiftCodeService;
+import com.heartopia.wiki.service.MasteryThresholdValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 관리자 전용 데이터 CRUD 컨트롤러
@@ -38,6 +41,13 @@ public class AdminDataController {
     private final CollectionService collectionService;
     private final GiftCodeService giftCodeService;
     private final FileUploadService fileUploadService;
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> handleInvalidAdminInput(IllegalArgumentException exception) {
+        String message = exception.getMessage() == null ? "입력값을 확인해 주세요." : exception.getMessage();
+        return ResponseEntity.badRequest().body(Map.of("message", message));
+    }
 
     // ======================== 쿠폰 (Gift Code) ========================
     @PostMapping("/giftcode/add")
@@ -65,6 +75,7 @@ public class AdminDataController {
     @PostMapping("/fish/add")
     public String addFish(FishCollection fish,
                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(fish);
         log.info("관리자 데이터 추가: 물고기 '{}'", fish.getName());
         handleImageUpload(fish, imageFile, "fish", null);
         collectionService.addFish(fish);
@@ -75,6 +86,7 @@ public class AdminDataController {
     public String updateFish(FishCollection fish,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                              @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(fish);
         log.info("관리자 데이터 수정: 물고기 id={}", fish.getId());
         handleImageUpload(fish, imageFile, "fish", existingImageUrl);
         collectionService.updateFish(fish);
@@ -92,6 +104,7 @@ public class AdminDataController {
     @PostMapping("/bug/add")
     public String addBug(BugCollection bug,
                          @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(bug);
         log.info("관리자 데이터 추가: 곤충 '{}'", bug.getName());
         handleImageUpload(bug, imageFile, "bug", null);
         collectionService.addBug(bug);
@@ -102,6 +115,7 @@ public class AdminDataController {
     public String updateBug(BugCollection bug,
                             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                             @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(bug);
         log.info("관리자 데이터 수정: 곤충 id={}", bug.getId());
         handleImageUpload(bug, imageFile, "bug", existingImageUrl);
         collectionService.updateBug(bug);
@@ -119,6 +133,7 @@ public class AdminDataController {
     @PostMapping("/bird/add")
     public String addBird(BirdCollection bird,
                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(bird);
         log.info("관리자 데이터 추가: 새 '{}'", bird.getName());
         handleImageUpload(bird, imageFile, "bird", null);
         collectionService.addBird(bird);
@@ -129,6 +144,7 @@ public class AdminDataController {
     public String updateBird(BirdCollection bird,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                              @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(bird);
         log.info("관리자 데이터 수정: 새 id={}", bird.getId());
         handleImageUpload(bird, imageFile, "bird", existingImageUrl);
         collectionService.updateBird(bird);
@@ -200,6 +216,7 @@ public class AdminDataController {
     @PostMapping("/sea-cleaning/add")
     public String addSeaCleaning(SeaCleaningCollection seaCleaning,
                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(seaCleaning);
         log.info("관리자 데이터 추가: 바다 청소 '{}'", seaCleaning.getName());
         handleImageUpload(seaCleaning, imageFile, "sea-cleaning", null);
         collectionService.addSeaCleaning(seaCleaning);
@@ -210,6 +227,7 @@ public class AdminDataController {
     public String updateSeaCleaning(SeaCleaningCollection seaCleaning,
                                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                     @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(seaCleaning);
         log.info("관리자 데이터 수정: 바다 청소 id={}", seaCleaning.getId());
         handleImageUpload(seaCleaning, imageFile, "sea-cleaning", existingImageUrl);
         collectionService.updateSeaCleaning(seaCleaning);
@@ -227,6 +245,7 @@ public class AdminDataController {
     @PostMapping("/cooking/add")
     public String addCooking(CookingCollection cooking,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(cooking);
         log.info("관리자 데이터 추가: 요리 '{}'", cooking.getName());
         handleImageUpload(cooking, imageFile, "cook", null);
         collectionService.addCooking(cooking);
@@ -237,6 +256,7 @@ public class AdminDataController {
     public String updateCooking(CookingCollection cooking,
                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                 @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(cooking);
         log.info("관리자 데이터 수정: 요리 id={}", cooking.getId());
         handleImageUpload(cooking, imageFile, "cook", existingImageUrl);
         collectionService.updateCooking(cooking);
@@ -262,6 +282,7 @@ public class AdminDataController {
                             @RequestParam(value = "breedingLeftIndexes", required = false) String[] breedingLeftIndexes,
                             @RequestParam(value = "breedingRightIndexes", required = false) String[] breedingRightIndexes,
                             @RequestParam(value = "breedingNotes", required = false) List<String> breedingNotes) throws IOException {
+        validateMastery(flower);
         log.info("관리자 데이터 추가: 꽃 '{}'", flower.getName());
         handleImageUpload(flower, imageFile, "flower", null);
         collectionService.addFlower(flower);
@@ -287,6 +308,7 @@ public class AdminDataController {
                                @RequestParam(value = "breedingLeftIndexes", required = false) String[] breedingLeftIndexes,
                                @RequestParam(value = "breedingRightIndexes", required = false) String[] breedingRightIndexes,
                                @RequestParam(value = "breedingNotes", required = false) List<String> breedingNotes) throws IOException {
+        validateMastery(flower);
         log.info("관리자 데이터 수정: 꽃 id={}", flower.getId());
         handleImageUpload(flower, imageFile, "flower", existingImageUrl);
         collectionService.updateFlower(flower);
@@ -414,6 +436,7 @@ public class AdminDataController {
     @PostMapping("/crop/add")
     public String addCrop(GardeningCollection crop,
                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateMastery(crop);
         log.info("관리자 데이터 추가: 작물 '{}'", crop.getName());
         handleImageUpload(crop, imageFile, "crop", null);
         collectionService.addCrop(crop);
@@ -424,6 +447,7 @@ public class AdminDataController {
     public String updateCrop(GardeningCollection crop,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                              @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateMastery(crop);
         log.info("관리자 데이터 수정: 작물 id={}", crop.getId());
         handleImageUpload(crop, imageFile, "crop", existingImageUrl);
         collectionService.updateCrop(crop);
@@ -435,6 +459,24 @@ public class AdminDataController {
         log.info("관리자 데이터 삭제: 작물 id={}", id);
         collectionService.deleteCrop(id);
         return "redirect:/wiki/items/crops";
+    }
+
+    private void validateMastery(Object item) {
+        if (item instanceof FishCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof BugCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof BirdCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof CookingCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof FlowerCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof GardeningCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        } else if (item instanceof SeaCleaningCollection value) {
+            MasteryThresholdValidator.validate(value.getMasteryBeginnerMax(), value.getMasteryIntroMin(), value.getMasteryExpertMin(), value.getMasteryMasterMin());
+        }
     }
 
     // ======================== 업적 (Achievement) ========================

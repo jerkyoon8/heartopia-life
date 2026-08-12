@@ -243,25 +243,29 @@
     <!-- ========== INSERT (관리자 데이터 추가) ========== -->
     <insert id="insertFish" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO fish_collections (location, sub_location, name, level, weather, time,
-            price_1, price_2, price_3, price_4, price_5, size, image_url, event_name)
+            price_1, price_2, price_3, price_4, price_5, size, image_url, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
-            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{size}, #{imageUrl}, #{eventName})
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{size}, #{imageUrl}, #{eventName},
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertBug" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO bug_collections (location, sub_location, name, level, weather, time,
-            price_1, price_2, price_3, price_4, price_5, image_url, event_name)
+            price_1, price_2, price_3, price_4, price_5, image_url, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
-            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName})
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName},
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertBird" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO bird_collections (location, sub_location, name, level, weather, time,
             price_1, price_2, price_3, price_4, price_5, type, image_url, event_name,
-            distance, stretch_time)
+            distance, stretch_time, mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{location}, #{subLocation}, #{name}, #{level}, #{weather}, #{time},
             #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{type}, #{imageUrl}, #{eventName},
-            #{distance}, #{stretchTime})
+            #{distance}, #{stretchTime}, #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertAnimal" useGeneratedKeys="true" keyProperty="id">
@@ -271,23 +275,29 @@
 
     <insert id="insertCooking" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO cooking_collections (name, level, ingredients, buy_price,
-            price_1, price_2, price_3, price_4, price_5, image_url, event_name)
+            price_1, price_2, price_3, price_4, price_5, image_url, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{name}, #{level}, #{ingredients}, #{buyPrice},
-            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName})
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName},
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertFlower" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO flower_collections (name, price_1, price_2, price_3, price_4, price_5,
-            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name)
+            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{name}, #{price1}, #{price2}, #{price3}, #{price4}, #{price5},
-            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName})
+            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName},
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertCrop" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO crop_collections (name, price_1, price_2, price_3, price_4, price_5,
-            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name)
+            level, growth_time, seed_buy_price, seed_sell_price, image_url, event_name,
+            mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{name}, #{price1}, #{price2}, #{price3}, #{price4}, #{price5},
-            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName})
+            #{level}, #{growthTime}, #{seedBuyPrice}, #{seedSellPrice}, #{imageUrl}, #{eventName},
+            #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
     <insert id="insertForageable" useGeneratedKeys="true" keyProperty="id">
@@ -319,12 +329,20 @@
         UPDATE fish_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
             weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
             price_4=#{price4}, price_5=#{price5}, size=#{size}, image_url=#{imageUrl}, event_name=#{eventName}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateBug">
         UPDATE bug_collections SET location=#{location}, sub_location=#{subLocation}, name=#{name}, level=#{level},
             weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
             price_4=#{price4}, price_5=#{price5}, image_url=#{imageUrl}, event_name=#{eventName}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateBird">
@@ -332,6 +350,10 @@
             weather=#{weather}, time=#{time}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
             price_4=#{price4}, price_5=#{price5}, type=#{type}, image_url=#{imageUrl}, event_name=#{eventName},
             distance=#{distance}, stretch_time=#{stretchTime}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateAnimal">
@@ -343,18 +365,30 @@
         UPDATE cooking_collections SET name=#{name}, level=#{level}, ingredients=#{ingredients}, buy_price=#{buyPrice},
             price_1=#{price1}, price_2=#{price2}, price_3=#{price3}, price_4=#{price4}, price_5=#{price5},
             image_url=#{imageUrl}, event_name=#{eventName}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateFlower">
         UPDATE flower_collections SET name=#{name}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
             price_4=#{price4}, price_5=#{price5}, level=#{level}, growth_time=#{growthTime},
             seed_buy_price=#{seedBuyPrice}, seed_sell_price=#{seedSellPrice}, image_url=#{imageUrl}, event_name=#{eventName}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateCrop">
         UPDATE crop_collections SET name=#{name}, price_1=#{price1}, price_2=#{price2}, price_3=#{price3},
             price_4=#{price4}, price_5=#{price5}, level=#{level}, growth_time=#{growthTime},
             seed_buy_price=#{seedBuyPrice}, seed_sell_price=#{seedSellPrice}, image_url=#{imageUrl}, event_name=#{eventName}
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin}, mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
     <update id="updateForageable">
@@ -378,11 +412,13 @@
             gold_price_5=#{goldPrice5},
             image_url=#{imageUrl},
             sort_order=COALESCE(#{sortOrder}, 0),
-            event_name=NULLIF(#{eventName}, ''),
-            mastery_beginner_max=#{masteryBeginnerMax},
-            mastery_intro_min=#{masteryIntroMin},
-            mastery_expert_min=#{masteryExpertMin},
-            mastery_master_min=#{masteryMasterMin}
+            event_name=NULLIF(#{eventName}, '')
+            <if test="masteryFieldsPresent == true">
+                , mastery_beginner_max=#{masteryBeginnerMax},
+                mastery_intro_min=#{masteryIntroMin},
+                mastery_expert_min=#{masteryExpertMin},
+                mastery_master_min=#{masteryMasterMin}
+            </if>
         WHERE id=#{id}
     </update>
 

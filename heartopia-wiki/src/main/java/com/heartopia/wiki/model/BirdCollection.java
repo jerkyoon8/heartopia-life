@@ -25,6 +25,7 @@ public class BirdCollection {
     private Integer masteryIntroMin;
     private Integer masteryExpertMin;
     private Integer masteryMasterMin;
+    private Boolean masteryFieldsPresent;
 
     public java.util.List<Integer> getPrices() {
         return java.util.Arrays.asList(price1, price2, price3, price4, price5);

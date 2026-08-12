@@ -9,6 +9,7 @@ The collection pages currently track only collected status and star rating. They
 ### Proposed Solution
 
 Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower collection data. Show a mastery panel on detail pages and add a mastery toggle icon on collection cards, using the existing checklist sync storage flow.
+Allow administrators to enter and edit the four thresholds from the existing collection CRUD modals. Keep the existing sea-cleaning fields aligned with the same validation rules.
 
 ### Success Criteria
 
@@ -16,6 +17,7 @@ Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower colle
 - Detail pages render a mastery panel for supported categories and show disabled state when mastery data is unavailable.
 - Collection cards show a mastery icon that can be toggled independently from star collection status.
 - Existing checklist localStorage and authenticated DB sync continue to work.
+- Administrators can save and later edit all four mastery thresholds for the six supported collections and sea cleaning.
 
 ## 2. Users And Use Cases
 
@@ -39,6 +41,8 @@ Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower colle
 - Treat `X` and missing values as unavailable mastery data.
 - Add disabled mastery UI state for unavailable mastery data.
 - Store mastery checklist status using the existing checklist storage and sync infrastructure.
+- Add mastery inputs to the existing admin add/edit modals and persist them through existing CRUD endpoints.
+- Validate that mastery values are either all blank or all present, non-negative, and non-decreasing.
 
 ### Out Of Scope
 
@@ -46,6 +50,7 @@ Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower colle
 - Redesigning the whole checklist page.
 - Adding new public JSON APIs beyond existing collection reads.
 - Adding English mastery labels.
+- Adding mastery support to animal or forageable collections.
 
 ## 4. Acceptance Criteria
 
@@ -53,6 +58,8 @@ Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower colle
 - Existing star check behavior still works on detail and list pages.
 - Mastery toggle does not navigate to the detail page when clicked on a card.
 - Disabled mastery icons do not write checklist data.
+- Existing mastery values populate the edit modal and valid changes survive a save/reload cycle.
+- Invalid partial, negative, or descending thresholds are rejected before persistence.
 - The generated SQL can add columns and update values without requiring non-null defaults.
 
 ## 5. Constraints
@@ -68,4 +75,4 @@ Add mastery threshold fields to fish, bug, bird, cooking, crop, and flower colle
 
 ## 7. Open Questions
 
-- None. User confirmed label order and disabled state for unavailable mastery data.
+- None. User confirmed that animal and forageable collections do not need mastery support.

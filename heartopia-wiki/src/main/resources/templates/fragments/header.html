@@ -160,6 +160,16 @@
                 font-size: 14px;
             }
 
+            a.settings-item {
+                text-decoration: none;
+            }
+
+            a.settings-item:hover,
+            a.settings-item:focus-visible {
+                color: var(--text-color, #333);
+                background: var(--nav-hover, #f1f3f5);
+            }
+
             .settings-item-label {
                 display: flex;
                 align-items: center;
@@ -379,13 +389,14 @@
 
                 .nav-bar {
                     justify-content: flex-start;
+                    overflow-x: auto;
                 }
 
                 .navbar-nav {
-                    overflow-x: auto;
-                    -webkit-overflow-scrolling: touch;
+                    overflow: visible;
                     flex-wrap: nowrap;
-                    width: 100%;
+                    flex: 0 0 auto !important;
+                    width: auto;
                 }
 
                 .navbar-nav::-webkit-scrollbar {
@@ -412,10 +423,22 @@
                 .header-username-label {
                     display: none;
                 }
+
+                .header-weather {
+                    position: static;
+                    flex: 0 0 auto;
+                    margin-left: 6px;
+                    padding-left: 0;
+                    background: none;
+                }
             }
 
             /* 모바일 좁은 화면에서 설정 드롭다운이 화면 밖으로 나가지 않도록 */
             @media (max-width: 480px) {
+                .admin-event-shortcut {
+                    display: none;
+                }
+
                 .settings-dropdown {
                     min-width: 260px;
                     right: -8px;
@@ -450,6 +473,9 @@
                             </form>
                             <a sec:authorize="hasRole('ADMIN')" th:href="@{/wiki/admin/reports}" class="btn btn-danger btn-sm" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;">
                                 ADMIN
+                            </a>
+                            <a sec:authorize="hasRole('ADMIN')" th:href="@{/wiki/admin/event-settings}" class="btn btn-warning btn-sm admin-event-shortcut" style="font-family: 'Paperlogy', sans-serif; border-radius: 20px; padding: 4px 10px; font-size: 12px;" title="현재 이벤트 관리">
+                                EVENT
                             </a>
                         </div>
 
@@ -503,6 +529,18 @@
                                 <div class="settings-item-desc">
                                     켜면 명인 정보가 있는 항목은 명인 체크까지 완료해야 숨김 처리됩니다. 명인 정보가 없는 항목은 수집만 완료해도 숨겨집니다.
                                 </div>
+
+                                <th:block sec:authorize="hasRole('ADMIN')">
+                                    <div class="settings-divider"></div>
+                                    <div class="settings-section-title">관리자</div>
+                                    <a th:href="@{/wiki/admin/event-settings}" class="settings-item" role="menuitem">
+                                        <div class="settings-item-label">
+                                            <i class="fas fa-calendar-check"></i>
+                                            <span class="settings-item-title">현재 이벤트 관리</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                    </a>
+                                </th:block>
 
                                 <th:block sec:authorize="isAuthenticated()">
                                     <div class="settings-divider"></div>

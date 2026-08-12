@@ -22,6 +22,7 @@ public class FlowerCollection {
     private Integer masteryIntroMin;
     private Integer masteryExpertMin;
     private Integer masteryMasterMin;
+    private Boolean masteryFieldsPresent;
     private List<FlowerImage> images;
     private List<FlowerVariant> variants;
     private List<FlowerBreedingRule> breedingRules;

@@ -40,8 +40,26 @@
   Files: project root
   Verify: `.\gradlew.bat test`.
 
+## Phase 4: Admin Mastery Entry
+
+- [x] T008 Add failing regression tests for seven supported admin forms, edit payloads, persistence SQL, and threshold validation.
+  Files: `src/test/java/com/heartopia/wiki/template/AdminMasteryInputTemplateTest.java`, `src/test/java/com/heartopia/wiki/service/MasteryThresholdValidatorTest.java`
+  Verify: tests fail while the six collection forms and mapper writes omit mastery fields.
+
+- [x] T009 Add four mastery inputs and edit payload values to fish, bug, bird, cooking, flower, crop, and align sea-cleaning validation markup.
+  Files: supported collection templates, `src/main/resources/static/js/admin-data.js`
+  Verify: edit modal restores values; all blank is accepted; partial/negative/descending values are blocked with a message.
+
+- [x] T010 Persist and server-validate the four mastery thresholds on supported add/update endpoints.
+  Files: `src/main/resources/mapper/CollectionMapper.xml`, `src/main/java/com/heartopia/wiki/service/MasteryThresholdValidator.java`, `src/main/java/com/heartopia/wiki/controller/AdminDataController.java`
+  Verify: mapper and validator regression tests pass; invalid values do not reach service writes.
+
+- [x] T011 Run full automated and browser verification and record completion.
+  Files: changed files and this task document
+  Verify: full Gradle tests, JavaScript syntax, diff check, and admin modal dark/mobile inspection pass.
+
 ## Completion Notes
 
-- Tests run: `.\gradlew.bat test` passed.
-- Known risks: generated update SQL uses exact Korean names; unmatched rows remain NULL and render as disabled mastery data.
-- Follow-up: apply `alter_collections_add_mastery.sql` before `update_mastery_values.sql` on the target DB.
+- Tests run: `.\gradlew.bat test --rerun-tasks --no-daemon`, `node --check src/main/resources/static/js/admin-data.js`, and `git diff --check` passed. Chrome form harness passed partial, valid, and descending-value cases; seven public collection pages returned HTTP 200 after restart.
+- Known risks: the authenticated administrator modal could not be opened automatically because local admin access uses OAuth. Template coverage verifies all seven forms and edit payloads; an authenticated visual check remains advisable before push.
+- Follow-up: no new schema is required. The existing four mastery columns must already be present in the six collection tables and sea-cleaning table. Verify one authenticated edit/save cycle locally before deployment.

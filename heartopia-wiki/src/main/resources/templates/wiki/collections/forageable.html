@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.5" defer></script>
+    <script src="/js/wiki-filter.js?v=2.6" defer></script>
     <style>
         .wiki-item-image {
             background: #F7F6F6 !important;
@@ -36,18 +36,9 @@
 
                 <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
 
-                    <div class="filter-select-wrapper">
-                        <span class="prefix">이벤트</span>
-                        <select id="eventFilter">
-                            <option value="all">모든 이벤트</option>
-                        </select>
-                    </div>
+                    <div th:replace="~{fragments/wiki-components :: eventFilter}"></div>
 
-                    <button type="button" id="whaleSeasonFilterBtn" class="btn btn-sm btn-outline-info rounded-pill">
-                        <i class="fas fa-water me-1"></i>고래 탐사 시즌만 표시
-                    </button>
-
-                    <select id="locationFilter" style="border: 1px solid rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 12px; font-weight: 500; font-size: 0.85rem; outline: none; background: var(--card-bg);">
+                    <select id="locationFilter" class="filter-standalone-select" style="border: 1px solid var(--border-subtle); border-radius: 20px; padding: 4px 12px; font-weight: 500; font-size: 0.85rem; outline: none;">
                         <option value="all">모든 장소</option>
                         <!-- Options populated by JS -->
                     </select>
@@ -210,29 +201,14 @@
                     tableId: 'wikiTable',
                     itemSelector: '.wiki-item-card',
                     filters: [
-                        { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
+                        { id: 'eventFilter', dataKey: 'event', type: 'event-multi' },
                         { id: 'locationFilter', dataKey: 'location', autoPopulate: true }
                     ]
                 });
 
-                const whaleSeasonFilterBtn = document.getElementById('whaleSeasonFilterBtn');
-                const eventFilter = document.getElementById('eventFilter');
-                if (whaleSeasonFilterBtn && eventFilter) {
-                    whaleSeasonFilterBtn.addEventListener('click', function () {
-                        const whaleSeasonName = '고래 탐사 시즌';
-                        if (!Array.from(eventFilter.options).some(option => option.value === whaleSeasonName)) {
-                            const option = document.createElement('option');
-                            option.value = whaleSeasonName;
-                            option.textContent = whaleSeasonName;
-                            eventFilter.appendChild(option);
-                        }
-                        eventFilter.value = whaleSeasonName;
-                        eventFilter.dispatchEvent(new Event('change', { bubbles: true }));
-                    });
-                }
             });
         </script>
-    <script src="/js/admin-data.js?v=1.1" defer></script>
+    <script src="/js/admin-data.js?v=1.3" defer></script>
 </body>
 
 </html>

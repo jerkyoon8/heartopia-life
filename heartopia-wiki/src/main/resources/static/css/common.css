@@ -113,7 +113,7 @@ body {
 
 @media (max-width: 991px) {
     :root {
-        --header-height: 70px;
+        --header-height: 105px;
     }
 
     .mw-body {
@@ -2405,7 +2405,7 @@ body.weather-modal-open {
     }
 
     .wiki-grid-layout {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
     }
 
@@ -2569,4 +2569,94 @@ body.weather-modal-open {
     height: 1px;
     background: var(--border-subtle);
     margin: 6px 0;
+}
+
+.event-select-dropdown {
+    min-width: 245px;
+    max-width: min(320px, calc(100vw - 32px));
+}
+
+.event-dropdown-heading {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px 4px;
+    color: var(--text-muted, #6c757d);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.event-current-badge {
+    margin-left: auto;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 193, 7, 0.18);
+    color: #b56b00;
+    font-size: 0.66rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+[data-theme='dark'] .event-current-badge {
+    color: #ffd36b;
+}
+
+.event-filter-empty {
+    margin: 0;
+    padding: 12px 14px;
+    color: var(--text-muted, #6c757d);
+    font-size: 0.82rem;
+}
+
+.filter-standalone-select {
+    color: var(--text-color);
+    background-color: var(--card-bg);
+}
+
+.filter-standalone-select option {
+    color: var(--text-color);
+    background-color: var(--card-bg);
+}
+
+.event-unavailable-note {
+    margin-left: auto;
+    color: var(--text-muted, #6c757d);
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.event-dropdown-opt:has(input:disabled) {
+    opacity: 0.68;
+}
+
+.event-dropdown-opt:has(input:disabled) label {
+    cursor: default;
+}
+
+.event-filter-unavailable .multi-select-trigger {
+    color: var(--text-muted, #6c757d);
+}
+
+.mastery-input-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+[data-theme='dark'] form[data-mastery-fields] .mastery-input-grid .form-control {
+    color: var(--text-color);
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] form[data-mastery-fields] .mastery-input-grid .form-control::placeholder {
+    color: var(--stat-label);
+}
+
+@media (max-width: 575px) {
+    .mastery-input-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }

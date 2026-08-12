@@ -71,6 +71,30 @@
         </div>
     </div>
 
+    <!-- 현재 이벤트는 기본 체크, 지난 이벤트는 사용자가 필요한 것만 추가하는 공통 필터 -->
+    <div th:fragment="eventFilter" class="filter-select-wrapper filter-multi-select-wrapper" id="eventFilter">
+        <span class="prefix">이벤트</span>
+        <div class="multi-select-trigger" id="eventTrigger" role="button" tabindex="0"
+             aria-haspopup="true" aria-expanded="false" aria-controls="eventDropdown">
+            <span class="trigger-label">이벤트 선택</span>
+            <i class="fas fa-chevron-down ms-2 text-muted" style="font-size: 0.75rem;"></i>
+        </div>
+        <div class="multi-select-dropdown event-select-dropdown" id="eventDropdown">
+            <input th:each="eventName : ${currentEventNames}" type="hidden"
+                   class="current-event-value" th:value="${eventName}">
+            <section class="event-current-section">
+                <div class="event-dropdown-heading"><i class="fas fa-bolt"></i> 현재 이벤트</div>
+                <div class="event-current-options"></div>
+            </section>
+            <section class="event-past-section">
+                <div class="dropdown-div"></div>
+                <div class="event-dropdown-heading"><i class="fas fa-clock-rotate-left"></i> 지난 이벤트</div>
+                <div class="event-past-options"></div>
+            </section>
+            <p class="event-filter-empty" hidden>등록된 이벤트가 없습니다.</p>
+        </div>
+    </div>
+
     <!-- 
         Price Display Fragment 
         Expects: ${item} object having a 'prices' list

@@ -25,6 +25,12 @@
 - When a user clicks the mastery icon
 - Then the item mastery key is toggled independently from the star rating key.
 
+### Scenario 4: Administrator Enters Mastery Thresholds
+
+- Given an administrator opens an add or edit modal for a supported collection
+- When all four valid thresholds are entered and saved
+- Then the values are persisted and repopulated when the item is edited again.
+
 ## Functional Requirements
 
 - FR-001: The system must add nullable integer mastery threshold fields for six collection tables.
@@ -35,6 +41,11 @@
 - FR-006: Card mastery icons must be disabled when mastery values are unavailable.
 - FR-007: Card mastery toggles must use separate checklist keys shaped as `mastery_{category}_{name}`.
 - FR-008: Existing collection star keys shaped as `{category}_{name}` must remain unchanged.
+- FR-009: Admin add/edit modals for fish, bug, bird, cooking, flower, crop, and sea cleaning must expose all four mastery threshold inputs.
+- FR-010: Existing threshold values must populate the edit modal.
+- FR-011: Collection INSERT and UPDATE statements must persist all four threshold fields.
+- FR-012: Thresholds must be either all blank or all present; provided values must be non-negative and ordered `beginner <= intro <= expert <= master`.
+- FR-013: Animal and forageable collections must remain outside mastery scope.
 
 ## Non-Functional Requirements
 
@@ -48,6 +59,7 @@
 - Level 11+ or rows absent from source files: all mastery fields remain `NULL`; UI shows disabled.
 - Logged-out users: mastery state persists in localStorage.
 - Logged-in sync users: mastery state persists in `user_checklist` with separate item keys.
+- Partial values, negative values, or descending values: form submission is blocked and persistence must reject the input.
 
 ## Data Requirements
 
@@ -66,6 +78,8 @@
   A: Show disabled mastery panel/icon and do not allow saving mastery.
 - Q: Should English labels be used?
   A: No. Only three English labels are known, so use Korean labels.
+- Q: Should animals and forageables receive mastery fields?
+  A: No. Keep the feature limited to the six existing mastery collections and sea cleaning.
 
 ## Review Checklist
 

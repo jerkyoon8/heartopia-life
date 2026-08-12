@@ -8,6 +8,56 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
 
+    const masteryFieldNames = [
+        'masteryBeginnerMax',
+        'masteryIntroMin',
+        'masteryExpertMin',
+        'masteryMasterMin'
+    ];
+
+    function validateMasteryFields(form, focusInvalid = false) {
+        if (!form.hasAttribute('data-mastery-fields')) return true;
+
+        const inputs = masteryFieldNames.map(name => form.querySelector(`[name="${name}"]`));
+        const values = inputs.map(input => input?.value.trim() || '');
+        const supplied = values.filter(Boolean).length;
+        let message = '';
+
+        if (supplied > 0 && supplied < values.length) {
+            message = '명인 수치는 네 칸을 모두 입력하거나 모두 비워야 합니다.';
+        } else if (supplied === values.length) {
+            const numbers = values.map(Number);
+            if (numbers.some(value => !Number.isInteger(value) || value < 0)) {
+                message = '명인 수치는 0 이상의 정수로 입력해 주세요.';
+            } else if (numbers.some((value, index) => index > 0 && numbers[index - 1] > value)) {
+                message = '초보자부터 명인까지 수치를 작은 값부터 입력해 주세요.';
+            }
+        }
+
+        inputs.forEach(input => {
+            if (input) input.classList.toggle('is-invalid', Boolean(message));
+        });
+        const feedback = form.querySelector('.mastery-feedback');
+        if (feedback) {
+            feedback.textContent = message;
+            feedback.style.display = message ? 'block' : 'none';
+        }
+        if (message && focusInvalid && inputs[0]) inputs[0].focus();
+        return !message;
+    }
+
+    document.querySelectorAll('form[data-mastery-fields]').forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!validateMasteryFields(form, true)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+        masteryFieldNames.forEach(name => {
+            form.querySelector(`[name="${name}"]`)?.addEventListener('input', () => validateMasteryFields(form));
+        });
+    });
+
     // ================================================================
     // 1. 이미지 파일 선택 시 미리보기
     // ================================================================
@@ -89,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (input) input.value = data[key] != null ? data[key] : '';
                 }
             });
+            validateMasteryFields(form);
 
             // 기존 이미지 URL을 hidden 필드에 세팅 + 미리보기 및 모드 설정
             const existingImgInput = form.querySelector('input[name="existingImageUrl"]');
@@ -153,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 폼 초기화
             form.reset();
+            validateMasteryFields(form);
             // id hidden 필드 비우기
             const idInput = form.querySelector('input[name="id"]');
             if (idInput) idInput.value = '';

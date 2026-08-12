@@ -22,6 +22,7 @@ public class CookingCollection {
     private Integer masteryIntroMin;
     private Integer masteryExpertMin;
     private Integer masteryMasterMin;
+    private Boolean masteryFieldsPresent;
 
     public List<Integer> getPrices() {
         return Arrays.asList(price1, price2, price3, price4, price5);

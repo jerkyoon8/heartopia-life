@@ -5,7 +5,7 @@
 <head>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.5" defer></script>
+    <script src="/js/wiki-filter.js?v=2.6" defer></script>
     <style>
         /* 목록 페이지 재료 pill 태그 */
         .ing-pill-list {
@@ -65,28 +65,6 @@
                 </div>
                 
 
-                <!-- 고래 탐사 시즌 스위치 -->
-                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
-                    <label class="toggle-switch-label">
-                        <label class="switch">
-                            <input type="checkbox" id="btn-block-city-event">
-                            <span class="slider"></span>
-                        </label>
-                        <i class="fas fa-water text-info"></i> 고래 탐사 시즌만 표시
-                    </label>
-                </div>
-
-                <!-- 데이브 더 다이버 콜라보 스위치 -->
-                <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
-                    <label class="toggle-switch-label">
-                        <label class="switch">
-                            <input type="checkbox" id="btn-dave-event">
-                            <span class="slider"></span>
-                        </label>
-                        <i class="fas fa-swimmer text-info"></i> 데더다만 표시
-                    </label>
-                </div>
-
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -112,12 +90,7 @@
                 <div class="advanced-section">
                     <div class="section-label"><i class="fas fa-filter"></i> 조건 검색</div>
                     <div class="advanced-controls-box">
-                        <div class="filter-select-wrapper">
-                            <span class="prefix">이벤트</span>
-                            <select id="eventFilter">
-                                <option value="all">모든 이벤트</option>
-                            </select>
-                        </div>
+                        <div th:replace="~{fragments/wiki-components :: eventFilter}"></div>
 
                         <div class="filter-select-wrapper filter-multi-select-wrapper" id="levelFilter">
                             <span class="prefix">레벨</span>
@@ -209,7 +182,7 @@
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${item.prices})}"></div>
                 <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
                     <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addCookingModal" data-edit-title="요리 수정"
-                        th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;ingredients&quot;:&quot;' + (item.ingredients != null ? item.ingredients : '') + '&quot;,&quot;buyPrice&quot;:' + (item.buyPrice != null ? item.buyPrice : 'null') + ',&quot;price1&quot;:' + (item.price1 != null ? item.price1 : 'null') + ',&quot;price2&quot;:' + (item.price2 != null ? item.price2 : 'null') + ',&quot;price3&quot;:' + (item.price3 != null ? item.price3 : 'null') + ',&quot;price4&quot;:' + (item.price4 != null ? item.price4 : 'null') + ',&quot;price5&quot;:' + (item.price5 != null ? item.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (item.eventName != null ? item.eventName : '') + '&quot;}'}">
+                        th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;ingredients&quot;:&quot;' + (item.ingredients != null ? item.ingredients : '') + '&quot;,&quot;buyPrice&quot;:' + (item.buyPrice != null ? item.buyPrice : 'null') + ',&quot;price1&quot;:' + (item.price1 != null ? item.price1 : 'null') + ',&quot;price2&quot;:' + (item.price2 != null ? item.price2 : 'null') + ',&quot;price3&quot;:' + (item.price3 != null ? item.price3 : 'null') + ',&quot;price4&quot;:' + (item.price4 != null ? item.price4 : 'null') + ',&quot;price5&quot;:' + (item.price5 != null ? item.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (item.eventName != null ? item.eventName : '') + '&quot;,&quot;masteryBeginnerMax&quot;:' + (item.masteryBeginnerMax != null ? item.masteryBeginnerMax : 'null') + ',&quot;masteryIntroMin&quot;:' + (item.masteryIntroMin != null ? item.masteryIntroMin : 'null') + ',&quot;masteryExpertMin&quot;:' + (item.masteryExpertMin != null ? item.masteryExpertMin : 'null') + ',&quot;masteryMasterMin&quot;:' + (item.masteryMasterMin != null ? item.masteryMasterMin : 'null') + '}'}">
                         <i class="fas fa-edit"></i></button>
                     <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${item.name}" th:data-delete-url="${'/wiki/admin/data/cooking/delete/' + item.id}"><i class="fas fa-trash"></i></button>
                 </div>
@@ -266,59 +239,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const btnBlockCity = document.getElementById('btn-block-city-event');
-            const btnDave = document.getElementById('btn-dave-event');
-            const eventFilter = document.getElementById('eventFilter');
-            if (eventFilter) {
-                const eventToggles = [
-                    { button: btnBlockCity, eventName: '고래 탐사 시즌' },
-                    { button: btnDave, eventName: '데이브 더 다이버' }
-                ].filter(item => item.button);
-
-                function ensureEventOption(eventName) {
-                    if (![...eventFilter.options].some(o => o.value === eventName)) {
-                        const opt = document.createElement('option');
-                        opt.value = eventName;
-                        opt.textContent = eventName;
-                        eventFilter.appendChild(opt);
-                    }
-                }
-
-                eventToggles.forEach(({ button, eventName }) => {
-                    button.addEventListener('change', function() {
-                        if (this.checked) {
-                            eventToggles.forEach(item => {
-                                if (item.button !== this) item.button.checked = false;
-                            });
-                            ensureEventOption(eventName);
-                            eventFilter.value = eventName;
-                        } else if (eventFilter.value === eventName) {
-                            eventFilter.value = 'all';
-                        }
-                        eventFilter.dispatchEvent(new Event('change'));
-                    });
-                });
-
-                eventFilter.addEventListener('change', function() {
-                    eventToggles.forEach(({ button, eventName }) => {
-                        button.checked = this.value === eventName;
-                    });
-                });
-            }
-            const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    if (btnBlockCity) btnBlockCity.checked = false;
-                    if (btnDave) btnDave.checked = false;
-                });
-            }
-
             new WikiFilter({
                 gridId: 'wikiGrid',
                 tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
-                    { id: 'eventFilter', dataKey: 'event', autoPopulate: true },
+                    { id: 'eventFilter', dataKey: 'event', type: 'event-multi' },
                     { id: 'levelFilter', dataKey: 'level', type: 'multi' }
                 ]
             });
@@ -329,13 +255,14 @@
     <div sec:authorize="hasRole('ADMIN')">
         <div class="modal fade" id="addCookingModal" tabindex="-1" data-add-title="새 요리 추가"><div class="modal-dialog modal-lg"><div class="modal-content" style="border-radius:20px;border:none;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
             <div class="modal-header" style="background:var(--modal-header-bg);color:var(--modal-header-text);border-radius:20px 20px 0 0;padding:20px 24px;"><h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>새 요리 추가</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button></div>
-            <form th:action="@{/wiki/admin/data/cooking/add}" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/cooking/add" data-update-action="/wiki/admin/data/cooking/update"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" />
+            <form th:action="@{/wiki/admin/data/cooking/add}" method="post" enctype="multipart/form-data" data-add-action="/wiki/admin/data/cooking/add" data-update-action="/wiki/admin/data/cooking/update" data-mastery-fields><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /><input type="hidden" name="id" value="" /><input type="hidden" name="masteryFieldsPresent" value="true" />
                 <div class="modal-body" style="padding:24px;"><div class="row g-3">
                     <div class="col-md-6"><label class="form-label fw-bold">이름 *</label><input type="text" name="name" class="form-control" required></div>
                     <div class="col-md-3"><label class="form-label fw-bold">레벨 *</label><input type="number" name="level" class="form-control" required></div>
                     <div class="col-md-3"><label class="form-label fw-bold">구매가</label><input type="number" name="buyPrice" class="form-control"></div>
                     <div class="col-12"><label class="form-label fw-bold">재료 (텍스트)</label><input type="text" name="ingredients" class="form-control" placeholder="예: 밀가루 x2, 설탕 x1"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
+                    <div class="col-12"><label class="form-label fw-bold">명인 수치</label><div class="mastery-input-grid"><input type="number" min="0" name="masteryBeginnerMax" class="form-control" placeholder="초보자 최대"><input type="number" min="0" name="masteryIntroMin" class="form-control" placeholder="입문자 최소"><input type="number" min="0" name="masteryExpertMin" class="form-control" placeholder="숙련자 최소"><input type="number" min="0" name="masteryMasterMin" class="form-control" placeholder="명인 최소"></div><div class="invalid-feedback mastery-feedback"></div></div>
                     <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
                         <div class="mb-2">
                             <label class="form-check form-check-inline">
@@ -361,7 +288,7 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/admin-data.js?v=1.1" defer></script>
+    <script src="/js/admin-data.js?v=1.3" defer></script>
 </body>
 
 </html>

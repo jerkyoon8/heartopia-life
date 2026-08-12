@@ -6,6 +6,7 @@ import com.heartopia.wiki.service.NoticeService;
 import com.heartopia.wiki.model.*;
 import com.heartopia.wiki.dto.wiki.*;
 import com.heartopia.wiki.service.GiftCodeService;
+import com.heartopia.wiki.service.EventSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ public class WikiController {
         private final VillagerService villagerService;
         private final NoticeService noticeService;
         private final GiftCodeService giftCodeService;
+        private final EventSettingsService eventSettingsService;
 
         @GetMapping
         public String index(Model model) {
@@ -98,6 +100,7 @@ public class WikiController {
                                 .map(FishDto::from)
                                 .toList();
                 model.addAttribute("fishList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "물고기 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 물고기 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/fish";
@@ -109,6 +112,7 @@ public class WikiController {
                                 .map(BugDto::from)
                                 .toList();
                 model.addAttribute("bugList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "곤충 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 곤충 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/bug";
@@ -120,6 +124,7 @@ public class WikiController {
                                 .map(BirdDto::from)
                                 .toList();
                 model.addAttribute("birdList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "새 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 새 전체 목록 - 서식지, 등급별 가격, 시간대 정보를 확인하세요.");
                 return "wiki/collections/bird";
@@ -131,6 +136,7 @@ public class WikiController {
                                 .map(AnimalDto::from)
                                 .toList();
                 model.addAttribute("animalList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "동물 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 동물 전체 목록 - 서식지, 좋아하는 음식, 날씨 정보를 확인하세요.");
                 return "wiki/collections/animal";
@@ -141,6 +147,7 @@ public class WikiController {
                 List<CookingCollection> list = collectionService.getAllCookings();
 
                 model.addAttribute("cookingList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "요리 레시피");
                 model.addAttribute("pageDescription", "두근두근라이프 요리 전체 목록 - 필요 재료, 레벨, 판매 가격 정보를 확인하세요.");
                 return "wiki/items/cooking";
@@ -152,6 +159,7 @@ public class WikiController {
                                 .map(FlowerDto::from)
                                 .toList();
                 model.addAttribute("flowerList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "꽃 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 꽃 전체 목록 - 성장 시간, 씨앗 가격, 등급별 판매가 정보를 확인하세요.");
                 return "wiki/items/flowers";
@@ -163,6 +171,7 @@ public class WikiController {
                                 .map(CropDto::from)
                                 .toList();
                 model.addAttribute("cropList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "작물 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 작물 전체 목록 - 성장 시간, 씨앗 가격, 등급별 판매가 정보를 확인하세요.");
                 return "wiki/items/crops";
@@ -174,6 +183,7 @@ public class WikiController {
                                 .map(ForageableDto::from)
                                 .toList();
                 model.addAttribute("forageableList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "채집물 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 채집물 전체 목록 - 채집 장소, 판매가, 에너지 정보를 확인하세요.");
                 return "wiki/collections/forageable";
@@ -214,12 +224,17 @@ public class WikiController {
                 imageMap.putIfAbsent(normalizedName, imageUrl);
         }
 
+        private void addEventFilterModel(Model model) {
+                model.addAttribute("currentEventNames", eventSettingsService.getCurrentEventNames());
+        }
+
         @GetMapping("/others/sandbox")
         public String sandbox(Model model) {
                 List<SandboxDto> list = collectionService.getAllSandboxes().stream()
                                 .map(SandboxDto::from)
                                 .toList();
                 model.addAttribute("sandboxList", list);
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "모래 조각 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 모래 조각 전체 목록 - 요구 레벨, 시간, 날씨, 조형물 힌트와 대화 선택지를 확인하세요.");
                 return "wiki/others/sandbox";
@@ -228,6 +243,7 @@ public class WikiController {
         @GetMapping("/others/sea-cleaning")
         public String seaCleaning(Model model) {
                 model.addAttribute("seaCleaningList", collectionService.getAllSeaCleaningCollections());
+                addEventFilterModel(model);
                 model.addAttribute("pageTitle", "바다 청소 도감");
                 model.addAttribute("pageDescription", "두근두근라이프 바다 청소 도감 - 조개와 고둥의 등장 시간, 레벨, 숙련도를 확인하세요.");
                 return "wiki/others/sea-cleaning";

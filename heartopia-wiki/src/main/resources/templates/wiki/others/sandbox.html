@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
-    <script src="/js/wiki-filter.js?v=2.5" defer></script>
+    <script src="/js/wiki-filter.js?v=2.6" defer></script>
     <style>
         .sandbox-image {
             background: #f8f1df !important;
@@ -139,6 +139,8 @@
                 </div>
 
                 <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <div th:replace="~{fragments/wiki-components :: eventFilter}"></div>
+
                     <div class="filter-select-wrapper">
                         <span class="prefix">레벨</span>
                         <select id="levelFilter">
@@ -177,7 +179,8 @@
                  th:data-level="${item.level}"
                  th:data-weather="${item.weather}"
                  th:data-shape="${item.shape}"
-                 th:data-price="${item.price}">
+                 th:data-price="${item.price}"
+                 th:data-event="${item.eventName != null ? item.eventName : ''}">
 
                 <div class="wiki-item-image sandbox-image">
                     <div class="sandbox-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
@@ -255,7 +258,8 @@
                         th:data-level="${item.level}"
                         th:data-weather="${item.weather}"
                         th:data-shape="${item.shape}"
-                        th:data-price="${item.price}">
+                        th:data-price="${item.price}"
+                        th:data-event="${item.eventName != null ? item.eventName : ''}">
                         <td>
                             <div class="table-thumb-wrap">
                                 <span class="table-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
@@ -297,6 +301,7 @@
                 tableId: 'wikiTable',
                 itemSelector: '.wiki-item-card',
                 filters: [
+                    { id: 'eventFilter', dataKey: 'event', type: 'event-multi' },
                     { id: 'levelFilter', dataKey: 'level', autoPopulate: true },
                     { id: 'weatherFilter', dataKey: 'weather', autoPopulate: true },
                     { id: 'shapeFilter', dataKey: 'shape', autoPopulate: true }

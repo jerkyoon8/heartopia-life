@@ -53,7 +53,9 @@ class WikiFilter {
         this.config.filters.forEach(f => {
             const el = document.getElementById(f.id);
             if (el) {
-                if (f.type === 'multi') {
+                if (f.type === 'event-multi') {
+                    this.filterElements.push(this.initEventMultiFilter(el, f));
+                } else if (f.type === 'multi') {
                     // 다중 선택 필터 객체화
                     const filterObj = {
                         element: el,
@@ -90,8 +92,10 @@ class WikiFilter {
                         filterObj.trigger.addEventListener('click', (e) => {
                             e.stopPropagation();
                             this.filterElements.forEach(other => {
-                                if (other.type === 'multi' && other.element.id !== f.id && other.dropdown) {
+                                if ((other.type === 'multi' || other.type === 'event-multi')
+                                        && other.element.id !== f.id && other.dropdown) {
                                     other.dropdown.classList.remove('show');
+                                    other.trigger?.setAttribute('aria-expanded', 'false');
                                 }
                             });
                             filterObj.dropdown.classList.toggle('show');
@@ -271,11 +275,186 @@ class WikiFilter {
         // 전역 클릭 이벤트 (다중 선택 드롭다운 외부 클릭 시 닫기)
         document.addEventListener('click', (e) => {
             this.filterElements.forEach(f => {
-                if (f.type === 'multi' && f.dropdown && !f.element.contains(e.target)) {
+                if ((f.type === 'multi' || f.type === 'event-multi')
+                        && f.dropdown && !f.element.contains(e.target)) {
                     f.dropdown.classList.remove('show');
+                    f.trigger?.setAttribute('aria-expanded', 'false');
                 }
             });
         });
+
+        this.applyFilter();
+    }
+
+    initEventMultiFilter(element, config) {
+        const trigger = element.querySelector('.multi-select-trigger');
+        const dropdown = element.querySelector('.multi-select-dropdown');
+        const currentContainer = element.querySelector('.event-current-options');
+        const pastContainer = element.querySelector('.event-past-options');
+        const currentSection = element.querySelector('.event-current-section');
+        const pastSection = element.querySelector('.event-past-section');
+        const emptyState = element.querySelector('.event-filter-empty');
+        const currentValues = new Set(Array.from(element.querySelectorAll('.current-event-value'))
+            .map(input => input.value.trim())
+            .filter(Boolean));
+        const availableValues = Array.from(new Set(this.items
+            .map(item => String(item.dataset[config.dataKey] || '').trim())
+            .filter(Boolean)))
+            .sort((a, b) => a.localeCompare(b, 'ko'));
+        const availableValueSet = new Set(availableValues);
+        const missingCurrentValues = Array.from(currentValues)
+            .filter(eventName => !availableValueSet.has(eventName))
+            .sort((a, b) => a.localeCompare(b, 'ko'));
+        const overrides = this.readEventOverrides();
+
+        const createOption = (eventName, current, unavailable = false) => {
+            const option = document.createElement('div');
+            option.className = 'dropdown-opt event-dropdown-opt';
+
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = eventName;
+            checkbox.dataset.defaultChecked = String(current);
+            checkbox.disabled = unavailable;
+            checkbox.checked = unavailable
+                ? false
+                : (Object.prototype.hasOwnProperty.call(overrides, eventName)
+                    ? overrides[eventName] === true
+                    : current);
+
+            const text = document.createElement('span');
+            text.textContent = eventName;
+            label.append(checkbox, text);
+            if (current) {
+                const badge = document.createElement('small');
+                badge.className = 'event-current-badge';
+                badge.textContent = '진행 중';
+                label.appendChild(badge);
+            }
+            if (unavailable) {
+                const note = document.createElement('small');
+                note.className = 'event-unavailable-note';
+                note.textContent = '이 도감에 항목 없음';
+                label.appendChild(note);
+            }
+            option.appendChild(label);
+            return option;
+        };
+
+        availableValues.forEach(eventName => {
+            const current = currentValues.has(eventName);
+            const option = createOption(eventName, current);
+            (current ? currentContainer : pastContainer)?.appendChild(option);
+        });
+        missingCurrentValues.forEach(eventName => {
+            currentContainer?.appendChild(createOption(eventName, true, true));
+        });
+
+        if (currentSection) {
+            currentSection.hidden = !availableValues.some(value => currentValues.has(value))
+                && missingCurrentValues.length === 0;
+        }
+        if (pastSection) pastSection.hidden = !availableValues.some(value => !currentValues.has(value));
+        if (emptyState) emptyState.hidden = availableValues.length > 0 || missingCurrentValues.length > 0;
+        element.classList.toggle('event-filter-unavailable', availableValues.length === 0);
+
+        const filterObj = {
+            element,
+            key: config.dataKey,
+            type: 'event-multi',
+            trigger,
+            dropdown,
+            checkboxes: Array.from(element.querySelectorAll('.event-dropdown-opt input[type="checkbox"]')),
+            getCheckedValues() {
+                return this.checkboxes.filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+            }
+        };
+
+        const updateTriggerText = () => {
+            const checked = filterObj.getCheckedValues();
+            const label = trigger?.querySelector('.trigger-label');
+            if (!label) return;
+            if (checked.length === 0) {
+                label.textContent = availableValues.length === 0 ? '이벤트 항목 없음' : '이벤트 선택';
+            } else if (checked.length === 1) {
+                label.textContent = checked[0];
+            } else {
+                label.textContent = checked.length + '개 이벤트';
+            }
+        };
+
+        filterObj.checkboxes.forEach(checkbox => {
+            const defaultChecked = checkbox.dataset.defaultChecked === 'true';
+            if (Object.prototype.hasOwnProperty.call(overrides, checkbox.value)
+                    && overrides[checkbox.value] === defaultChecked) {
+                delete overrides[checkbox.value];
+            }
+            checkbox.addEventListener('change', () => {
+                const savedOverrides = this.readEventOverrides();
+                if (checkbox.checked === defaultChecked) {
+                    delete savedOverrides[checkbox.value];
+                } else {
+                    savedOverrides[checkbox.value] = checkbox.checked;
+                }
+                this.writeEventOverrides(savedOverrides);
+                updateTriggerText();
+                this.applyFilter();
+            });
+        });
+        this.writeEventOverrides(overrides);
+
+        filterObj.resetToDefaults = () => {
+            filterObj.checkboxes.forEach(checkbox => {
+                checkbox.checked = checkbox.dataset.defaultChecked === 'true';
+            });
+            updateTriggerText();
+        };
+
+        if (trigger && dropdown) {
+            trigger.addEventListener('click', event => {
+                event.stopPropagation();
+                this.filterElements.forEach(other => {
+                    if ((other.type === 'multi' || other.type === 'event-multi')
+                            && other.element !== element && other.dropdown) {
+                        other.dropdown.classList.remove('show');
+                        other.trigger?.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                const open = dropdown.classList.toggle('show');
+                trigger.setAttribute('aria-expanded', String(open));
+            });
+            trigger.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    trigger.click();
+                }
+            });
+        }
+
+        updateTriggerText();
+        return filterObj;
+    }
+
+    readEventOverrides() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('wikiEventFilterOverrides') || '{}');
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    writeEventOverrides(overrides) {
+        try {
+            if (Object.keys(overrides).length === 0) {
+                localStorage.removeItem('wikiEventFilterOverrides');
+            } else {
+                localStorage.setItem('wikiEventFilterOverrides', JSON.stringify(overrides));
+            }
+        } catch (error) {
+            // 저장소 접근이 막혀도 현재 페이지 필터는 계속 동작한다.
+        }
     }
 
     initViewToggle() {
@@ -429,7 +608,12 @@ class WikiFilter {
         // 2. Custom Filters
         if (isMatch) {
             for (const f of this.filterElements) {
-                if (f.type === 'multi') {
+                if (f.type === 'event-multi') {
+                    const itemValue = String(element.dataset[f.key] || '').trim();
+                    if (itemValue && !f.getCheckedValues().includes(itemValue)) {
+                        isMatch = false;
+                    }
+                } else if (f.type === 'multi') {
                     const checkedValues = f.getCheckedValues();
                     if (checkedValues.length > 0) {
                         const itemValue = String(element.dataset[f.key] || '').trim();
@@ -614,7 +798,10 @@ class WikiFilter {
         if (this.searchInput) this.searchInput.value = '';
 
         this.filterElements.forEach(f => {
-            if (f.type === 'multi') {
+            if (f.type === 'event-multi') {
+                this.writeEventOverrides({});
+                f.resetToDefaults();
+            } else if (f.type === 'multi') {
                 if (f.allCheckbox) f.allCheckbox.checked = true;
                 f.checkboxes.forEach(cb => cb.checked = false);
                 const labelSpan = f.trigger ? f.trigger.querySelector('.trigger-label') : null;

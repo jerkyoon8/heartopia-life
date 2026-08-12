@@ -26,13 +26,17 @@ public class SeaCleaningCollection {
     private Integer masteryIntroMin;
     private Integer masteryExpertMin;
     private Integer masteryMasterMin;
+    private Boolean masteryFieldsPresent;
 
     public List<Integer> getPrices() {
         return Arrays.asList(goldPrice1, goldPrice2, goldPrice3, goldPrice4, goldPrice5);
     }
 
     public boolean hasMasteryData() {
-        return masteryBeginnerMax != null;
+        return masteryBeginnerMax != null
+                && masteryIntroMin != null
+                && masteryExpertMin != null
+                && masteryMasterMin != null;
     }
 
     public List<Integer> getMasteryRanges() {
