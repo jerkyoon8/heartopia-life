@@ -5,7 +5,8 @@ const {
     WIKI_GENERAL_EVENT_VALUE,
     wikiMatchesEventSelection,
     wikiBuildQuickOnlySelection,
-    wikiDeriveQuickFilterState
+    wikiDeriveQuickFilterState,
+    wikiPrepareEventOverrides
 } = require('../../main/resources/static/js/wiki-filter.js');
 
 test('일반 선택은 event_name이 없는 항목만 포함한다', () => {
@@ -72,4 +73,15 @@ test('일반 없이 빠른 후보만 복수 선택했을 때만 전용 보기로
     assert.equal(wikiDeriveQuickFilterState(
         ['고래 탐사 시즌', '빙설 시즌'],
         ['고래 탐사 시즌', '데이브 더 다이버']).quickOnly, false);
+});
+
+test('새 페이지 진입 시 일반 해제 재정의만 제거한다', () => {
+    assert.deepEqual(wikiPrepareEventOverrides({
+        [WIKI_GENERAL_EVENT_VALUE]: false,
+        '고래 탐사 시즌': true,
+        '빙설 시즌': false
+    }), {
+        '고래 탐사 시즌': true,
+        '빙설 시즌': false
+    });
 });

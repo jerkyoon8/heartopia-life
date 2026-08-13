@@ -40,6 +40,14 @@ function wikiDeriveQuickFilterState(selectedValues, quickValues) {
     };
 }
 
+function wikiPrepareEventOverrides(overrides) {
+    const prepared = overrides && typeof overrides === 'object' && !Array.isArray(overrides)
+        ? { ...overrides }
+        : {};
+    delete prepared[WIKI_GENERAL_EVENT_VALUE];
+    return prepared;
+}
+
 class WikiFilter {
     constructor(config) {
         this.config = Object.assign({
@@ -347,7 +355,7 @@ class WikiFilter {
         const missingCurrentValues = Array.from(currentValues)
             .filter(eventName => !availableValueSet.has(eventName))
             .sort((a, b) => a.localeCompare(b, 'ko'));
-        const overrides = this.readEventOverrides();
+        const overrides = wikiPrepareEventOverrides(this.readEventOverrides());
 
         const createOption = (
             eventName,
@@ -1021,6 +1029,7 @@ if (typeof module !== 'undefined' && module.exports) {
         WIKI_GENERAL_EVENT_VALUE,
         wikiMatchesEventSelection,
         wikiBuildQuickOnlySelection,
-        wikiDeriveQuickFilterState
+        wikiDeriveQuickFilterState,
+        wikiPrepareEventOverrides
     };
 }

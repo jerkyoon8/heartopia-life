@@ -66,6 +66,10 @@
   Files: `package.json`, `package-lock.json`, `playwright.config.js`, `e2e/event-filter.spec.js`, `.gitignore`
   Verify: 초기값, 복수 선택, ON/OFF, 새로고침, 초기화, 선택 없음, 상세 필터 양방향 동기화, 깨진 저장값, 키보드, 10개 도감, 375px, 다크모드 및 콘솔/로컬 요청 오류 검사가 통과한다.
 
+- [x] T019 새로고침·도감 이동 시 `일반` 복원과 이벤트 전용 보기 OFF를 보장한다.
+  Files: `wiki-filter.js`, `wiki-filter-event.test.js`, `e2e/event-filter.spec.js`, 이벤트 도감 스크립트 캐시 버전
+  Verify: 전용 보기 ON 후 새로고침과 요리 → 바다청소 이동에서 `일반` 체크, 토글 OFF, 일반 항목 노출을 Playwright로 검증한다.
+
 - [x] T008 전체 테스트, 변경 diff, 작업 트리 충돌 여부를 확인하고 문서 완료 상태를 갱신한다.
   Files: 변경 파일 전체, `specs/022-current-event-filter/tasks.md`
   Verify: `./gradlew test` 통과, 관련 파일 diff 검토, 기존 사용자 변경 미포함 확인.

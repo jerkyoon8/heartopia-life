@@ -32,7 +32,7 @@ class CurrentEventFilterTemplateTest {
                     .as(resourcePath)
                     .contains("fragments/wiki-components :: quickEventFilter")
                     .contains("fragments/wiki-components :: eventFilter")
-                    .contains("/js/wiki-filter.js?v=2.8")
+                    .contains("/js/wiki-filter.js?v=2.9")
                     .contains("{ id: 'eventFilter', dataKey: 'event', type: 'event-multi' }")
                     .contains("th:data-event=");
         }

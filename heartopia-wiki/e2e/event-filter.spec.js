@@ -102,7 +102,7 @@ test('initial state is general plus current events, with quick-only off', async 
   expect(monitor.consoleErrors).toEqual([]);
 });
 
-test('multi-select, quick-only, reload, off and reset remain one consistent state', async ({ page }) => {
+test('multi-select stays selected but reload resets general on and quick-only off', async ({ page }) => {
   await openFilterPage(page);
   const state = await readEventState(page);
   test.skip(state.quick.length < 2, '관리자 빠른 이벤트가 2개 이상이어야 복수 선택을 검증할 수 있습니다.');
@@ -128,12 +128,9 @@ test('multi-select, quick-only, reload, off and reset remain one consistent stat
   expect(await page.locator('.quick-event-toggle-state').evaluate(element => getComputedStyle(element, '::before').content)).toBe('"ON"');
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#quickEventOnlyToggle')).toBeChecked();
-  for (const value of selectedQuick) await expect(quickOption(page, value)).toBeChecked();
-
-  await page.locator('.quick-event-toggle-button').click();
   await expect(page.locator('#quickEventOnlyToggle')).not.toBeChecked();
   await expect(detailOption(page, GENERAL)).toBeChecked();
+  for (const value of selectedQuick) await expect(quickOption(page, value)).toBeChecked();
   expect((await inlineVisibleEvents(page, '.wiki-item-card')).some(value => value === '')).toBe(true);
 
   await page.locator('#resetBtn').click();
@@ -142,6 +139,23 @@ test('multi-select, quick-only, reload, off and reset remain one consistent stat
     await expect(detailOption(page, value)).toBeChecked();
   }
   await expect(page.locator('#quickEventOnlyToggle')).not.toBeChecked();
+});
+
+test('moving from cooking quick-only to sea cleaning restores general results', async ({ page }) => {
+  await page.goto('/wiki/items/cooking', { waitUntil: 'domcontentloaded' });
+  const state = await readEventState(page);
+  test.skip(state.quick.length === 0, '요리 도감에서 선택 가능한 빠른 이벤트가 필요합니다.');
+
+  await page.locator('#quickEventTrigger').click();
+  await quickOption(page, state.quick[0]).check();
+  await page.locator('.quick-event-toggle-button').click();
+  await expect(page.locator('#quickEventOnlyToggle')).toBeChecked();
+  await expect(detailOption(page, GENERAL)).not.toBeChecked();
+
+  await page.goto('/wiki/others/sea-cleaning', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#quickEventOnlyToggle')).not.toBeChecked();
+  await expect(detailOption(page, GENERAL)).toBeChecked();
+  expect((await inlineVisibleEvents(page, '.wiki-item-card, .wiki-table-row')).length).toBeGreaterThan(0);
 });
 
 test('turning on without a selected quick event opens the picker and preserves results', async ({ page }) => {
