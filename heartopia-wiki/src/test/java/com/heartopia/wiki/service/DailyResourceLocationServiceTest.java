@@ -60,7 +60,7 @@ class DailyResourceLocationServiceTest {
     }
 
     @Test
-    @DisplayName("집 앞은 양의 집 번호를 요구하고 유적의 집 번호는 제거한다")
+    @DisplayName("집 앞은 양의 집 번호를 요구하고 유적과 참나무숲의 집 번호는 제거한다")
     void validatesAndNormalizesLocationTypes() {
         DailyResourceLocationService service = serviceAt("2026-07-30T21:00:00Z");
         DailyResourceLocation valid = location(
@@ -75,12 +75,22 @@ class DailyResourceLocationServiceTest {
         assertEquals(8, captor.getValue().getFluoriteHouseNumber());
         assertNull(captor.getValue().getOakHouseNumber());
 
-        assertThrows(IllegalArgumentException.class, () -> service.save(location(
+        DailyResourceLocation oakForest = location(
                 LocalDate.of(2026, 8, 2),
+                "OAK_FOREST", 77,
+                "OAK_FOREST", 88);
+        service.save(oakForest);
+        assertEquals("참나무숲", oakForest.getFluoriteLocationLabel());
+        assertEquals("참나무숲", oakForest.getOakLocationLabel());
+        assertNull(oakForest.getFluoriteHouseNumber());
+        assertNull(oakForest.getOakHouseNumber());
+
+        assertThrows(IllegalArgumentException.class, () -> service.save(location(
+                LocalDate.of(2026, 8, 3),
                 "HOUSE_FRONT", 0,
                 "RUINS", null)));
         assertThrows(IllegalArgumentException.class, () -> service.save(location(
-                LocalDate.of(2026, 8, 2),
+                LocalDate.of(2026, 8, 3),
                 "FREE_TEXT", null,
                 "RUINS", null)));
     }

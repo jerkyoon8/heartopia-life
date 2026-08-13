@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,6 +56,7 @@ class HeaderDailyResourceLocationTemplateTest {
         assertTrue(template.contains("type=\"date\""));
         assertTrue(template.contains("value=\"HOUSE_FRONT\""));
         assertTrue(template.contains("value=\"RUINS\""));
+        assertTrue(template.contains("value=\"OAK_FOREST\""));
         assertTrue(template.contains("name=\"fluoriteHouseNumber\""));
         assertTrue(template.contains("name=\"oakHouseNumber\""));
         assertTrue(template.contains("/wiki/admin/daily-resource-locations/save"));
@@ -62,7 +64,7 @@ class HeaderDailyResourceLocationTemplateTest {
     }
 
     @Test
-    @DisplayName("SQL은 날짜 유일성과 두 위치 유형 제약을 정의한다")
+    @DisplayName("SQL은 날짜 유일성과 세 위치 유형 제약을 정의한다")
     void sqlConstrainsDailyLocationRows() throws IOException {
         String sql = read("sql/20260730_create_daily_resource_locations.sql");
 
@@ -70,6 +72,7 @@ class HeaderDailyResourceLocationTemplateTest {
         assertTrue(sql.contains("UNIQUE KEY uk_daily_resource_location_game_date (game_date)"));
         assertTrue(sql.contains("HOUSE_FRONT"));
         assertTrue(sql.contains("RUINS"));
+        assertTrue(sql.contains("OAK_FOREST"));
         assertTrue(sql.contains("fluorite_house_number"));
         assertTrue(sql.contains("oak_house_number"));
         assertTrue(sql.contains("is_active BOOLEAN NOT NULL DEFAULT TRUE"));
@@ -77,6 +80,18 @@ class HeaderDailyResourceLocationTemplateTest {
         String mapper = read("mapper/DailyResourceLocationMapper.xml");
         assertTrue(mapper.contains("SET is_active = FALSE"));
         assertFalse(mapper.contains("DELETE FROM daily_resource_locations"));
+
+        String migration = read("sql/20260813_add_oak_forest_daily_resource_location.sql");
+        assertTrue(migration.contains("DROP CHECK chk_daily_resource_fluorite_type"));
+        assertTrue(migration.contains("DROP CHECK chk_daily_resource_fluorite_house"));
+        assertTrue(migration.contains("DROP CHECK chk_daily_resource_oak_type"));
+        assertTrue(migration.contains("DROP CHECK chk_daily_resource_oak_house"));
+        assertTrue(migration.contains("CHECK (fluorite_location_type IN ('HOUSE_FRONT', 'RUINS', 'OAK_FOREST'))"));
+        assertTrue(migration.contains("fluorite_location_type IN ('RUINS', 'OAK_FOREST')"));
+        assertTrue(migration.contains("CHECK (oak_location_type IN ('HOUSE_FRONT', 'RUINS', 'OAK_FOREST'))"));
+        assertTrue(migration.contains("oak_location_type IN ('RUINS', 'OAK_FOREST')"));
+        assertEquals(1, migration.split("ALTER TABLE daily_resource_locations", -1).length - 1,
+                "CHECK 제약 삭제와 추가는 하나의 원자적 ALTER TABLE로 실행해야 한다");
     }
 
     private String read(String relativePath) throws IOException {

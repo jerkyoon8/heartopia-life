@@ -29,6 +29,9 @@ public class DailyResourceLocation {
         if ("RUINS".equals(type)) {
             return "유적";
         }
+        if ("OAK_FOREST".equals(type)) {
+            return "참나무숲";
+        }
         if ("HOUSE_FRONT".equals(type) && houseNumber != null) {
             return houseNumber + "번 집 앞";
         }

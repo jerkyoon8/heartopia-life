@@ -21,7 +21,7 @@ public class DailyResourceLocationService {
 
     private static final ZoneId ASIA_SERVER_ZONE = ZoneId.of("Asia/Seoul");
     private static final DateTimeFormatter SERVER_TIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-    private static final Set<String> LOCATION_TYPES = Set.of("HOUSE_FRONT", "RUINS");
+    private static final Set<String> LOCATION_TYPES = Set.of("HOUSE_FRONT", "RUINS", "OAK_FOREST");
     private static final String EMPTY_LOCATION = "위치 정보 없음";
 
     private final DailyResourceLocationMapper mapper;
@@ -97,13 +97,13 @@ public class DailyResourceLocationService {
     private String normalizeType(String type, String resourceName) {
         String normalized = type == null ? "" : type.trim().toUpperCase(Locale.ROOT);
         if (!LOCATION_TYPES.contains(normalized)) {
-            throw new IllegalArgumentException(resourceName + " 위치는 집 앞 또는 유적만 선택할 수 있습니다.");
+            throw new IllegalArgumentException(resourceName + " 위치는 집 앞, 유적 또는 참나무숲만 선택할 수 있습니다.");
         }
         return normalized;
     }
 
     private Integer normalizeHouseNumber(String type, Integer houseNumber, String resourceName) {
-        if ("RUINS".equals(type)) {
+        if (!"HOUSE_FRONT".equals(type)) {
             return null;
         }
         if (houseNumber == null || houseNumber < 1) {
