@@ -30,10 +30,60 @@ class CurrentEventFilterTemplateTest {
 
             assertThat(template)
                     .as(resourcePath)
+                    .contains("fragments/wiki-components :: quickEventFilter")
                     .contains("fragments/wiki-components :: eventFilter")
+                    .contains("/js/wiki-filter.js?v=2.8")
                     .contains("{ id: 'eventFilter', dataKey: 'event', type: 'event-multi' }")
                     .contains("th:data-event=");
         }
+    }
+
+    @Test
+    void sharedFilterProvidesGeneralAndAdminQuickEventValues() throws IOException {
+        String components = read("templates/fragments/wiki-components.html");
+        String commonHead = read("templates/fragments/common-head.html");
+        String commonCss = read("static/css/common.css");
+
+        assertThat(components)
+                .contains("th:fragment=\"quickEventFilter\"")
+                .contains("id=\"quickEventOnlyToggle\"")
+                .contains("class=\"quick-event-controls quick-event-split-control\"")
+                .contains("class=\"quick-event-toggle-button\"")
+                .contains("class=\"quick-event-toggle-state\"")
+                .contains("class=\"filter-multi-select-wrapper quick-event-picker\"")
+                .contains("class=\"quick-event-value\"")
+                .contains("class=\"event-general-options\"")
+                .contains("이벤트만 보기");
+
+        assertThat(commonCss)
+                .contains(".quick-event-split-control")
+                .contains(".quick-event-toggle-button:has(input:checked)")
+                .contains("[data-theme='dark'] .quick-event-toggle-button:has(input:checked)")
+                .contains(".quick-event-toggle-state::before")
+                .contains("content: \"OFF\"")
+                .contains("content: \"ON\"")
+                .contains("width: min(100%, 340px)")
+                .contains("width: min(320px, calc(100vw - 32px))")
+                .doesNotContain(".quick-event-controls {\n        flex-wrap: wrap;");
+
+        String script = read("static/js/wiki-filter.js");
+        assertThat(script)
+                .doesNotContain("if (quickValues.length === 0) return;")
+                .doesNotContain("quickToggle.disabled = quickValues.length === 0")
+                .contains("quickDropdown.classList.toggle('show')");
+        assertThat(commonHead).contains("/css/common.css(v=2.1)");
+    }
+
+    @Test
+    void adminCanConfigureCurrentAndQuickEventsSeparately() throws IOException {
+        String admin = read("templates/wiki/admin-event-settings.html");
+
+        assertThat(admin)
+                .contains("name=\"currentEventNames\"")
+                .contains("name=\"quickEventNames\"")
+                .contains("name=\"eventSettingsVersion\" value=\"2\"")
+                .contains("상단 빠른 선택에 표시할 이벤트")
+                .doesNotContain("name=\"eventNames\"");
     }
 
     @Test

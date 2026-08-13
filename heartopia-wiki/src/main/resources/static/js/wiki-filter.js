@@ -2,6 +2,44 @@
  * WikiFilter.js
  * Generic Class for Client-Side Filtering, Sorting, and View Toggle in Heartopia Wiki
  */
+const WIKI_GENERAL_EVENT_VALUE = '__general__';
+
+function wikiMatchesEventSelection(itemValue, selectedValues) {
+    const normalizedItem = String(itemValue || '').trim();
+    const selected = new Set(Array.from(selectedValues || [], value => String(value || '').trim()));
+    return normalizedItem
+        ? selected.has(normalizedItem)
+        : selected.has(WIKI_GENERAL_EVENT_VALUE);
+}
+
+function wikiBuildQuickOnlySelection(selectedValues, quickValues, enabled) {
+    const selected = Array.from(new Set(Array.from(selectedValues || [], value => String(value || '').trim())
+        .filter(Boolean)));
+    if (!enabled) {
+        return { applied: true, values: [WIKI_GENERAL_EVENT_VALUE, ...selected.filter(value => value !== WIKI_GENERAL_EVENT_VALUE)] };
+    }
+
+    const quick = new Set(Array.from(quickValues || [], value => String(value || '').trim()).filter(Boolean));
+    const targets = selected.filter(value => value !== WIKI_GENERAL_EVENT_VALUE && quick.has(value));
+    return targets.length > 0
+        ? { applied: true, values: targets }
+        : { applied: false, values: selected };
+}
+
+function wikiDeriveQuickFilterState(selectedValues, quickValues) {
+    const selected = Array.from(new Set(Array.from(selectedValues || [], value => String(value || '').trim())
+        .filter(Boolean)));
+    const quick = new Set(Array.from(quickValues || [], value => String(value || '').trim()).filter(Boolean));
+    const selectedEvents = selected.filter(value => value !== WIKI_GENERAL_EVENT_VALUE);
+    const selectedQuick = selectedEvents.filter(value => quick.has(value));
+    return {
+        selectedQuick,
+        quickOnly: selectedEvents.length > 0
+            && !selected.includes(WIKI_GENERAL_EVENT_VALUE)
+            && selectedEvents.length === selectedQuick.length
+    };
+}
+
 class WikiFilter {
     constructor(config) {
         this.config = Object.assign({
@@ -289,6 +327,7 @@ class WikiFilter {
     initEventMultiFilter(element, config) {
         const trigger = element.querySelector('.multi-select-trigger');
         const dropdown = element.querySelector('.multi-select-dropdown');
+        const generalContainer = element.querySelector('.event-general-options');
         const currentContainer = element.querySelector('.event-current-options');
         const pastContainer = element.querySelector('.event-past-options');
         const currentSection = element.querySelector('.event-current-section');
@@ -297,6 +336,9 @@ class WikiFilter {
         const currentValues = new Set(Array.from(element.querySelectorAll('.current-event-value'))
             .map(input => input.value.trim())
             .filter(Boolean));
+        const quickValues = Array.from(new Set(Array.from(element.querySelectorAll('.quick-event-value'))
+            .map(input => input.value.trim())
+            .filter(Boolean)));
         const availableValues = Array.from(new Set(this.items
             .map(item => String(item.dataset[config.dataKey] || '').trim())
             .filter(Boolean)))
@@ -307,7 +349,13 @@ class WikiFilter {
             .sort((a, b) => a.localeCompare(b, 'ko'));
         const overrides = this.readEventOverrides();
 
-        const createOption = (eventName, current, unavailable = false) => {
+        const createOption = (
+            eventName,
+            defaultChecked,
+            unavailable = false,
+            labelText = eventName,
+            showCurrentBadge = defaultChecked
+        ) => {
             const option = document.createElement('div');
             option.className = 'dropdown-opt event-dropdown-opt';
 
@@ -315,18 +363,18 @@ class WikiFilter {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = eventName;
-            checkbox.dataset.defaultChecked = String(current);
+            checkbox.dataset.defaultChecked = String(defaultChecked);
             checkbox.disabled = unavailable;
             checkbox.checked = unavailable
                 ? false
                 : (Object.prototype.hasOwnProperty.call(overrides, eventName)
                     ? overrides[eventName] === true
-                    : current);
+                    : defaultChecked);
 
             const text = document.createElement('span');
-            text.textContent = eventName;
+            text.textContent = labelText;
             label.append(checkbox, text);
-            if (current) {
+            if (showCurrentBadge) {
                 const badge = document.createElement('small');
                 badge.className = 'event-current-badge';
                 badge.textContent = '진행 중';
@@ -341,6 +389,14 @@ class WikiFilter {
             option.appendChild(label);
             return option;
         };
+
+        const hasGeneralItems = this.items.some(item => !String(item.dataset[config.dataKey] || '').trim());
+        generalContainer?.appendChild(createOption(
+            WIKI_GENERAL_EVENT_VALUE,
+            true,
+            !hasGeneralItems,
+            '일반',
+            false));
 
         availableValues.forEach(eventName => {
             const current = currentValues.has(eventName);
@@ -373,15 +429,87 @@ class WikiFilter {
 
         const updateTriggerText = () => {
             const checked = filterObj.getCheckedValues();
+            const displayValues = checked.map(value => value === WIKI_GENERAL_EVENT_VALUE ? '일반' : value);
             const label = trigger?.querySelector('.trigger-label');
             if (!label) return;
             if (checked.length === 0) {
-                label.textContent = availableValues.length === 0 ? '이벤트 항목 없음' : '이벤트 선택';
+                label.textContent = availableValues.length === 0 && !hasGeneralItems ? '이벤트 항목 없음' : '이벤트 선택';
             } else if (checked.length === 1) {
-                label.textContent = checked[0];
+                label.textContent = displayValues[0];
             } else {
-                label.textContent = checked.length + '개 이벤트';
+                label.textContent = checked.length + '개 선택';
             }
+        };
+
+        const quickFilter = document.getElementById('quickEventFilter');
+        const quickToggle = quickFilter?.querySelector('#quickEventOnlyToggle');
+        const quickTrigger = quickFilter?.querySelector('#quickEventTrigger');
+        const quickDropdown = quickFilter?.querySelector('#quickEventDropdown');
+        const quickOptions = quickFilter?.querySelector('.quick-event-options');
+        const quickEmpty = quickFilter?.querySelector('.quick-event-empty');
+        const checkboxByValue = new Map(filterObj.checkboxes.map(checkbox => [checkbox.value, checkbox]));
+
+        const createQuickOption = eventName => {
+            const option = document.createElement('div');
+            option.className = 'dropdown-opt quick-event-option';
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            const detailCheckbox = checkboxByValue.get(eventName);
+            checkbox.type = 'checkbox';
+            checkbox.value = eventName;
+            checkbox.disabled = !detailCheckbox || detailCheckbox.disabled;
+            checkbox.checked = Boolean(detailCheckbox?.checked && !detailCheckbox.disabled);
+            const text = document.createElement('span');
+            text.textContent = eventName;
+            label.append(checkbox, text);
+            if (checkbox.disabled) {
+                const note = document.createElement('small');
+                note.className = 'event-unavailable-note';
+                note.textContent = '이 도감에 항목 없음';
+                label.appendChild(note);
+            }
+            option.appendChild(label);
+            return option;
+        };
+
+        quickValues.forEach(eventName => quickOptions?.appendChild(createQuickOption(eventName)));
+        const quickCheckboxes = Array.from(quickFilter?.querySelectorAll('.quick-event-option input[type="checkbox"]') || []);
+        if (quickEmpty) quickEmpty.hidden = quickValues.length > 0;
+
+        const persistCheckbox = checkbox => {
+            if (!checkbox || checkbox.disabled) return;
+            const defaultChecked = checkbox.dataset.defaultChecked === 'true';
+            const savedOverrides = this.readEventOverrides();
+            if (checkbox.checked === defaultChecked) {
+                delete savedOverrides[checkbox.value];
+            } else {
+                savedOverrides[checkbox.value] = checkbox.checked;
+            }
+            this.writeEventOverrides(savedOverrides);
+        };
+
+        const syncQuickFilter = () => {
+            const checkedValues = filterObj.getCheckedValues();
+            quickCheckboxes.forEach(checkbox => {
+                const detailCheckbox = checkboxByValue.get(checkbox.value);
+                checkbox.checked = Boolean(detailCheckbox?.checked && !detailCheckbox.disabled);
+            });
+            const quickState = wikiDeriveQuickFilterState(checkedValues, quickValues);
+            if (quickToggle) quickToggle.checked = quickState.quickOnly;
+
+            const label = quickTrigger?.querySelector('.trigger-label');
+            if (label) {
+                label.textContent = quickState.selectedQuick.length === 0
+                    ? '이벤트 선택'
+                    : quickState.selectedQuick.length === 1
+                        ? quickState.selectedQuick[0]
+                        : quickState.selectedQuick.length + '개 이벤트';
+            }
+        };
+
+        const refreshEventUi = () => {
+            updateTriggerText();
+            syncQuickFilter();
         };
 
         filterObj.checkboxes.forEach(checkbox => {
@@ -391,14 +519,8 @@ class WikiFilter {
                 delete overrides[checkbox.value];
             }
             checkbox.addEventListener('change', () => {
-                const savedOverrides = this.readEventOverrides();
-                if (checkbox.checked === defaultChecked) {
-                    delete savedOverrides[checkbox.value];
-                } else {
-                    savedOverrides[checkbox.value] = checkbox.checked;
-                }
-                this.writeEventOverrides(savedOverrides);
-                updateTriggerText();
+                persistCheckbox(checkbox);
+                refreshEventUi();
                 this.applyFilter();
             });
         });
@@ -408,8 +530,71 @@ class WikiFilter {
             filterObj.checkboxes.forEach(checkbox => {
                 checkbox.checked = checkbox.dataset.defaultChecked === 'true';
             });
-            updateTriggerText();
+            refreshEventUi();
         };
+
+        quickCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const detailCheckbox = checkboxByValue.get(checkbox.value);
+                if (!detailCheckbox || detailCheckbox.disabled) return;
+                detailCheckbox.checked = checkbox.checked;
+                persistCheckbox(detailCheckbox);
+                if (quickToggle?.checked && !quickCheckboxes.some(candidate => candidate.checked)) {
+                    const generalCheckbox = checkboxByValue.get(WIKI_GENERAL_EVENT_VALUE);
+                    if (generalCheckbox && !generalCheckbox.disabled) {
+                        generalCheckbox.checked = true;
+                        persistCheckbox(generalCheckbox);
+                    }
+                }
+                refreshEventUi();
+                this.applyFilter();
+            });
+        });
+
+        quickToggle?.addEventListener('change', () => {
+            const transition = wikiBuildQuickOnlySelection(
+                filterObj.getCheckedValues(),
+                quickValues,
+                quickToggle.checked);
+            if (!transition.applied) {
+                quickToggle.checked = false;
+                quickDropdown?.classList.add('show');
+                quickTrigger?.setAttribute('aria-expanded', 'true');
+                return;
+            }
+            const nextValues = new Set(transition.values);
+            filterObj.checkboxes.forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = nextValues.has(checkbox.value);
+                    persistCheckbox(checkbox);
+                }
+            });
+            refreshEventUi();
+            this.applyFilter();
+        });
+
+        if (quickTrigger && quickDropdown) {
+            const toggleQuickDropdown = event => {
+                event.stopPropagation();
+                dropdown?.classList.remove('show');
+                trigger?.setAttribute('aria-expanded', 'false');
+                const open = quickDropdown.classList.toggle('show');
+                quickTrigger.setAttribute('aria-expanded', String(open));
+            };
+            quickTrigger.addEventListener('click', toggleQuickDropdown);
+            quickTrigger.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleQuickDropdown(event);
+                }
+            });
+            document.addEventListener('click', event => {
+                if (!quickFilter.contains(event.target)) {
+                    quickDropdown.classList.remove('show');
+                    quickTrigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
 
         if (trigger && dropdown) {
             trigger.addEventListener('click', event => {
@@ -422,6 +607,8 @@ class WikiFilter {
                     }
                 });
                 const open = dropdown.classList.toggle('show');
+                quickDropdown?.classList.remove('show');
+                quickTrigger?.setAttribute('aria-expanded', 'false');
                 trigger.setAttribute('aria-expanded', String(open));
             });
             trigger.addEventListener('keydown', event => {
@@ -432,7 +619,7 @@ class WikiFilter {
             });
         }
 
-        updateTriggerText();
+        refreshEventUi();
         return filterObj;
     }
 
@@ -610,7 +797,7 @@ class WikiFilter {
             for (const f of this.filterElements) {
                 if (f.type === 'event-multi') {
                     const itemValue = String(element.dataset[f.key] || '').trim();
-                    if (itemValue && !f.getCheckedValues().includes(itemValue)) {
+                    if (!wikiMatchesEventSelection(itemValue, f.getCheckedValues())) {
                         isMatch = false;
                     }
                 } else if (f.type === 'multi') {
@@ -827,4 +1014,13 @@ class WikiFilter {
 
         this.applyFilter();
     }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        WIKI_GENERAL_EVENT_VALUE,
+        wikiMatchesEventSelection,
+        wikiBuildQuickOnlySelection,
+        wikiDeriveQuickFilterState
+    };
 }

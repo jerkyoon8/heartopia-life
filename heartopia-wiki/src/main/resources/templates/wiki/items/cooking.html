@@ -5,7 +5,7 @@
 <head>
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.6" defer></script>
+    <script src="/js/wiki-filter.js?v=2.8" defer></script>
     <style>
         /* 목록 페이지 재료 pill 태그 */
         .ing-pill-list {
@@ -63,6 +63,8 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="요리 검색...">
                 </div>
+
+                <div th:replace="~{fragments/wiki-components :: quickEventFilter}"></div>
                 
 
                 <!-- 수집된 항목 숨기기 스위치 -->

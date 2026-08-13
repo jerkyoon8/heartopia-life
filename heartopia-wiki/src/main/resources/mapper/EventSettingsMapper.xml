@@ -37,12 +37,30 @@
         ORDER BY event_name
     </select>
 
+    <select id="findQuickEventNames" resultType="string">
+        SELECT event_name
+        FROM wiki_quick_events
+        ORDER BY event_name
+    </select>
+
     <delete id="deleteAllCurrentEvents">
         DELETE FROM wiki_current_events
     </delete>
 
     <insert id="insertCurrentEvents">
         INSERT INTO wiki_current_events (event_name)
+        VALUES
+        <foreach collection="eventNames" item="eventName" separator=",">
+            (#{eventName})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAllQuickEvents">
+        DELETE FROM wiki_quick_events
+    </delete>
+
+    <insert id="insertQuickEvents">
+        INSERT INTO wiki_quick_events (event_name)
         VALUES
         <foreach collection="eventNames" item="eventName" separator=",">
             (#{eventName})

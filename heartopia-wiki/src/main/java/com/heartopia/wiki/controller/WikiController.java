@@ -226,6 +226,7 @@ public class WikiController {
 
         private void addEventFilterModel(Model model) {
                 model.addAttribute("currentEventNames", eventSettingsService.getCurrentEventNames());
+                model.addAttribute("quickEventNames", eventSettingsService.getQuickEventNames());
         }
 
         @GetMapping("/others/sandbox")

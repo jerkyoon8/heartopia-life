@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.6" defer></script>
+    <script src="/js/wiki-filter.js?v=2.8" defer></script>
     <style>
         :root {
             --content-bg: var(--content-bg, rgba(251, 251, 251, 0.95));
@@ -80,6 +80,8 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="동물 이름 검색...">
                 </div>
+
+                <div th:replace="~{fragments/wiki-components :: quickEventFilter}"></div>
 
                 <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
 

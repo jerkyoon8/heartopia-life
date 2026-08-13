@@ -1,0 +1,10 @@
+{
+  "name": "heartopia-wiki-browser-tests",
+  "private": true,
+  "scripts": {
+    "test:e2e:event-filter": "playwright test e2e/event-filter.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

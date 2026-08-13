@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.6" defer></script>
+    <script src="/js/wiki-filter.js?v=2.8" defer></script>
     <script src="/js/admin-data.js?v=1.3" defer></script>
 </head>
 
@@ -27,6 +27,8 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="새 이름 검색...">
                 </div>
+
+                <div th:replace="~{fragments/wiki-components :: quickEventFilter}"></div>
 
                 <!-- 수집된 항목 숨기기 스위치 -->
                 <div class="toggle-switch-wrapper" style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">

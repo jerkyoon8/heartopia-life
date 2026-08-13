@@ -31,15 +31,17 @@ class EventSettingsServiceTest {
                 "겨울 축제"));
         EventSettingsService service = new EventSettingsService(mapper);
 
-        service.replaceCurrentEvents(List.of(
+        service.replaceEventSettings(List.of(
                 " 고래 탐사 시즌 ",
                 "데이브 더 다이버",
                 "고래 탐사 시즌",
-                " "));
+                " "), List.of(" 데이브 더 다이버 ", "데이브 더 다이버"));
 
         InOrder inOrder = inOrder(mapper);
         inOrder.verify(mapper).deleteAllCurrentEvents();
         inOrder.verify(mapper).insertCurrentEvents(List.of("고래 탐사 시즌", "데이브 더 다이버"));
+        inOrder.verify(mapper).deleteAllQuickEvents();
+        inOrder.verify(mapper).insertQuickEvents(List.of("데이브 더 다이버"));
     }
 
     @Test
@@ -48,10 +50,12 @@ class EventSettingsServiceTest {
         when(mapper.findAvailableEventNames()).thenReturn(List.of("고래 탐사 시즌"));
         EventSettingsService service = new EventSettingsService(mapper);
 
-        service.replaceCurrentEvents(null);
+        service.replaceEventSettings(null, null);
 
         verify(mapper).deleteAllCurrentEvents();
         verify(mapper, never()).insertCurrentEvents(org.mockito.ArgumentMatchers.anyList());
+        verify(mapper).deleteAllQuickEvents();
+        verify(mapper, never()).insertQuickEvents(org.mockito.ArgumentMatchers.anyList());
     }
 
     @Test
@@ -60,11 +64,23 @@ class EventSettingsServiceTest {
         when(mapper.findAvailableEventNames()).thenReturn(List.of("고래 탐사 시즌"));
         EventSettingsService service = new EventSettingsService(mapper);
 
-        assertThatThrownBy(() -> service.replaceCurrentEvents(List.of("임의 이벤트")))
+        assertThatThrownBy(() -> service.replaceEventSettings(List.of("고래 탐사 시즌"), List.of("임의 이벤트")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않는 이벤트");
 
         verify(mapper, never()).deleteAllCurrentEvents();
         verify(mapper, never()).insertCurrentEvents(org.mockito.ArgumentMatchers.anyList());
+        verify(mapper, never()).deleteAllQuickEvents();
+        verify(mapper, never()).insertQuickEvents(org.mockito.ArgumentMatchers.anyList());
+    }
+
+    @Test
+    @DisplayName("빠른 선택 이벤트 목록을 정규화해 조회한다")
+    void returnsNormalizedQuickEvents() {
+        when(mapper.findQuickEventNames()).thenReturn(List.of(" 고래 탐사 시즌 ", "", "고래 탐사 시즌"));
+        EventSettingsService service = new EventSettingsService(mapper);
+
+        org.assertj.core.api.Assertions.assertThat(service.getQuickEventNames())
+                .containsExactly("고래 탐사 시즌");
     }
 }

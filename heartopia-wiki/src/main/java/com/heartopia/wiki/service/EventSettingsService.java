@@ -26,19 +26,32 @@ public class EventSettingsService {
         return normalize(mapper.findCurrentEventNames()).stream().toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<String> getQuickEventNames() {
+        return normalize(mapper.findQuickEventNames()).stream().toList();
+    }
+
     @Transactional
-    public void replaceCurrentEvents(List<String> submittedEventNames) {
+    public void replaceEventSettings(
+            List<String> submittedCurrentEventNames,
+            List<String> submittedQuickEventNames) {
         Set<String> available = normalize(mapper.findAvailableEventNames());
-        Set<String> selected = normalize(submittedEventNames);
-        Set<String> unknown = new LinkedHashSet<>(selected);
+        Set<String> current = normalize(submittedCurrentEventNames);
+        Set<String> quick = normalize(submittedQuickEventNames);
+        Set<String> unknown = new LinkedHashSet<>(current);
+        unknown.addAll(quick);
         unknown.removeAll(available);
         if (!unknown.isEmpty()) {
             throw new IllegalArgumentException("도감 데이터에 존재하지 않는 이벤트입니다: " + String.join(", ", unknown));
         }
 
         mapper.deleteAllCurrentEvents();
-        if (!selected.isEmpty()) {
-            mapper.insertCurrentEvents(selected.stream().toList());
+        if (!current.isEmpty()) {
+            mapper.insertCurrentEvents(current.stream().toList());
+        }
+        mapper.deleteAllQuickEvents();
+        if (!quick.isEmpty()) {
+            mapper.insertQuickEvents(quick.stream().toList());
         }
     }
 

@@ -25,11 +25,17 @@
 8. 기존 고정 이벤트 스위치와 연결 스크립트를 제거하고 이벤트 필터 설정을 공통 타입으로 변경한다.
 9. QA에서 확인된 모바일 헤더 높이, 375px 카드 한 열, 다크모드 독립 선택창 대비를 공통 CSS에서 보완한다.
 10. 관리자 현재 이벤트와 페이지 이벤트 후보를 함께 렌더링하고, 페이지에 없는 현재 이벤트는 선택 불가 상태와 안내 문구로 표시한다.
+11. `wiki_quick_events`를 추가하고 관리자 화면에서 현재 이벤트와 빠른 선택 이벤트를 한 번에 검증·교체한다.
+12. 공통 fragment에 검색창 옆 빠른 필터와 상세 필터의 `일반` 값을 추가하고, `WikiFilter`가 두 UI를 하나의 상태로 동기화한다.
+13. 순수 이벤트 판정 함수를 Node 내장 테스트로 실행해 일반/복수 이벤트/빈 선택/빠른 모드 전환을 검증한다.
+14. 상단 빠른 필터의 기존 독립 토글·선택 상자를 하나의 40px 분할형 컨트롤로 합친다. 왼쪽 체크 영역은 ON/OFF 상태, 오른쪽 트리거는 기존 복수 선택 드롭다운을 유지한다.
 
 ## Impacted Files
 
 - `src/main/resources/sql/20260812_create_wiki_current_events.sql`: 현재 이벤트 테이블 생성 SQL.
 - `src/main/resources/sql/20260812_grant_wiki_current_events_{local,production}.sql`: 로컬·운영 애플리케이션 계정 DML 권한 SQL.
+- `src/main/resources/sql/20260813_create_wiki_quick_events.sql`: 빠른 선택 이벤트 테이블 생성 SQL.
+- `src/main/resources/sql/20260813_grant_wiki_quick_events_{local,production}.sql`: 환경별 빠른 이벤트 테이블 권한 SQL.
 - `src/main/java/com/heartopia/wiki/mapper/EventSettingsMapper.java`: 이벤트 후보/현재 목록 조회와 저장 계약.
 - `src/main/resources/mapper/EventSettingsMapper.xml`: 10개 도감 테이블 이벤트명 합집합 및 현재 이벤트 CRUD.
 - `src/main/java/com/heartopia/wiki/service/EventSettingsService.java`: 검증, 정규화, 트랜잭션 저장.
@@ -58,13 +64,14 @@
   - `updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
 - 기존 수집품과의 외래 키는 두지 않는다. 하나의 이벤트가 여러 테이블에 문자열로 존재하고 데이터 수정 시 이름이 바뀔 수 있기 때문이다.
 - 저장 시 선택 집합 전체를 교체한다. 행 수가 매우 작고 관리자가 한 화면에서 전체 상태를 결정하므로 부분 갱신보다 일관성이 명확하다.
+- `wiki_quick_events`는 동일한 키/타임스탬프 구조를 사용한다. 두 설정은 하나의 서비스 트랜잭션에서 함께 교체한다.
 
 ## API Or Interface Changes
 
 - `GET /wiki/admin/event-settings`: 이벤트 후보와 현재 선택을 표시한다.
-- `POST /wiki/admin/event-settings`: 반복 파라미터 `eventNames`를 받아 현재 이벤트 집합을 저장한다. 파라미터가 없으면 전체 해제로 처리한다.
+- `POST /wiki/admin/event-settings`: `currentEventNames`, `quickEventNames` 반복 파라미터를 받아 두 집합을 저장한다. 파라미터가 없으면 해당 집합을 전체 해제한다.
 - `WikiFilter` 필터 구성에 `{ id: 'eventFilter', dataKey: 'event', type: 'event-multi' }`를 추가한다.
-- 공통 fragment는 `currentEventNames` 모델 속성을 숨은 기본값으로 출력한다.
+- 공통 fragment는 `currentEventNames`, `quickEventNames` 모델 속성을 숨은 기본값으로 출력한다.
 
 ## Validation And Error Handling
 
@@ -82,6 +89,8 @@
 - 기존 전체 Gradle 테스트를 실행한다.
 - 환경별 권한 SQL에 `wiki_current_events`의 `SELECT`, `INSERT`, `UPDATE`, `DELETE` 권한과 대상 계정 Host가 포함되는지 테스트한다.
 - 수동 확인: 관리자로 이벤트 2개 저장 → 도감 최초 기본 노출 → 지난 이벤트 2개 추가 → 새로고침 유지 → 초기화 → 관리자 현재 이벤트 변경 후 기본값 반영을 확인한다.
+- Node 실행 테스트: `일반` 포함/제외, 복수 이벤트 합집합, 빠른 필터 켜기/끄기, 선택 없는 빠른 필터 거부를 검증한다.
+- 공통 UI 회귀 테스트: 분할형 wrapper, 좌우 세그먼트, ON/OFF 표시, 모바일 비분리 규칙과 기존 ID/ARIA 연결을 정적 검증한다.
 
 ## Risks And Mitigations
 
@@ -94,6 +103,7 @@
 
 - 애플리케이션 설정 파일에 현재 이벤트 저장: 변경마다 재배포가 필요해 운영 요구에 맞지 않는다.
 - 범용 key/value 사이트 설정 테이블에 JSON 배열 저장: 미래 확장성은 있지만 현재 기능에 JSON 직렬화와 타입 검증 복잡도를 추가한다. 이벤트 전용 관계형 테이블과 확장 가능한 관리자 화면을 선택한다.
+- `wiki_current_events`에 `quick_enabled` 컬럼 추가: 현재 여부와 빠른 후보 여부가 독립적인 두 집합이므로 nullable 행과 upsert 분기가 늘어난다. 작은 전용 테이블 두 개가 저장과 검증을 단순하게 유지한다.
 - 각 도감 테이블에 `is_current_event` 추가: 동일 이벤트를 여러 테이블에서 반복 수정해야 해 일관성이 나쁘다.
 - 모든 이벤트를 기본 표시하고 `지난 이벤트 숨김` 스위치 추가: 현재 콘텐츠 집중이라는 핵심 목표와 복수 과거 이벤트 선택 요구를 충족하지 못한다.
 

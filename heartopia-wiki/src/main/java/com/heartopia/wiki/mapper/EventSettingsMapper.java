@@ -12,7 +12,13 @@ public interface EventSettingsMapper {
 
     List<String> findCurrentEventNames();
 
+    List<String> findQuickEventNames();
+
     void deleteAllCurrentEvents();
 
     void insertCurrentEvents(@Param("eventNames") List<String> eventNames);
+
+    void deleteAllQuickEvents();
+
+    void insertQuickEvents(@Param("eventNames") List<String> eventNames);
 }

@@ -39,3 +39,10 @@ out/
 # [Security] Secret Configurations
 application-secret.properties
 .env
+
+# Browser test dependencies and generated reports
+node_modules/
+playwright-report/
+test-results/
+build/playwright-results/
+build/reports/playwright/

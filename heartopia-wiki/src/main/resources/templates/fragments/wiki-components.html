@@ -71,7 +71,28 @@
         </div>
     </div>
 
-    <!-- 현재 이벤트는 기본 체크, 지난 이벤트는 사용자가 필요한 것만 추가하는 공통 필터 -->
+    <!-- 왼쪽 ON/OFF와 오른쪽 복수 선택을 합친 빠른 이벤트 분할 컨트롤 -->
+    <div th:fragment="quickEventFilter" class="quick-event-controls quick-event-split-control" id="quickEventFilter">
+        <label class="quick-event-toggle-button">
+            <input type="checkbox" id="quickEventOnlyToggle">
+            <i class="fas fa-bolt" aria-hidden="true"></i>
+            <span class="quick-event-toggle-label">이벤트만 보기</span>
+            <span class="quick-event-toggle-state" aria-hidden="true"></span>
+        </label>
+        <div class="filter-multi-select-wrapper quick-event-picker">
+            <div class="multi-select-trigger quick-event-trigger" id="quickEventTrigger" role="button" tabindex="0"
+                 aria-haspopup="true" aria-expanded="false" aria-controls="quickEventDropdown">
+                <span class="trigger-label">이벤트 선택</span>
+                <i class="fas fa-chevron-down ms-2 text-muted" aria-hidden="true"></i>
+            </div>
+            <div class="multi-select-dropdown event-select-dropdown" id="quickEventDropdown">
+                <div class="quick-event-options"></div>
+                <p class="quick-event-empty" hidden>관리자가 빠른 선택 이벤트를 지정하지 않았습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 일반은 기본 체크, 현재 이벤트는 기본 체크, 지난 이벤트는 사용자가 필요한 것만 추가하는 공통 필터 -->
     <div th:fragment="eventFilter" class="filter-select-wrapper filter-multi-select-wrapper" id="eventFilter">
         <span class="prefix">이벤트</span>
         <div class="multi-select-trigger" id="eventTrigger" role="button" tabindex="0"
@@ -82,6 +103,12 @@
         <div class="multi-select-dropdown event-select-dropdown" id="eventDropdown">
             <input th:each="eventName : ${currentEventNames}" type="hidden"
                    class="current-event-value" th:value="${eventName}">
+            <input th:each="eventName : ${quickEventNames}" type="hidden"
+                   class="quick-event-value" th:value="${eventName}">
+            <section class="event-general-section">
+                <div class="event-dropdown-heading"><i class="fas fa-layer-group"></i> 기본 항목</div>
+                <div class="event-general-options"></div>
+            </section>
             <section class="event-current-section">
                 <div class="event-dropdown-heading"><i class="fas fa-bolt"></i> 현재 이벤트</div>
                 <div class="event-current-options"></div>
