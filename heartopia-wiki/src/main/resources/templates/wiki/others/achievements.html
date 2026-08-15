@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.6" defer></script>
+    <script src="/js/wiki-filter.js?v=2.7" defer></script>
 </head>
 
 <body>
@@ -93,6 +93,7 @@
                  class="wiki-item-card sync-item"
                  th:data-id="${iterStat.index}"
                  th:data-sync-key="'achievement_' + ${achievement.name}"
+                 data-supports-star-rating="false"
                  th:data-name="${achievement.name}"
                  th:data-categories="${achievement.categories}">
 
@@ -155,6 +156,8 @@
                 <tbody>
                     <tr th:each="achievement, iterStat : ${achievementList}" class="wiki-table-row"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'achievement_' + ${achievement.name}"
+                        data-supports-star-rating="false"
                         th:data-name="${achievement.name}"
                         th:data-categories="${achievement.categories}">
                         <td>

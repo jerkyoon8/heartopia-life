@@ -48,6 +48,18 @@ function wikiPrepareEventOverrides(overrides) {
     return prepared;
 }
 
+function wikiShouldHideCollected({ isCollected, checklistValue, threshold, supportsStarRating }) {
+    if (!isCollected) return false;
+    if (!supportsStarRating) return true;
+
+    const normalizedThreshold = Number.parseInt(threshold, 10);
+    if (!Number.isFinite(normalizedThreshold) || normalizedThreshold <= 0) {
+        return true;
+    }
+
+    return typeof checklistValue === 'number' && checklistValue >= normalizedThreshold;
+}
+
 class WikiFilter {
     constructor(config) {
         this.config = Object.assign({
@@ -854,15 +866,13 @@ class WikiFilter {
                 : undefined;
             const isCollected = element.classList.contains('checked')
                 || (checklistValue !== undefined && checklistValue !== null);
-            let shouldHideCollected = false;
-
-            if (threshold === 0) {
-                // 기본: 수집된 모든 항목(별점 무관) 숨김 — 기존 동작과 동일
-                shouldHideCollected = isCollected;
-            } else {
-                // N★ 이상만 숨김 (체크만 한 0★ 항목은 보임)
-                shouldHideCollected = typeof checklistValue === 'number' && checklistValue >= threshold;
-            }
+            const supportsStarRating = element.dataset.supportsStarRating !== 'false';
+            const shouldHideCollected = wikiShouldHideCollected({
+                isCollected,
+                checklistValue,
+                threshold,
+                supportsStarRating
+            });
 
             if (shouldHideCollected && this._matchesMasteryHideRequirement(element, syncKey)) {
                 isMatch = false;
@@ -1030,6 +1040,7 @@ if (typeof module !== 'undefined' && module.exports) {
         wikiMatchesEventSelection,
         wikiBuildQuickOnlySelection,
         wikiDeriveQuickFilterState,
-        wikiPrepareEventOverrides
+        wikiPrepareEventOverrides,
+        wikiShouldHideCollected
     };
 }

@@ -6,7 +6,8 @@ const {
     wikiMatchesEventSelection,
     wikiBuildQuickOnlySelection,
     wikiDeriveQuickFilterState,
-    wikiPrepareEventOverrides
+    wikiPrepareEventOverrides,
+    wikiShouldHideCollected
 } = require('../../main/resources/static/js/wiki-filter.js');
 
 test('일반 선택은 event_name이 없는 항목만 포함한다', () => {
@@ -84,4 +85,34 @@ test('새 페이지 진입 시 일반 해제 재정의만 제거한다', () => {
         '고래 탐사 시즌': true,
         '빙설 시즌': false
     });
+});
+
+test('별점이 없는 수집 항목은 별점 기준치보다 수집 여부를 먼저 적용한다', () => {
+    assert.equal(wikiShouldHideCollected({
+        isCollected: true,
+        checklistValue: 0,
+        threshold: 3,
+        supportsStarRating: false
+    }), true);
+    assert.equal(wikiShouldHideCollected({
+        isCollected: false,
+        checklistValue: undefined,
+        threshold: 3,
+        supportsStarRating: false
+    }), false);
+});
+
+test('별점이 있는 수집 항목에는 설정된 숨김 기준치를 후적용한다', () => {
+    assert.equal(wikiShouldHideCollected({
+        isCollected: true,
+        checklistValue: 0,
+        threshold: 3,
+        supportsStarRating: true
+    }), false);
+    assert.equal(wikiShouldHideCollected({
+        isCollected: true,
+        checklistValue: 3,
+        threshold: 3,
+        supportsStarRating: true
+    }), true);
 });
