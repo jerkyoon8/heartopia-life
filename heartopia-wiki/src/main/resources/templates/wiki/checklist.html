@@ -293,7 +293,10 @@
                     <h3>바다청소 도감</h3>
                 </div>
                 <div class="items-grid">
-                    <div class="item-row collectible-item" th:each="item : ${seaCleaningList}" th:attr="data-key=|sea_cleaning_${item.name}|" th:data-searchname="${item.name}">
+                    <div class="item-row collectible-item" th:each="item : ${seaCleaningList}"
+                         th:attr="data-key=|sea_cleaning_id_${item.id}|"
+                         th:data-legacy-sync-key="${item.legacyChecklistName != null ? 'sea_cleaning_' + item.legacyChecklistName : ''}"
+                         th:data-searchname="${item.name}">
                         <div class="item-checkbox" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
                         <div class="item-name" th:text="${item.name}">이름</div>
                         <button type="button" class="item-mastery-btn"

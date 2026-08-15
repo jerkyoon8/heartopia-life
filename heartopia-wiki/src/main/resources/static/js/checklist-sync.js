@@ -4,14 +4,97 @@
  * - 로그인 시 DB와 동기화합니다.
  */
 
-document.addEventListener('DOMContentLoaded', async () => {
+const SEA_CLEANING_CHECKLIST_VERSION_KEY = 'heartopia_checklist_sea_cleaning_version';
+const SEA_CLEANING_CHECKLIST_VERSION = '2';
+
+function migrateSeaCleaningChecklistData(sourceData, mappings) {
+    const data = sourceData && typeof sourceData === 'object' && !Array.isArray(sourceData)
+        ? { ...sourceData }
+        : {};
+    let changed = false;
+
+    const migrateKey = (legacyKey, currentKey) => {
+        if (!legacyKey || !currentKey || legacyKey === currentKey
+                || !Object.prototype.hasOwnProperty.call(data, legacyKey)) {
+            return;
+        }
+
+        const legacyValue = data[legacyKey];
+        if (Object.prototype.hasOwnProperty.call(data, currentKey)) {
+            const currentValue = data[currentKey];
+            data[currentKey] = typeof legacyValue === 'number' && typeof currentValue === 'number'
+                ? Math.max(legacyValue, currentValue)
+                : currentValue;
+        } else {
+            data[currentKey] = legacyValue;
+        }
+        delete data[legacyKey];
+        changed = true;
+    };
+
+    Array.from(mappings || []).forEach(mapping => {
+        if (!mapping) return;
+        migrateKey(mapping.legacyKey, mapping.currentKey);
+        migrateKey('mastery_' + mapping.legacyKey, 'mastery_' + mapping.currentKey);
+    });
+
+    return { data, changed };
+}
+
+function collectSeaCleaningChecklistMappings(root) {
+    const mappings = new Map();
+    root.querySelectorAll('[data-legacy-sync-key]').forEach(element => {
+        const legacyKey = element.dataset.legacySyncKey;
+        const currentKey = element.dataset.syncKey || element.dataset.key;
+        if (legacyKey && currentKey) mappings.set(legacyKey, { legacyKey, currentKey });
+    });
+    return Array.from(mappings.values());
+}
+
+function migrateSeaCleaningLocalChecklist(core, root, storage) {
+    try {
+        if (storage.getItem(SEA_CLEANING_CHECKLIST_VERSION_KEY) === SEA_CLEANING_CHECKLIST_VERSION) {
+            return false;
+        }
+
+        const mappings = collectSeaCleaningChecklistMappings(root);
+        if (mappings.length === 0) return false;
+
+        const original = { ...core.getData() };
+        const migrated = migrateSeaCleaningChecklistData(original, mappings);
+        if (migrated.changed) {
+            mappings.forEach(({ legacyKey, currentKey }) => {
+                const masteryLegacyKey = 'mastery_' + legacyKey;
+                const masteryCurrentKey = 'mastery_' + currentKey;
+                if (Object.prototype.hasOwnProperty.call(migrated.data, currentKey)) {
+                    core.setItem(currentKey, migrated.data[currentKey]);
+                }
+                if (Object.prototype.hasOwnProperty.call(migrated.data, masteryCurrentKey)) {
+                    core.setItem(masteryCurrentKey, migrated.data[masteryCurrentKey]);
+                }
+                if (Object.prototype.hasOwnProperty.call(original, legacyKey)) core.removeItem(legacyKey);
+                if (Object.prototype.hasOwnProperty.call(original, masteryLegacyKey)) core.removeItem(masteryLegacyKey);
+            });
+        }
+
+        storage.setItem(SEA_CLEANING_CHECKLIST_VERSION_KEY, SEA_CLEANING_CHECKLIST_VERSION);
+        return migrated.changed;
+    } catch (error) {
+        return false;
+    }
+}
+
+if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', async () => {
     if (typeof window.ChecklistCore === 'undefined') return;
 
     const core = window.ChecklistCore;
+    const syncEnabled = window._heartopiaChecklistSyncEnabled || false;
+    if (!syncEnabled) {
+        migrateSeaCleaningLocalChecklist(core, document, window.localStorage);
+    }
+
     const syncItems = document.querySelectorAll('.sync-item');
     if (syncItems.length === 0) return;
-
-    const syncEnabled = window._heartopiaChecklistSyncEnabled || false;
 
     function getCsrf() {
         return {
@@ -178,3 +261,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 });
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        migrateSeaCleaningChecklistData,
+        migrateSeaCleaningLocalChecklist
+    };
+}

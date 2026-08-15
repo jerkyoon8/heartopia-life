@@ -15,30 +15,31 @@ public class UserChecklistService {
 
     private final UserChecklistMapper mapper;
     private final UserMapper userMapper;
+    private final CollectionService collectionService;
 
     public Map<String, Integer> getChecklist(Long userId) {
-        return mapper.findByUserId(userId).stream().collect(
-                Collectors.toMap(
-                        r -> (String) r.get("itemKey"),
-                        r -> ((Number) r.get("starRating")).intValue()
-                )
-        );
+        Map<String, Integer> checklist = new LinkedHashMap<>();
+        mapper.findByUserId(userId).forEach(row -> checklist.put(
+                (String) row.get("itemKey"),
+                ((Number) row.get("starRating")).intValue()));
+        return normalizeChecklistData(checklist, aliasesFor(checklist.keySet()));
     }
 
     @Transactional
     public void upsertItem(Long userId, String itemKey, int starRating) {
-        mapper.upsertItem(userId, itemKey, starRating);
+        mapper.upsertItem(userId, normalizeChecklistKey(itemKey, aliasesFor(List.of(itemKey))), starRating);
     }
 
     @Transactional
     public void deleteItem(Long userId, String itemKey) {
-        mapper.deleteItem(userId, itemKey);
+        mapper.deleteItem(userId, normalizeChecklistKey(itemKey, aliasesFor(List.of(itemKey))));
     }
 
     @Transactional
     public Map<String, Integer> migrate(Long userId, Map<String, Integer> localData) {
         if (localData != null && !localData.isEmpty()) {
-            List<Map<String, Object>> items = localData.entrySet().stream()
+            Map<String, Integer> normalized = normalizeChecklistData(localData, aliasesFor(localData.keySet()));
+            List<Map<String, Object>> items = normalized.entrySet().stream()
                     .map(e -> {
                         Map<String, Object> m = new HashMap<>();
                         m.put("itemKey", e.getKey());
@@ -53,8 +54,14 @@ public class UserChecklistService {
 
     @Transactional
     public void batchSync(Long userId, Map<String, Integer> upserts, List<String> deletes) {
+        List<String> candidateKeys = new ArrayList<>();
+        if (upserts != null) candidateKeys.addAll(upserts.keySet());
+        if (deletes != null) candidateKeys.addAll(deletes);
+        Map<String, String> aliases = aliasesFor(candidateKeys);
+
         if (upserts != null && !upserts.isEmpty()) {
-            List<Map<String, Object>> items = upserts.entrySet().stream()
+            Map<String, Integer> normalized = normalizeChecklistData(upserts, aliases);
+            List<Map<String, Object>> items = normalized.entrySet().stream()
                     .map(e -> {
                         Map<String, Object> m = new HashMap<>();
                         m.put("itemKey", e.getKey());
@@ -65,7 +72,11 @@ public class UserChecklistService {
             mapper.bulkUpsert(userId, items);
         }
         if (deletes != null && !deletes.isEmpty()) {
-            mapper.batchDelete(userId, deletes);
+            List<String> normalizedDeletes = deletes.stream()
+                    .map(key -> normalizeChecklistKey(key, aliases))
+                    .distinct()
+                    .toList();
+            mapper.batchDelete(userId, normalizedDeletes);
         }
     }
 
@@ -83,7 +94,8 @@ public class UserChecklistService {
     @Transactional
     public Map<String, Integer> toggleSync(Long userId, boolean enabled, Map<String, Integer> localData) {
         if (enabled && localData != null && !localData.isEmpty()) {
-            List<Map<String, Object>> items = localData.entrySet().stream()
+            Map<String, Integer> normalized = normalizeChecklistData(localData, aliasesFor(localData.keySet()));
+            List<Map<String, Object>> items = normalized.entrySet().stream()
                     .map(e -> {
                         Map<String, Object> m = new HashMap<>();
                         m.put("itemKey", e.getKey());
@@ -95,5 +107,52 @@ public class UserChecklistService {
         }
         userMapper.updateChecklistSyncEnabled(userId, enabled);
         return getChecklist(userId);
+    }
+
+    private Map<String, Integer> normalizeChecklistData(Map<String, Integer> source,
+                                                         Map<String, String> aliases) {
+        Map<String, Integer> normalized = new LinkedHashMap<>();
+        source.forEach((key, value) -> {
+            if (key == null || value == null) return;
+            String normalizedKey = normalizeChecklistKey(key, aliases);
+            normalized.merge(normalizedKey, value, Math::max);
+        });
+        return normalized;
+    }
+
+    private String normalizeChecklistKey(String key, Map<String, String> aliases) {
+        if (key == null) return null;
+        if (key.startsWith("mastery_sea_cleaning_")
+                && !key.startsWith("mastery_sea_cleaning_id_")) {
+            String baseKey = key.substring("mastery_".length());
+            String normalizedBase = aliases.get(baseKey);
+            return normalizedBase == null ? key : "mastery_" + normalizedBase;
+        }
+        return aliases.getOrDefault(key, key);
+    }
+
+    private Map<String, String> aliasesFor(Collection<String> keys) {
+        if (keys == null || keys.stream().noneMatch(this::isLegacySeaCleaningKey)) {
+            return Map.of();
+        }
+
+        Map<String, String> aliases = new HashMap<>();
+        for (var item : collectionService.getAllSeaCleaningCollections()) {
+            if (item.getId() == null || item.getLegacyChecklistName() == null
+                    || item.getLegacyChecklistName().isBlank()) {
+                continue;
+            }
+            aliases.put(
+                    "sea_cleaning_" + item.getLegacyChecklistName(),
+                    "sea_cleaning_id_" + item.getId());
+        }
+        return aliases;
+    }
+
+    private boolean isLegacySeaCleaningKey(String key) {
+        if (key == null) return false;
+        return (key.startsWith("sea_cleaning_") && !key.startsWith("sea_cleaning_id_"))
+                || (key.startsWith("mastery_sea_cleaning_")
+                    && !key.startsWith("mastery_sea_cleaning_id_"));
     }
 }

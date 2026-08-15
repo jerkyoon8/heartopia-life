@@ -9,6 +9,7 @@ import java.util.List;
 public class SeaCleaningCollection {
     private Integer id;
     private String name;
+    private String legacyChecklistName;
     private Integer level;
     private String time;
     private String weather;

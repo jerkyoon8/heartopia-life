@@ -63,12 +63,12 @@ class AdminMasteryInputTemplateTest {
     }
 
     @Test
-    void seaCleaningEditPayloadPreservesItsEventName() throws IOException {
+    void seaCleaningEditPayloadDoesNotExposeEventName() throws IOException {
         String template = read("templates/wiki/others/sea-cleaning.html");
         assertThat(template)
-                .contains("name=\"eventName\"")
-                .contains("&quot;eventName&quot;")
-                .contains("item.eventName");
+                .doesNotContain("name=\"eventName\"")
+                .doesNotContain("&quot;eventName&quot;")
+                .doesNotContain("item.eventName");
     }
 
     @Test

@@ -20,8 +20,7 @@ class CurrentEventFilterTemplateTest {
             "templates/wiki/items/cooking.html",
             "templates/wiki/items/flowers.html",
             "templates/wiki/items/crops.html",
-            "templates/wiki/others/sandbox.html",
-            "templates/wiki/others/sea-cleaning.html");
+            "templates/wiki/others/sandbox.html");
 
     @Test
     void allEventCollectionsUseTheSharedMultiSelectFilter() throws IOException {

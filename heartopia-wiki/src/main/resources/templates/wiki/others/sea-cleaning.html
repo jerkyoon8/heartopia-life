@@ -33,8 +33,6 @@
                     <input type="text" id="searchInput" class="search-input" placeholder="바다 청소 이름 검색...">
                 </div>
 
-                <div th:replace="~{fragments/wiki-components :: quickEventFilter}"></div>
-
                 <div class="toggle-switch-wrapper"
                      style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
                     <label class="toggle-switch-label">
@@ -60,8 +58,6 @@
                 <div class="advanced-section">
                     <div class="section-label"><i class="fas fa-filter"></i> 조건 검색</div>
                     <div class="advanced-controls-box">
-                        <div th:replace="~{fragments/wiki-components :: eventFilter}"></div>
-
                         <div class="filter-select-wrapper filter-multi-select-wrapper" id="levelFilter">
                             <span class="prefix">레벨</span>
                             <div class="multi-select-trigger" id="levelTrigger">
@@ -73,7 +69,7 @@
                                     <label><input type="checkbox" value="all" checked> 모든 레벨</label>
                                 </div>
                                 <div class="dropdown-div"></div>
-                                <div class="dropdown-opt" th:each="i : ${#numbers.sequence(1, 6)}">
+                                <div class="dropdown-opt" th:each="i : ${#numbers.sequence(1, 8)}">
                                     <label>
                                         <input type="checkbox" class="lvl-checkbox" th:value="${i}">
                                         [[${'Lv.' + i}]]
@@ -140,14 +136,14 @@
 
             <div th:each="item, iterStat : ${seaCleaningList}" class="wiki-item-card sync-item"
                  th:data-id="${iterStat.index}"
-                 th:data-sync-key="'sea_cleaning_' + ${item.name}"
+                 th:data-sync-key="'sea_cleaning_id_' + ${item.id}"
+                 th:data-legacy-sync-key="${item.legacyChecklistName != null ? 'sea_cleaning_' + item.legacyChecklistName : ''}"
                  th:data-has-mastery="${item.hasMasteryData() ? 'true' : 'false'}"
                  th:data-name="${item.name}"
                  th:data-level="${item.level}"
                  th:data-price="${item.prices[0]}"
                  th:data-weather="${item.weather}"
-                 th:data-time="${item.displayTime}"
-                 th:data-event="${item.eventName != null ? item.eventName : ''}">
+                 th:data-time="${item.displayTime}">
 
                 <div class="wiki-item-image sync-container">
                     <div class="sync-check-btn" title="수집 처리 (0별)"><i class="fas fa-check"></i></div>
@@ -217,7 +213,7 @@
                 <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
                     <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit"
                             data-modal-target="addSeaCleaningModal" data-edit-title="바다 청소 수정"
-                            th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;time&quot;:&quot;' + (item.time != null ? item.time : '') + '&quot;,&quot;weather&quot;:&quot;' + (item.weather != null ? item.weather : '') + '&quot;,&quot;location&quot;:&quot;' + (item.location != null ? item.location : '') + '&quot;,&quot;eventName&quot;:&quot;' + (item.eventName != null ? item.eventName : '') + '&quot;,&quot;proficiency&quot;:' + (item.proficiency != null ? item.proficiency : 'null') + ',&quot;goldPrice1&quot;:' + (item.goldPrice1 != null ? item.goldPrice1 : 'null') + ',&quot;goldPrice2&quot;:' + (item.goldPrice2 != null ? item.goldPrice2 : 'null') + ',&quot;goldPrice3&quot;:' + (item.goldPrice3 != null ? item.goldPrice3 : 'null') + ',&quot;goldPrice4&quot;:' + (item.goldPrice4 != null ? item.goldPrice4 : 'null') + ',&quot;goldPrice5&quot;:' + (item.goldPrice5 != null ? item.goldPrice5 : 'null') + ',&quot;sortOrder&quot;:' + (item.sortOrder != null ? item.sortOrder : 'null') + ',&quot;masteryBeginnerMax&quot;:' + (item.masteryBeginnerMax != null ? item.masteryBeginnerMax : 'null') + ',&quot;masteryIntroMin&quot;:' + (item.masteryIntroMin != null ? item.masteryIntroMin : 'null') + ',&quot;masteryExpertMin&quot;:' + (item.masteryExpertMin != null ? item.masteryExpertMin : 'null') + ',&quot;masteryMasterMin&quot;:' + (item.masteryMasterMin != null ? item.masteryMasterMin : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;}'}">
+                            th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;time&quot;:&quot;' + (item.time != null ? item.time : '') + '&quot;,&quot;weather&quot;:&quot;' + (item.weather != null ? item.weather : '') + '&quot;,&quot;location&quot;:&quot;' + (item.location != null ? item.location : '') + '&quot;,&quot;proficiency&quot;:' + (item.proficiency != null ? item.proficiency : 'null') + ',&quot;goldPrice1&quot;:' + (item.goldPrice1 != null ? item.goldPrice1 : 'null') + ',&quot;goldPrice2&quot;:' + (item.goldPrice2 != null ? item.goldPrice2 : 'null') + ',&quot;goldPrice3&quot;:' + (item.goldPrice3 != null ? item.goldPrice3 : 'null') + ',&quot;goldPrice4&quot;:' + (item.goldPrice4 != null ? item.goldPrice4 : 'null') + ',&quot;goldPrice5&quot;:' + (item.goldPrice5 != null ? item.goldPrice5 : 'null') + ',&quot;sortOrder&quot;:' + (item.sortOrder != null ? item.sortOrder : 'null') + ',&quot;masteryBeginnerMax&quot;:' + (item.masteryBeginnerMax != null ? item.masteryBeginnerMax : 'null') + ',&quot;masteryIntroMin&quot;:' + (item.masteryIntroMin != null ? item.masteryIntroMin : 'null') + ',&quot;masteryExpertMin&quot;:' + (item.masteryExpertMin != null ? item.masteryExpertMin : 'null') + ',&quot;masteryMasterMin&quot;:' + (item.masteryMasterMin != null ? item.masteryMasterMin : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;}'}">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete"
@@ -245,14 +241,14 @@
                 <tbody>
                     <tr th:each="item, iterStat : ${seaCleaningList}" class="wiki-table-row sync-item"
                         th:data-id="${iterStat.index}"
-                        th:data-sync-key="'sea_cleaning_' + ${item.name}"
+                        th:data-sync-key="'sea_cleaning_id_' + ${item.id}"
+                        th:data-legacy-sync-key="${item.legacyChecklistName != null ? 'sea_cleaning_' + item.legacyChecklistName : ''}"
                         th:data-has-mastery="${item.hasMasteryData() ? 'true' : 'false'}"
                         th:data-name="${item.name}"
                         th:data-level="${item.level}"
                         th:data-price="${item.prices[0]}"
                         th:data-weather="${item.weather}"
-                        th:data-time="${item.displayTime}"
-                        th:data-event="${item.eventName != null ? item.eventName : ''}">
+                        th:data-time="${item.displayTime}">
                         <td>
                             <img th:if="${item.imageUrl != null and !item.imageUrl.isEmpty()}"
                                  th:src="${item.imageUrl}" th:alt="${item.name}" class="table-thumb"
@@ -299,7 +295,6 @@
                                     <div class="col-md-4"><label class="form-label fw-bold">시간</label><input type="text" name="time" class="form-control" placeholder="0~6 / 12~24"></div>
                                     <div class="col-md-4"><label class="form-label fw-bold">숙련도</label><input type="number" name="proficiency" class="form-control" placeholder="60"></div>
                                     <div class="col-md-6"><label class="form-label fw-bold">장소</label><input type="text" name="location" class="form-control" placeholder="미공개"></div>
-                                    <div class="col-md-6"><label class="form-label fw-bold">이벤트</label><input type="text" name="eventName" class="form-control" placeholder="예: 고래 탐사 시즌"></div>
                                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label>
                                         <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
                                             <input type="number" name="goldPrice1" class="form-control" placeholder="1★">
@@ -354,7 +349,6 @@
                     tableId: 'wikiTable',
                     itemSelector: '.wiki-item-card',
                     filters: [
-                        { id: 'eventFilter', dataKey: 'event', type: 'event-multi' },
                         { id: 'levelFilter', dataKey: 'level', type: 'multi' },
                         { id: 'weatherFilter', dataKey: 'weather' }
                     ]

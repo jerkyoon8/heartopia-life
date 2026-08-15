@@ -117,9 +117,9 @@
     </sql>
 
     <sql id="seaCleaningColumns">
-        id, name, level, time, weather, location, proficiency,
+        id, name, legacy_checklist_name, level, time, weather, location, proficiency,
         gold_price_1, gold_price_2, gold_price_3, gold_price_4, gold_price_5,
-        image_url, sort_order, event_name,
+        image_url, sort_order,
         mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
 
@@ -309,7 +309,7 @@
         INSERT INTO sea_cleaning_collections (
             name, level, time, weather, location, proficiency,
             gold_price_1, gold_price_2, gold_price_3, gold_price_4, gold_price_5,
-            image_url, sort_order, event_name,
+            image_url, sort_order,
             mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
         )
         VALUES (
@@ -319,7 +319,7 @@
             COALESCE(NULLIF(#{location}, ''), '미공개'),
             #{proficiency},
             #{goldPrice1}, #{goldPrice2}, #{goldPrice3}, #{goldPrice4}, #{goldPrice5},
-            #{imageUrl}, COALESCE(#{sortOrder}, 0), NULLIF(#{eventName}, ''),
+            #{imageUrl}, COALESCE(#{sortOrder}, 0),
             #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin}
         )
     </insert>
@@ -412,7 +412,7 @@
             gold_price_5=#{goldPrice5},
             image_url=#{imageUrl},
             sort_order=COALESCE(#{sortOrder}, 0),
-            event_name=NULLIF(#{eventName}, '')
+            event_name=NULL
             <if test="masteryFieldsPresent == true">
                 , mastery_beginner_max=#{masteryBeginnerMax},
                 mastery_intro_min=#{masteryIntroMin},

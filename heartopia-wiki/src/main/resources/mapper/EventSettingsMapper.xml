@@ -23,8 +23,6 @@
             SELECT TRIM(event_name) COLLATE utf8mb4_unicode_ci AS event_name FROM forageable_collections
             UNION
             SELECT TRIM(event_name) COLLATE utf8mb4_unicode_ci AS event_name FROM sandbox_collections
-            UNION
-            SELECT TRIM(event_name) COLLATE utf8mb4_unicode_ci AS event_name FROM sea_cleaning_collections
         ) event_names
         WHERE event_name IS NOT NULL
           AND event_name != ''
