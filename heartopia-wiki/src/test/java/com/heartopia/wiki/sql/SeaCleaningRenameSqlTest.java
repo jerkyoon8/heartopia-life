@@ -11,17 +11,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SeaCleaningRenameSqlTest {
 
     @Test
-    void renamesTheSixRequestedItemsByStableId() throws IOException {
+    void renamesTheSixRequestedItemsByStableLegacyChecklistName() throws IOException {
         String sql = readSql();
 
         assertThat(sql)
-                .contains("WHEN 1 THEN '손상된 바닷조개'")
-                .contains("WHEN 6 THEN '개굴잠쟁이'")
-                .contains("WHEN 8 THEN '프로라 텔린조개'")
-                .contains("WHEN 10 THEN '크로세아 클램'")
-                .contains("WHEN 11 THEN '무명올각시실꼬리고둥'")
-                .contains("WHEN 14 THEN '노빌리스 두순고둥'")
-                .contains("WHERE id IN (1, 6, 8, 10, 11, 14)");
+                .contains("SET name = CASE legacy_checklist_name")
+                .contains("WHEN '손상된 조개껍데기' THEN '손상된 바닷조개'")
+                .contains("WHEN '은빛 대합' THEN '개굴잠쟁이'")
+                .contains("WHEN '뱃머리 벚꽃조개' THEN '프로라 텔린조개'")
+                .contains("WHEN '사프란 대왕조개' THEN '크로세아 클램'")
+                .contains("WHEN '가는줄갯고둥' THEN '무명올각시실꼬리고둥'")
+                .contains("WHEN '등롱 화염고둥' THEN '노빌리스 두순고둥'")
+                .doesNotContain("WHERE id IN (");
     }
 
     @Test
