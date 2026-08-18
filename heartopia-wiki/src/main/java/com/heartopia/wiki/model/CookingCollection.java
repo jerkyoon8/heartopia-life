@@ -16,6 +16,11 @@ public class CookingCollection {
     private Integer price3;
     private Integer price4;
     private Integer price5;
+    private Integer recovery1;
+    private Integer recovery2;
+    private Integer recovery3;
+    private Integer recovery4;
+    private Integer recovery5;
     private String imageUrl;
     private String eventName;
     private Integer masteryBeginnerMax;
@@ -26,6 +31,14 @@ public class CookingCollection {
 
     public List<Integer> getPrices() {
         return Arrays.asList(price1, price2, price3, price4, price5);
+    }
+
+    public List<Integer> getRecoveries() {
+        return Arrays.asList(recovery1, recovery2, recovery3, recovery4, recovery5);
+    }
+
+    public boolean hasRecoveryData() {
+        return getRecoveries().stream().anyMatch(value -> value != null);
     }
 
     public boolean hasMasteryData() {

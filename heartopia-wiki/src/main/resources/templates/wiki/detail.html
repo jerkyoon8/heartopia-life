@@ -286,6 +286,47 @@
             font-size: 1rem;
         }
 
+        .detail-recovery-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .detail-recovery-item {
+            min-width: 0;
+            padding: 12px 6px;
+            border: 1px solid rgba(43, 179, 163, 0.25);
+            border-radius: 12px;
+            background: rgba(43, 179, 163, 0.08);
+            text-align: center;
+        }
+
+        .detail-recovery-star {
+            color: #d8a100;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .detail-recovery-value {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .detail-recovery-empty {
+            margin-bottom: 25px;
+            padding: 13px;
+            border-radius: 12px;
+            background: var(--nav-hover, #f5f5f5);
+            color: var(--stat-label, #7b8794);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
         /* Mastery Section */
         .mastery-panel {
             border: 1px solid var(--border-subtle, #eee);
@@ -741,6 +782,19 @@
                             <div class="price-value" th:text="${price != null and price != 0 ? price : '-'}">100</div>
                         </div>
                     </div>
+                </div>
+
+                <div th:if="${category == 'cooking'}">
+                    <div class="detail-section-title">
+                        <i class="fas fa-bolt"></i> 등급별 회복량
+                    </div>
+                    <div th:if="${item.hasRecoveryData()}" class="detail-recovery-grid">
+                        <div th:each="recovery, recoveryStat : ${item.recoveries}" class="detail-recovery-item">
+                            <span class="detail-recovery-star" th:text="${recoveryStat.count + '★'}">1★</span>
+                            <span class="detail-recovery-value" th:text="${recovery != null ? recovery : '-'}">10</span>
+                        </div>
+                    </div>
+                    <div th:unless="${item.hasRecoveryData()}" class="detail-recovery-empty">회복량 정보 없음</div>
                 </div>
 
                 </section>

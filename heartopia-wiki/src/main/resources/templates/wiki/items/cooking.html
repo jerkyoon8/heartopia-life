@@ -42,6 +42,46 @@
             font-weight: 700;
             color: #e67e22;
         }
+        .cooking-recovery-panel {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle, #eee);
+        }
+        .cooking-recovery-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 4px;
+        }
+        .cooking-recovery-item {
+            min-width: 0;
+            padding: 6px 2px;
+            border: 1px solid rgba(43, 179, 163, 0.2);
+            border-radius: 9px;
+            background: rgba(43, 179, 163, 0.07);
+            text-align: center;
+        }
+        .cooking-recovery-star {
+            display: block;
+            color: #d8a100;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+        .cooking-recovery-value {
+            display: block;
+            margin-top: 2px;
+            color: var(--text-color);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+        .cooking-recovery-empty {
+            padding: 7px;
+            border-radius: 9px;
+            background: var(--nav-hover, #f5f5f5);
+            color: var(--stat-label, #8b95a1);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -182,9 +222,19 @@
 
                 <!-- Price Fragment -->
                 <div th:replace="~{fragments/wiki-components :: priceDisplay(${item.prices})}"></div>
+                <div class="cooking-recovery-panel" th:classappend="${item.hasRecoveryData() ? '' : ' is-empty'}">
+                    <p class="small fw-bold mb-1"><i class="fas fa-bolt me-1" style="color:#2bb3a3;"></i>등급별 회복량</p>
+                    <div th:if="${item.hasRecoveryData()}" class="cooking-recovery-grid">
+                        <div th:each="recovery, recoveryStat : ${item.recoveries}" class="cooking-recovery-item">
+                            <span class="cooking-recovery-star" th:text="${recoveryStat.count + '★'}">1★</span>
+                            <span class="cooking-recovery-value" th:text="${recovery != null ? recovery : '-'}">10</span>
+                        </div>
+                    </div>
+                    <div th:unless="${item.hasRecoveryData()}" class="cooking-recovery-empty">회복량 정보 없음</div>
+                </div>
                 <div sec:authorize="hasRole('ADMIN')" class="text-end mt-2" style="border-top:1px solid #eee;padding-top:8px;">
                     <button type="button" class="btn btn-outline-warning btn-sm btn-admin-edit" data-modal-target="addCookingModal" data-edit-title="요리 수정"
-                        th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;ingredients&quot;:&quot;' + (item.ingredients != null ? item.ingredients : '') + '&quot;,&quot;buyPrice&quot;:' + (item.buyPrice != null ? item.buyPrice : 'null') + ',&quot;price1&quot;:' + (item.price1 != null ? item.price1 : 'null') + ',&quot;price2&quot;:' + (item.price2 != null ? item.price2 : 'null') + ',&quot;price3&quot;:' + (item.price3 != null ? item.price3 : 'null') + ',&quot;price4&quot;:' + (item.price4 != null ? item.price4 : 'null') + ',&quot;price5&quot;:' + (item.price5 != null ? item.price5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (item.eventName != null ? item.eventName : '') + '&quot;,&quot;masteryBeginnerMax&quot;:' + (item.masteryBeginnerMax != null ? item.masteryBeginnerMax : 'null') + ',&quot;masteryIntroMin&quot;:' + (item.masteryIntroMin != null ? item.masteryIntroMin : 'null') + ',&quot;masteryExpertMin&quot;:' + (item.masteryExpertMin != null ? item.masteryExpertMin : 'null') + ',&quot;masteryMasterMin&quot;:' + (item.masteryMasterMin != null ? item.masteryMasterMin : 'null') + '}'}">
+                        th:data-item="${'{&quot;id&quot;:' + item.id + ',&quot;name&quot;:&quot;' + item.name + '&quot;,&quot;level&quot;:' + item.level + ',&quot;ingredients&quot;:&quot;' + (item.ingredients != null ? item.ingredients : '') + '&quot;,&quot;buyPrice&quot;:' + (item.buyPrice != null ? item.buyPrice : 'null') + ',&quot;price1&quot;:' + (item.price1 != null ? item.price1 : 'null') + ',&quot;price2&quot;:' + (item.price2 != null ? item.price2 : 'null') + ',&quot;price3&quot;:' + (item.price3 != null ? item.price3 : 'null') + ',&quot;price4&quot;:' + (item.price4 != null ? item.price4 : 'null') + ',&quot;price5&quot;:' + (item.price5 != null ? item.price5 : 'null') + ',&quot;recovery1&quot;:' + (item.recovery1 != null ? item.recovery1 : 'null') + ',&quot;recovery2&quot;:' + (item.recovery2 != null ? item.recovery2 : 'null') + ',&quot;recovery3&quot;:' + (item.recovery3 != null ? item.recovery3 : 'null') + ',&quot;recovery4&quot;:' + (item.recovery4 != null ? item.recovery4 : 'null') + ',&quot;recovery5&quot;:' + (item.recovery5 != null ? item.recovery5 : 'null') + ',&quot;imageUrl&quot;:&quot;' + (item.imageUrl != null ? item.imageUrl : '') + '&quot;,&quot;eventName&quot;:&quot;' + (item.eventName != null ? item.eventName : '') + '&quot;,&quot;masteryBeginnerMax&quot;:' + (item.masteryBeginnerMax != null ? item.masteryBeginnerMax : 'null') + ',&quot;masteryIntroMin&quot;:' + (item.masteryIntroMin != null ? item.masteryIntroMin : 'null') + ',&quot;masteryExpertMin&quot;:' + (item.masteryExpertMin != null ? item.masteryExpertMin : 'null') + ',&quot;masteryMasterMin&quot;:' + (item.masteryMasterMin != null ? item.masteryMasterMin : 'null') + '}'}">
                         <i class="fas fa-edit"></i></button>
                     <button type="button" class="btn btn-outline-danger btn-sm btn-admin-delete" th:data-name="${item.name}" th:data-delete-url="${'/wiki/admin/data/cooking/delete/' + item.id}"><i class="fas fa-trash"></i></button>
                 </div>
@@ -264,6 +314,7 @@
                     <div class="col-md-3"><label class="form-label fw-bold">구매가</label><input type="number" name="buyPrice" class="form-control"></div>
                     <div class="col-12"><label class="form-label fw-bold">재료 (텍스트)</label><input type="text" name="ingredients" class="form-control" placeholder="예: 밀가루 x2, 설탕 x1"></div>
                     <div class="col-12"><label class="form-label fw-bold">판매가 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"><input type="number" name="price1" class="form-control" placeholder="1★"><input type="number" name="price2" class="form-control" placeholder="2★"><input type="number" name="price3" class="form-control" placeholder="3★"><input type="number" name="price4" class="form-control" placeholder="4★"><input type="number" name="price5" class="form-control" placeholder="5★"></div></div>
+                    <div class="col-12"><label class="form-label fw-bold">체력 회복 (1★~5★)</label><div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;"><input type="number" min="0" name="recovery1" class="form-control" placeholder="1★"><input type="number" min="0" name="recovery2" class="form-control" placeholder="2★"><input type="number" min="0" name="recovery3" class="form-control" placeholder="3★"><input type="number" min="0" name="recovery4" class="form-control" placeholder="4★"><input type="number" min="0" name="recovery5" class="form-control" placeholder="5★"></div></div>
                     <div class="col-12"><label class="form-label fw-bold">명인 수치</label><div class="mastery-input-grid"><input type="number" min="0" name="masteryBeginnerMax" class="form-control" placeholder="초보자 최대"><input type="number" min="0" name="masteryIntroMin" class="form-control" placeholder="입문자 최소"><input type="number" min="0" name="masteryExpertMin" class="form-control" placeholder="숙련자 최소"><input type="number" min="0" name="masteryMasterMin" class="form-control" placeholder="명인 최소"></div><div class="invalid-feedback mastery-feedback"></div></div>
                     <div class="col-md-8"><label class="form-label fw-bold">이미지 등록 방식</label>
                         <div class="mb-2">

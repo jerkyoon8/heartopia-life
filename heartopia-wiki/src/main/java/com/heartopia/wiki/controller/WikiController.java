@@ -149,7 +149,7 @@ public class WikiController {
                 model.addAttribute("cookingList", list);
                 addEventFilterModel(model);
                 model.addAttribute("pageTitle", "요리 레시피");
-                model.addAttribute("pageDescription", "두근두근라이프 요리 전체 목록 - 필요 재료, 레벨, 판매 가격 정보를 확인하세요.");
+                model.addAttribute("pageDescription", "두근두근라이프 요리 전체 목록 - 필요 재료, 판매 가격, 등급별 회복량을 확인하세요.");
                 return "wiki/items/cooking";
         }
 
@@ -449,7 +449,7 @@ public class WikiController {
                 model.addAttribute("listUrl", "/wiki/items/cooking");
                 model.addAttribute("prices", item.getPrices());
                 model.addAttribute("pageTitle", item.getName());
-                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 필요 재료, 레벨, 등급별 가격 공략 정보");
+                model.addAttribute("pageDescription", "두근두근라이프 " + item.getName() + " - 필요 재료, 레벨, 등급별 가격과 회복량 공략 정보");
 
                 model.addAttribute("relatedItems", List.of());
 

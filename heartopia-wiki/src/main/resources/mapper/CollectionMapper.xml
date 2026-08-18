@@ -34,6 +34,7 @@
     <sql id="cookingColumns">
         id, name, level, ingredients, buy_price,
         price_1, price_2, price_3, price_4, price_5,
+        recovery_1, recovery_2, recovery_3, recovery_4, recovery_5,
         image_url, event_name,
         mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min
     </sql>
@@ -275,10 +276,14 @@
 
     <insert id="insertCooking" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO cooking_collections (name, level, ingredients, buy_price,
-            price_1, price_2, price_3, price_4, price_5, image_url, event_name,
+            price_1, price_2, price_3, price_4, price_5,
+            recovery_1, recovery_2, recovery_3, recovery_4, recovery_5,
+            image_url, event_name,
             mastery_beginner_max, mastery_intro_min, mastery_expert_min, mastery_master_min)
         VALUES (#{name}, #{level}, #{ingredients}, #{buyPrice},
-            #{price1}, #{price2}, #{price3}, #{price4}, #{price5}, #{imageUrl}, #{eventName},
+            #{price1}, #{price2}, #{price3}, #{price4}, #{price5},
+            #{recovery1}, #{recovery2}, #{recovery3}, #{recovery4}, #{recovery5},
+            #{imageUrl}, #{eventName},
             #{masteryBeginnerMax}, #{masteryIntroMin}, #{masteryExpertMin}, #{masteryMasterMin})
     </insert>
 
@@ -364,6 +369,7 @@
     <update id="updateCooking">
         UPDATE cooking_collections SET name=#{name}, level=#{level}, ingredients=#{ingredients}, buy_price=#{buyPrice},
             price_1=#{price1}, price_2=#{price2}, price_3=#{price3}, price_4=#{price4}, price_5=#{price5},
+            recovery_1=#{recovery1}, recovery_2=#{recovery2}, recovery_3=#{recovery3}, recovery_4=#{recovery4}, recovery_5=#{recovery5},
             image_url=#{imageUrl}, event_name=#{eventName}
             <if test="masteryFieldsPresent == true">
                 , mastery_beginner_max=#{masteryBeginnerMax}, mastery_intro_min=#{masteryIntroMin},
