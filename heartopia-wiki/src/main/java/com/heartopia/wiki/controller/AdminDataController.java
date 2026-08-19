@@ -23,8 +23,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 관리자 전용 데이터 CRUD 컨트롤러
@@ -37,6 +39,10 @@ import java.util.Map;
 @RequestMapping("/wiki/admin/data")
 @RequiredArgsConstructor
 public class AdminDataController {
+
+    private static final Set<String> ALLOWED_ACHIEVEMENT_CATEGORIES = Set.of(
+            "낚시", "요리", "새 관찰", "곤충 채집", "원예", "고양이/강아지",
+            "생활", "이벤트", "숨겨진", "바다 청소", "숨바꼭질 파티");
 
     private final CollectionService collectionService;
     private final GiftCodeService giftCodeService;
@@ -483,6 +489,7 @@ public class AdminDataController {
     @PostMapping("/achievement/add")
     public String addAchievement(Achievement achievement,
                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        validateAchievement(achievement);
         log.info("관리자 데이터 추가: 업적 '{}'", achievement.getName());
         handleImageUpload(achievement, imageFile, "achievement", null);
         collectionService.addAchievement(achievement);
@@ -493,6 +500,7 @@ public class AdminDataController {
     public String updateAchievement(Achievement achievement,
                                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                     @RequestParam(value = "existingImageUrl", required = false) String existingImageUrl) throws IOException {
+        validateAchievement(achievement);
         log.info("관리자 데이터 수정: 업적 id={}", achievement.getId());
         handleImageUpload(achievement, imageFile, "achievement", existingImageUrl);
         collectionService.updateAchievement(achievement);
@@ -504,6 +512,34 @@ public class AdminDataController {
         log.info("관리자 데이터 삭제: 업적 id={}", id);
         collectionService.deleteAchievement(id);
         return "redirect:/wiki/others/achievements";
+    }
+
+    void validateAchievement(Achievement achievement) {
+        if (achievement == null || achievement.getCategories() == null) {
+            throw new IllegalArgumentException("업적 카테고리를 하나 이상 선택해 주세요.");
+        }
+
+        LinkedHashSet<String> categories = new LinkedHashSet<>();
+        for (String rawCategory : achievement.getCategories().split(",")) {
+            String category = rawCategory.trim();
+            if (category.isEmpty()) continue;
+            if (!ALLOWED_ACHIEVEMENT_CATEGORIES.contains(category)) {
+                throw new IllegalArgumentException("지원하지 않는 업적 카테고리입니다: " + category);
+            }
+            categories.add(category);
+        }
+
+        if (categories.isEmpty()) {
+            throw new IllegalArgumentException("업적 카테고리를 하나 이상 선택해 주세요.");
+        }
+
+        achievement.setCategories(String.join(",", categories));
+
+        if (achievement.getSortOrder() == null) {
+            achievement.setSortOrder(0);
+        } else if (achievement.getSortOrder() < 0) {
+            throw new IllegalArgumentException("업적 정렬 순서는 0 이상의 정수여야 합니다.");
+        }
     }
 
     // ======================== 이미지 처리 공통 메서드 ========================

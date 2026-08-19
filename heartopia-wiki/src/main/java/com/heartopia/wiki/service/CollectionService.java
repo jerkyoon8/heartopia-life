@@ -532,12 +532,12 @@ public class CollectionService {
         return collectionMapper.findAchievementByName(name);
     }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements", "achievementDetail"}, allEntries = true)
     public void addAchievement(Achievement achievement) { collectionMapper.insertAchievement(achievement); }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements", "achievementDetail"}, allEntries = true)
     public void updateAchievement(Achievement achievement) { collectionMapper.updateAchievement(achievement); }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allAchievements", "countAchievements", "searchAchievements", "achievementDetail"}, allEntries = true)
     public void deleteAchievement(Integer id) { collectionMapper.deleteAchievement(id); }
 }

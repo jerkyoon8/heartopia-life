@@ -8,6 +8,61 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
 
+    function getAchievementCategoryControls(form) {
+        return {
+            hidden: form.querySelector('input[name="categories"]'),
+            options: Array.from(form.querySelectorAll('[data-achievement-category-option]')),
+            feedback: form.querySelector('.achievement-category-feedback')
+        };
+    }
+
+    function syncAchievementCategoryOptions(form) {
+        if (!form.hasAttribute('data-achievement-categories')) return;
+        const { hidden, options } = getAchievementCategoryControls(form);
+        const selected = new Set((hidden?.value || '').split(',').map(value => value.trim()).filter(Boolean));
+        options.forEach(option => {
+            option.checked = selected.has(option.value);
+        });
+    }
+
+    function validateAchievementCategories(form, focusInvalid = false) {
+        if (!form.hasAttribute('data-achievement-categories')) return true;
+        const { hidden, options, feedback } = getAchievementCategoryControls(form);
+        const selected = options.filter(option => option.checked).map(option => option.value);
+        if (hidden) hidden.value = selected.join(',');
+
+        const valid = selected.length > 0;
+        options.forEach(option => option.classList.toggle('is-invalid', !valid));
+        if (options[0]) options[0].setCustomValidity(valid ? '' : '카테고리를 하나 이상 선택해 주세요.');
+        if (feedback) feedback.style.display = valid ? 'none' : 'block';
+        if (!valid && focusInvalid && options[0]) options[0].reportValidity();
+        return valid;
+    }
+
+    function resetAchievementCategoryValidation(form) {
+        if (!form.hasAttribute('data-achievement-categories')) return;
+        const { hidden, options, feedback } = getAchievementCategoryControls(form);
+        if (hidden) hidden.value = '';
+        options.forEach(option => {
+            option.checked = false;
+            option.classList.remove('is-invalid');
+            option.setCustomValidity('');
+        });
+        if (feedback) feedback.style.display = 'none';
+    }
+
+    document.querySelectorAll('form[data-achievement-categories]').forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!validateAchievementCategories(form, true)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+        form.querySelectorAll('[data-achievement-category-option]').forEach(option => {
+            option.addEventListener('change', () => validateAchievementCategories(form));
+        });
+    });
+
     const masteryFieldNames = [
         'masteryBeginnerMax',
         'masteryIntroMin',
@@ -129,7 +184,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (submitBtn) submitBtn.textContent = '수정하기';
 
             // 데이터 필드 채우기
-            const data = JSON.parse(this.dataset.item || '{}');
+            const data = this.dataset.itemId !== undefined
+                ? {
+                    id: this.dataset.itemId,
+                    categories: this.dataset.itemCategories || '',
+                    name: this.dataset.itemName || '',
+                    cond: this.dataset.itemCond || '',
+                    title: this.dataset.itemTitle || '',
+                    tip: this.dataset.itemTip || '',
+                    sortOrder: this.dataset.itemSortOrder || '',
+                    imageUrl: this.dataset.itemImageUrl || ''
+                }
+                : JSON.parse(this.dataset.item || '{}');
             Object.keys(data).forEach(key => {
                 const checkbox = form.querySelector(`input[type="checkbox"][name="${key}"]`);
                 if (checkbox) {
@@ -139,6 +205,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (input) input.value = data[key] != null ? data[key] : '';
                 }
             });
+            syncAchievementCategoryOptions(form);
+            validateAchievementCategories(form);
             validateMasteryFields(form);
 
             // 기존 이미지 URL을 hidden 필드에 세팅 + 미리보기 및 모드 설정
@@ -204,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 폼 초기화
             form.reset();
+            resetAchievementCategoryValidation(form);
             validateMasteryFields(form);
             // id hidden 필드 비우기
             const idInput = form.querySelector('input[name="id"]');
