@@ -5,7 +5,10 @@ import com.heartopia.wiki.mapper.DailyResourceLocationMapper;
 import com.heartopia.wiki.model.DailyResourceLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -25,22 +28,39 @@ public class DailyResourceLocationService {
     private static final String EMPTY_LOCATION = "위치 정보 없음";
 
     private final DailyResourceLocationMapper mapper;
+    private final DailyResourceLocationCleanupService cleanupService;
     private final Clock clock;
 
+    private LocalDate cachedGameDate;
+    private DailyResourceLocation cachedLocation;
+    private boolean cacheInitialized;
+    private volatile LocalDate lastCleanupGameDate;
+
     @Autowired
-    public DailyResourceLocationService(DailyResourceLocationMapper mapper) {
-        this(mapper, Clock.system(ASIA_SERVER_ZONE));
+    public DailyResourceLocationService(
+            DailyResourceLocationMapper mapper,
+            DailyResourceLocationCleanupService cleanupService) {
+        this(mapper, cleanupService, Clock.system(ASIA_SERVER_ZONE));
     }
 
     DailyResourceLocationService(DailyResourceLocationMapper mapper, Clock clock) {
+        this(mapper, new DailyResourceLocationCleanupService(mapper), clock);
+    }
+
+    DailyResourceLocationService(
+            DailyResourceLocationMapper mapper,
+            DailyResourceLocationCleanupService cleanupService,
+            Clock clock) {
         this.mapper = mapper;
+        this.cleanupService = cleanupService;
         this.clock = clock;
     }
 
-    @Transactional(readOnly = true)
     public DailyResourceLocationResponse getCurrent() {
         ZonedDateTime now = ZonedDateTime.now(clock).withZoneSameInstant(ASIA_SERVER_ZONE);
-        DailyResourceLocation location = mapper.findByGameDate(gameDate(now));
+        LocalDate currentGameDate = gameDate(now);
+        ensurePastLocationsDeleted(currentGameDate);
+        DailyResourceLocation location = getCachedLocation(currentGameDate);
         if (location == null) {
             return new DailyResourceLocationResponse(
                     SERVER_TIME_FORMAT.format(now),
@@ -55,8 +75,8 @@ public class DailyResourceLocationService {
                 true);
     }
 
-    @Transactional(readOnly = true)
     public List<DailyResourceLocation> getAll() {
+        ensurePastLocationsDeleted(currentGameDate());
         return mapper.findAll();
     }
 
@@ -76,6 +96,7 @@ public class DailyResourceLocationService {
                 location.getOakHouseNumber(),
                 "그자리 참나무"));
         mapper.upsert(location);
+        invalidateCurrentCacheAfterCommit();
     }
 
     @Transactional
@@ -84,6 +105,13 @@ public class DailyResourceLocationService {
             throw new IllegalArgumentException("삭제할 예약을 찾을 수 없습니다.");
         }
         mapper.deleteById(id);
+        invalidateCurrentCacheAfterCommit();
+    }
+
+    @Scheduled(cron = "0 0 6 * * *", zone = "Asia/Seoul")
+    public void cleanupPastLocations() {
+        ensurePastLocationsDeleted(currentGameDate());
+        invalidateCurrentCache();
     }
 
     public LocalDate currentGameDate() {
@@ -92,6 +120,49 @@ public class DailyResourceLocationService {
 
     private LocalDate gameDate(ZonedDateTime now) {
         return now.minusHours(6).toLocalDate();
+    }
+
+    private void ensurePastLocationsDeleted(LocalDate gameDate) {
+        if (gameDate.equals(lastCleanupGameDate)) {
+            return;
+        }
+        synchronized (this) {
+            if (gameDate.equals(lastCleanupGameDate)) {
+                return;
+            }
+            cleanupService.deleteBefore(gameDate);
+            lastCleanupGameDate = gameDate;
+        }
+    }
+
+    private synchronized DailyResourceLocation getCachedLocation(LocalDate gameDate) {
+        if (cacheInitialized && gameDate.equals(cachedGameDate)) {
+            return cachedLocation;
+        }
+        DailyResourceLocation location = mapper.findByGameDate(gameDate);
+        cachedGameDate = gameDate;
+        cachedLocation = location;
+        cacheInitialized = true;
+        return location;
+    }
+
+    private synchronized void invalidateCurrentCache() {
+        cachedGameDate = null;
+        cachedLocation = null;
+        cacheInitialized = false;
+    }
+
+    private void invalidateCurrentCacheAfterCommit() {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            invalidateCurrentCache();
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                invalidateCurrentCache();
+            }
+        });
     }
 
     private String normalizeType(String type, String resourceName) {

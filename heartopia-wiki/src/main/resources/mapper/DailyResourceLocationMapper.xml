@@ -51,4 +51,9 @@
         WHERE id = #{id}
     </delete>
 
+    <delete id="deleteBeforeGameDate">
+        DELETE FROM daily_resource_locations
+        WHERE game_date &lt; #{gameDate}
+    </delete>
+
 </mapper>

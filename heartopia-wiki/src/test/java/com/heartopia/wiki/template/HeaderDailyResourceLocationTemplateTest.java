@@ -64,7 +64,7 @@ class HeaderDailyResourceLocationTemplateTest {
     }
 
     @Test
-    @DisplayName("SQL은 날짜 유일성과 세 위치 유형 제약을 정의한다")
+    @DisplayName("SQL은 날짜 유일성, 위치 유형 제약과 구분된 삭제 정책을 정의한다")
     void sqlConstrainsDailyLocationRows() throws IOException {
         String sql = read("sql/20260730_create_daily_resource_locations.sql");
 
@@ -79,7 +79,8 @@ class HeaderDailyResourceLocationTemplateTest {
 
         String mapper = read("mapper/DailyResourceLocationMapper.xml");
         assertTrue(mapper.contains("SET is_active = FALSE"));
-        assertFalse(mapper.contains("DELETE FROM daily_resource_locations"));
+        assertTrue(mapper.contains("DELETE FROM daily_resource_locations"));
+        assertTrue(mapper.contains("WHERE game_date &lt; #{gameDate}"));
 
         String migration = read("sql/20260813_add_oak_forest_daily_resource_location.sql");
         assertTrue(migration.contains("DROP CHECK chk_daily_resource_fluorite_type"));

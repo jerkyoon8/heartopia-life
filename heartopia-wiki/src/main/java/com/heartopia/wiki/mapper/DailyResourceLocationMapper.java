@@ -17,4 +17,6 @@ public interface DailyResourceLocationMapper {
     void upsert(DailyResourceLocation location);
 
     void deleteById(@Param("id") Long id);
+
+    int deleteBeforeGameDate(@Param("gameDate") LocalDate gameDate);
 }

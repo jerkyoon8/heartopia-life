@@ -1,10 +1,16 @@
 package com.heartopia.wiki.advice;
 
+import com.heartopia.wiki.dto.VisitorSummary;
 import com.heartopia.wiki.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerMapping;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -14,8 +20,13 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void addGlobalAttributes(org.springframework.ui.Model model,
-            jakarta.servlet.http.HttpSession session,
             jakarta.servlet.http.HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if (isApiRequest(request, uri)) {
+            return;
+        }
+
+        jakarta.servlet.http.HttpSession session = request.getSession();
         // Track the visit only once per session
         if (session.getAttribute("visited") == null) {
             visitorService.trackVisitor();
@@ -29,7 +40,6 @@ public class GlobalControllerAdvice {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int port = request.getServerPort();
-        String uri = request.getRequestURI();
         // 프로덕션 환경에서는 항상 https + 도메인 기준 URL 생성
         String baseUrl;
         if ("localhost".equals(serverName) || "127.0.0.1".equals(serverName)) {
@@ -39,8 +49,27 @@ public class GlobalControllerAdvice {
         }
         model.addAttribute("canonicalUrl", baseUrl + uri);
 
-        // Add visitor counts to every page
-        model.addAttribute("weeklyVisitors", visitorService.getWeeklyVisitorCount());
-        model.addAttribute("todayVisitors", visitorService.getTodayVisitorCount());
+        // Add both visitor counts with one aggregate query
+        VisitorSummary visitorSummary = visitorService.getVisitorSummary();
+        model.addAttribute("weeklyVisitors", visitorSummary.getWeeklyVisitors());
+        model.addAttribute("todayVisitors", visitorSummary.getTodayVisitors());
+    }
+
+    private boolean isApiRequest(jakarta.servlet.http.HttpServletRequest request, String uri) {
+        if (isPathOrChild(uri, "/api") || isPathOrChild(uri, "/wiki/map/api")) {
+            return true;
+        }
+
+        Object handler = request.getAttribute(HandlerMapping.BEST_MATCHING_HANDLER_ATTRIBUTE);
+        if (!(handler instanceof HandlerMethod handlerMethod)) {
+            return false;
+        }
+        return AnnotatedElementUtils.hasAnnotation(handlerMethod.getBeanType(), RestController.class)
+                || AnnotatedElementUtils.hasAnnotation(handlerMethod.getBeanType(), ResponseBody.class)
+                || AnnotatedElementUtils.hasAnnotation(handlerMethod.getMethod(), ResponseBody.class);
+    }
+
+    private boolean isPathOrChild(String uri, String root) {
+        return root.equals(uri) || uri.startsWith(root + "/");
     }
 }

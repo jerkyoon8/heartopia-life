@@ -1,5 +1,6 @@
 package com.heartopia.wiki.service;
 
+import com.heartopia.wiki.dto.VisitorSummary;
 import com.heartopia.wiki.mapper.VisitorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,8 @@ public class VisitorService {
         visitorMapper.incrementTodayCount();
     }
 
-    public int getWeeklyVisitorCount() {
-        return visitorMapper.getWeeklyTotal();
+    public VisitorSummary getVisitorSummary() {
+        return visitorMapper.getVisitorSummary();
     }
 
     public int getTotalVisitorCount() {
@@ -27,7 +28,4 @@ public class VisitorService {
         return visitorMapper.getRecent48hTotal();
     }
 
-    public int getTodayVisitorCount() {
-        return visitorMapper.getTodayTotal();
-    }
 }
