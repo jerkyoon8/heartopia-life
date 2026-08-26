@@ -1,8 +1,5 @@
 /* Heartopia Wiki Common Styles */
 
-/* Font Import (Pretendard) - Common for all pages */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
-
 :root {
     --main-bg-color: #FFFCFD;
     /* Soft pink tint */
@@ -87,7 +84,7 @@
 }
 
 body {
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', 'Noto Sans KR', sans-serif;
     background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     background-attachment: fixed;
     margin: 0;
@@ -630,7 +627,7 @@ input:checked + .slider:before {
     align-items: center;
     gap: 13px;
     color: var(--text-color);
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', 'Noto Sans KR', sans-serif;
     font-size: 0.72rem;
     white-space: nowrap;
 }
@@ -705,7 +702,7 @@ input:checked + .slider:before {
     border-radius: 12px;
     background: var(--card-bg);
     box-shadow: 0 3px 12px var(--shadow);
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', 'Noto Sans KR', sans-serif;
     font-size: 0.76rem;
     cursor: pointer;
     white-space: nowrap;

@@ -70,7 +70,7 @@ class CurrentEventFilterTemplateTest {
                 .doesNotContain("if (quickValues.length === 0) return;")
                 .doesNotContain("quickToggle.disabled = quickValues.length === 0")
                 .contains("quickDropdown.classList.toggle('show')");
-        assertThat(commonHead).contains("/css/common.css(v=2.1)");
+        assertThat(commonHead).contains("/css/common.css(v=2.2)");
     }
 
     @Test
