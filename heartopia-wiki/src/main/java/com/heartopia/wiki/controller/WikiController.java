@@ -43,35 +43,35 @@ public class WikiController {
                 // 2. 도감 (Collections)
                 List<CategoryItemDto> collections = new ArrayList<>();
                 collections.add(new CategoryItemDto("물고기", "🐟", "/wiki/collections/fish",
-                                "/images/main-index/main_index_icon_fishing.webp?v=2", collectionService.getFishCount()));
+                                "/images/main-index/main_index_icon_fishing.webp?v=2", collectionService.getFishCount(), "fish_"));
                 collections.add(new CategoryItemDto("곤충", "🦋", "/wiki/collections/bug",
-                                "/images/main-index/main_index_icon_bug.webp?v=2", collectionService.getBugCount()));
+                                "/images/main-index/main_index_icon_bug.webp?v=2", collectionService.getBugCount(), "bug_"));
                 collections.add(new CategoryItemDto("새", "🐦", "/wiki/collections/bird",
-                                "/images/main-index/main_index_icon_bird_watching.webp?v=2", collectionService.getBirdCount()));
+                                "/images/main-index/main_index_icon_bird_watching.webp?v=2", collectionService.getBirdCount(), "bird_"));
                 collections.add(new CategoryItemDto("동물", "🐾", "/wiki/collections/animal",
                                 "/images/main-index/main_index_icon_animal.webp?v=2", collectionService.getAnimalCount()));
                 collections.add(new CategoryItemDto("요리", "🍳", "/wiki/items/cooking", "/images/main-index/main_index_icon_cooking.webp?v=2",
-                                collectionService.getCookingCount()));
+                                collectionService.getCookingCount(), "cooking_"));
                 collections.add(new CategoryItemDto("작물", "🌽", "/wiki/items/crops", "/images/main-index/main_index_icon_gardening.webp?v=2",
-                                collectionService.getCropCount()));
+                                collectionService.getCropCount(), "crop_"));
                 collections.add(new CategoryItemDto("꽃", "🌻", "/wiki/items/flowers", "/images/main-index/main_index_icon_flower.webp?v=2",
-                                collectionService.getFlowerCount()));
+                                collectionService.getFlowerCount(), "flower_"));
                 collections.add(new CategoryItemDto("채집", "🥐", "/wiki/collections/forageable", "/images/main-index/main_index_icon_forageable.webp?v=2",
                                 collectionService.getForageableCount()));
 
                 // 3. 취미 (Hobbies)
                 List<CategoryItemDto> hobbies = new ArrayList<>();
                 hobbies.add(new CategoryItemDto("모래 조각", "🏖️", "/wiki/others/sandbox",
-                                "/images/main-index/main_index_icon_sand_sculpture.webp?v=2", collectionService.getSandboxCount()));
+                                "/images/main-index/main_index_icon_sand_sculpture.webp?v=2", collectionService.getSandboxCount(), "sandbox_id_"));
                 hobbies.add(new CategoryItemDto("바다 청소", "🌊", "/wiki/others/sea-cleaning", null,
-                                collectionService.getSeaCleaningCount()));
+                                collectionService.getSeaCleaningCount(), "sea_cleaning_id_"));
                 hobbies.add(new CategoryItemDto("반려동물", "🐱", "/wiki/others/pets", "/images/main-index/main_index_icon_pet.webp?v=2"));
 
                 // 4. 기타 정보 (Utilities)
                 List<CategoryItemDto> utilities = new ArrayList<>();
                 utilities.add(new CategoryItemDto("주민", "👤", "/wiki/others/villagers", "/images/main-index/main_index_icon_villager.webp?v=2", 21));
-                utilities.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/main-index/main_index_icon_achievement.webp?v=2", collectionService.getAchievementCount()));
-                utilities.add(new CategoryItemDto("퍼즐", "🧩", "/wiki/others/puzzles", null, collectionService.getPuzzleCount()));
+                utilities.add(new CategoryItemDto("업적", "🏆", "/wiki/others/achievements", "/images/main-index/main_index_icon_achievement.webp?v=2", collectionService.getAchievementCount(), "achievement_"));
+                utilities.add(new CategoryItemDto("퍼즐", "🧩", "/wiki/others/puzzles", null, collectionService.getPuzzleCount(), "puzzle_id_"));
 
                 model.addAttribute("collections", collections);
                 model.addAttribute("hobbies", hobbies);
@@ -308,6 +308,13 @@ public class WikiController {
 
                 // 8. 바다 청소
                 model.addAttribute("seaCleaningList", collectionService.getAllSeaCleaningCollections());
+
+                // 9. 퍼즐 (별점 없이 체크만)
+                model.addAttribute("puzzleList", collectionService.getAllPuzzles());
+
+                // 10. 모래 조각 (별점 없이 체크만)
+                model.addAttribute("sandboxList", collectionService.getAllSandboxes().stream()
+                        .map(SandboxDto::from).toList());
 
                 model.addAttribute("pageTitle", "수집 도감 (Checklist)");
                 model.addAttribute("pageDescription", "두근두근라이프 전체 수집품 진행도를 확인하고 나만의 도감을 완성해 보세요.");

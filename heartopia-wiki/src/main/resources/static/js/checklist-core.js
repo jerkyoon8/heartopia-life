@@ -80,6 +80,13 @@ const ChecklistCore = (function() {
             collectionData[key] = val;
             saveStorage();
         },
+        // 전체 상태를 한 번에 교체 (계정 동기화 초기 로드용)
+        replaceData: function(data) {
+            collectionData = data && typeof data === 'object' && !Array.isArray(data)
+                ? { ...data }
+                : {};
+            saveStorage();
+        },
         // 항목 제거
         removeItem: function(key) {
             if (collectionData.hasOwnProperty(key)) {

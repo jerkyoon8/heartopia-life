@@ -7,6 +7,19 @@
 const SEA_CLEANING_CHECKLIST_VERSION_KEY = 'heartopia_checklist_sea_cleaning_version';
 const SEA_CLEANING_CHECKLIST_VERSION = '2';
 
+function countChecklistProgress(sourceData, prefix, total) {
+    if (!sourceData || typeof sourceData !== 'object' || Array.isArray(sourceData)
+            || typeof prefix !== 'string' || prefix.length === 0
+            || !Number.isInteger(total) || total < 0) {
+        return 0;
+    }
+
+    const completed = Object.keys(sourceData)
+        .filter(key => key.startsWith(prefix))
+        .length;
+    return Math.min(completed, total);
+}
+
 function migrateSeaCleaningChecklistData(sourceData, mappings) {
     const data = sourceData && typeof sourceData === 'object' && !Array.isArray(sourceData)
         ? { ...sourceData }
@@ -84,17 +97,64 @@ function migrateSeaCleaningLocalChecklist(core, root, storage) {
     }
 }
 
+async function loadChecklistData(core, root, storage) {
+    const hasChecklistConsumer = root.querySelector(
+        '.sync-item, .collectible-item, [data-checklist-prefix][data-total]'
+    );
+    if (!hasChecklistConsumer) return { ok: true, source: 'unused' };
+
+    const syncEnabled = window._heartopiaChecklistSyncEnabled || false;
+    if (!syncEnabled) {
+        migrateSeaCleaningLocalChecklist(core, root, storage);
+        return { ok: true, source: 'local' };
+    }
+
+    if (window._checklistMergeOnLogin) await window._checklistMergeOnLogin;
+    try {
+        const response = await fetch('/api/user/checklist');
+        if (!response.ok) return { ok: false, source: 'account' };
+
+        const dbData = await response.json();
+        if (typeof core.replaceData === 'function') {
+            core.replaceData(dbData);
+        } else {
+            Object.keys(dbData).forEach(key => core.setItem(key, dbData[key]));
+        }
+        return { ok: true, source: 'account' };
+    } catch (error) {
+        return { ok: false, source: 'account' };
+    }
+}
+
+if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    window._heartopiaChecklistReady = new Promise(resolve => {
+        const start = () => {
+            if (typeof window.ChecklistCore === 'undefined') {
+                resolve({ ok: false, source: 'unavailable' });
+                return;
+            }
+            loadChecklistData(window.ChecklistCore, document, window.localStorage).then(resolve);
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', start, { once: true });
+        } else {
+            start();
+        }
+    });
+}
+
 if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', async () => {
     if (typeof window.ChecklistCore === 'undefined') return;
 
     const core = window.ChecklistCore;
     const syncEnabled = window._heartopiaChecklistSyncEnabled || false;
-    if (!syncEnabled) {
-        migrateSeaCleaningLocalChecklist(core, document, window.localStorage);
-    }
-
+    const loadResult = window._heartopiaChecklistReady
+        ? await window._heartopiaChecklistReady
+        : { ok: true, source: syncEnabled ? 'account' : 'local' };
     const syncItems = document.querySelectorAll('.sync-item');
-    if (syncItems.length === 0) return;
+    const progressItems = document.querySelectorAll('[data-checklist-prefix][data-total]');
+    if (syncItems.length === 0 && progressItems.length === 0) return;
 
     function getCsrf() {
         return {
@@ -103,24 +163,14 @@ if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded
         };
     }
 
-    // 동기화 ON: 머지 완료 후 DB에서 체크리스트 로드
-    if (syncEnabled) {
-        if (window._checklistMergeOnLogin) await window._checklistMergeOnLogin;
-        try {
-            const res = await fetch('/api/user/checklist');
-            if (res.ok) {
-                const dbData = await res.json();
-                Object.keys(dbData).forEach(key => core.setItem(key, dbData[key]));
-            }
-        } catch (e) { /* DB 실패 시 메모리 상태 유지 */ }
-    }
-
     // UI 상태 갱신
     function renderItemStatus(itemEl, val) {
         const stars = itemEl.querySelectorAll('.sync-star-icon');
+        const checkBtn = itemEl.querySelector('.sync-check-btn');
 
         if (val !== undefined && val !== null) {
             itemEl.classList.add('checked');
+            if (checkBtn) checkBtn.setAttribute('aria-pressed', 'true');
             stars.forEach(star => {
                 const sVal = parseInt(star.getAttribute('data-val'));
                 if (sVal <= val) {
@@ -131,8 +181,25 @@ if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded
             });
         } else {
             itemEl.classList.remove('checked');
+            if (checkBtn) checkBtn.setAttribute('aria-pressed', 'false');
             stars.forEach(star => star.classList.remove('filled'));
         }
+    }
+
+    function renderProgressStatus(data) {
+        progressItems.forEach(element => {
+            if (!loadResult.ok && syncEnabled) {
+                element.textContent = '진행도 불러오기 실패';
+                element.classList.add('is-error');
+                return;
+            }
+
+            const prefix = element.getAttribute('data-checklist-prefix');
+            const total = Number.parseInt(element.getAttribute('data-total'), 10);
+            const completed = countChecklistProgress(data, prefix, total);
+            element.textContent = `${completed} / ${Number.isInteger(total) && total >= 0 ? total : 0} 완료`;
+            element.classList.remove('is-error');
+        });
     }
 
     function renderMasteryStatus(itemEl, val) {
@@ -159,6 +226,7 @@ if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded
             renderItemStatus(itemEl, data[key]);
             renderMasteryStatus(itemEl, data['mastery_' + key]);
         });
+        renderProgressStatus(data);
     }
 
     // 전역 상태가 바뀌면(다른 탭 등에서) 자동 최신화
@@ -264,6 +332,7 @@ if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        countChecklistProgress,
         migrateSeaCleaningChecklistData,
         migrateSeaCleaningLocalChecklist
     };

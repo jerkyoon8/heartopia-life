@@ -316,6 +316,12 @@ body {
     flex-shrink: 0;
 }
 
+button.item-checkbox {
+    padding: 0;
+    background: transparent;
+    font: inherit;
+}
+
 .item-checkbox i {
     opacity: 0;
     color: white;

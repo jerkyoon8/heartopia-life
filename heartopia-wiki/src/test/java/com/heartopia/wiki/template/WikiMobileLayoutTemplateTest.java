@@ -19,7 +19,9 @@ class WikiMobileLayoutTemplateTest {
                 .containsPattern("(?s)@media \\(max-width: 576px\\).*?\\.quick-access-section\\s*\\{.*?display: grid;.*?grid-template-columns: repeat\\(2, minmax\\(0, 1fr\\)\\);")
                 .containsPattern("(?s)@media \\(max-width: 576px\\).*?\\.wiki-grid\\s*\\{.*?grid-template-columns: repeat\\(4, minmax\\(0, 1fr\\)\\);")
                 .contains("min-height: 84px;")
-                .containsPattern("(?s)\\.card-count:not\\(\\.card-status\\)\\s*\\{.*?display: none;")
+                .containsPattern("(?s)\\.card-count:not\\(\\.card-status\\):not\\(\\.card-progress\\)\\s*\\{.*?display: none;")
+                .containsPattern("(?s)\\.card-progress\\s*\\{.*?font-size: 11px;")
+                .doesNotContain("aria-live=\"polite\">진행도 불러오는 중")
                 .contains("grid-template-rows: auto auto 1fr auto;");
     }
 }

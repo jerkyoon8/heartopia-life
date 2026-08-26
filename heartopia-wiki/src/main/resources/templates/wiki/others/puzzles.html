@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
-    <script src="/js/wiki-filter.js?v=2.6" defer></script>
+    <script src="/js/wiki-filter.js?v=2.7" defer></script>
     <style>
         .puzzle-summary {
             display: flex;
@@ -105,6 +105,17 @@
                     <input type="text" id="searchInput" class="search-input" placeholder="퍼즐 이름 검색...">
                 </div>
 
+                <div class="toggle-switch-wrapper"
+                     style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <span class="switch">
+                            <input type="checkbox" id="btn-hide-collected">
+                            <span class="slider"></span>
+                        </span>
+                        <i class="fas fa-eye-slash text-secondary"></i> 수집된 항목 숨기기
+                    </label>
+                </div>
+
                 <button type="button" class="btn-filter-toggle"
                         onclick="document.getElementById('advancedFilters').classList.toggle('show')">
                     <i class="fas fa-sliders-h"></i> 상세 옵션
@@ -180,12 +191,18 @@
 
         <div class="wiki-grid-layout" id="wikiGrid">
             <div th:each="puzzle, iterStat : ${puzzleList}"
-                 class="wiki-item-card"
+                 class="wiki-item-card sync-item"
                  th:data-id="${puzzle.sortOrder}"
+                 th:data-sync-key="'puzzle_id_' + ${puzzle.id}"
                  th:data-name="${puzzle.name}"
                  th:data-category="${puzzle.category}"
-                 th:data-size="${puzzle.size}">
-                <div class="wiki-item-image" style="position:relative;">
+                 th:data-size="${puzzle.size}"
+                 data-supports-star-rating="false">
+                <div class="wiki-item-image sync-container" style="position:relative;">
+                    <button type="button" class="sync-check-btn" aria-pressed="false"
+                            th:attr="aria-label='수집 상태 변경: ' + ${puzzle.name}" title="수집 상태 변경">
+                        <i class="fas fa-check"></i>
+                    </button>
                     <span class="puzzle-order" th:text="'#' + ${puzzle.catalogOrder}">#1</span>
                     <img class="puzzle-image"
                          th:src="${puzzle.imageUrl}"
@@ -241,13 +258,19 @@
                 </thead>
                 <tbody>
                     <tr th:each="puzzle : ${puzzleList}"
-                        class="wiki-table-row"
+                        class="wiki-table-row sync-item"
                         th:data-id="${puzzle.sortOrder}"
+                        th:data-sync-key="'puzzle_id_' + ${puzzle.id}"
                         th:data-name="${puzzle.name}"
                         th:data-category="${puzzle.category}"
-                        th:data-size="${puzzle.size}">
+                        th:data-size="${puzzle.size}"
+                        data-supports-star-rating="false">
                         <td th:text="${puzzle.catalogOrder}">1</td>
-                        <td>
+                        <td class="sync-container">
+                            <button type="button" class="sync-check-btn" aria-pressed="false"
+                                    th:attr="aria-label='수집 상태 변경: ' + ${puzzle.name}" title="수집 상태 변경">
+                                <i class="fas fa-check"></i>
+                            </button>
                             <img th:src="${puzzle.imageUrl}" th:alt="${puzzle.name}"
                                  class="table-thumb" loading="lazy" decoding="async">
                         </td>

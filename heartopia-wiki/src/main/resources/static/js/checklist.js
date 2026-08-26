@@ -16,23 +16,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // --- 2. 동기화 ON: 머지 완료 후 DB에서 체크리스트 로드 --- //
-    if (syncEnabled) {
-        if (window._checklistMergeOnLogin) await window._checklistMergeOnLogin;
-        try {
-            const res = await fetch('/api/user/checklist');
-            if (res.ok) {
-                const dbData = await res.json();
-                Object.keys(dbData).forEach(key =>
-                    window.ChecklistCore.setItem(key, dbData[key])
-                );
-            }
-        } catch (e) { /* DB 실패 시 메모리 상태 유지 */ }
+    // --- 2. 공통 전역 로더가 로컬 마이그레이션/계정 데이터를 준비할 때까지 대기 --- //
+    if (window._heartopiaChecklistReady) {
+        await window._heartopiaChecklistReady;
     }
 
     // --- 3. Initial DOM Sync --- //
     const allItems = document.querySelectorAll('.collectible-item');
     const categoryCards = document.querySelectorAll('.category-card');
+    const validCollectionKeys = new Set(
+        Array.from(allItems)
+            .map(item => item.getAttribute('data-key'))
+            .filter(Boolean)
+    );
 
     let totalItemsCount = allItems.length;
 
@@ -42,10 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const key = itemEl.getAttribute('data-key');
             const masteryKey = 'mastery_' + key;
             const masteryBtn = itemEl.querySelector('.item-mastery-btn');
+            const checkBtn = itemEl.querySelector('.item-checkbox');
 
             if (data.hasOwnProperty(key)) {
                 const starVal = data[key];
                 itemEl.classList.add('checked');
+                if (checkBtn) checkBtn.setAttribute('aria-pressed', 'true');
                 const stars = itemEl.querySelectorAll('.star-icon');
                 stars.forEach(starEl => {
                     const val = parseInt(starEl.getAttribute('data-val'));
@@ -57,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             } else {
                 itemEl.classList.remove('checked');
+                if (checkBtn) checkBtn.setAttribute('aria-pressed', 'false');
                 itemEl.querySelectorAll('.star-icon').forEach(s => s.classList.remove('filled'));
             }
 
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function updateProgressUI() {
-        const collectionKeys = Object.keys(getCollectionData()).filter(k => !k.startsWith('mastery_'));
+        const collectionKeys = Object.keys(getCollectionData()).filter(key => validCollectionKeys.has(key));
         let totalCollected = collectionKeys.length;
 
         document.getElementById('overall-collected').textContent = totalCollected;

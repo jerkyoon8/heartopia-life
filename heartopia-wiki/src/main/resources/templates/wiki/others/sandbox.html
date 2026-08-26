@@ -138,6 +138,17 @@
                     <input type="text" id="searchInput" class="search-input" placeholder="모래 조각 검색...">
                 </div>
 
+                <div class="toggle-switch-wrapper"
+                     style="box-shadow: none; border-color: transparent; background: transparent; padding: 0;">
+                    <label class="toggle-switch-label">
+                        <span class="switch">
+                            <input type="checkbox" id="btn-hide-collected">
+                            <span class="slider"></span>
+                        </span>
+                        <i class="fas fa-eye-slash text-secondary"></i> 수집된 항목 숨기기
+                    </label>
+                </div>
+
                 <div th:replace="~{fragments/wiki-components :: quickEventFilter}"></div>
 
                 <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
@@ -175,16 +186,22 @@
                 <p>검색 결과가 없습니다.</p>
             </div>
 
-            <div th:each="item, iterStat : ${sandboxList}" class="wiki-item-card"
+            <div th:each="item, iterStat : ${sandboxList}" class="wiki-item-card sync-item"
                  th:data-id="${iterStat.index}"
+                 th:data-sync-key="'sandbox_id_' + ${item.id}"
                  th:data-name="${item.name}"
                  th:data-level="${item.level}"
                  th:data-weather="${item.weather}"
                  th:data-shape="${item.shape}"
                  th:data-price="${item.price}"
-                 th:data-event="${item.eventName != null ? item.eventName : ''}">
+                 th:data-event="${item.eventName != null ? item.eventName : ''}"
+                 data-supports-star-rating="false">
 
-                <div class="wiki-item-image sandbox-image">
+                <div class="wiki-item-image sandbox-image sync-container">
+                    <button type="button" class="sync-check-btn" aria-pressed="false"
+                            th:attr="aria-label='수집 상태 변경: ' + ${item.name}" title="수집 상태 변경">
+                        <i class="fas fa-check"></i>
+                    </button>
                     <div class="sandbox-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
                         <img th:src="${item.shapeImageUrl}" th:alt="${item.shape}">
                     </div>
@@ -254,15 +271,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="item, iterStat : ${sandboxList}" class="wiki-table-row"
+                    <tr th:each="item, iterStat : ${sandboxList}" class="wiki-table-row sync-item"
                         th:data-id="${iterStat.index}"
+                        th:data-sync-key="'sandbox_id_' + ${item.id}"
                         th:data-name="${item.name}"
                         th:data-level="${item.level}"
                         th:data-weather="${item.weather}"
                         th:data-shape="${item.shape}"
                         th:data-price="${item.price}"
-                        th:data-event="${item.eventName != null ? item.eventName : ''}">
-                        <td>
+                        th:data-event="${item.eventName != null ? item.eventName : ''}"
+                        data-supports-star-rating="false">
+                        <td class="sync-container">
+                            <button type="button" class="sync-check-btn" aria-pressed="false"
+                                    th:attr="aria-label='수집 상태 변경: ' + ${item.name}" title="수집 상태 변경">
+                                <i class="fas fa-check"></i>
+                            </button>
                             <div class="table-thumb-wrap">
                                 <span class="table-shape-badge" th:if="${item.shapeImageUrl != null and !item.shapeImageUrl.isEmpty()}" th:title="${item.shape}">
                                     <img th:src="${item.shapeImageUrl}" th:alt="${item.shape}">

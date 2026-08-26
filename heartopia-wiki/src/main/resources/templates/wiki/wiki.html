@@ -550,6 +550,10 @@
             /* Link color or Primary Theme Color */
         }
 
+        .card-progress.is-error {
+            color: #c0392b;
+        }
+
         .wiki-card.disabled {
             cursor: not-allowed;
             opacity: 0.55;
@@ -619,8 +623,13 @@
                 -webkit-line-clamp: 2;
             }
 
-            .card-count:not(.card-status) {
+            .card-count:not(.card-status):not(.card-progress) {
                 display: none;
+            }
+
+            .card-progress {
+                font-size: 11px;
+                line-height: 1.2;
             }
 
             .card-status {
@@ -933,7 +942,10 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">물고기</span>
-                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">80+개의 데이터</span>
+                            <span class="card-count card-progress" th:if="${item.dataCount > 0 and item.checklistPrefix != null}"
+                                  th:attr="data-checklist-prefix=${item.checklistPrefix},data-total=${item.dataCount}">진행도 불러오는 중</span>
+                            <span class="card-count" th:if="${item.dataCount > 0 and item.checklistPrefix == null}"
+                                  th:text="|${item.dataCount}+개의 데이터|">80+개의 데이터</span>
                         </div>
                     </div>
                 </a>
@@ -965,7 +977,10 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">도구</span>
-                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">20+개의 데이터</span>
+                            <span class="card-count card-progress" th:if="${item.dataCount > 0 and item.checklistPrefix != null}"
+                                  th:attr="data-checklist-prefix=${item.checklistPrefix},data-total=${item.dataCount}">진행도 불러오는 중</span>
+                            <span class="card-count" th:if="${item.dataCount > 0 and item.checklistPrefix == null}"
+                                  th:text="|${item.dataCount}+개의 데이터|">20+개의 데이터</span>
                             <span class="card-count card-status" th:if="${item.link == null}">준비 중</span>
                         </div>
                     </div>
@@ -994,7 +1009,10 @@
                         </div>
                         <div class="card-text-info">
                             <span class="card-title" th:text="${item.name}">기타 항목</span>
-                            <span class="card-count" th:if="${item.dataCount > 0}" th:text="|${item.dataCount}+개의 데이터|">10+개의 데이터</span>
+                            <span class="card-count card-progress" th:if="${item.dataCount > 0 and item.checklistPrefix != null}"
+                                  th:attr="data-checklist-prefix=${item.checklistPrefix},data-total=${item.dataCount}">진행도 불러오는 중</span>
+                            <span class="card-count" th:if="${item.dataCount > 0 and item.checklistPrefix == null}"
+                                  th:text="|${item.dataCount}+개의 데이터|">10+개의 데이터</span>
                         </div>
                     </div>
                 </a>
