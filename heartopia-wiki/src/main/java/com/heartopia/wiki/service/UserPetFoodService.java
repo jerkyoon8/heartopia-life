@@ -21,7 +21,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserPetFoodService {
 
-    private static final int MAX_PROFILES = 20;
+    private static final int MAX_PROFILES = 50;
     private static final int MAX_NAME_LENGTH = 80;
     private static final int MAX_ID_LENGTH = 120;
     private static final int MAX_CUSTOM_FOODS = 100;

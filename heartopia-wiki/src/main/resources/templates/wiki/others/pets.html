@@ -1050,6 +1050,7 @@
 
     <script th:inline="javascript">
         const STORAGE_KEY = 'heartopia_pet_food_profiles';
+        const MAX_PETS = 50;
         const petFoodSyncEnabled = window._heartopiaPetFoodSyncEnabled || false;
         const dbFoodImages = /*[[${petFoodImageMap}]]*/ {};
         let saveQueue = Promise.resolve();
@@ -1248,8 +1249,8 @@
                 showMessage('강아지 또는 고양이 중 하나를 선택해 주세요.');
                 return;
             }
-            if (state.pets.length >= 20) {
-                showMessage('반려동물은 최대 20마리까지 등록할 수 있습니다.');
+            if (state.pets.length >= MAX_PETS) {
+                showMessage(`반려동물은 최대 ${MAX_PETS}마리까지 등록할 수 있습니다.`);
                 return;
             }
 

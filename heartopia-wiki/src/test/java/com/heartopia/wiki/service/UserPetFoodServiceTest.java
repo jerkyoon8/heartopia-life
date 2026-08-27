@@ -188,11 +188,23 @@ class UserPetFoodServiceTest {
     }
 
     @Test
-    @DisplayName("호텔 입실 상태는 전체 프로필 20마리까지 저장할 수 있다")
-    void savePetFoodProfiles_acceptsTwentyPetsInHotel() {
-        service.savePetFoodProfiles(1L, hotelProfiles(20));
+    @DisplayName("전체 프로필 50마리까지 저장할 수 있다")
+    void savePetFoodProfiles_acceptsFiftyPets() {
+        service.savePetFoodProfiles(1L, hotelProfiles(50));
 
         verify(mapper).upsertPetsJson(org.mockito.ArgumentMatchers.eq(1L), anyString());
+    }
+
+    @Test
+    @DisplayName("전체 프로필이 50마리를 넘으면 저장을 거부한다")
+    void savePetFoodProfiles_rejectsMoreThanFiftyPets() {
+        PetFoodValidationException exception = assertThrows(
+                PetFoodValidationException.class,
+                () -> service.savePetFoodProfiles(1L, hotelProfiles(51))
+        );
+
+        assertTrue(exception.getMessage().contains("최대 50마리"));
+        verify(mapper, never()).upsertPetsJson(anyLong(), anyString());
     }
 
     @Test

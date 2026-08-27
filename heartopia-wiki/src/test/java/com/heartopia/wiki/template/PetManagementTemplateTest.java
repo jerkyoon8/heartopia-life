@@ -35,6 +35,18 @@ class PetManagementTemplateTest {
     }
 
     @Test
+    void petRegistrationAllowsUpToFiftyProfiles() throws IOException {
+        String template = petTemplate();
+
+        assertThat(template)
+                .contains("const MAX_PETS = 50;")
+                .contains("state.pets.length >= MAX_PETS")
+                .contains("최대 ${MAX_PETS}마리까지 등록할 수 있습니다.")
+                .doesNotContain("state.pets.length >= 20")
+                .doesNotContain("최대 20마리까지 등록할 수 있습니다.");
+    }
+
+    @Test
     void selectedPetCanMoveLeftAndRightAndPersistItsDisplayOrder() throws IOException {
         String template = petTemplate();
 
