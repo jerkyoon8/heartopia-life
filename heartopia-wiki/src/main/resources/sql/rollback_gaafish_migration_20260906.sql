@@ -1,0 +1,5 @@
+-- Use only with the protected pre-migration backup.
+-- Restore the five affected tables from the backup dump rather than applying
+-- a lossy reverse rename, because user key collisions may have been merged.
+-- Expected backup tables:
+-- fish_collections, cooking_collections, user_checklist, user_pet_food.

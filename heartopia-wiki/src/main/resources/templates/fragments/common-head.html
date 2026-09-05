@@ -58,12 +58,18 @@
     <link rel="stylesheet" th:href="@{/css/checklist-sync.css(v=1.6)}">
 
     <!-- Checklist Global Sync Scripts -->
+    <script th:src="@{/js/checklist-key-migration.js(v=1.0)}"></script>
+    <script th:src="@{/js/pet-food-name-migration.js(v=1.0)}"></script>
     <!-- sync 플래그는 ChecklistCore init 전에 설정 (init에서 localStorage 로드 여부 결정) -->
     <script th:inline="javascript">
         window._heartopiaChecklistSyncEnabled = /*[[${currentUser != null ? currentUser.checklistSyncEnabled : false}]]*/ false;
         window._heartopiaPetFoodSyncEnabled = /*[[${currentUser != null ? currentUser.petFoodSyncEnabled : false}]]*/ false;
         window._heartopiaCurrentUserId = /*[[${currentUser != null ? currentUser.userId : null}]]*/ null;
         window._heartopiaPetFoodStorageKey = 'heartopia_pet_food_profiles';
+
+        // 서버 병합보다 먼저 구 localStorage 키와 펫 먹이명을 새 이름으로 바꾼다.
+        window.HeartopiaGaafishChecklistMigration?.migrateGaafishChecklistStorage(window.localStorage);
+        window.HeartopiaGaafishPetFoodMigration?.migrateGaafishPetFoodStorage(window.localStorage);
 
         // 동기화 ON 상태로 로그인 + localStorage에 데이터 있으면 1회 머지 후 비움.
         // ChecklistCore가 localStorage를 wipe하기 전에 fetch body에 캡처해야 한다.

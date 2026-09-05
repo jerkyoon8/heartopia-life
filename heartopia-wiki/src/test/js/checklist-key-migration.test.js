@@ -5,6 +5,10 @@ const {
     migrateSeaCleaningChecklistData,
     migrateSeaCleaningLocalChecklist
 } = require('../../main/resources/static/js/checklist-sync.js');
+const {
+    migrateGaafishChecklistData,
+    migrateGaafishChecklistStorage
+} = require('../../main/resources/static/js/checklist-key-migration.js');
 
 test('바다청소 일반 키와 명인 키를 ID 키로 함께 변환한다', () => {
     const result = migrateSeaCleaningChecklistData({
@@ -83,4 +87,49 @@ test('로컬 변환이 끝난 뒤에만 버전 2를 기록한다', () => {
     assert.equal(migrateSeaCleaningLocalChecklist(core, root, storage), true);
     assert.deepEqual(data, { 'sea_cleaning_id_17': 4 });
     assert.equal(versions.get('heartopia_checklist_sea_cleaning_version'), '2');
+});
+
+test('가아피쉬 일반 키와 명인 키를 함께 변환하고 높은 별점을 보존한다', () => {
+    const result = migrateGaafishChecklistData({
+        'fish_갈색 얼룩 동갈치': 5,
+        'fish_갈색 얼룩 가아피쉬': 2,
+        'mastery_fish_갈색 얼룩 동갈치': 1,
+        'cooking_선인장 황금 동갈치 수프': 3,
+        'bug_유지': 4
+    });
+
+    assert.deepEqual(result.data, {
+        'fish_갈색 얼룩 가아피쉬': 5,
+        'mastery_fish_갈색 얼룩 가아피쉬': 1,
+        'cooking_선인장 황금 가아피쉬 수프': 3,
+        'bug_유지': 4
+    });
+    assert.equal(result.changed, true);
+});
+
+test('가아피쉬 체크리스트 스토리지 마이그레이션은 한 번만 실행한다', () => {
+    const values = new Map([['heartopia_checklist', JSON.stringify({
+        'fish_은색 동갈치': 4
+    })]]);
+    const storage = {
+        getItem: key => values.has(key) ? values.get(key) : null,
+        setItem: (key, value) => values.set(key, value)
+    };
+
+    assert.equal(migrateGaafishChecklistStorage(storage), true);
+    assert.deepEqual(JSON.parse(values.get('heartopia_checklist')), { 'fish_은색 가아피쉬': 4 });
+    assert.equal(values.get('heartopia_checklist_gaafish_version'), '1');
+    assert.equal(migrateGaafishChecklistStorage(storage), false);
+});
+
+test('손상된 체크리스트 JSON은 덮어쓰거나 완료 처리하지 않는다', () => {
+    const values = new Map([['heartopia_checklist', '{broken']]);
+    const storage = {
+        getItem: key => values.has(key) ? values.get(key) : null,
+        setItem: (key, value) => values.set(key, value)
+    };
+
+    assert.equal(migrateGaafishChecklistStorage(storage), false);
+    assert.equal(values.get('heartopia_checklist'), '{broken');
+    assert.equal(values.has('heartopia_checklist_gaafish_version'), false);
 });
