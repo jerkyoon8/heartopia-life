@@ -49,7 +49,7 @@ class HeaderDailyResourceLocationTemplateTest {
     }
 
     @Test
-    @DisplayName("관리자 화면은 날짜와 허용된 위치 유형만 입력한다")
+    @DisplayName("일일 자원 관리자 화면은 날씨 입력과 분리되어 있다")
     void adminPageProvidesStructuredScheduleForm() throws IOException {
         String template = read("templates/wiki/admin-daily-resource-locations.html");
 
@@ -59,6 +59,7 @@ class HeaderDailyResourceLocationTemplateTest {
         assertTrue(template.contains("value=\"OAK_FOREST\""));
         assertTrue(template.contains("name=\"fluoriteHouseNumber\""));
         assertTrue(template.contains("name=\"oakHouseNumber\""));
+        assertFalse(template.contains("name=\"weatherCode\""));
         assertTrue(template.contains("/wiki/admin/daily-resource-locations/save"));
         assertTrue(template.contains("/wiki/admin/daily-resource-locations/delete"));
     }
@@ -75,9 +76,12 @@ class HeaderDailyResourceLocationTemplateTest {
         assertTrue(sql.contains("OAK_FOREST"));
         assertTrue(sql.contains("fluorite_house_number"));
         assertTrue(sql.contains("oak_house_number"));
+        assertFalse(sql.contains("weather_code"));
         assertTrue(sql.contains("is_active BOOLEAN NOT NULL DEFAULT TRUE"));
 
         String mapper = read("mapper/DailyResourceLocationMapper.xml");
+        assertFalse(mapper.contains("weather_code"));
+        assertFalse(mapper.contains("findActiveBetween"));
         assertTrue(mapper.contains("SET is_active = FALSE"));
         assertTrue(mapper.contains("DELETE FROM daily_resource_locations"));
         assertTrue(mapper.contains("WHERE game_date &lt; #{gameDate}"));

@@ -6,9 +6,10 @@
         RAIN: { label: '비', icon: '/images/weather/rain.webp' },
         RAINBOW: { label: '무지개', icon: '/images/weather/rainbow.webp' },
         METEOR_SHOWER: { label: '유성우', icon: '/images/weather/meteor-shower.webp' },
-        HEATWAVE: { label: '폭염', icon: '/images/weather/heatwave.webp' }
+        HEATWAVE: { label: '폭염', icon: '/images/weather/heatwave.webp' },
+        SNOW: { label: '눈', emoji: '❄️' },
+        AURORA: { label: '오로라', emoji: '🌌' }
     };
-    const WEATHER_CODES = Object.keys(WEATHER);
     const KOREAN_WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -25,26 +26,15 @@
             headerText: document.getElementById('headerWeatherText'),
             detailList: document.getElementById('weatherDetailList'),
             dailyList: document.getElementById('weatherDailyList'),
-            updatedText: document.getElementById('weatherUpdatedText'),
-            voteStart: document.getElementById('weatherVoteStart'),
-            voteModal: document.getElementById('weatherVoteModal'),
-            voteBackdrop: document.getElementById('weatherVoteBackdrop'),
-            voteClose: document.getElementById('weatherVoteClose'),
-            voteCancel: document.getElementById('weatherVoteCancel'),
-            voteSubmit: document.getElementById('weatherVoteSubmit'),
-            voteDetailGrid: document.getElementById('weatherVoteDetailGrid'),
-            voteDailyGrid: document.getElementById('weatherVoteDailyGrid'),
-            voteSelectionCount: document.getElementById('weatherVoteSelectionCount')
+            updatedText: document.getElementById('weatherUpdatedText')
         };
 
         const state = {
             forecast: null,
-            pending: new Map(),
             serverBaseTime: null,
             receivedAt: 0,
             currentSlotKey: null,
-            loading: false,
-            modalReturnFocus: null
+            loading: false
         };
 
         function currentServerDate() {
@@ -65,12 +55,11 @@
                 minute: '2-digit',
                 hourCycle: 'h23'
             });
-            const parts = Object.fromEntries(
+            return Object.fromEntries(
                 formatter.formatToParts(date)
                     .filter(part => part.type !== 'literal')
                     .map(part => [part.type, part.value])
             );
-            return parts;
         }
 
         function updateClock() {
@@ -89,15 +78,15 @@
         function weatherImage(code, className) {
             const weather = WEATHER[code];
             if (!weather) return '';
-            return `<img class="${className}" src="${weather.icon}" alt="">`;
+            if (weather.icon) {
+                return `<img class="${className}" src="${weather.icon}" alt="">`;
+            }
+            return `<span class="${className}" aria-hidden="true">${weather.emoji}</span>`;
         }
 
         function resultPresentation(result) {
             if (!result || result.status === 'EMPTY') {
-                return { label: '제보 필요', code: null, stateClass: 'is-empty' };
-            }
-            if (result.status === 'TIED') {
-                return { label: '확인 중', code: null, stateClass: 'is-tied' };
+                return { label: '정보 없음', code: null, stateClass: 'is-empty' };
             }
             return {
                 label: WEATHER[result.weatherCode]?.label || '정보 없음',
@@ -140,23 +129,25 @@
             const forecast = state.forecast;
             if (!forecast) return;
 
-            const current = forecast.detailSlots[0];
-            const currentView = resultPresentation(current?.result);
+            const currentView = resultPresentation(forecast.detailSlots[0]?.result);
             elements.headerText.textContent = currentView.label;
             if (currentView.code) {
-                elements.headerIcon.src = WEATHER[currentView.code].icon;
-                elements.headerIcon.alt = '';
-                elements.headerIcon.hidden = false;
+                const weather = WEATHER[currentView.code];
+                if (weather.icon) {
+                    elements.headerIcon.src = weather.icon;
+                    elements.headerIcon.alt = '';
+                    elements.headerIcon.hidden = false;
+                } else {
+                    elements.headerIcon.hidden = true;
+                    elements.headerIcon.removeAttribute('src');
+                }
             } else {
                 elements.headerIcon.hidden = true;
                 elements.headerIcon.removeAttribute('src');
             }
 
-            elements.detailList.innerHTML = forecast.detailSlots.map((slot, index) => {
+            elements.detailList.innerHTML = forecast.detailSlots.map(slot => {
                 const view = resultPresentation(slot.result);
-                const voters = slot.result?.voterCount
-                    ? `<span>${slot.result.voterCount}명 제보</span>`
-                    : '<span>첫 제보를 기다려요</span>';
                 return `
                     <article class="weather-detail-card ${view.stateClass}">
                         <div class="weather-detail-card__time">
@@ -167,17 +158,16 @@
                             ${weatherImage(view.code, 'weather-detail-card__icon')}
                             <strong>${view.label}</strong>
                         </div>
-                        ${voters}
+                        <span>${view.code ? '관리자 예약' : '예약 없음'}</span>
                     </article>`;
             }).join('');
 
             elements.dailyList.innerHTML = forecast.dailyForecasts.map((day, index) => {
                 const view = resultPresentation(day.result);
                 const date = dateParts(day.forecastDate);
-                const weekday = KOREAN_WEEKDAYS[date.weekday];
                 return `
                     <article class="weather-day-card ${view.stateClass}">
-                        <span>${index === 0 ? '내일' : weekday}</span>
+                        <span>${index === 0 ? '내일' : KOREAN_WEEKDAYS[date.weekday]}</span>
                         <small>${date.month}/${date.day}</small>
                         ${weatherImage(view.code, 'weather-day-card__icon')}
                         <strong>${view.label}</strong>
@@ -186,13 +176,13 @@
 
             const parsedServerTime = new Date(forecast.serverNow);
             elements.updatedText.textContent = Number.isNaN(parsedServerTime.getTime())
-                ? '사용자 제보를 모아 표시합니다.'
+                ? '관리자가 예약한 날씨를 표시합니다.'
                 : `${new Intl.DateTimeFormat('ko-KR', {
                     timeZone: 'Asia/Seoul',
                     hour: '2-digit',
                     minute: '2-digit',
                     hourCycle: 'h23'
-                }).format(parsedServerTime)} 기준 · 사용자 제보 집계`;
+                }).format(parsedServerTime)} 기준 · 관리자 예약 날씨`;
         }
 
         function showForecastError() {
@@ -216,11 +206,8 @@
                 state.receivedAt = Date.now();
                 renderForecast();
                 updateClock();
-                elements.voteStart?.removeAttribute('disabled');
-                if (!elements.voteModal.hidden) renderVoteEditor();
             } catch (error) {
                 showForecastError();
-                elements.voteStart?.setAttribute('disabled', '');
             } finally {
                 state.loading = false;
             }
@@ -232,188 +219,16 @@
             document.getElementById('headerWeather')?.classList.toggle('is-open', open);
         }
 
-        function voteKey(date, slotHour) {
-            return `${date}:${slotHour}`;
-        }
-
-        function selectedVote(item) {
-            return state.pending.get(voteKey(item.forecastDate, item.slotHour))?.weatherCode || item.myVote;
-        }
-
-        function weatherOptions(item) {
-            const selected = selectedVote(item);
-            const pending = state.pending.get(voteKey(item.forecastDate, item.slotHour));
-            return WEATHER_CODES.map(code => {
-                const isSelected = selected === code;
-                const isPending = pending?.weatherCode === code;
-                return `
-                    <button type="button"
-                            class="weather-choice ${isSelected ? 'is-selected' : ''} ${isPending ? 'is-pending' : ''}"
-                            data-forecast-date="${item.forecastDate}"
-                            data-slot-hour="${item.slotHour}"
-                            data-weather-code="${code}"
-                            aria-pressed="${isSelected}">
-                        ${weatherImage(code, 'weather-choice__icon')}
-                        <span>${WEATHER[code].label}</span>
-                    </button>`;
-            }).join('');
-        }
-
-        function renderVoteEditor() {
-            const forecast = state.forecast;
-            if (!forecast) return;
-
-            elements.voteDetailGrid.innerHTML = forecast.detailSlots.map((slot, index) => `
-                <article class="weather-vote-row">
-                    <div class="weather-vote-row__label">
-                        <span>${dateBadge(slot.forecastDate)}</span>
-                        <strong>${slotLabel(slot.slotHour)}</strong>
-                    </div>
-                    <div class="weather-choice-list">${weatherOptions(slot)}</div>
-                </article>`).join('');
-
-            elements.voteDailyGrid.innerHTML = forecast.dailyForecasts.map((day, index) => {
-                const date = dateParts(day.forecastDate);
-                return `
-                    <article class="weather-vote-row weather-vote-row--daily">
-                        <div class="weather-vote-row__label">
-                            <span>${index === 0 ? '내일' : KOREAN_WEEKDAYS[date.weekday] + '요일'}</span>
-                            <strong>${date.month}/${date.day}</strong>
-                        </div>
-                        <div class="weather-choice-list">${weatherOptions({
-                            forecastDate: day.forecastDate,
-                            slotHour: -1,
-                            myVote: day.myVote
-                        })}</div>
-                    </article>`;
-            }).join('');
-
-            const count = state.pending.size;
-            elements.voteSelectionCount.textContent = count
-                ? `${count}개 예보를 새로 적용합니다.`
-                : '새로 선택한 예보가 없습니다.';
-            elements.voteSubmit.disabled = count === 0;
-        }
-
-        function setVoteModalOpen(open) {
-            if (open && !state.forecast) return;
-            elements.voteModal.hidden = !open;
-            document.body.classList.toggle('weather-modal-open', open);
-            if (open) {
-                state.modalReturnFocus = document.activeElement;
-                state.pending.clear();
-                renderVoteEditor();
-                elements.voteClose.focus();
-            } else {
-                state.modalReturnFocus?.focus?.();
-                state.modalReturnFocus = null;
-            }
-        }
-
-        function trapModalFocus(event) {
-            if (event.key !== 'Tab' || elements.voteModal.hidden) return;
-            const focusable = Array.from(elements.voteModal.querySelectorAll(
-                'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-            )).filter(element => element.offsetParent !== null);
-            if (focusable.length === 0) return;
-
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            }
-        }
-
-        function handleWeatherChoice(event) {
-            const button = event.target.closest('.weather-choice');
-            if (!button) return;
-
-            const forecastDate = button.dataset.forecastDate;
-            const slotHour = Number(button.dataset.slotHour);
-            const weatherCode = button.dataset.weatherCode;
-            const key = voteKey(forecastDate, slotHour);
-            const pending = state.pending.get(key);
-
-            const source = slotHour === -1
-                ? state.forecast.dailyForecasts.find(item => item.forecastDate === forecastDate)
-                : state.forecast.detailSlots.find(item =>
-                    item.forecastDate === forecastDate && item.slotHour === slotHour);
-            const original = source?.myVote || null;
-
-            if ((pending && pending.weatherCode === weatherCode) || (!pending && original === weatherCode)) {
-                state.pending.delete(key);
-            } else if (original === weatherCode) {
-                state.pending.delete(key);
-            } else {
-                state.pending.set(key, { forecastDate, slotHour, weatherCode });
-            }
-            renderVoteEditor();
-        }
-
-        async function submitVotes() {
-            if (state.pending.size === 0 || elements.voteSubmit.disabled) return;
-
-            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
-            if (!csrfToken || !csrfHeader) {
-                elements.voteSelectionCount.textContent = '로그인 정보를 확인하지 못했습니다. 새로고침해 주세요.';
-                return;
-            }
-
-            elements.voteSubmit.disabled = true;
-            elements.voteSubmit.textContent = '적용 중…';
-            try {
-                const response = await fetch('/api/weather/votes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    },
-                    body: JSON.stringify({ votes: Array.from(state.pending.values()) })
-                });
-                const body = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(body.message || '날씨 제보 저장에 실패했습니다.');
-
-                state.forecast = body;
-                state.serverBaseTime = new Date(body.serverNow);
-                state.receivedAt = Date.now();
-                state.pending.clear();
-                renderForecast();
-                setVoteModalOpen(false);
-                setPanelOpen(true);
-            } catch (error) {
-                elements.voteSelectionCount.textContent = error.message;
-                elements.voteSubmit.disabled = false;
-            } finally {
-                elements.voteSubmit.textContent = '제보 적용하기';
-            }
-        }
-
         elements.weatherButton.addEventListener('click', event => {
             event.stopPropagation();
             setPanelOpen(elements.panel.hidden);
         });
         elements.panel.addEventListener('click', event => event.stopPropagation());
         elements.panelClose.addEventListener('click', () => setPanelOpen(false));
-        elements.voteStart?.addEventListener('click', () => setVoteModalOpen(true));
-        elements.voteClose.addEventListener('click', () => setVoteModalOpen(false));
-        elements.voteCancel.addEventListener('click', () => setVoteModalOpen(false));
-        elements.voteBackdrop.addEventListener('click', () => setVoteModalOpen(false));
-        elements.voteDetailGrid.addEventListener('click', handleWeatherChoice);
-        elements.voteDailyGrid.addEventListener('click', handleWeatherChoice);
-        elements.voteSubmit.addEventListener('click', submitVotes);
 
         document.addEventListener('click', () => setPanelOpen(false));
         document.addEventListener('keydown', event => {
-            trapModalFocus(event);
-            if (event.key !== 'Escape') return;
-            if (!elements.voteModal.hidden) {
-                setVoteModalOpen(false);
-            } else if (!elements.panel.hidden) {
+            if (event.key === 'Escape' && !elements.panel.hidden) {
                 setPanelOpen(false);
                 elements.weatherButton.focus();
             }

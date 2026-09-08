@@ -44,13 +44,16 @@ class HeaderWeatherTemplateTest {
     }
 
     @Test
-    @DisplayName("헤더에 시간 날씨 요약과 예보 및 제보 화면이 존재한다")
+    @DisplayName("헤더에 시간 날씨 요약과 예보 화면만 존재한다")
     void rendersWeatherSummaryAndPanels() throws IOException {
         String header = read("templates/fragments/header.html");
 
         assertTrue(header.contains("id=\"headerWeatherButton\""));
         assertTrue(header.contains("id=\"weatherForecastPanel\""));
-        assertTrue(header.contains("id=\"weatherVoteModal\""));
+        assertFalse(header.contains("id=\"weatherVoteModal\""));
+        assertFalse(header.contains("id=\"weatherVoteStart\""));
+        assertFalse(header.contains("로그인 후 제보할 수 있어요"));
+        assertTrue(header.contains("@{/wiki/admin/weather-schedules}"));
         assertTrue(header.contains("/js/header-weather.js"));
     }
 
@@ -69,17 +72,43 @@ class HeaderWeatherTemplateTest {
     }
 
     @Test
-    @DisplayName("날씨 스크립트는 공개 조회와 CSRF 배치 제출을 사용한다")
-    void weatherScriptUsesForecastAndBatchVoteApis() throws IOException {
+    @DisplayName("날씨 스크립트는 공개 조회만 사용하고 제보 코드를 포함하지 않는다")
+    void weatherScriptUsesReadOnlyForecastApi() throws IOException {
         String script = read("static/js/header-weather.js");
+        String controller = Files.readString(
+                Path.of("src", "main", "java", "com", "heartopia", "wiki", "controller",
+                        "WeatherForecastController.java"),
+                StandardCharsets.UTF_8);
 
         assertTrue(script.contains("fetch('/api/weather/forecast'"));
-        assertTrue(script.contains("fetch('/api/weather/votes'"));
-        assertTrue(script.contains("csrfHeader"));
-        assertTrue(script.contains("votes:"));
+        assertFalse(script.contains("fetch('/api/weather/votes'"));
+        assertFalse(script.contains("csrfHeader"));
+        assertFalse(script.contains("votes:"));
         assertTrue(script.contains("Date.UTC("));
         assertTrue(script.contains("getUTCDay()"));
-        assertTrue(script.contains("trapModalFocus"));
+        assertFalse(script.contains("trapModalFocus"));
+        assertTrue(script.contains("SNOW: { label: '눈'"));
+        assertTrue(script.contains("AURORA: { label: '오로라'"));
+        assertFalse(controller.contains("@PostMapping"));
+        assertFalse(controller.contains("/votes"));
+    }
+
+    @Test
+    @DisplayName("독립 날씨 예약 화면과 SQL은 6시간 슬롯 계약을 제공한다")
+    void weatherScheduleUsesIndependentTableAndAdminForm() throws IOException {
+        String template = read("templates/wiki/admin-weather-schedules.html");
+        String sql = read("sql/20260908_create_weather_schedules.sql");
+        String mapper = read("mapper/WeatherScheduleMapper.xml");
+
+        assertTrue(template.contains("name=\"forecastDate\""));
+        assertTrue(template.contains("name=\"slotHour\""));
+        assertTrue(template.contains("name=\"weatherCode\""));
+        assertTrue(template.contains("/wiki/admin/weather-schedules/save"));
+        assertTrue(template.contains("/wiki/admin/weather-schedules/delete"));
+        assertTrue(sql.contains("CREATE TABLE IF NOT EXISTS weather_schedules"));
+        assertTrue(sql.contains("CHECK (slot_hour IN (0, 6, 12, 18))"));
+        assertTrue(sql.contains("UNIQUE KEY uk_weather_schedule_date_slot"));
+        assertTrue(mapper.contains("FROM weather_schedules"));
     }
 
     @Test

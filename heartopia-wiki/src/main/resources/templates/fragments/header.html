@@ -632,6 +632,11 @@
                                 </span>
                                 <i class="fa-solid fa-chevron-down header-weather__chevron" aria-hidden="true"></i>
                             </button>
+                            <a sec:authorize="hasRole('ADMIN')" class="header-daily-locations__admin"
+                               th:href="@{/wiki/admin/weather-schedules}" title="6시간 날씨 예약 관리"
+                               aria-label="6시간 날씨 예약 관리">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
                         </div>
                     </div>
 
@@ -672,14 +677,7 @@
                         </div>
 
                         <div class="weather-panel__footer">
-                            <p id="weatherUpdatedText">사용자 제보를 모아 표시합니다.</p>
-                            <button sec:authorize="isAuthenticated()" type="button"
-                                    class="weather-primary-button" id="weatherVoteStart" disabled>
-                                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-                                날씨 제보
-                            </button>
-                            <a sec:authorize="isAnonymous()" th:href="@{/wiki/login}"
-                               class="weather-login-link">로그인 후 제보할 수 있어요</a>
+                            <p id="weatherUpdatedText">관리자가 예약한 날씨를 표시합니다.</p>
                         </div>
                     </section>
 
@@ -736,62 +734,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="weather-vote-modal" id="weatherVoteModal" hidden>
-            <button type="button" class="weather-vote-modal__backdrop" id="weatherVoteBackdrop"
-                    aria-label="날씨 제보 닫기"></button>
-            <section class="weather-vote-dialog" role="dialog" aria-modal="true"
-                     aria-labelledby="weather-vote-title">
-                <div class="weather-vote-dialog__header">
-                    <div>
-                        <p>COMMUNITY FORECAST</p>
-                        <h2 id="weather-vote-title">날씨 정보 제보</h2>
-                    </div>
-                    <button type="button" class="weather-icon-button" id="weatherVoteClose"
-                            aria-label="날씨 제보 닫기">
-                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                    </button>
-                </div>
-
-                <div class="weather-vote-dialog__body">
-                    <div class="weather-vote-guide">
-                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                        <p>게임에서 확인한 칸만 선택해 주세요. 선택하지 않은 기존 제보는 바뀌지 않습니다.</p>
-                    </div>
-
-                    <section class="weather-vote-section" aria-labelledby="weather-vote-detail-title">
-                        <div class="weather-section__heading">
-                            <div>
-                                <h3 id="weather-vote-detail-title">상세 예보</h3>
-                                <p>현재 구간부터 이어지는 5개 구간</p>
-                            </div>
-                            <span>6시간 단위</span>
-                        </div>
-                        <div id="weatherVoteDetailGrid"></div>
-                    </section>
-
-                    <section class="weather-vote-section" aria-labelledby="weather-vote-daily-title">
-                        <div class="weather-section__heading">
-                            <div>
-                                <h3 id="weather-vote-daily-title">날짜별 기본 날씨</h3>
-                                <p>상세 시간이 제공되지 않는 기간의 기본값</p>
-                            </div>
-                        </div>
-                        <div id="weatherVoteDailyGrid"></div>
-                    </section>
-                </div>
-
-                <div class="weather-vote-dialog__footer">
-                    <p id="weatherVoteSelectionCount">새로 선택한 예보가 없습니다.</p>
-                    <div>
-                        <button type="button" class="weather-secondary-button" id="weatherVoteCancel">취소</button>
-                        <button type="button" class="weather-primary-button" id="weatherVoteSubmit" disabled>
-                            제보 적용하기
-                        </button>
-                    </div>
-                </div>
-            </section>
         </div>
 
         <!-- 로그인 상태 플래그 (sync 플래그는 common-head.html에서 이미 설정됨) -->

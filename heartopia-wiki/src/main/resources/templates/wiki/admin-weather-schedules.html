@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <style>
+        .weather-admin { width: min(980px, calc(100% - 32px)); margin: 120px auto 56px; }
+        .weather-admin__header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .weather-admin__header h1 { margin: 0; font-size: clamp(1.45rem, 3vw, 2rem); }
+        .weather-card { margin-bottom: 24px; padding: 24px; border: 1px solid var(--border-color); border-radius: 18px; background: var(--card-bg); box-shadow: 0 8px 28px var(--shadow); }
+        .weather-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: end; }
+        .weather-form__actions { display: flex; gap: 10px; justify-content: flex-end; grid-column: 1 / -1; }
+        .weather-table td, .weather-table th { vertical-align: middle; white-space: nowrap; }
+        @media (max-width: 720px) { .weather-admin { margin-top: 96px; } .weather-form { grid-template-columns: 1fr; } .weather-form__actions { grid-column: auto; } }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="weather-admin">
+        <div class="weather-admin__header">
+            <div>
+                <p class="text-secondary mb-1">ADMIN · Asia/Seoul</p>
+                <h1><i class="fa-solid fa-cloud-sun text-primary me-2"></i>6시간 날씨 예약 관리</h1>
+            </div>
+            <a th:href="@{/wiki}" class="btn btn-outline-secondary btn-sm">메인으로</a>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <section class="weather-card" aria-labelledby="weather-form-title">
+            <h2 id="weather-form-title" class="h5 mb-3">날짜·시간별 등록 및 수정</h2>
+            <p class="text-secondary small">같은 날짜와 시작 시간을 다시 저장하면 기존 예약이 수정됩니다.</p>
+            <form class="weather-form" th:action="@{/wiki/admin/weather-schedules/save}" method="post" id="weatherScheduleForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div>
+                    <label class="form-label" for="forecastDate">적용 날짜</label>
+                    <input class="form-control" id="forecastDate" name="forecastDate" type="date" th:value="${today}" required>
+                </div>
+                <div>
+                    <label class="form-label" for="slotHour">시작 시간</label>
+                    <select class="form-select" id="slotHour" name="slotHour" required>
+                        <option value="0">00:00–06:00</option>
+                        <option value="6">06:00–12:00</option>
+                        <option value="12">12:00–18:00</option>
+                        <option value="18">18:00–24:00</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label" for="weatherCode">날씨</label>
+                    <select class="form-select" id="weatherCode" name="weatherCode" required>
+                        <option value="SUNNY">맑음</option>
+                        <option value="RAIN">비</option>
+                        <option value="RAINBOW">무지개</option>
+                        <option value="METEOR_SHOWER">유성우</option>
+                        <option value="HEATWAVE">폭염</option>
+                        <option value="SNOW">눈</option>
+                        <option value="AURORA">오로라</option>
+                    </select>
+                </div>
+                <div class="weather-form__actions">
+                    <button type="button" class="btn btn-outline-secondary" id="weatherScheduleReset">초기화</button>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="weather-card" aria-labelledby="weather-list-title">
+            <h2 id="weather-list-title" class="h5 mb-3">등록된 날씨 예약</h2>
+            <div class="table-responsive">
+                <table class="table table-hover weather-table mb-0">
+                    <thead><tr><th>날짜</th><th>시간</th><th>날씨</th><th>관리</th></tr></thead>
+                    <tbody>
+                        <tr th:each="item : ${weatherSchedules}">
+                            <td th:text="${#temporals.format(item.forecastDate, 'yyyy-MM-dd')}">2026-09-08</td>
+                            <td th:text="${#numbers.formatInteger(item.slotHour, 2)} + ':00'">00:00</td>
+                            <td th:text="${item.weatherLabel}">맑음</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-primary weather-schedule-edit"
+                                        th:data-forecast-date="${item.forecastDate}"
+                                        th:data-slot-hour="${item.slotHour}"
+                                        th:data-weather-code="${item.weatherCode}">수정</button>
+                                <form th:action="@{/wiki/admin/weather-schedules/delete}" method="post" class="d-inline" onsubmit="return confirm('이 날씨 예약을 삭제하시겠습니까?');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(weatherSchedules)}"><td colspan="4" class="py-4 text-center text-secondary">등록된 날씨 예약이 없습니다.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('weatherScheduleForm');
+            const initialDate = document.getElementById('forecastDate').value;
+            document.querySelectorAll('.weather-schedule-edit').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('forecastDate').value = button.dataset.forecastDate;
+                    document.getElementById('slotHour').value = button.dataset.slotHour;
+                    document.getElementById('weatherCode').value = button.dataset.weatherCode;
+                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            });
+            document.getElementById('weatherScheduleReset').addEventListener('click', () => {
+                form.reset();
+                document.getElementById('forecastDate').value = initialDate;
+            });
+        });
+    </script>
+</body>
+</html>

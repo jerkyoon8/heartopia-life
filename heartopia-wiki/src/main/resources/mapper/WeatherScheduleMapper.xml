@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.WeatherScheduleMapper">
+
+    <sql id="weatherScheduleColumns">
+        id, forecast_date, slot_hour, weather_code, source_weather_ids,
+        is_active, created_at, updated_at
+    </sql>
+
+    <select id="findActiveBetween" resultType="com.heartopia.wiki.model.WeatherSchedule">
+        SELECT <include refid="weatherScheduleColumns"/>
+        FROM weather_schedules
+        WHERE forecast_date BETWEEN #{fromDate} AND #{toDate}
+          AND is_active = TRUE
+        ORDER BY forecast_date ASC, slot_hour ASC
+    </select>
+
+    <select id="findAllActive" resultType="com.heartopia.wiki.model.WeatherSchedule">
+        SELECT <include refid="weatherScheduleColumns"/>
+        FROM weather_schedules
+        WHERE is_active = TRUE
+        ORDER BY forecast_date ASC, slot_hour ASC
+    </select>
+
+    <insert id="upsert" parameterType="com.heartopia.wiki.model.WeatherSchedule">
+        INSERT INTO weather_schedules (
+            forecast_date, slot_hour, weather_code, source_weather_ids, is_active
+        ) VALUES (
+            #{forecastDate}, #{slotHour}, #{weatherCode}, #{sourceWeatherIds}, TRUE
+        ) AS new
+        ON DUPLICATE KEY UPDATE
+            weather_code = new.weather_code,
+            source_weather_ids = new.source_weather_ids,
+            is_active = TRUE,
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <update id="deleteById">
+        UPDATE weather_schedules
+        SET is_active = FALSE,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+</mapper>

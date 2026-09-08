@@ -1,231 +1,105 @@
 package com.heartopia.wiki.service;
 
 import com.heartopia.wiki.dto.weather.WeatherForecastResponse;
-import com.heartopia.wiki.dto.weather.WeatherVoteBatchRequest;
-import com.heartopia.wiki.dto.weather.WeatherVoteRequest;
-import com.heartopia.wiki.mapper.WeatherVoteMapper;
-import com.heartopia.wiki.model.WeatherVote;
-import com.heartopia.wiki.model.WeatherVoteTally;
-import org.junit.jupiter.api.BeforeEach;
+import com.heartopia.wiki.mapper.WeatherScheduleMapper;
+import com.heartopia.wiki.model.WeatherSchedule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class WeatherForecastServiceTest {
-
     private static final ZoneId ASIA_SERVER_ZONE = ZoneId.of("Asia/Seoul");
-    private static final LocalDate TODAY = LocalDate.of(2026, 7, 29);
 
     @Mock
-    private WeatherVoteMapper mapper;
-
-    private WeatherForecastService service;
-
-    @BeforeEach
-    void setUp() {
-        Clock clock = Clock.fixed(Instant.parse("2026-07-28T23:00:00Z"), ASIA_SERVER_ZONE); // 07/29 08:00
-        service = new WeatherForecastService(mapper, clock);
-        lenient().when(mapper.findTallies(any(), any())).thenReturn(List.of());
-    }
+    private WeatherScheduleMapper mapper;
 
     @Test
-    @DisplayName("08시는 현재 06시 슬롯부터 다음 날 06시 슬롯까지 다섯 칸을 만든다")
-    void buildsFiveRollingSixHourSlots() {
-        WeatherForecastResponse response = service.getForecast(null);
+    @DisplayName("현재 달력 날짜의 6시간 구간부터 다섯 구간을 순서대로 반환한다")
+    void returnsFiveCalendarSlotsAcrossMidnight() {
+        LocalDate today = LocalDate.of(2026, 9, 8);
+        WeatherForecastService service = serviceAt("2026-09-08T11:30:00Z");
+        when(mapper.findActiveBetween(today, today.plusDays(7))).thenReturn(List.of(
+                schedule(today, 18, "RAIN"),
+                schedule(today.plusDays(1), 0, "SUNNY"),
+                schedule(today.plusDays(1), 6, "SNOW"),
+                schedule(today.plusDays(1), 12, "AURORA"),
+                schedule(today.plusDays(1), 18, "RAINBOW")));
 
-        assertEquals(5, response.detailSlots().size());
-        assertEquals(List.of(6, 12, 18, 0, 6),
+        WeatherForecastResponse response = service.getForecast();
+
+        assertEquals(List.of(18, 0, 6, 12, 18),
                 response.detailSlots().stream().map(WeatherForecastResponse.DetailSlot::slotHour).toList());
-        assertEquals(List.of(TODAY, TODAY, TODAY, TODAY.plusDays(1), TODAY.plusDays(1)),
+        assertEquals(List.of(today, today.plusDays(1), today.plusDays(1), today.plusDays(1), today.plusDays(1)),
                 response.detailSlots().stream().map(WeatherForecastResponse.DetailSlot::forecastDate).toList());
-        assertEquals(7, response.dailyForecasts().size());
-        assertEquals(
-                List.of(
-                        TODAY.plusDays(1),
-                        TODAY.plusDays(2),
-                        TODAY.plusDays(3),
-                        TODAY.plusDays(4),
-                        TODAY.plusDays(5),
-                        TODAY.plusDays(6),
-                        TODAY.plusDays(7)),
-                response.dailyForecasts().stream()
-                        .map(WeatherForecastResponse.DailyForecast::forecastDate)
-                        .toList());
+        assertEquals(List.of("RAIN", "SUNNY", "SNOW", "AURORA", "RAINBOW"),
+                response.detailSlots().stream().map(slot -> slot.result().weatherCode()).toList());
+        assertFalse(response.authenticated());
+        assertNull(response.detailSlots().get(0).myVote());
+        verify(mapper).findActiveBetween(today, today.plusDays(7));
     }
 
     @Test
-    @DisplayName("상세 제보가 비어 있으면 날짜별 기본 날씨와 무관하게 빈 상태를 유지한다")
-    void keepsDetailEmptyWhenOnlyDailyWeatherExists() {
-        when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY.plusDays(1), -1, "SUNNY", 3, 3)
-        ));
+    @DisplayName("일간 예보는 무지개, 유성우, 비, 맑음 우선순위로 대표 날씨를 고른다")
+    void selectsDailyWeatherByPriority() {
+        LocalDate today = LocalDate.of(2026, 12, 30);
+        WeatherForecastService service = serviceAt("2026-12-30T03:00:00Z");
+        List<WeatherSchedule> rows = new ArrayList<>();
+        rows.add(schedule(today.plusDays(1), 0, "SUNNY"));
+        rows.add(schedule(today.plusDays(1), 6, "RAIN"));
+        rows.add(schedule(today.plusDays(1), 12, "METEOR_SHOWER"));
+        rows.add(schedule(today.plusDays(1), 18, "RAIN"));
+        rows.add(schedule(today.plusDays(2), 0, "METEOR_SHOWER"));
+        rows.add(schedule(today.plusDays(2), 6, "SNOW"));
+        rows.add(schedule(today.plusDays(2), 12, "RAINBOW"));
+        rows.add(schedule(today.plusDays(2), 18, "SUNNY"));
+        when(mapper.findActiveBetween(today, today.plusDays(7))).thenReturn(rows);
 
-        WeatherForecastResponse response = service.getForecast(null);
-        WeatherForecastResponse.ForecastResult firstTomorrowSlot = response.detailSlots().get(3).result();
+        WeatherForecastResponse response = service.getForecast();
 
-        assertEquals("EMPTY", firstTomorrowSlot.status());
-        assertNull(firstTomorrowSlot.weatherCode());
-        assertFalse(firstTomorrowSlot.fallback());
-        assertEquals("SUNNY", response.dailyForecasts().get(0).result().weatherCode());
+        assertEquals(today.plusDays(1), response.dailyForecasts().get(0).forecastDate());
+        assertEquals("METEOR_SHOWER", response.dailyForecasts().get(0).result().weatherCode());
+        assertEquals("RAINBOW", response.dailyForecasts().get(1).result().weatherCode());
     }
 
     @Test
-    @DisplayName("상세 제보가 동점이면 날짜별 기본 날씨와 무관하게 동점을 유지한다")
-    void keepsDetailTiedWhenDailyWeatherExists() {
-        when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY.plusDays(1), 0, "SUNNY", 2, 2),
-                tally(TODAY.plusDays(1), 0, "RAIN", 2, 2),
-                tally(TODAY.plusDays(1), -1, "SUNNY", 4, 4)
-        ));
+    @DisplayName("예약이 없는 구간과 날짜는 정보 없음 상태다")
+    void returnsEmptyForMissingSchedule() {
+        LocalDate today = LocalDate.of(2026, 9, 8);
+        WeatherForecastService service = serviceAt("2026-09-08T00:00:00Z");
+        when(mapper.findActiveBetween(today, today.plusDays(7))).thenReturn(List.of());
 
-        WeatherForecastResponse response = service.getForecast(null);
-        WeatherForecastResponse.ForecastResult firstTomorrowSlot = response.detailSlots().get(3).result();
+        WeatherForecastResponse response = service.getForecast();
 
-        assertEquals("TIED", firstTomorrowSlot.status());
-        assertNull(firstTomorrowSlot.weatherCode());
-        assertFalse(firstTomorrowSlot.fallback());
+        assertEquals("EMPTY", response.detailSlots().get(0).result().status());
+        assertNull(response.detailSlots().get(0).result().weatherCode());
+        assertEquals("EMPTY", response.dailyForecasts().get(0).result().status());
     }
 
-    @Test
-    @DisplayName("관리자 5점은 일반 4점을 이기지만 일반 6점에는 뒤집힌다")
-    void resolvesWeightedConsensusWithoutAdminLock() {
-        when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY, 6, "SUNNY", 4, 4),
-                tally(TODAY, 6, "RAIN", 5, 1)
-        ));
-
-        WeatherForecastResponse adminLead = service.getForecast(null);
-        assertEquals("RAIN", adminLead.detailSlots().get(0).result().weatherCode());
-
-        when(mapper.findTallies(any(), any())).thenReturn(List.of(
-                tally(TODAY, 6, "SUNNY", 6, 6),
-                tally(TODAY, 6, "RAIN", 5, 1)
-        ));
-
-        WeatherForecastResponse usersLead = service.getForecast(null);
-        assertEquals("SUNNY", usersLead.detailSlots().get(0).result().weatherCode());
+    private WeatherForecastService serviceAt(String instant) {
+        return new WeatherForecastService(mapper, Clock.fixed(Instant.parse(instant), ASIA_SERVER_ZONE));
     }
 
-    @Test
-    @DisplayName("관리자 제출은 서버에서 가중치 5로 저장한다")
-    void appliesAdminWeightOnServer() {
-        when(mapper.findUserVote(anyLong(), any(), any(Integer.class))).thenReturn(null);
-
-        service.submitVotes(7L, true, new WeatherVoteBatchRequest(List.of(
-                new WeatherVoteRequest(TODAY, 6, "HEATWAVE")
-        )));
-
-        ArgumentCaptor<WeatherVote> captor = ArgumentCaptor.forClass(WeatherVote.class);
-        verify(mapper).upsertVote(captor.capture());
-        assertEquals(5, captor.getValue().getVoteWeight());
-        assertEquals("HEATWAVE", captor.getValue().getWeatherCode());
-        verify(mapper, never()).insertHistory(anyLong(), any(), any(Integer.class), any(), any());
-    }
-
-    @Test
-    @DisplayName("일반 사용자 제출은 가중치 1이며 실제 변경만 이력에 남긴다")
-    void recordsHistoryOnlyWhenWeatherActuallyChanges() {
-        WeatherVote existing = WeatherVote.builder()
-                .userId(9L)
-                .forecastDate(TODAY)
-                .slotHour(6)
-                .weatherCode("SUNNY")
-                .voteWeight(1)
-                .build();
-        when(mapper.findUserVote(9L, TODAY, 6)).thenReturn(existing);
-
-        service.submitVotes(9L, false, new WeatherVoteBatchRequest(List.of(
-                new WeatherVoteRequest(TODAY, 6, "RAIN")
-        )));
-
-        verify(mapper).insertHistory(9L, TODAY, 6, "SUNNY", "RAIN");
-        ArgumentCaptor<WeatherVote> captor = ArgumentCaptor.forClass(WeatherVote.class);
-        verify(mapper).upsertVote(captor.capture());
-        assertEquals(1, captor.getValue().getVoteWeight());
-    }
-
-    @Test
-    @DisplayName("7일 이력 정리 기준은 UTC 연결 시간대에 맞춰 전달한다")
-    void cleansHistoryUsingUtcCutoff() {
-        when(mapper.findUserVote(anyLong(), any(), any(Integer.class))).thenReturn(null);
-
-        service.submitVotes(11L, false, new WeatherVoteBatchRequest(List.of(
-                new WeatherVoteRequest(TODAY, 6, "SUNNY")
-        )));
-
-        verify(mapper).deleteHistoryBefore(LocalDateTime.of(2026, 7, 21, 23, 0));
-    }
-
-    @Test
-    @DisplayName("허용되지 않은 날씨와 중복 예보 키는 거부한다")
-    void rejectsInvalidWeatherAndDuplicateKeys() {
-        assertThrows(IllegalArgumentException.class, () ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY, 6, "SNOW")
-                ))));
-
-        assertThrows(IllegalArgumentException.class, () ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY, 6, "SUNNY"),
-                        new WeatherVoteRequest(TODAY, 6, "RAIN")
-                ))));
-    }
-
-    @Test
-    @DisplayName("현재 상세 다섯 칸과 7일 기본 범위 밖의 제보는 거부한다")
-    void rejectsVotesOutsideVisibleForecastKeys() {
-        assertDoesNotThrow(() ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY.plusDays(7), -1, "SUNNY")
-                ))));
-
-        assertThrows(IllegalArgumentException.class, () ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY.plusDays(2), 6, "SUNNY")
-                ))));
-
-        assertThrows(IllegalArgumentException.class, () ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY, -1, "SUNNY")
-                ))));
-
-        assertThrows(IllegalArgumentException.class, () ->
-                service.submitVotes(1L, false, new WeatherVoteBatchRequest(List.of(
-                        new WeatherVoteRequest(TODAY.plusDays(8), -1, "SUNNY")
-                ))));
-    }
-
-    private WeatherVoteTally tally(LocalDate date, int slotHour, String weatherCode, int score, int voters) {
-        return WeatherVoteTally.builder()
-                .forecastDate(date)
-                .slotHour(slotHour)
-                .weatherCode(weatherCode)
-                .score(score)
-                .voterCount(voters)
-                .build();
+    private WeatherSchedule schedule(LocalDate date, int hour, String code) {
+        WeatherSchedule schedule = new WeatherSchedule();
+        schedule.setForecastDate(date);
+        schedule.setSlotHour(hour);
+        schedule.setWeatherCode(code);
+        return schedule;
     }
 }
