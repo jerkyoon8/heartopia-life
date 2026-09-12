@@ -1012,6 +1012,7 @@
                         <div class="food-filter-tabs" id="foodFilterTabs">
                             <button type="button" class="food-filter-btn is-active" data-filter="all">전체</button>
                             <button type="button" class="food-filter-btn" data-filter="tried">먹여본 음식</button>
+                            <button type="button" class="food-filter-btn" data-filter="untried">안 먹여본 음식</button>
                             <button type="button" class="food-filter-btn" data-filter="like">좋아하는 음식</button>
                             <button type="button" class="food-filter-btn" data-filter="dislike">싫어하는 음식</button>
                         </div>
@@ -1640,6 +1641,7 @@
 
             if (!textMatched) return false;
             if (state.filter === 'tried') return tried;
+            if (state.filter === 'untried') return !tried;
             if (state.filter === 'like') return tried && preference === 'like';
             if (state.filter === 'dislike') return tried && preference === 'dislike';
             return true;

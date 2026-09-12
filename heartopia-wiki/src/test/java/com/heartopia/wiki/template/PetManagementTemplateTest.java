@@ -84,6 +84,15 @@ class PetManagementTemplateTest {
                 .contains("grid-column: 1 / -1;");
     }
 
+    @Test
+    void petFoodFiltersIncludeFoodsThatHaveNotBeenTried() throws IOException {
+        String template = petTemplate();
+
+        assertThat(template)
+                .contains("data-filter=\"untried\">안 먹여본 음식</button>")
+                .contains("if (state.filter === 'untried') return !tried;");
+    }
+
     private String petTemplate() throws IOException {
         return new ClassPathResource("templates/wiki/others/pets.html")
                 .getContentAsString(StandardCharsets.UTF_8);
