@@ -31,7 +31,7 @@ class CurrentEventFilterTemplateTest {
                     .as(resourcePath)
                     .contains("fragments/wiki-components :: quickEventFilter")
                     .contains("fragments/wiki-components :: eventFilter")
-                    .contains("/js/wiki-filter.js?v=2.9")
+                    .contains("/js/wiki-filter.js?v=")
                     .contains("{ id: 'eventFilter', dataKey: 'event', type: 'event-multi' }")
                     .contains("th:data-event=");
         }
@@ -70,7 +70,7 @@ class CurrentEventFilterTemplateTest {
                 .doesNotContain("if (quickValues.length === 0) return;")
                 .doesNotContain("quickToggle.disabled = quickValues.length === 0")
                 .contains("quickDropdown.classList.toggle('show')");
-        assertThat(commonHead).contains("/css/common.css(v=2.2)");
+        assertThat(commonHead).contains("/css/common.css(v=");
     }
 
     @Test

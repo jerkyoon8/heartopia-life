@@ -9,7 +9,9 @@ const {
     wikiPrepareEventOverrides,
     wikiShouldHideCollected,
     wikiMatchesWeatherSelection,
-    wikiIsLevelWithin
+    wikiIsLevelWithin,
+    wikiMatchesWeatherSelections,
+    wikiBuildLevelRangeSelection
 } = require('../../main/resources/static/js/wiki-filter.js');
 
 test('일반 선택은 event_name이 없는 항목만 포함한다', () => {
@@ -125,12 +127,33 @@ test('특정 날씨에만 상시 항목을 선택적으로 포함한다', () => 
     assert.equal(wikiMatchesWeatherSelection(' 상시 ', '비', false), false);
     assert.equal(wikiMatchesWeatherSelection('상시', 'all', false), true);
     assert.equal(wikiMatchesWeatherSelection('상시', '상시', false), true);
-    assert.equal(wikiMatchesWeatherSelection('무지개', 'only-무지개', true), true);
-    assert.equal(wikiMatchesWeatherSelection('상시', 'only-무지개', true), false);
-    assert.equal(wikiMatchesWeatherSelection('해, 무지개', 'only-무지개', true), false);
+    assert.equal(wikiMatchesWeatherSelection('해, 무지개', '무지개', false), true);
 });
 
-test('빠른 레벨 선택은 1~10만 포함한다', () => {
+test('레벨 상한 판단은 1~10만 포함한다', () => {
     const levels = ['1', '9', '10', '11', '14', '미공개'];
     assert.deepEqual(levels.filter(level => wikiIsLevelWithin(level, 10)), ['1', '9', '10']);
+});
+
+test('날씨 복수 선택은 합집합이며 상시 포함을 별도로 적용한다', () => {
+    assert.equal(wikiMatchesWeatherSelections('해', ['해', '비'], true), true);
+    assert.equal(wikiMatchesWeatherSelections('비', ['해', '비'], false), true);
+    assert.equal(wikiMatchesWeatherSelections('무지개', ['해', '비'], true), false);
+    assert.equal(wikiMatchesWeatherSelections('상시', ['해', '비'], true), true);
+    assert.equal(wikiMatchesWeatherSelections('상시', ['해', '비'], false), false);
+    assert.equal(wikiMatchesWeatherSelections('상시', ['무지개'], true), true);
+    assert.equal(wikiMatchesWeatherSelections('상시', ['상시'], false), true);
+    assert.equal(wikiMatchesWeatherSelections('해, 무지개', ['무지개'], false), true);
+    assert.equal(wikiMatchesWeatherSelections('상시', [], false), true);
+});
+
+test('입력한 레벨 범위는 양 끝을 포함하고 잘못된 입력은 거부한다', () => {
+    const levels = Array.from({ length: 14 }, (_, index) => String(index + 1));
+    assert.deepEqual(wikiBuildLevelRangeSelection(levels, '3', '8'), ['3', '4', '5', '6', '7', '8']);
+    assert.deepEqual(wikiBuildLevelRangeSelection(levels, '1', '10'), levels.slice(0, 10));
+    assert.equal(wikiBuildLevelRangeSelection(levels, '', '8'), null);
+    assert.equal(wikiBuildLevelRangeSelection(levels, '9', '3'), null);
+    assert.equal(wikiBuildLevelRangeSelection(levels, '0', '3'), null);
+    assert.equal(wikiBuildLevelRangeSelection(levels, '1', '15'), null);
+    assert.equal(wikiBuildLevelRangeSelection(levels, '2.5', '8'), null);
 });

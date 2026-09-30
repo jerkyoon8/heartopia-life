@@ -63,7 +63,6 @@ function wikiShouldHideCollected({ isCollected, checklistValue, threshold, suppo
 function wikiMatchesWeatherSelection(itemValue, selectedValue, includeAlways) {
     if (selectedValue === 'all') return true;
     const weather = String(itemValue || '').trim();
-    if (selectedValue === 'only-무지개') return weather === '무지개';
     if (selectedValue === '상시') return weather === '상시';
     return (includeAlways && weather === '상시') || weather.includes(selectedValue);
 }
@@ -71,6 +70,26 @@ function wikiMatchesWeatherSelection(itemValue, selectedValue, includeAlways) {
 function wikiIsLevelWithin(value, maxLevel) {
     const level = Number(value);
     return Number.isInteger(level) && level >= 1 && level <= maxLevel;
+}
+
+function wikiMatchesWeatherSelections(itemValue, selectedValues, includeAlways) {
+    const selected = Array.from(selectedValues || []);
+    if (selected.length === 0) return true;
+    const weather = String(itemValue || '').trim();
+    if (selected.some(value => wikiMatchesWeatherSelection(weather, value, false))) return true;
+    const hasRegularWeather = selected.some(value => value !== '상시');
+    return !!includeAlways && hasRegularWeather && weather === '상시';
+}
+
+function wikiBuildLevelRangeSelection(availableValues, startValue, endValue) {
+    if (String(startValue).trim() === '' || String(endValue).trim() === '') return null;
+    const start = Number(startValue);
+    const end = Number(endValue);
+    const levels = Array.from(availableValues || []);
+    const maxLevel = Math.max(...levels.map(Number));
+    if (!Number.isInteger(start) || !Number.isInteger(end)
+            || start < 1 || start > end || end > maxLevel) return null;
+    return levels.filter(value => wikiIsLevelWithin(value, end) && Number(value) >= start);
 }
 
 class WikiFilter {
@@ -133,12 +152,15 @@ class WikiFilter {
                         key: f.dataKey,
                         type: 'multi',
                         allLabel: f.allLabel || '모든 레벨',
-                        valuePrefix: f.valuePrefix || 'Lv.',
+                        valuePrefix: f.valuePrefix !== undefined ? f.valuePrefix : 'Lv.',
                         trigger: el.querySelector('.multi-select-trigger'),
                         dropdown: el.querySelector('.multi-select-dropdown'),
-                        quickUpToButton: el.querySelector('[data-select-level-up-to]'),
+                        rangeStart: el.querySelector('#levelRangeStart'),
+                        rangeEnd: el.querySelector('#levelRangeEnd'),
+                        rangeApplyButton: el.querySelector('.level-range-apply'),
+                        rangeFeedback: el.querySelector('.level-range-feedback'),
                         allCheckbox: el.querySelector('input[type="checkbox"][value="all"]'),
-                        checkboxes: Array.from(el.querySelectorAll('input[type="checkbox"]:not([value="all"])')),
+                        checkboxes: Array.from(el.querySelectorAll('.multi-select-dropdown input[type="checkbox"]:not([value="all"])')),
                         getCheckedValues: function() {
                             if (this.allCheckbox && this.allCheckbox.checked) return [];
                             return this.checkboxes.filter(cb => cb.checked).map(cb => cb.value);
@@ -152,11 +174,13 @@ class WikiFilter {
                         if (labelSpan) {
                             if (checkedList.length === 0) {
                                 labelSpan.textContent = filterObj.allLabel;
-                            } else if (checkedList.length === 10
-                                    && checkedList.every((value, index) => Number(value) === index + 1)) {
-                                labelSpan.textContent = 'Lv.1~10';
+                            } else if (f.dataKey === 'level' && checkedList.length > 2
+                                    && checkedList.every((value, index) => index === 0
+                                        || Number(value) === Number(checkedList[index - 1]) + 1)) {
+                                labelSpan.textContent = `Lv.${checkedList[0]}~${checkedList[checkedList.length - 1]}`;
                             } else if (checkedList.length <= 2) {
-                                labelSpan.textContent = checkedList.map(v => filterObj.valuePrefix + v).join(', ');
+                                labelSpan.textContent = filterObj.checkboxes.filter(cb => cb.checked)
+                                    .map(cb => cb.dataset.label || filterObj.valuePrefix + cb.value).join(', ');
                             } else {
                                 labelSpan.textContent = checkedList.length + '개 선택';
                             }
@@ -204,15 +228,40 @@ class WikiFilter {
                         });
                     });
 
-                    if (filterObj.quickUpToButton) {
-                        filterObj.quickUpToButton.addEventListener('click', () => {
-                            const maxLevel = Number(filterObj.quickUpToButton.dataset.selectLevelUpTo);
+                    if (filterObj.rangeApplyButton && filterObj.rangeStart && filterObj.rangeEnd) {
+                        const applyRange = () => {
+                            const values = wikiBuildLevelRangeSelection(
+                                filterObj.checkboxes.map(cb => cb.value),
+                                filterObj.rangeStart.value, filterObj.rangeEnd.value);
+                            if (values === null) {
+                                if (filterObj.rangeFeedback) {
+                                    filterObj.rangeFeedback.textContent = '1~14 사이의 올바른 범위를 입력하세요.';
+                                }
+                                filterObj.rangeStart.setAttribute('aria-invalid', 'true');
+                                filterObj.rangeEnd.setAttribute('aria-invalid', 'true');
+                                return;
+                            }
+                            const selected = new Set(values);
                             filterObj.checkboxes.forEach(cb => {
-                                cb.checked = wikiIsLevelWithin(cb.value, maxLevel);
+                                cb.checked = selected.has(cb.value);
                             });
                             if (filterObj.allCheckbox) filterObj.allCheckbox.checked = false;
+                            if (filterObj.rangeFeedback) filterObj.rangeFeedback.textContent = '';
+                            filterObj.rangeStart.removeAttribute('aria-invalid');
+                            filterObj.rangeEnd.removeAttribute('aria-invalid');
                             updateTriggerText();
                             this.applyFilter();
+                        };
+                        filterObj.rangeApplyButton.addEventListener('click', applyRange);
+                        [filterObj.rangeStart, filterObj.rangeEnd].forEach(input => {
+                            input.addEventListener('keydown', event => {
+                                if (event.key === 'Enter') applyRange();
+                            });
+                            input.addEventListener('input', () => {
+                                if (filterObj.rangeFeedback) filterObj.rangeFeedback.textContent = '';
+                                filterObj.rangeStart.removeAttribute('aria-invalid');
+                                filterObj.rangeEnd.removeAttribute('aria-invalid');
+                            });
                         });
                     }
                 } else {
@@ -857,8 +906,11 @@ class WikiFilter {
                     const checkedValues = f.getCheckedValues();
                     if (checkedValues.length > 0) {
                         const itemValue = String(element.dataset[f.key] || '').trim();
-                        // 다중 선택 정밀 매칭
-                        if (!checkedValues.includes(itemValue)) {
+                        const matches = f.key === 'weather'
+                            ? wikiMatchesWeatherSelections(itemValue, checkedValues,
+                                this.includeAlwaysWeatherBtn && this.includeAlwaysWeatherBtn.checked)
+                            : checkedValues.includes(itemValue);
+                        if (!matches) {
                             isMatch = false;
                         }
                     }
@@ -1043,6 +1095,11 @@ class WikiFilter {
             } else if (f.type === 'multi') {
                 if (f.allCheckbox) f.allCheckbox.checked = true;
                 f.checkboxes.forEach(cb => cb.checked = false);
+                if (f.rangeStart) f.rangeStart.value = '';
+                if (f.rangeEnd) f.rangeEnd.value = '';
+                if (f.rangeFeedback) f.rangeFeedback.textContent = '';
+                f.rangeStart?.removeAttribute('aria-invalid');
+                f.rangeEnd?.removeAttribute('aria-invalid');
                 const labelSpan = f.trigger ? f.trigger.querySelector('.trigger-label') : null;
                 if (labelSpan) labelSpan.textContent = f.allLabel || '모든 레벨';
             } else {
@@ -1078,6 +1135,8 @@ if (typeof module !== 'undefined' && module.exports) {
         wikiPrepareEventOverrides,
         wikiShouldHideCollected,
         wikiMatchesWeatherSelection,
-        wikiIsLevelWithin
+        wikiIsLevelWithin,
+        wikiMatchesWeatherSelections,
+        wikiBuildLevelRangeSelection
     };
 }

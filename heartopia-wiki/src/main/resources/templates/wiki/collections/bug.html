@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
     <!-- Wiki Filter JS -->
-    <script src="/js/wiki-filter.js?v=2.9" defer></script>
+    <script src="/js/wiki-filter.js?v=2.10" defer></script>
     <script src="/js/admin-data.js?v=1.3" defer></script>
 </head>
 
@@ -66,8 +66,12 @@
                                 <i class="fas fa-chevron-down ms-2 text-muted" style="font-size: 0.75rem;"></i>
                             </div>
                             <div class="multi-select-dropdown" id="levelDropdown">
-                                <div class="dropdown-opt">
-                                    <button type="button" class="level-quick-select" data-select-level-up-to="10">Lv.1~10 선택</button>
+                                <div class="level-range-controls">
+                                    <input type="number" id="levelRangeStart" min="1" max="14" placeholder="시작" aria-label="시작 레벨">
+                                    <span>~</span>
+                                    <input type="number" id="levelRangeEnd" min="1" max="14" placeholder="끝" aria-label="끝 레벨">
+                                    <button type="button" class="level-range-apply">범위 선택</button>
+                                    <small class="level-range-feedback" role="status" aria-live="polite"></small>
                                 </div>
                                 <div class="dropdown-opt">
                                     <label><input type="checkbox" value="all" checked> 모든 레벨</label>
@@ -98,16 +102,22 @@
                             </select>
                         </div>
 
-                        <div class="filter-select-wrapper">
-                            <span class="prefix">날씨</span>
-                            <select id="weatherFilter">
-                                <option value="all">모든 날씨</option>
-                                <option value="상시">상시</option>
-                                <option value="해">☀️ 맑음</option>
-                                <option value="비">🌧️ 비</option>
-                                <option value="무지개">🌈 무지개</option>
-                                <option value="only-무지개">🌈 무지개만 출력</option>
-                            </select>
+                        <div class="filter-weather-controls">
+                            <div class="filter-select-wrapper filter-multi-select-wrapper" id="weatherFilter">
+                                <span class="prefix">날씨</span>
+                                <div class="multi-select-trigger" id="weatherTrigger">
+                                    <span class="trigger-label">모든 날씨</span>
+                                    <i class="fas fa-chevron-down ms-2 text-muted" style="font-size: 0.75rem;"></i>
+                                </div>
+                                <div class="multi-select-dropdown" id="weatherDropdown">
+                                    <div class="dropdown-opt"><label><input type="checkbox" value="all" checked> 모든 날씨</label></div>
+                                    <div class="dropdown-div"></div>
+                                    <div class="dropdown-opt"><label><input type="checkbox" value="상시" data-label="상시"> 상시</label></div>
+                                    <div class="dropdown-opt"><label><input type="checkbox" value="해" data-label="맑음"> ☀️ 맑음</label></div>
+                                    <div class="dropdown-opt"><label><input type="checkbox" value="비" data-label="비"> 🌧️ 비</label></div>
+                                    <div class="dropdown-opt"><label><input type="checkbox" value="무지개" data-label="무지개"> 🌈 무지개</label></div>
+                                </div>
+                            </div>
                             <label class="filter-include-always">
                                 <input type="checkbox" id="btn-include-always-weather" checked>
                                 <span>상시 포함</span>
@@ -302,7 +312,7 @@
                     { id: 'levelFilter', dataKey: 'level', type: 'multi' },
                     { id: 'locationFilter', dataKey: 'location', autoPopulate: true },
                     { id: 'subLocationFilter', dataKey: 'subLocation', parentFilter: 'locationFilter', parentKey: 'location', wrapperId: 'subLocationWrapper' },
-                    { id: 'weatherFilter', dataKey: 'weather' }
+                    { id: 'weatherFilter', dataKey: 'weather', type: 'multi', allLabel: '모든 날씨', valuePrefix: '' }
                 ]
             });
         });
