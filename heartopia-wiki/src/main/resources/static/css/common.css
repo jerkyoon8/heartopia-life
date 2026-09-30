@@ -480,6 +480,22 @@ body {
     background-color: var(--card-bg);
 }
 
+.filter-include-always {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px 0 0;
+    white-space: nowrap;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.filter-include-always input {
+    accent-color: var(--link-color);
+    cursor: pointer;
+}
+
 /* 부모 필터 선택 전: 종속 드롭다운 비활성 상태 */
 .filter-select-wrapper.filter-disabled {
     opacity: 0.55;
@@ -2525,6 +2541,24 @@ body.weather-modal-open {
 .multi-select-dropdown.show {
     display: block;
     animation: dropdownFadeIn 0.2s ease-out;
+}
+
+.level-quick-select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--filter-bg);
+    color: var(--link-color);
+    text-align: left;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.level-quick-select:hover,
+.level-quick-select:focus-visible {
+    background: var(--nav-hover);
 }
 
 @keyframes dropdownFadeIn {

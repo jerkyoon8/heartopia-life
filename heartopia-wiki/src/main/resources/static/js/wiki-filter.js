@@ -60,6 +60,19 @@ function wikiShouldHideCollected({ isCollected, checklistValue, threshold, suppo
     return typeof checklistValue === 'number' && checklistValue >= normalizedThreshold;
 }
 
+function wikiMatchesWeatherSelection(itemValue, selectedValue, includeAlways) {
+    if (selectedValue === 'all') return true;
+    const weather = String(itemValue || '').trim();
+    if (selectedValue === 'only-무지개') return weather === '무지개';
+    if (selectedValue === '상시') return weather === '상시';
+    return (includeAlways && weather === '상시') || weather.includes(selectedValue);
+}
+
+function wikiIsLevelWithin(value, maxLevel) {
+    const level = Number(value);
+    return Number.isInteger(level) && level >= 1 && level <= maxLevel;
+}
+
 class WikiFilter {
     constructor(config) {
         this.config = Object.assign({
@@ -123,6 +136,7 @@ class WikiFilter {
                         valuePrefix: f.valuePrefix || 'Lv.',
                         trigger: el.querySelector('.multi-select-trigger'),
                         dropdown: el.querySelector('.multi-select-dropdown'),
+                        quickUpToButton: el.querySelector('[data-select-level-up-to]'),
                         allCheckbox: el.querySelector('input[type="checkbox"][value="all"]'),
                         checkboxes: Array.from(el.querySelectorAll('input[type="checkbox"]:not([value="all"])')),
                         getCheckedValues: function() {
@@ -138,6 +152,9 @@ class WikiFilter {
                         if (labelSpan) {
                             if (checkedList.length === 0) {
                                 labelSpan.textContent = filterObj.allLabel;
+                            } else if (checkedList.length === 10
+                                    && checkedList.every((value, index) => Number(value) === index + 1)) {
+                                labelSpan.textContent = 'Lv.1~10';
                             } else if (checkedList.length <= 2) {
                                 labelSpan.textContent = checkedList.map(v => filterObj.valuePrefix + v).join(', ');
                             } else {
@@ -186,6 +203,18 @@ class WikiFilter {
                             this.applyFilter();
                         });
                     });
+
+                    if (filterObj.quickUpToButton) {
+                        filterObj.quickUpToButton.addEventListener('click', () => {
+                            const maxLevel = Number(filterObj.quickUpToButton.dataset.selectLevelUpTo);
+                            filterObj.checkboxes.forEach(cb => {
+                                cb.checked = wikiIsLevelWithin(cb.value, maxLevel);
+                            });
+                            if (filterObj.allCheckbox) filterObj.allCheckbox.checked = false;
+                            updateTriggerText();
+                            this.applyFilter();
+                        });
+                    }
                 } else {
                     // 기존 단일 선택 필터 객체화
                     this.filterElements.push({
@@ -317,6 +346,10 @@ class WikiFilter {
         this.timeStartFilter = document.getElementById('timeStartFilter');
         this.timeEndFilter = document.getElementById('timeEndFilter');
         this.includeAlwaysBtn = document.getElementById('btn-include-always');
+        this.includeAlwaysWeatherBtn = document.getElementById('btn-include-always-weather');
+        if (this.includeAlwaysWeatherBtn) {
+            this.includeAlwaysWeatherBtn.addEventListener('change', () => this.applyFilter());
+        }
         
         if (this.timeStartFilter && this.timeEndFilter) {
             const applyTimeFilter = () => this.applyFilter();
@@ -840,8 +873,9 @@ class WikiFilter {
                             isMatch = false;
                         }
                     }
-                    else if (f.key === 'weather' && selectedValue === 'only-무지개') {
-                        if (!itemValue || String(itemValue).trim() !== '무지개') {
+                    else if (f.key === 'weather') {
+                        if (!wikiMatchesWeatherSelection(itemValue, selectedValue,
+                                this.includeAlwaysWeatherBtn && this.includeAlwaysWeatherBtn.checked)) {
                             isMatch = false;
                         }
                     }
@@ -1026,6 +1060,7 @@ class WikiFilter {
         if (this.timeStartFilter) this.timeStartFilter.value = '';
         if (this.timeEndFilter) this.timeEndFilter.value = '';
         if (this.includeAlwaysBtn) this.includeAlwaysBtn.checked = true;
+        if (this.includeAlwaysWeatherBtn) this.includeAlwaysWeatherBtn.checked = true;
 
         this.currentSort = { key: 'name', order: 'asc' };
         this.updateSortUI();
@@ -1041,6 +1076,8 @@ if (typeof module !== 'undefined' && module.exports) {
         wikiBuildQuickOnlySelection,
         wikiDeriveQuickFilterState,
         wikiPrepareEventOverrides,
-        wikiShouldHideCollected
+        wikiShouldHideCollected,
+        wikiMatchesWeatherSelection,
+        wikiIsLevelWithin
     };
 }

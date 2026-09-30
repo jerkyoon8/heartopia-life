@@ -7,7 +7,9 @@ const {
     wikiBuildQuickOnlySelection,
     wikiDeriveQuickFilterState,
     wikiPrepareEventOverrides,
-    wikiShouldHideCollected
+    wikiShouldHideCollected,
+    wikiMatchesWeatherSelection,
+    wikiIsLevelWithin
 } = require('../../main/resources/static/js/wiki-filter.js');
 
 test('일반 선택은 event_name이 없는 항목만 포함한다', () => {
@@ -115,4 +117,20 @@ test('별점이 있는 수집 항목에는 설정된 숨김 기준치를 후적�
         threshold: 3,
         supportsStarRating: true
     }), true);
+});
+
+test('특정 날씨에만 상시 항목을 선택적으로 포함한다', () => {
+    assert.equal(wikiMatchesWeatherSelection('해', '해', true), true);
+    assert.equal(wikiMatchesWeatherSelection('상시', '해', true), true);
+    assert.equal(wikiMatchesWeatherSelection(' 상시 ', '비', false), false);
+    assert.equal(wikiMatchesWeatherSelection('상시', 'all', false), true);
+    assert.equal(wikiMatchesWeatherSelection('상시', '상시', false), true);
+    assert.equal(wikiMatchesWeatherSelection('무지개', 'only-무지개', true), true);
+    assert.equal(wikiMatchesWeatherSelection('상시', 'only-무지개', true), false);
+    assert.equal(wikiMatchesWeatherSelection('해, 무지개', 'only-무지개', true), false);
+});
+
+test('빠른 레벨 선택은 1~10만 포함한다', () => {
+    const levels = ['1', '9', '10', '11', '14', '미공개'];
+    assert.deepEqual(levels.filter(level => wikiIsLevelWithin(level, 10)), ['1', '9', '10']);
 });

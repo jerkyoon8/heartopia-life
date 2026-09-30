@@ -67,6 +67,9 @@
                             </div>
                             <div class="multi-select-dropdown" id="levelDropdown">
                                 <div class="dropdown-opt">
+                                    <button type="button" class="level-quick-select" data-select-level-up-to="10">Lv.1~10 선택</button>
+                                </div>
+                                <div class="dropdown-opt">
                                     <label><input type="checkbox" value="all" checked> 모든 레벨</label>
                                 </div>
                                 <div class="dropdown-div"></div>
@@ -105,6 +108,10 @@
                                 <option value="무지개">🌈 무지개</option>
                                 <option value="only-무지개">🌈 무지개만 출력</option>
                             </select>
+                            <label class="filter-include-always">
+                                <input type="checkbox" id="btn-include-always-weather" checked>
+                                <span>상시 포함</span>
+                            </label>
                         </div>
                         
                         <!-- 날씨 뒤에 시간대 조건 검색 추가 -->
