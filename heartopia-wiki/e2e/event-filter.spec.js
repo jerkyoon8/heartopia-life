@@ -188,6 +188,34 @@ test('detailed selection synchronizes back to the quick picker', async ({ page }
   await expect(quickOption(page, target)).toBeChecked();
 });
 
+for (const viewportWidth of [390, 1280]) {
+  test(`open event menu stays above later filters at ${viewportWidth}px`, async ({ page }) => {
+    await page.setViewportSize({ width: viewportWidth, height: 900 });
+    let sawOverlap = false;
+    for (const route of ['/wiki/collections/fish', '/wiki/collections/bug', '/wiki/collections/bird']) {
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      await page.locator('.btn-filter-toggle').click();
+      await page.locator('#eventTrigger').click();
+      const overlap = await page.evaluate(() => {
+        const menu = document.querySelector('#eventDropdown');
+        const weather = document.querySelector('#weatherFilter');
+        const a = menu.getBoundingClientRect();
+        const b = weather.getBoundingClientRect();
+        const left = Math.max(a.left, b.left);
+        const right = Math.min(a.right, b.right);
+        const top = Math.max(a.top, b.top);
+        const bottom = Math.min(a.bottom, b.bottom);
+        if (right <= left || bottom <= top) return { overlaps: false, menuOnTop: true };
+        const hit = document.elementFromPoint((left + right) / 2, (top + bottom) / 2);
+        return { overlaps: true, menuOnTop: menu.contains(hit) };
+      });
+      sawOverlap ||= overlap.overlaps;
+      expect(overlap.menuOnTop, `${route} event menu must remain clickable above weather`).toBe(true);
+    }
+    expect(sawOverlap, 'at least one collection should exercise the overlapping layout').toBe(true);
+  });
+}
+
 test('keyboard controls and corrupt saved JSON fail safely', async ({ page }) => {
   const monitor = monitorPage(page);
   await page.addInitScript(() => localStorage.setItem('wikiEventFilterOverrides', '{invalid-json'));

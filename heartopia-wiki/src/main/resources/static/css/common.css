@@ -2497,6 +2497,10 @@ body.weather-modal-open {
     z-index: 20;
 }
 
+.filter-multi-select-wrapper:has(> .multi-select-dropdown.show) {
+    z-index: 21;
+}
+
 .filter-select-wrapper.filter-multi-select-wrapper .multi-select-trigger {
     border: 0;
     border-radius: 0 12px 12px 0;
