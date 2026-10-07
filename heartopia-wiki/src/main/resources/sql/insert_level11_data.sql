@@ -49,7 +49,7 @@ INSERT INTO bird_collections (location, sub_location, name, level, weather, time
 ('이벤트', '새들의 복귀 사건', '백공작', 11, NULL, '풀타임', 37, 150, 300, 600, 1200, '공작', '/images/collections/bird/백공작.png', NULL, '≤5m', '무지개 12~18'),
 ('근교', NULL, '푸른머리 비둘기', 11, NULL, '00-06 / 12-24', 37, 150, 300, 600, 900, '비둘기', '/images/collections/bird/푸른머리 비둘기.png', NULL, '3m', '무지개 12~24'),
 ('온천산', '온천산 호숫가', '가창오리', 11, NULL, '풀타임', 45, 180, 360, 720, 1440, '오리', '/images/collections/bird/가창오리.png', NULL, '≤3m', '무지개 12~18'),
-('꽃밭', '풍차꽃밭', '쇠찌르레기', 11, NULL, '풀타임', 30, 120, 240, 480, 720, '찌르레기', '/images/collections/bird/쇠찌르레기.png', NULL, '3m', '무지개 18~24'),
+('꽃밭', '풍차꽃밭', '보라등찌르레기', 11, NULL, '풀타임', 30, 120, 240, 480, 720, '찌르레기', '/images/collections/bird/쇠찌르레기.png', NULL, '3m', '무지개 18~24'),
 ('바다', '잔잔한 바다', '푸른발 얼간이새', 12, NULL, '풀타임', 45, 180, 360, 720, 1440, '얼간이새', '/images/collections/bird/푸른발 얼간이새.png', NULL, '≤3m', '무지개 12~18'),
 ('온천산', '온천산 호숫가', '붉은눈섭핀치', 12, NULL, '풀타임', 45, 180, 360, 720, 1440, '핀치', '/images/collections/bird/붉은눈섭핀치.png', NULL, '3m', '무지개 18~24'),
 ('바다', '고래바다 해변', '코뿔바다오리', 12, NULL, '00-12 / 18-24', 45, 180, 360, 720, 1440, '바다오리', '/images/collections/bird/코뿔바다오리.png', NULL, '3m', '무지개 06~12'),
