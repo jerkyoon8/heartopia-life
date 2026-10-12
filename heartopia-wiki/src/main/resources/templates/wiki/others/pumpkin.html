@@ -11,7 +11,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <main class="mw-body">
     <div class="page-header"><i class="fas fa-seedling fa-2x text-warning" aria-hidden="true"></i><h1>호박 조각 도감</h1></div>
-    <p class="pumpkin-notice"><strong>밤의 점술회 · 호박 조각 21종</strong><br>고스트 호박을 깎아 머리·몸통·다리를 만들고, 홈에서 조합해 보세요. 축제 종료 후에도 즐길 수 있는 상시 취미입니다.</p>
+    <p class="pumpkin-notice">아직 작성 중인 도감입니다. 일부 정보는 실제 게임과 다를 수 있으니 참고용으로 봐 주세요.</p>
     <div class="wiki-filter-container">
         <div class="filter-top-tier">
             <div class="search-wrapper"><i class="fas fa-search" aria-hidden="true"></i><input id="pumpkinSearch" class="search-input" type="search" placeholder="호박 조각 검색..." aria-label="호박 조각 검색"></div>
@@ -41,7 +41,6 @@
     </div>
     <p id="pumpkinEmpty" hidden>검색 결과가 없습니다.</p>
     <details class="pumpkin-guide pumpkin-materials"><summary>고스트 호박 재료와 제작 도구 보기</summary><p>일반·거대 크기 각각 다섯 가지 색상이 있습니다. 원하는 색상과 크기의 고스트 호박을 준비하세요.</p><div class="pumpkin-resource-grid"><figure th:each="item : ${pumpkinResources}"><img th:src="${item.local_image}" th:alt="${item['한글명']}" loading="lazy"><figcaption th:text="${item['한글명']}"></figcaption></figure></div></details>
-    <details class="pumpkin-guide"><summary>이름 확인 상태와 참고 자료</summary><p>한국어 이름 21종을 정리했습니다. 개별 이름은 한국 게임 화면과 대조 중입니다. 이미지는 다섯 가지 색상이며 별 등급별 외형 전체를 보여주는 것은 아닙니다. 재료 소비 수량과 재배 시간은 확인 중입니다.</p><p><a href="https://steamcommunity.com/app/4025700/allnews/?l=koreana">공식 시작 가이드</a> · <a href="https://www.taptap.cn/moment/857862775513285957">호박 조각 가격·외형 표</a> · <a href="https://gamerch.com/heartopia/1020983">호박 조각 목록</a></p></details>
 </main>
 <div class="modal fade flower-guide-image-modal" id="pumpkinGuideImageModal" tabindex="-1" aria-labelledby="pumpkinGuideTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
