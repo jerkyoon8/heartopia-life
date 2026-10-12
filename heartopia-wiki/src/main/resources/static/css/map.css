@@ -51,10 +51,73 @@
     color: #0d6efd;
 }
 
+.map-fullscreen-toggle {
+    display: none;
+}
+
 @media (max-width: 768px) {
+    body.map-fullscreen-open {
+        overflow: hidden;
+        overscroll-behavior: none;
+    }
+
+    body.map-fullscreen-open .modal-backdrop {
+        z-index: 10000;
+    }
+
+    body.map-fullscreen-open #dynamicResourceModal {
+        z-index: 10001;
+    }
+
     .map-layout {
         position: relative;
+        height: clamp(300px, 44vh, 420px);
     }
+
+    .map-layout.is-mobile-fullscreen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        width: 100vw;
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .map-fullscreen-toggle {
+        position: absolute;
+        top: max(15px, env(safe-area-inset-top));
+        right: max(15px, env(safe-area-inset-right));
+        z-index: 1002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 13px;
+        border: 1px solid var(--border-subtle, #e8e8e8);
+        border-radius: 12px;
+        background: var(--card-bg, white);
+        color: var(--text-color, #333);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+        font-family: 'Paperlogy', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .map-fullscreen-toggle:focus-visible {
+        outline: 3px solid rgba(13, 110, 253, 0.35);
+        outline-offset: 2px;
+    }
+
+    .map-layout.is-mobile-fullscreen .map-fullscreen-toggle {
+        background: rgba(255, 255, 255, 0.94);
+    }
+
     .map-side-panel {
         position: absolute;
         top: 0;
@@ -958,3 +1021,117 @@
     background: #f0f4ff;
 }
 
+.trend-season-name {
+    padding: 8px 14px 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.trend-resource-edit, .trend-season-rename {
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px;
+}
+.dynamic-resource-add-btn {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 7px;
+    background: #845ef7;
+    color: #fff;
+    cursor: pointer;
+}
+
+.dynamic-resource-add-btn:hover {
+    background: #7048e8;
+}
+
+.dynamic-resource-empty {
+    padding: 12px 14px;
+    color: #868e96;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.dynamic-resource-modal-content {
+    color: var(--text-color, #212529);
+    background: var(--card-bg, #fff);
+}
+
+.dynamic-resource-image-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.dynamic-resource-image-option {
+    display: flex;
+    min-width: 0;
+    padding: 9px 6px;
+    border: 1px solid var(--border-color, #dee2e6);
+    border-radius: 10px;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+}
+
+.dynamic-resource-image-option:has(input:checked) {
+    border-color: #845ef7;
+    background: rgba(132, 94, 247, 0.1);
+    box-shadow: 0 0 0 1px #845ef7;
+}
+
+.dynamic-resource-image-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dynamic-resource-image-option img,
+.dynamic-resource-upload-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.dynamic-resource-upload-icon {
+    display: grid;
+    place-items: center;
+    color: #845ef7;
+    font-size: 22px;
+}
+
+.dynamic-resource-upload-field {
+    display: none;
+    margin-top: 10px;
+}
+
+.dynamic-resource-upload-field.show {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .dynamic-resource-image-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.dynamic-resource-form-error {
+    display: none;
+    margin-top: 12px;
+    color: #e03131;
+    font-size: 13px;
+}
+
+.dynamic-resource-form-error.show {
+    display: block;
+}

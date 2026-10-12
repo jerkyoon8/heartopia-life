@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heartopia.wiki.mapper.DynamicMapResourceMapper">
+
+    <resultMap id="DynamicMapResourceResultMap" type="com.heartopia.wiki.model.DynamicMapResource">
+        <id property="id" column="id"/>
+        <result property="mapKey" column="map_key"/>
+        <result property="name" column="name"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="description" column="description"/>
+        <result property="eventName" column="event_name"/>
+        <result property="forageableId" column="forageable_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findAllByMapKey" resultMap="DynamicMapResourceResultMap">
+        SELECT id, map_key, name, icon_url, description, event_name, forageable_id, created_at, updated_at
+        FROM dynamic_map_resources
+        WHERE map_key = #{mapKey}
+        ORDER BY name
+    </select>
+
+    <select id="findByMapKeyAndName" resultMap="DynamicMapResourceResultMap">
+        SELECT id, map_key, name, icon_url, description, event_name, forageable_id, created_at, updated_at
+        FROM dynamic_map_resources
+        WHERE map_key = #{mapKey}
+          AND name = #{name}
+        LIMIT 1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dynamic_map_resources (map_key, name, icon_url, description, event_name, forageable_id)
+        VALUES (#{mapKey}, #{name}, #{iconUrl}, #{description}, #{eventName}, #{forageableId})
+    </insert>
+    <select id="findById" resultMap="DynamicMapResourceResultMap">
+        SELECT * FROM dynamic_map_resources WHERE id = #{id}
+    </select>
+    <update id="update">
+        UPDATE dynamic_map_resources SET name=#{name}, icon_url=#{iconUrl}, description=#{description},
+            event_name=#{eventName} WHERE id=#{id}
+    </update>
+    <update id="updatePins">
+        UPDATE map_pins SET name=#{after.name}, icon_url=#{after.iconUrl}, description=#{after.description}
+        WHERE map_key=#{before.mapKey} AND category='dynamic_resource' AND name=#{before.name}
+    </update>
+
+    <update id="renameEvent">
+        UPDATE dynamic_map_resources SET event_name=#{newName}
+        WHERE map_key=#{mapKey} AND event_name=#{oldName}
+    </update>
+</mapper>

@@ -21,8 +21,8 @@ class MapInitialLoadPerformanceTemplateTest {
     void mapConfigDeclaresSupportedDataCategories() throws IOException {
         String mapState = read("static/js/map/map-state.js");
 
-        assertTrue(mapState.contains("dataCategories: ['forageable', 'fish', 'bird', 'insect', 'animal', 'villager']"));
-        assertTrue(mapState.contains("dataCategories: ['forageable', 'animal']"));
+        assertTrue(mapState.contains("dataCategories: ['forageable', 'fish', 'bird', 'insect', 'animal', 'villager', 'dynamic_resource']"));
+        assertTrue(mapState.contains("dataCategories: ['forageable', 'animal', 'dynamic_resource']"));
         assertTrue(mapState.contains("getActiveDataCategories"));
     }
 

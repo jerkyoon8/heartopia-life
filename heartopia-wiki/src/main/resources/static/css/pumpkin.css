@@ -1,0 +1,23 @@
+.pumpkin-notice,.pumpkin-guide { padding:16px; margin-bottom:22px; border:1px solid var(--border-color); border-radius:12px; background:var(--card-bg); line-height:1.7; }
+.pumpkin-guide summary,.pumpkin-variants summary { cursor:pointer; font-weight:700; }
+.pumpkin-guide p,.pumpkin-guide ol { margin:12px 0 0; }
+.pumpkin-muted { color:var(--stat-label); font-size:.85rem; }
+.pumpkin-count { margin:12px 0 0; font-size:.9rem; color:var(--stat-label); }
+.pumpkin-image { background:#f8f1df!important; }
+.pumpkin-image img { max-height:130px; object-fit:contain; }
+.pumpkin-variants { margin:0 14px 16px; border-top:1px solid var(--border-color); padding-top:12px; }
+.pumpkin-variant-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.pumpkin-variant-grid figure,.pumpkin-resource-grid figure { margin:0; text-align:center; }
+.pumpkin-variant-grid img { width:100%; max-width:110px; }
+.pumpkin-variant-grid figcaption { font-size:.8rem; }
+.pumpkin-resource-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:18px; margin-top:16px; }
+.pumpkin-resource-grid img { width:100px; height:100px; object-fit:contain; }
+.pumpkin-resource-grid figcaption { font-size:.85rem; }
+.pumpkin-card[hidden] { display:none!important; }
+.pumpkin-price { color:var(--text-color); font-weight:700; }
+.pumpkin-guide-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 15px; border:1px solid var(--border-color); border-radius:10px; background:var(--card-bg); color:var(--text-color); font-weight:700; white-space:nowrap; }
+.pumpkin-guide-button:hover { background:var(--nav-hover); }
+.pumpkin-guide-button:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.pumpkin-tutorial-body figure { margin:20px 0; }
+.pumpkin-tutorial-body figcaption { font-weight:700; margin-bottom:10px; }
+.pumpkin-tutorial-body img { display:block; width:100%; max-width:900px; height:auto; margin:auto; border-radius:12px; }

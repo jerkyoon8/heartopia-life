@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <!-- Map CSS -->
-    <link rel="stylesheet" th:href="@{/css/map.css(v=1.1)}">
+    <link rel="stylesheet" th:href="@{/css/map.css(v=1.3)}">
 
     <style>
         /* Paperlogy Font */
@@ -152,6 +152,11 @@
 
             <!-- Right: Map Area -->
             <div class="map-area">
+                <button type="button" class="map-fullscreen-toggle" id="mapFullscreenToggle"
+                    aria-label="지도를 전체화면으로 보기" aria-pressed="false">
+                    <i class="fas fa-expand" aria-hidden="true"></i>
+                    <span class="fullscreen-label">전체화면</span>
+                </button>
                 <!-- 사이드바 토글 버튼 -->
                 <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="사이드바 열기/닫기">
                     <i class="fas fa-bars"></i>
@@ -187,6 +192,82 @@
 
     </div>
 
+    <div class="modal fade" id="dynamicResourceModal" tabindex="-1"
+        aria-labelledby="dynamicResourceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content dynamic-resource-modal-content">
+                <form id="dynamicResourceForm">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="dynamicResourceModalLabel">변동 자원 추가</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="dynamicResourceId">
+                        <div class="mb-3">
+                            <label for="dynamicResourceEvent" class="form-label">트렌드 시즌명</label>
+                            <input type="text" class="form-control" id="dynamicResourceEvent" maxlength="100" placeholder="예: 밤의 점술회">
+                        </div>
+                        <div class="mb-3">
+                            <label for="dynamicResourceForageable" class="form-label">기존 채집물 연결</label>
+                            <select class="form-select" id="dynamicResourceForageable"><option value="">지도 전용 아이템</option></select>
+                            <div class="form-text">채집물을 연결하면 기존 위치 핀을 공유합니다.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dynamicResourceName" class="form-label">이름 <span aria-hidden="true">*</span></label>
+                            <input type="text" class="form-control" id="dynamicResourceName" maxlength="100" required>
+                        </div>
+                        <fieldset class="mb-3" id="dynamicResourceImages">
+                            <legend class="form-label">이미지</legend>
+                            <div class="dynamic-resource-image-options">
+                                <label class="dynamic-resource-image-option" id="dynamicResourceKeepImage" hidden>
+                                    <input type="radio" name="dynamicResourceImageChoice" value="keep">
+                                    <span>현재 이미지 유지</span>
+                                </label>
+                                <label class="dynamic-resource-image-option">
+                                    <input type="radio" name="dynamicResourceImageChoice"
+                                        value="/images/map/dynamic-resources/pink-bubble.webp" checked>
+                                    <img src="/images/map/dynamic-resources/pink-bubble.webp" alt="">
+                                    <span>핑크버블</span>
+                                </label>
+                                <label class="dynamic-resource-image-option">
+                                    <input type="radio" name="dynamicResourceImageChoice"
+                                        value="/images/map/dynamic-resources/fluorite.webp">
+                                    <img src="/images/map/dynamic-resources/fluorite.webp" alt="">
+                                    <span>형광석</span>
+                                </label>
+                                <label class="dynamic-resource-image-option">
+                                    <input type="radio" name="dynamicResourceImageChoice"
+                                        value="/images/map/dynamic-resources/oak.webp">
+                                    <img src="/images/map/dynamic-resources/oak.webp" alt="">
+                                    <span>참나무</span>
+                                </label>
+                                <label class="dynamic-resource-image-option dynamic-resource-upload-option">
+                                    <input type="radio" name="dynamicResourceImageChoice" value="upload">
+                                    <span class="dynamic-resource-upload-icon"><i class="fas fa-upload"></i></span>
+                                    <span>직접 업로드</span>
+                                </label>
+                            </div>
+                            <div class="dynamic-resource-upload-field" id="dynamicResourceUploadField">
+                                <label for="dynamicResourceImageFile" class="form-label">이미지 파일</label>
+                                <input type="file" class="form-control" id="dynamicResourceImageFile"
+                                    accept="image/png,image/jpeg,image/webp,image/gif" disabled>
+                            </div>
+                        </fieldset>
+                        <div class="mb-0">
+                            <label for="dynamicResourceDescription" class="form-label">설명</label>
+                            <textarea class="form-control" id="dynamicResourceDescription" rows="3"></textarea>
+                        </div>
+                        <div class="dynamic-resource-form-error" id="dynamicResourceFormError" role="alert"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary" id="dynamicResourceSubmit">등록 후 배치</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer (Common Fragment) -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
@@ -199,11 +280,11 @@
         /*]]>*/
     </script>
     <!-- Map Modules -->
-    <script th:src="@{/js/map/map-state.js(v=1.22)}"></script>
-    <script th:src="@{/js/map/map-api.js(v=1.20)}"></script>
+    <script th:src="@{/js/map/map-state.js(v=1.23)}"></script>
+    <script th:src="@{/js/map/map-api.js(v=1.22)}"></script>
     <script th:src="@{/js/map/map-zone.js(v=1.19)}"></script>
-    <script th:src="@{/js/map/map-ui.js(v=1.20)}"></script>
-    <script th:src="@{/js/map/map-core.js(v=1.21)}"></script>
+    <script th:src="@{/js/map/map-ui.js(v=1.24)}"></script>
+    <script th:src="@{/js/map/map-core.js(v=1.26)}"></script>
 </body>
 
 </html>

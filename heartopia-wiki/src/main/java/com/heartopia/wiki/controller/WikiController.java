@@ -61,6 +61,8 @@ public class WikiController {
 
                 // 3. 취미 (Hobbies)
                 List<CategoryItemDto> hobbies = new ArrayList<>();
+                hobbies.add(new CategoryItemDto("호박 조각", "🎃", "/wiki/others/pumpkin",
+                                "/pumpkin/images/멍한 호박 머리_800101.webp", 21));
                 hobbies.add(new CategoryItemDto("모래 조각", "🏖️", "/wiki/others/sandbox",
                                 "/images/main-index/main_index_icon_sand_sculpture.webp?v=2", collectionService.getSandboxCount(), "sandbox_id_"));
                 hobbies.add(new CategoryItemDto("바다 청소", "🌊", "/wiki/others/sea-cleaning", null,

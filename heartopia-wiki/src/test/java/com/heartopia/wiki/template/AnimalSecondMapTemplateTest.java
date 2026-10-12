@@ -59,16 +59,16 @@ class AnimalSecondMapTemplateTest {
     }
 
     @Test
-    @DisplayName("고래낙하 협곡 지도는 전체 표시 상태로 시작한다")
-    void secondMapStartsWithAllItemsVisible() throws IOException {
+    @DisplayName("고래낙하 협곡 지도도 변동 자원만 표시한 상태로 시작한다")
+    void secondMapStartsWithOnlyDynamicResourcesVisible() throws IOException {
         String mapCore = read("static/js/map/map-core.js");
         String mapTemplate = read("templates/wiki/map.html");
 
-        assertTrue(mapCore.contains("const showAllByDefault = state.activeMapKey === 'second'"));
+        assertTrue(mapCore.contains("const showAllByDefault = false"));
+        assertTrue(mapCore.contains("const defaultVisible = ['dynamic_resource']"));
         assertTrue(mapCore.contains("state.categoryVisible[pin.category] = showAllByDefault"));
         assertTrue(mapCore.contains("state.categoryVisible[cat] = showAllByDefault"));
-        assertTrue(mapCore.contains("state.zoneVisible[zoneEntry.zoneKey] = true"));
-        assertTrue(mapTemplate.contains("map-core.js(v=1.21)"));
+        assertTrue(mapTemplate.contains("map-core.js(v=1.26)"));
     }
 
     private String read(String relativePath) throws IOException {

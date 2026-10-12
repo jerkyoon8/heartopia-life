@@ -3,6 +3,8 @@ package com.heartopia.wiki.controller;
 import com.heartopia.wiki.mapper.LocationZoneMapper;
 import com.heartopia.wiki.model.*;
 import com.heartopia.wiki.service.CollectionService;
+import com.heartopia.wiki.service.DynamicMapResourceService;
+import com.heartopia.wiki.service.FileUploadService;
 import com.heartopia.wiki.service.MapPinService;
 import com.heartopia.wiki.service.VillagerService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +42,24 @@ public class MapController {
     private static final String DEFAULT_MAP_KEY = "town";
     private static final String SECOND_MAP_KEY = "second";
     private static final String WHALE_FALL_CANYON = "고래낙하 협곡";
+    private static final String DYNAMIC_RESOURCE_CATEGORY = "dynamic_resource";
+    private static final String IMAGE_MODE_PRESET = "PRESET";
+    private static final String IMAGE_MODE_UPLOAD = "UPLOAD";
+    private static final Set<String> DYNAMIC_RESOURCE_PRESET_ICONS = Set.of(
+            "/images/map/dynamic-resources/pink-bubble.webp",
+            "/images/map/dynamic-resources/fluorite.webp",
+            "/images/map/dynamic-resources/oak.webp"
+    );
+    private static final Set<String> DYNAMIC_RESOURCE_IMAGE_TYPES = Set.of(
+            "image/png", "image/jpeg", "image/webp", "image/gif"
+    );
 
     private final MapPinService mapPinService;
     private final CollectionService collectionService;
     private final VillagerService villagerService;
     private final LocationZoneMapper locationZoneMapper;
+    private final DynamicMapResourceService dynamicMapResourceService;
+    private final FileUploadService fileUploadService;
 
     // 채집물 필터는 더 이상 하드코딩 배열을 쓰지 않고 DB 필드 f.getShowOnMap()에 의존합니다.
 
@@ -98,6 +118,102 @@ public class MapController {
     @ResponseBody
     public List<Villager> getVillagerMasterList() {
         return villagerService.getAllVillagers();
+    }
+
+    @GetMapping("/api/dynamic-resources")
+    @ResponseBody
+    public List<DynamicMapResource> getDynamicResources(
+            @RequestParam(required = false) String mapKey) {
+        return dynamicMapResourceService.getAllByMapKey(mapKey);
+    }
+
+    @PostMapping("/api/dynamic-resources")
+    @ResponseBody
+    public ResponseEntity<?> createDynamicResource(
+            @RequestParam(required = false) String mapKey,
+            @RequestParam String name,
+            @RequestParam(required = false) String iconUrl,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String eventName,
+            @RequestParam(required = false) Integer forageableId,
+            @RequestParam(defaultValue = IMAGE_MODE_PRESET) String imageMode,
+            @RequestParam(required = false) MultipartFile imageFile) {
+        DynamicMapResource resource = new DynamicMapResource();
+        resource.setMapKey(mapKey);
+        resource.setName(name);
+        resource.setDescription(description);
+        resource.setEventName(eventName);
+        resource.setForageableId(forageableId);
+        String uploadedImageUrl = null;
+
+        try {
+            if (forageableId != null) {
+                resource.setIconUrl(null);
+            } else if (IMAGE_MODE_UPLOAD.equals(imageMode)) {
+                validateDynamicResourceImage(imageFile);
+                uploadedImageUrl = fileUploadService.upload(imageFile, "dynamic-resource");
+                resource.setIconUrl(uploadedImageUrl);
+            } else if (IMAGE_MODE_PRESET.equals(imageMode)) {
+                if (!DYNAMIC_RESOURCE_PRESET_ICONS.contains(iconUrl)) {
+                    throw new IllegalArgumentException("변동 자원 기본 이미지를 선택해 주세요.");
+                }
+                resource.setIconUrl(iconUrl);
+            } else {
+                throw new IllegalArgumentException("지원하지 않는 이미지 입력 방식입니다.");
+            }
+            return ResponseEntity.ok(dynamicMapResourceService.create(resource));
+        } catch (IllegalArgumentException exception) {
+            fileUploadService.delete(uploadedImageUrl);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", exception.getMessage()
+            ));
+        } catch (IOException exception) {
+            fileUploadService.delete(uploadedImageUrl);
+            log.error("변동 자원 이미지 업로드 실패", exception);
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "success", false,
+                    "message", "이미지 업로드 중 서버 오류가 발생했습니다."
+            ));
+        }
+    }
+
+    @PostMapping("/api/dynamic-resources/rename-event")
+    @ResponseBody
+    public Map<String, Boolean> renameMapEvent(@RequestParam String mapKey,
+            @RequestParam String oldName, @RequestParam String newName) {
+        dynamicMapResourceService.renameEvent(mapKey, oldName, newName);
+        return Map.of("success", true);
+    }
+
+    @PutMapping("/api/dynamic-resources/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateDynamicResource(@PathVariable Long id,
+            @RequestParam String name, @RequestParam(required = false) String eventName,
+            @RequestParam(required = false) String description,
+            @RequestParam(defaultValue = "KEEP") String imageMode,
+            @RequestParam(required = false) String iconUrl,
+            @RequestParam(required = false) MultipartFile imageFile) {
+        String uploadedUrl = null;
+        try {
+            if ("KEEP".equals(imageMode)) return ResponseEntity.ok(dynamicMapResourceService.update(id, name, eventName, description));
+            if (dynamicMapResourceService.getById(id).getForageableId() != null)
+                throw new IllegalArgumentException("연결된 채집물 이미지는 도감에서 수정해 주세요.");
+            if (IMAGE_MODE_UPLOAD.equals(imageMode)) {
+                validateDynamicResourceImage(imageFile);
+                uploadedUrl = fileUploadService.upload(imageFile, "dynamic-resource");
+                iconUrl = uploadedUrl;
+            } else if (!IMAGE_MODE_PRESET.equals(imageMode) || !DYNAMIC_RESOURCE_PRESET_ICONS.contains(iconUrl)) {
+                throw new IllegalArgumentException("변동 자원 기본 이미지를 선택해 주세요.");
+            }
+            return ResponseEntity.ok(dynamicMapResourceService.update(id, name, eventName, description, iconUrl));
+        } catch (IllegalArgumentException exception) {
+            fileUploadService.delete(uploadedUrl);
+            return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
+        } catch (IOException exception) {
+            fileUploadService.delete(uploadedUrl);
+            return ResponseEntity.internalServerError().body(Map.of("message", "이미지 업로드에 실패했습니다."));
+        }
     }
 
     @GetMapping("/api/pins")
@@ -185,9 +301,10 @@ public class MapController {
                 .map(ForageableCollection::getName)
                 .collect(Collectors.toList());
 
-        return pins.stream()
+        List<MapPin> visiblePins = pins.stream()
                 .filter(pin -> !"forageable".equals(pin.getCategory()) || validForageables.contains(pin.getName()))
                 .collect(Collectors.toList());
+        return visiblePins;
     }
 
     private void enrichPinDetails(MapPin pin) {
@@ -329,6 +446,18 @@ public class MapController {
     @ResponseBody
     public MapPin addPin(@Valid @RequestBody MapPin pin) {
         pin.setMapKey(normalizeMapKey(pin.getMapKey()));
+        if (DYNAMIC_RESOURCE_CATEGORY.equals(pin.getCategory())) {
+            DynamicMapResource resource = dynamicMapResourceService.getByMapKeyAndName(
+                    pin.getMapKey(), pin.getName()
+            );
+            if (resource.getForageableId() != null) {
+                throw new IllegalArgumentException("연결된 채집물은 기존 채집물 핀으로 배치해 주세요.");
+            }
+            pin.setName(resource.getName());
+            pin.setIconUrl(resource.getIconUrl());
+            pin.setDescription(resource.getDescription());
+            pin.setLinkUrl(null);
+        }
         log.info("새로운 핀 추가 API 호출됨: {}", pin.getName());
         MapPin saved = mapPinService.addPin(pin);
         enrichPinDetails(saved); // 새 핀에도 도감 상세 정보 즉시 연동
@@ -342,11 +471,30 @@ public class MapController {
         return Map.of("success", true, "id", id);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleInvalidMapInput(IllegalArgumentException exception) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", exception.getMessage()
+        ));
+    }
+
     private String normalizeMapKey(String mapKey) {
         if (mapKey == null || mapKey.isBlank()) {
             return DEFAULT_MAP_KEY;
         }
         return mapKey;
+    }
+
+    private void validateDynamicResourceImage(MultipartFile imageFile) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 이미지를 선택해 주세요.");
+        }
+        String contentType = imageFile.getContentType();
+        if (contentType == null || !DYNAMIC_RESOURCE_IMAGE_TYPES.contains(contentType.toLowerCase())) {
+            throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
+        }
     }
 
     private boolean belongsToAnimalMap(AnimalCollection animal, String mapKey) {

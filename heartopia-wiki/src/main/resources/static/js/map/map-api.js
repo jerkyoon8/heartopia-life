@@ -4,10 +4,25 @@ const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
 window.MapApp.api = {
+    createDynamicResource: async function (formData, id) {
+        const headers = { 'Accept': 'application/json' };
+        if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+        const response = await fetch('/wiki/map/api/dynamic-resources' + (id ? '/' + id : ''), {
+            method: id ? 'PUT' : 'POST',
+            headers: headers,
+            body: formData
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            throw new Error(body.message || '변동 자원 등록에 실패했습니다.');
+        }
+        return body;
+    },
     saveNewPin: async function (pinData) {
         try {
             pinData.mapKey = pinData.mapKey || window.MapApp.state.activeMapKey || 'town';
-            const headers = { 'Content-Type': 'application/json' };
+            const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
             if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
             const response = await fetch('/wiki/map/api/pins', {

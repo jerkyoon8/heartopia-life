@@ -1,6 +1,14 @@
 window.MapApp = window.MapApp || {};
 
 window.MapApp.ui = {
+    escapeHtml: function (value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    },
     showToast: function (message, duration = 2500) {
         const mapToast = document.getElementById('mapToast');
         const mapToastText = document.getElementById('mapToastText');
@@ -24,7 +32,7 @@ window.MapApp.ui = {
         if (mapEl) mapEl.classList.add('placement-mode-cursor');
 
         document.querySelectorAll('.pin-item').forEach(el => el.classList.remove('placing'));
-        const selectedItem = document.querySelector(`.pin-item[data-name="${pinTemplate.name}"]`);
+        const selectedItem = Array.from(document.querySelectorAll('.pin-item')).find(el => el.dataset.name === pinTemplate.name);
         if (selectedItem) selectedItem.classList.add('placing');
     },
     exitPlacementMode: function () {
@@ -46,8 +54,12 @@ window.MapApp.ui = {
             const marker = state.markers[pin.id];
             if (!marker) return;
 
-            let shouldBeVisible = (state.categoryVisible[pin.category] !== false);
-            const visibilityKey = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+            const season = state.masterDynamicResources.find(r => r.eventName && r.name === pin.name &&
+                (r.forageableId ? pin.category === 'forageable' : pin.category === 'dynamic_resource'));
+            let shouldBeVisible = season && !season.forageableId
+                ? state.categoryVisible.trend_season !== false
+                : state.categoryVisible[pin.category] !== false || (season && state.categoryVisible.trend_season === true);
+            const visibilityKey = window.MapApp.getItemVisibilityKey(pin.category, pin);
             if (state.itemVisible[visibilityKey] === false) shouldBeVisible = false;
 
             if (shouldBeVisible) {
@@ -132,6 +144,204 @@ window.MapApp.ui = {
         const mapInfoBox = document.getElementById('mapInfoBox');
         if (mapInfoBox) mapInfoBox.classList.remove('show');
     },
+    openResourceForm: function (resource, trend = false) {
+        if (!window.isAdmin) return;
+        const form = document.getElementById('dynamicResourceForm');
+        form.reset();
+        document.getElementById('dynamicResourceId').value = resource?.id || '';
+        document.getElementById('dynamicResourceName').value = resource?.name || '';
+        document.getElementById('dynamicResourceName').readOnly = !!resource?.forageableId;
+        document.getElementById('dynamicResourceEvent').value = resource?.eventName || '';
+        document.getElementById('dynamicResourceEvent').required = trend;
+        document.getElementById('dynamicResourceDescription').value = resource?.description || '';
+        const linked = document.getElementById('dynamicResourceForageable');
+        linked.innerHTML = '<option value="">지도 전용 아이템</option>' +
+            window.MapApp.state.masterForageables.map(f => `<option value="${f.id}">${this.escapeHtml(f.name)}</option>`).join('');
+        linked.value = resource?.forageableId || '';
+        linked.disabled = !!resource || window.MapApp.state.activeMapKey !== 'town';
+        document.getElementById('dynamicResourceModalLabel').textContent = resource ? '지도 아이템 수정' : trend ? '트렌드 시즌 아이템 추가' : '변동 자원 추가';
+        document.getElementById('dynamicResourceSubmit').textContent = resource ? '수정 저장' : '등록 후 배치';
+        document.getElementById('dynamicResourceKeepImage').hidden = !resource;
+        if (resource) form.querySelector('input[value="keep"]').checked = true;
+        const error = document.getElementById('dynamicResourceFormError');
+        error.textContent = ''; error.classList.remove('show');
+        form.syncDynamicResourceImageInput?.();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('dynamicResourceModal')).show();
+    },
+    renderTrendSeasons: function (categoryList) {
+        const state = window.MapApp.state;
+        const escape = this.escapeHtml;
+        const resources = state.masterDynamicResources.filter(r => r.eventName);
+        const seasons = [...new Set(resources.map(r => r.eventName))].sort((a,b) => a.localeCompare(b));
+        const group = document.createElement('div');
+        group.className = 'category-group';
+        group.dataset.trendGroup = 'true';
+        group.innerHTML = `<div class="category-header" data-category="trend_season">
+            <span class="category-arrow ${state.expandedCategories.trend_season ? 'expanded' : ''}">▶</span>
+            <span class="category-color-bar" style="background:#e599f7"></span><span class="category-name">트렌드 시즌</span>
+            <div class="category-controls">${window.isAdmin ? '<button class="dynamic-resource-add-btn" data-trend="true" aria-label="트렌드 시즌 아이템 추가"><i class="fas fa-plus"></i></button>' : ''}
+            <button class="category-toggle ${state.categoryVisible.trend_season === false ? 'off' : ''}" data-category="trend_season"><i class="fas fa-eye"></i></button></div></div>
+            <div class="category-items ${state.expandedCategories.trend_season ? 'expanded' : ''}">
+            ${seasons.length ? seasons.map(eventName => `<div class="trend-season-name">${escape(eventName)} ${window.isAdmin ? `<button class="trend-season-rename" data-event="${escape(eventName)}" title="시즌명 수정"><i class="fas fa-pen"></i></button>` : ''}</div>` + resources.filter(r => r.eventName === eventName).map(r => {
+                const category = r.forageableId ? 'forageable' : 'dynamic_resource';
+                const pins = state.allPins.filter(p => p.category === category && p.name === r.name);
+                const id = escape(pins[0]?.id || 'm-' + r.name);
+                const visible = state.itemVisible[`${category}:${r.name}`] !== false;
+                return `<div class="pin-item" data-id="${id}" data-category="${category}" data-name="${escape(r.name)}">
+                    ${r.iconUrl ? `<img class="pin-item-icon" src="${escape(r.iconUrl)}" alt="">` : '<span class="pin-item-icon">★</span>'}
+                    <span class="pin-item-name">${escape(r.name)} (${pins.length})</span><div class="pin-item-controls">
+                    ${pins.length ? `<button class="item-visibility-toggle ${visible ? '' : 'off'}" data-id="${id}" data-category="${category}" data-name="${escape(r.name)}" title="표시/숨기기"><i class="fas fa-eye"></i></button>` : ''}
+                    ${window.isAdmin ? `<button class="trend-resource-edit" data-resource-id="${r.id}" title="아이템 수정"><i class="fas fa-pen"></i></button><button class="item-add-btn" data-category="${category}" data-name="${escape(r.name)}" title="연속 배치"><i class="fas fa-plus"></i></button>` : ''}
+                    </div></div>`;
+            }).join('')).join('') : '<div class="dynamic-resource-empty">등록된 트렌드 시즌이 없습니다.</div>'}</div>`;
+        categoryList.prepend(group);
+        group.querySelectorAll('.trend-season-rename').forEach(button => button.addEventListener('click', async e => {
+            e.stopPropagation();
+            const newName = window.prompt('새 시즌명을 입력해 주세요.', button.dataset.event)?.trim();
+            if (!newName || newName === button.dataset.event) return;
+            try {
+                const body = new FormData();
+                body.append('mapKey', state.activeMapKey); body.append('oldName', button.dataset.event); body.append('newName', newName);
+                const headers = {};
+                if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+                const response = await fetch('/wiki/map/api/dynamic-resources/rename-event', { method:'POST', headers, body });
+                if (!response.ok) throw new Error('시즌명 수정에 실패했습니다.');
+                resources.filter(r => r.eventName === button.dataset.event).forEach(r => r.eventName = newName);
+                this.renderCategoryList();
+            } catch (error) { this.showToast(error.message); }
+        }));
+        group.querySelectorAll('.trend-resource-edit').forEach(button => button.addEventListener('click', e => {
+            e.stopPropagation();
+            this.openResourceForm(resources.find(r => String(r.id) === button.dataset.resourceId), true);
+        }));
+    },
+    bindDynamicResourceForm: function () {
+        const form = document.getElementById('dynamicResourceForm');
+        if (!form || form.dataset.bound === 'true') return;
+        form.dataset.bound = 'true';
+
+        const imageChoices = form.querySelectorAll('input[name="dynamicResourceImageChoice"]');
+        const imageFileInput = document.getElementById('dynamicResourceImageFile');
+        const uploadField = document.getElementById('dynamicResourceUploadField');
+        const linkedSelect = document.getElementById('dynamicResourceForageable');
+        linkedSelect?.addEventListener('change', () => {
+            const master = window.MapApp.state.masterForageables.find(f => String(f.id) === linkedSelect.value);
+            document.getElementById('dynamicResourceName').readOnly = !!master;
+            if (master) document.getElementById('dynamicResourceName').value = master.name;
+            syncImageInput();
+        });
+        const syncImageInput = () => {
+            const selected = form.querySelector('input[name="dynamicResourceImageChoice"]:checked');
+            const editing = !!document.getElementById('dynamicResourceId').value;
+            const linked = !!linkedSelect?.value;
+            const isUpload = selected?.value === 'upload' && !linked;
+            document.getElementById('dynamicResourceImages').hidden = linked;
+            if (imageFileInput) {
+                imageFileInput.disabled = !isUpload;
+                imageFileInput.required = isUpload;
+                if (!isUpload) imageFileInput.value = '';
+            }
+            if (uploadField) uploadField.classList.toggle('show', isUpload);
+        };
+        imageChoices.forEach(choice => choice.addEventListener('change', syncImageInput));
+        form.syncDynamicResourceImageInput = syncImageInput;
+        syncImageInput();
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitButton = document.getElementById('dynamicResourceSubmit');
+            const errorBox = document.getElementById('dynamicResourceFormError');
+            const name = document.getElementById('dynamicResourceName').value.trim();
+            const description = document.getElementById('dynamicResourceDescription').value.trim();
+            const id = document.getElementById('dynamicResourceId').value;
+            const eventName = document.getElementById('dynamicResourceEvent').value.trim();
+            const selectedImage = form.querySelector('input[name="dynamicResourceImageChoice"]:checked');
+            const isUpload = selectedImage?.value === 'upload' && !linkedSelect?.value;
+
+            if (isUpload && (!imageFileInput || imageFileInput.files.length === 0)) {
+                if (errorBox) {
+                    errorBox.textContent = '업로드할 이미지를 선택해 주세요.';
+                    errorBox.classList.add('show');
+                }
+                return;
+            }
+
+            if (errorBox) {
+                errorBox.textContent = '';
+                errorBox.classList.remove('show');
+            }
+            if (submitButton) submitButton.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('mapKey', window.MapApp.state.activeMapKey || 'town');
+                formData.append('name', name);
+                formData.append('description', description);
+                formData.append('eventName', eventName);
+                if (linkedSelect?.value) formData.append('forageableId', linkedSelect.value);
+                formData.append('imageMode', isUpload ? 'UPLOAD' : selectedImage?.value === 'keep' ? 'KEEP' : 'PRESET');
+                if (isUpload) {
+                    formData.append('imageFile', imageFileInput.files[0]);
+                } else {
+                    formData.append('iconUrl', selectedImage?.value || '/images/map/dynamic-resources/pink-bubble.webp');
+                }
+
+                const resource = await window.MapApp.api.createDynamicResource(formData, id);
+                const state = window.MapApp.state;
+                const before = state.masterDynamicResources.find(r => String(r.id) === id);
+                if (before) {
+                    state.masterDynamicResources = state.masterDynamicResources.map(r => r.id === resource.id ? resource : r);
+                    if (!resource.forageableId) state.allPins.forEach(p => {
+                        if (p.category === 'dynamic_resource' && p.name === before.name) {
+                            p.name = resource.name; p.description = resource.description;
+                        }
+                    });
+                } else state.masterDynamicResources.push(resource);
+                window.MapApp.state.expandedCategories.dynamic_resource = true;
+                window.MapApp.state.categoryVisible.dynamic_resource = true;
+                window.MapApp.state.itemVisible[`dynamic_resource:${resource.name}`] = true;
+                if (resource.eventName) {
+                    state.expandedCategories.trend_season = true;
+                    state.categoryVisible.trend_season = true;
+                }
+                if (id) {
+                    const pins = await fetch('/wiki/map/api/pins?mapKey=' + encodeURIComponent(state.activeMapKey)).then(r => {
+                        if (!r.ok) throw new Error('변경된 위치 정보를 불러오지 못했습니다.');
+                        return r.json();
+                    });
+                    state.allPins = pins.filter(window.MapApp.belongsToActiveMap);
+                    Object.values(state.markers).forEach(marker => state.map?.removeLayer(marker));
+                    state.markers = {};
+                    state.allPins.forEach(pin => {
+                        if (pin.mapX != null && pin.mapY != null) window.MapApp.createMarker(pin, state.map, state.mapHeight);
+                    });
+                }
+                window.MapApp.ui.updateMarkerVisibility();
+                window.MapApp.ui.renderCategoryList();
+                form.reset();
+                syncImageInput();
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('dynamicResourceModal')).hide();
+                const template = {
+                    mapKey: resource.mapKey,
+                    category: resource.forageableId ? 'forageable' : 'dynamic_resource',
+                    name: resource.name,
+                    iconUrl: resource.iconUrl || null,
+                    description: resource.description || null,
+                    linkUrl: null
+                };
+                if (!id) window.MapApp.ui.enterPlacementMode(template, true);
+                else window.MapApp.ui.exitPlacementMode();
+                window.MapApp.ui.showToast(`✅ ${resource.name} 등록 완료 — 지도에서 위치를 선택하세요.`);
+            } catch (error) {
+                if (errorBox) {
+                    errorBox.textContent = error.message;
+                    errorBox.classList.add('show');
+                }
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+            }
+        });
+    },
     renderCategoryList: function () {
         const state = window.MapApp.state;
         const configMap = window.MapApp.CATEGORY_CONFIG;
@@ -140,28 +350,35 @@ window.MapApp.ui = {
 
         const grouped = {};
         state.allPins.forEach(pin => {
+            if (pin.category === 'dynamic_resource' && state.masterDynamicResources.some(r => r.eventName && r.name === pin.name)) return;
             if (!grouped[pin.category]) grouped[pin.category] = [];
             grouped[pin.category].push(pin);
         });
+        if (!grouped.dynamic_resource) grouped.dynamic_resource = [];
 
         const masterMap = {
             'forageable': state.masterForageables, 'fish': state.masterFish,
             'bird': state.masterBirds, 'insect': state.masterInsects,
-            'animal': state.masterAnimals, 'villager': state.masterVillagers
+            'animal': state.masterAnimals, 'villager': state.masterVillagers,
+            'dynamic_resource': state.masterDynamicResources
         };
 
         Object.entries(masterMap).forEach(([category, masters]) => {
             if (masters && masters.length > 0) {
                 if (!grouped[category]) grouped[category] = [];
                 masters.forEach(master => {
+                    if (category === 'dynamic_resource' && (master.eventName || master.forageableId)) return;
                     const hasPin = state.allPins.some(p => {
                         if (p.category !== category) return false;
+                        if (category === 'dynamic_resource') return p.name === master.name;
                         return p.name === master.name || p.name.includes(master.name) || master.name.includes(p.name);
                     });
                     if (!hasPin) {
                         grouped[category].push({
                             id: 'm-' + master.name, category: category, name: master.name,
-                            iconUrl: master.imageUrl || null, mapX: null, mapY: null, isMaster: true
+                            iconUrl: master.imageUrl || master.iconUrl || null,
+                            description: master.description || null,
+                            mapX: null, mapY: null, isMaster: true
                         });
                     }
                 });
@@ -169,12 +386,7 @@ window.MapApp.ui = {
         });
 
         categoryList.innerHTML = '';
-        if (state.allPins.length === 0 && Object.values(masterMap).every(arr => arr.length === 0)) {
-            categoryList.innerHTML = '<div class="no-pins">데이터가 없습니다.</div>';
-            return;
-        }
-
-        const categoryOrder = ['villager', 'animal', 'bus', 'forageable', 'fish', 'insect', 'bird'];
+        const categoryOrder = ['dynamic_resource', 'villager', 'animal', 'bus', 'forageable', 'fish', 'insect', 'bird'];
         Object.keys(grouped).sort((a, b) => {
             let idxA = categoryOrder.indexOf(a); let idxB = categoryOrder.indexOf(b);
             if (idxA === -1) idxA = 99; if (idxB === -1) idxB = 99;
@@ -186,7 +398,8 @@ window.MapApp.ui = {
             const isExpanded = state.expandedCategories[category] === true;
 
             const displayItems = [];
-            if (category === 'forageable') {
+            const isMultiLocation = window.MapApp.MULTI_LOCATION_CATEGORIES.includes(category);
+            if (isMultiLocation) {
                 const namesTracked = new Set();
                 pins.forEach(p => {
                     if (!namesTracked.has(p.name)) {
@@ -205,35 +418,43 @@ window.MapApp.ui = {
                     <span class="category-color-bar" style="background: ${config.color}"></span>
                     <span class="category-name">${config.label}</span>
                     <div class="category-controls">
+                        ${category === 'dynamic_resource' && window.isAdmin ? `
+                            <button class="dynamic-resource-add-btn" type="button" title="변동 자원 추가"
+                                aria-label="변동 자원 추가"><i class="fas fa-plus"></i></button>
+                        ` : ''}
                         <button class="category-toggle ${isCatVisible ? '' : 'off'}" data-category="${category}">
                             <i class="fas ${isCatVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
                         </button>
                     </div>
                 </div>
                 <div class="category-items ${isExpanded ? 'expanded' : ''}">
-                    ${displayItems.sort((a, b) => a.name.localeCompare(b.name)).map(pin => {
+                    ${displayItems.length === 0
+                        ? '<div class="dynamic-resource-empty">등록된 변동 자원이 없습니다.</div>'
+                        : displayItems.sort((a, b) => a.name.localeCompare(b.name)).map(pin => {
                 const isUnplaced = !pin.mapX && !pin.mapY;
-                const isForageable = category === 'forageable';
+                const isMultiLocation = window.MapApp.MULTI_LOCATION_CATEGORIES.includes(category);
                 const isPlacing = state.placementMode.active && state.placementMode.pinTemplate && state.placementMode.pinTemplate.name === pin.name;
-                const pinCount = isForageable ? state.allPins.filter(p => p.category === category && p.name === pin.name).length : 0;
-                const hasVisibilityToggle = ['villager', 'animal', 'forageable', 'bus'].includes(category);
-                const visibilityKey = isForageable ? `forageable:${pin.name}` : pin.id;
+                const pinCount = isMultiLocation ? state.allPins.filter(p => p.category === category && p.name === pin.name).length : 0;
+                const hasVisibilityToggle = ['villager', 'animal', 'forageable', 'dynamic_resource', 'bus'].includes(category);
+                const visibilityKey = window.MapApp.getItemVisibilityKey(category, pin);
                 const isItemVisible = state.itemVisible[visibilityKey] !== false;
+                const safeName = window.MapApp.ui.escapeHtml(pin.name);
+                const safeIconUrl = window.MapApp.ui.escapeHtml(pin.iconUrl || '');
 
                 return `
-                    <div class="pin-item ${isPlacing ? 'placing' : ''}" data-id="${pin.id}" data-name="${pin.name}" data-category="${category}">
+                    <div class="pin-item ${isPlacing ? 'placing' : ''}" data-id="${pin.id}" data-name="${safeName}" data-category="${category}">
                         ${isUnplaced ? '<span class="pin-unplaced" title="미배치"></span>' : ''}
-                        ${pin.iconUrl ? `<img class="pin-item-icon" src="${pin.iconUrl}" alt="" />` : `<span class="pin-item-icon">${config.icon}</span>`}
-                        <span class="pin-item-name">${pin.name} ${isForageable ? `(${pinCount})` : ''}</span>
+                        ${pin.iconUrl ? `<img class="pin-item-icon" src="${safeIconUrl}" alt="" />` : `<span class="pin-item-icon">${config.icon}</span>`}
+                        <span class="pin-item-name">${safeName} ${isMultiLocation ? `(${pinCount})` : ''}</span>
                         <div class="pin-item-controls">
-                            ${(hasVisibilityToggle && !isUnplaced) || (isForageable && pinCount > 0) ? `
+                            ${(hasVisibilityToggle && !isUnplaced) || (isMultiLocation && pinCount > 0) ? `
                                 <button class="item-visibility-toggle ${isItemVisible ? '' : 'off'}" 
-                                    data-id="${pin.id}" data-category="${category}" data-name="${pin.name}" title="표시/숨기기">
+                                    data-id="${pin.id}" data-category="${category}" data-name="${safeName}" title="표시/숨기기">
                                     <i class="fas ${isItemVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
                                 </button>
                             ` : ''}
-                            ${['fish', 'bird', 'insect'].includes(category) ? '' : (isForageable ? `
-                                <button class="item-add-btn" data-category="${category}" data-name="${pin.name}" title="연속 배치" 
+                            ${['fish', 'bird', 'insect'].includes(category) ? '' : (isMultiLocation ? `
+                                <button class="item-add-btn" data-category="${category}" data-name="${safeName}" title="연속 배치"
                                     style="${window.isAdmin ? 'display: inline-block;' : 'display: none;'}">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -249,6 +470,7 @@ window.MapApp.ui = {
             categoryList.appendChild(group);
         });
 
+        window.MapApp.ui.renderTrendSeasons(categoryList);
         window.MapApp.ui.bindCategoryEvents();
         window.MapApp.ui.renderLocationList();
     },
@@ -258,10 +480,17 @@ window.MapApp.ui = {
         // Category Expand/Collapse
         document.querySelectorAll('.category-header').forEach(header => {
             header.addEventListener('click', (e) => {
-                if (e.target.closest('.category-toggle')) return;
+                if (e.target.closest('button')) return;
                 const cat = header.dataset.category;
                 state.expandedCategories[cat] = !state.expandedCategories[cat];
                 ui.renderCategoryList();
+            });
+        });
+
+        document.querySelectorAll('.dynamic-resource-add-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                ui.openResourceForm(null, btn.dataset.trend === 'true');
             });
         });
 
@@ -272,20 +501,27 @@ window.MapApp.ui = {
                 const cat = btn.dataset.category;
                 const nextVisible = !state.categoryVisible[cat];
                 state.categoryVisible[cat] = nextVisible;
+                if (cat === 'trend_season') {
+                    state.masterDynamicResources.filter(r => r.eventName).forEach(r => {
+                        const category = r.forageableId ? 'forageable' : 'dynamic_resource';
+                        state.itemVisible[`${category}:${r.name}`] = nextVisible;
+                    });
+                }
                 state.allPins.forEach(pin => {
                     if (pin.category === cat) {
-                        const key = cat === 'forageable' ? `forageable:${pin.name}` : pin.id;
+                        const key = window.MapApp.getItemVisibilityKey(cat, pin);
                         state.itemVisible[key] = nextVisible;
                     }
                 });
                 const masterMap = {
                     'forageable': state.masterForageables, 'fish': state.masterFish,
                     'bird': state.masterBirds, 'insect': state.masterInsects,
-                    'animal': state.masterAnimals, 'villager': state.masterVillagers
+                    'animal': state.masterAnimals, 'villager': state.masterVillagers,
+                    'dynamic_resource': state.masterDynamicResources
                 };
                 if (masterMap[cat]) {
                     masterMap[cat].forEach(m => {
-                        const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                        const key = window.MapApp.getItemVisibilityKey(cat, { id: `m-${m.name}`, name: m.name });
                         state.itemVisible[key] = nextVisible;
                     });
                 }
@@ -301,10 +537,13 @@ window.MapApp.ui = {
                 const id = btn.dataset.id;
                 const cat = btn.dataset.category;
                 const name = btn.dataset.name;
-                const key = cat === 'forageable' ? `forageable:${name}` : id;
+                const key = window.MapApp.getItemVisibilityKey(cat, { id: id, name: name });
                 const nextVisible = state.itemVisible[key] === false ? true : false;
                 state.itemVisible[key] = nextVisible;
-                if (nextVisible) state.categoryVisible[cat] = true;
+                if (nextVisible) {
+                    state.categoryVisible[cat] = true;
+                    if (btn.closest('[data-trend-group]')) state.categoryVisible.trend_season = true;
+                }
                 ui.updateMarkerVisibility();
                 ui.renderCategoryList();
             });
@@ -345,17 +584,18 @@ window.MapApp.ui = {
                                 // "전체" 케이스: 모든 핀 끄고, 하위 zone 라벨만 표시, fitBounds
                                 Object.keys(state.categoryVisible).forEach(cat => { state.categoryVisible[cat] = false; });
                                 state.allPins.forEach(p => {
-                                    const key = p.category === 'forageable' ? `forageable:${p.name}` : p.id;
+                                    const key = window.MapApp.getItemVisibilityKey(p.category, p);
                                     state.itemVisible[key] = false;
                                 });
                                 const masterMapAll = {
                                     'forageable': state.masterForageables, 'fish': state.masterFish,
                                     'bird': state.masterBirds, 'insect': state.masterInsects,
-                                    'animal': state.masterAnimals, 'villager': state.masterVillagers
+                                    'animal': state.masterAnimals, 'villager': state.masterVillagers,
+                                    'dynamic_resource': state.masterDynamicResources
                                 };
                                 Object.entries(masterMapAll).forEach(([cat, ms]) => {
                                     if (ms) ms.forEach(m => {
-                                        const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                                        const key = window.MapApp.getItemVisibilityKey(cat, { id: `m-${m.name}`, name: m.name });
                                         state.itemVisible[key] = false;
                                     });
                                 });
@@ -415,10 +655,17 @@ window.MapApp.ui = {
                 const category = btn.dataset.category;
                 const name = btn.dataset.name;
                 const existing = state.allPins.find(p => p.category === category && p.name === name);
-                const master = state.masterForageables.find(m => m.name === name);
+                const masters = category === 'dynamic_resource'
+                    ? state.masterDynamicResources
+                    : state.masterForageables;
+                const master = masters.find(m => m.name === name);
                 const template = existing ? { ...existing } : {
                     mapKey: state.activeMapKey || 'town',
-                    category: category, name: name, iconUrl: master ? master.imageUrl : null, description: null, linkUrl: null
+                    category: category,
+                    name: name,
+                    iconUrl: master ? (master.imageUrl || master.iconUrl) : null,
+                    description: master ? master.description : null,
+                    linkUrl: null
                 };
                 if (state.placementMode.active && state.placementMode.pinTemplate && state.placementMode.pinTemplate.name === name) {
                     ui.exitPlacementMode();

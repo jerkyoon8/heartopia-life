@@ -5,10 +5,99 @@ document.addEventListener('DOMContentLoaded', function () {
     const api = window.MapApp.api;
     const ui = window.MapApp.ui;
     const zone = window.MapApp.zone;
+    ui.bindDynamicResourceForm();
 
     // Sidebar Elements
     const mapSidePanel = document.getElementById('mapSidePanel');
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const mapLayout = document.querySelector('.map-layout');
+    const mapFullscreenToggle = document.getElementById('mapFullscreenToggle');
+    let mapBounds = null;
+    let isMapFullscreen = false;
+    let fullscreenScrollY = 0;
+    let hasFullscreenHistoryEntry = false;
+
+    const relayoutMap = () => {
+        if (!state.map) return;
+        window.requestAnimationFrame(() => {
+            state.map.invalidateSize();
+            if (mapBounds) state.map.fitBounds(mapBounds);
+        });
+        window.setTimeout(() => {
+            if (!state.map) return;
+            state.map.invalidateSize();
+        }, 180);
+    };
+
+    const renderFullscreenToggle = () => {
+        if (!mapFullscreenToggle) return;
+        const label = mapFullscreenToggle.querySelector('.fullscreen-label');
+        const icon = mapFullscreenToggle.querySelector('i');
+        mapFullscreenToggle.setAttribute('aria-pressed', String(isMapFullscreen));
+        mapFullscreenToggle.setAttribute('aria-label', isMapFullscreen ? '전체화면 지도 닫기' : '지도를 전체화면으로 보기');
+        if (label) label.textContent = isMapFullscreen ? '닫기' : '전체화면';
+        if (icon) icon.className = isMapFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+    };
+
+    const exitMapFullscreen = (useHistoryBack = false) => {
+        if (!isMapFullscreen || !mapLayout) return;
+        isMapFullscreen = false;
+        mapLayout.classList.remove('is-mobile-fullscreen');
+        document.body.classList.remove('map-fullscreen-open');
+        renderFullscreenToggle();
+        window.scrollTo(0, fullscreenScrollY);
+        relayoutMap();
+
+        if (useHistoryBack && hasFullscreenHistoryEntry) {
+            hasFullscreenHistoryEntry = false;
+            window.history.back();
+        } else {
+            hasFullscreenHistoryEntry = false;
+        }
+    };
+
+    const enterMapFullscreen = () => {
+        if (!mapLayout || window.innerWidth > 768 || isMapFullscreen) return;
+        fullscreenScrollY = window.scrollY;
+        isMapFullscreen = true;
+        mapLayout.classList.add('is-mobile-fullscreen');
+        document.body.classList.add('map-fullscreen-open');
+        renderFullscreenToggle();
+
+        window.history.pushState(
+            Object.assign({}, window.history.state || {}, { mapFullscreen: true }),
+            '',
+            window.location.href
+        );
+        hasFullscreenHistoryEntry = true;
+        relayoutMap();
+    };
+
+    if (mapFullscreenToggle && mapLayout) {
+        mapFullscreenToggle.addEventListener('click', () => {
+            if (isMapFullscreen) {
+                exitMapFullscreen(true);
+            } else {
+                enterMapFullscreen();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && isMapFullscreen) exitMapFullscreen(true);
+        });
+
+        window.addEventListener('popstate', () => {
+            if (isMapFullscreen) exitMapFullscreen(false);
+        });
+
+        window.addEventListener('resize', () => {
+            if (isMapFullscreen && window.innerWidth > 768) {
+                exitMapFullscreen(true);
+                return;
+            }
+            if (isMapFullscreen) relayoutMap();
+        });
+    }
 
     if (sidebarToggleBtn && mapSidePanel) {
         sidebarToggleBtn.addEventListener('click', () => {
@@ -23,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const activeMap = window.MapApp.getActiveMap();
-    const showAllByDefault = state.activeMapKey === 'second';
+    const showAllByDefault = false;
     document.querySelectorAll('.map-switch-btn').forEach(btn => {
         const isActive = btn.dataset.mapKey === state.activeMapKey;
         btn.classList.toggle('active', isActive);
@@ -34,18 +123,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const setAllVisibility = (isVisible) => {
         Object.keys(window.MapApp.CATEGORY_CONFIG).forEach(cat => state.categoryVisible[cat] = isVisible);
         state.allPins.forEach(pin => {
-            const key = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+            const key = window.MapApp.getItemVisibilityKey(pin.category, pin);
             state.itemVisible[key] = isVisible;
         });
         const masterMap = {
             'forageable': state.masterForageables, 'fish': state.masterFish,
             'bird': state.masterBirds, 'insect': state.masterInsects,
-            'animal': state.masterAnimals, 'villager': state.masterVillagers
+            'animal': state.masterAnimals, 'villager': state.masterVillagers,
+            'dynamic_resource': state.masterDynamicResources
         };
         Object.entries(masterMap).forEach(([cat, masters]) => {
             if (masters) {
                 masters.forEach(m => {
-                    const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                    const key = window.MapApp.getItemVisibilityKey(cat, { id: `m-${m.name}`, name: m.name });
                     state.itemVisible[key] = isVisible;
                 });
             }
@@ -91,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(infoBoxClose) infoBoxClose.addEventListener('click', ui.hideInfoBox);
 
     // Initial Marker creation logic
+    window.MapApp.createMarker = createMarker;
     function createMarker(pin, map, mapHeight) {
         const lat = mapHeight - pin.mapY;
         const lng = pin.mapX;
@@ -107,21 +198,25 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         });
 
+        const safeName = ui.escapeHtml(pin.name);
+        const safeDescription = ui.escapeHtml(pin.description || '');
         let popupHtml = `<div class="map-popup-container">`;
-        popupHtml += `<div class="map-popup-title">${pin.name}</div>`;
+        popupHtml += `<div class="map-popup-title">${safeName}</div>`;
+        if (safeDescription) popupHtml += `<div class="map-popup-description">${safeDescription}</div>`;
         if (pin.details && Object.keys(pin.details).length > 0) {
             popupHtml += `<div class="map-popup-details">`;
             for (const [key, value] of Object.entries(pin.details)) {
                 if (value && value !== 'null') {
                     const keyMap = { '역할': 'role', '위치': 'loc', '해금': 'unlock', '날씨': 'weather', '선호 날씨': 'weather', '시간': 'time', '가격': 'price', '가격(1성)': 'price', '에너지': 'energy', '선호 음식': 'food' };
                     const keyClass = keyMap[key] || 'default';
-                    popupHtml += `<div class="detail-item"><span class="detail-key label-${keyClass}">${key}:</span> <span class="detail-val">${value}</span></div>`;
+                    popupHtml += `<div class="detail-item"><span class="detail-key label-${keyClass}">${ui.escapeHtml(key)}:</span> <span class="detail-val">${ui.escapeHtml(value)}</span></div>`;
                 }
             }
             popupHtml += `</div>`;
         }
         if (pin.linkUrl) popupHtml += `<a href="${pin.linkUrl}" class="map-popup-link">상세 페이지 이동</a>`;
-        if (pin.category === 'forageable' && window.isAdmin) {
+        if (window.MapApp.MULTI_LOCATION_CATEGORIES.includes(pin.category)
+                && window.isAdmin) {
             popupHtml += `<div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px;">
                     <button class="popup-delete-btn" onclick="document.dispatchEvent(new CustomEvent('delete-pin', {detail: ${pin.id}}))" style="background: #ff8787; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">
                         <i class="fas fa-trash"></i> 핀 삭제
@@ -131,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         marker.bindPopup(popupHtml);
         state.markers[pin.id] = marker;
-        const visibilityKey = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
+        const visibilityKey = window.MapApp.getItemVisibilityKey(pin.category, pin);
         const shouldBeVisible = state.categoryVisible[pin.category] !== false
             && state.itemVisible[visibilityKey] !== false;
         if (shouldBeVisible) marker.addTo(map);
@@ -199,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
         state.allPins.forEach(p => {
             if (p.category === category) {
                 const isMatch = p.name === name || p.name.includes(name) || name.includes(p.name);
-                const key = category === 'forageable' ? `forageable:${p.name}` : p.id;
+                const key = window.MapApp.getItemVisibilityKey(category, p);
                 state.itemVisible[key] = isMatch;
             }
         });
@@ -217,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (masters) {
                 masters.forEach(m => {
                     const isMatch = m.name === name || m.name.includes(name) || name.includes(m.name);
-                    const key = category === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                    const key = window.MapApp.getItemVisibilityKey(category, { id: `m-${m.name}`, name: m.name });
                     state.itemVisible[key] = isMatch;
                 });
             }
@@ -242,17 +337,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         // 모든 핀 끄기
                         Object.keys(state.categoryVisible).forEach(cat => { state.categoryVisible[cat] = false; });
                         state.allPins.forEach(p => {
-                            const key = p.category === 'forageable' ? `forageable:${p.name}` : p.id;
+                            const key = window.MapApp.getItemVisibilityKey(p.category, p);
                             state.itemVisible[key] = false;
                         });
                         const masterMapAll = {
                             'forageable': state.masterForageables, 'fish': state.masterFish,
                             'bird': state.masterBirds, 'insect': state.masterInsects,
-                            'animal': state.masterAnimals, 'villager': state.masterVillagers
+                            'animal': state.masterAnimals, 'villager': state.masterVillagers,
+                            'dynamic_resource': state.masterDynamicResources
                         };
                         Object.entries(masterMapAll).forEach(([cat, masters]) => {
                             if (masters) masters.forEach(m => {
-                                const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
+                                const key = window.MapApp.getItemVisibilityKey(cat, { id: `m-${m.name}`, name: m.name });
                                 state.itemVisible[key] = false;
                             });
                         });
@@ -311,7 +407,8 @@ document.addEventListener('DOMContentLoaded', function () {
         bird: { stateKey: 'masterBirds', url: '/wiki/map/api/birds' },
         insect: { stateKey: 'masterInsects', url: '/wiki/map/api/insects' },
         animal: { stateKey: 'masterAnimals', url: '/wiki/map/api/animals' },
-        villager: { stateKey: 'masterVillagers', url: '/wiki/map/api/villagers' }
+        villager: { stateKey: 'masterVillagers', url: '/wiki/map/api/villagers' },
+        dynamic_resource: { stateKey: 'masterDynamicResources', url: '/wiki/map/api/dynamic-resources' }
     };
     const mapKey = state.activeMapKey || 'town';
     const requestedCategories = window.MapApp.getActiveDataCategories()
@@ -364,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
             state[result.stateKey] = result.items;
         });
         const bounds = [[0, 0], [mapHeight, mapWidth]];
+        mapBounds = bounds;
 
         state.map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 2, zoomSnap: 0.25, attributionControl: false, maxBounds: bounds, maxBoundsViscosity: 1.0 });
         L.imageOverlay(window.MapApp.imageUrl, bounds).addTo(state.map);
@@ -384,13 +482,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             state.allPins.forEach(pin => {
                 if (state.categoryVisible[pin.category] === undefined) {
-                    const defaultVisible = ['villager', 'animal', 'bus'];
+                    const defaultVisible = ['dynamic_resource'];
                     state.categoryVisible[pin.category] = showAllByDefault
                         ? true
                         : defaultVisible.includes(pin.category);
                 }
-                const key = pin.category === 'forageable' ? `forageable:${pin.name}` : pin.id;
-                if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[pin.category];
+                const key = window.MapApp.getItemVisibilityKey(pin.category, pin);
+                if (state.itemVisible[key] === undefined) state.itemVisible[key] = window.MapApp.getInitialItemVisibility(pin.category, pin);
             });
 
             state.allPins.forEach(pin => { if (pin.mapX && pin.mapY) createMarker(pin, state.map, mapHeight); });
@@ -401,18 +499,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 'bird': state.masterBirds,
                 'insect': state.masterInsects,
                 'animal': state.masterAnimals,
-                'villager': state.masterVillagers
+                'villager': state.masterVillagers,
+                'dynamic_resource': state.masterDynamicResources
             };
             Object.entries(masterMapInit).forEach(([cat, masters]) => {
                 if (state.categoryVisible[cat] === undefined) {
-                    const defaultVisible = ['villager', 'animal', 'bus'];
+                    const defaultVisible = ['dynamic_resource'];
                     state.categoryVisible[cat] = showAllByDefault
                         ? true
                         : defaultVisible.includes(cat);
                 }
                 masters.forEach(m => {
-                    const key = cat === 'forageable' ? `forageable:${m.name}` : `m-${m.name}`;
-                    if (state.itemVisible[key] === undefined) state.itemVisible[key] = state.categoryVisible[cat];
+                    const key = window.MapApp.getItemVisibilityKey(cat, { id: `m-${m.name}`, name: m.name });
+                    if (state.itemVisible[key] === undefined) state.itemVisible[key] = window.MapApp.getInitialItemVisibility(cat, m);
                 });
             });
 
