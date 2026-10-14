@@ -1,0 +1,2899 @@
+{
+  "schema_version": 1,
+  "collected_on": "2026-10-08",
+  "scope": "사용자 제공 유저키트의 투명 실제 외형 15종·71장; 한글명은 한국어 허브 도감 대조",
+  "summary": {
+    "sculptures": 15,
+    "requested_star_slots": 75,
+    "collected_star_images": 71,
+    "not_applicable_slots": 4,
+    "missing_applicable_images": 0,
+    "korean_names_game_screenshot_verified": 7,
+    "korean_names_unverified": 0,
+    "korean_names_community_catalog_matched": 15,
+    "korean_names_game_screenshot_unverified": 8
+  },
+  "caution": "허브 한글명 15종 대조 완료. 게임 화면 직접 확인은 7종이며 나머지 8종은 한국어 커뮤니티 도감 근거. 토끼·마시모 취미 레벨 충돌 유지. 이미지 파일의 성급별 외형은 유저키트 기반.",
+  "items": [
+    {
+      "id": "sculpture-01",
+      "name_ko": "입체 눈 벽돌",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "几何雪砖",
+      "community_name_ko": "입체 눈 벽돌",
+      "provided_hobby_level": 1,
+      "hobby_unlock_level": 1,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 1
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 1
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/입체 눈 벽돌_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5311-4b53558f51.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-01/1star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "5217121fecc131009d487e831a0b1956d5b3f6b72dcab23913665a421c4245aa",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              450,
+              209,
+              571,
+              323
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/입체 눈 벽돌_1성.webp",
+          "pixel_size": [
+            152,
+            150
+          ],
+          "sha256": "91705f9233fe1f4903a7d3ed777c09335ac558f4794ffbd5be90423a76718335",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_brick_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-01/2star.png",
+            "pixel_size": [
+              120,
+              114
+            ],
+            "sha256": "2e24837969a4a3110b1c3991ef252151092ec4d80513ddc9eaff1547616b104c",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              575,
+              209,
+              695,
+              323
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/입체 눈 벽돌_2성.webp",
+          "pixel_size": [
+            176,
+            114
+          ],
+          "sha256": "7378f578271e1d89db6663850587e33a5ecfcd999545e35e85335594a831d319",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_brick_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-01/3star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "a32c27723702477955e9c6560e32f90b1504b1cc6df0a30e90b3ec2c134c54cf",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              699,
+              209,
+              821,
+              323
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/입체 눈 벽돌_3성.webp",
+          "pixel_size": [
+            178,
+            178
+          ],
+          "sha256": "3ba24138f709c5a8fb978823fdabd62f5516e3b17ffa41f3d60b0ae695f806f6",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_brick_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-01/4star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "0df64ca90980893f053b83b3fc3ab92cc985e64685570b4d411985cf6eb9aa66",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              825,
+              209,
+              947,
+              323
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/입체 눈 벽돌_4성.webp",
+          "pixel_size": [
+            182,
+            124
+          ],
+          "sha256": "037acaa5f0ce4edb0556e6cb3b6c47f82742e08aabf0547b6fdab91c319ff2e8",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_brick_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-01/5star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "6679952c02792e0bea84f59e6d6c559c71e155050b2bbce9e98b91077e0286e1",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              951,
+              209,
+              1072,
+              323
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/입체 눈 벽돌_5성.webp",
+          "pixel_size": [
+            182,
+            109
+          ],
+          "sha256": "e1fea617df851f07497d6a7eb5b730f0d53cadfd3d33c44eef0883aaea0cc5ee",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_brick_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 155,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "1",
+      "level_label": "1레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-02",
+      "name_ko": "이글루 부품",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "雪屋组件",
+      "community_name_ko": "이글루 부품",
+      "provided_hobby_level": 1,
+      "hobby_unlock_level": 1,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 1
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 1
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/이글루 부품_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5312-6886a037fe.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-02/1star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "96bb4418bc62bf6549251c36ac60bd46eacdb7c8f7e352d96eb9513d6b1db49a",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              450,
+              327,
+              571,
+              441
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/이글루 부품_1성.webp",
+          "pixel_size": [
+            178,
+            96
+          ],
+          "sha256": "ceb4187602709b9bf35ac999f539c4fe8e7f068abe7443137b67ffce49333578",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_igloo_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-02/2star.png",
+            "pixel_size": [
+              120,
+              114
+            ],
+            "sha256": "79ed4ef80596d08b87daf1a8fc9688fad64f2176335a51fc9612728869941911",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              575,
+              327,
+              695,
+              441
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/이글루 부품_2성.webp",
+          "pixel_size": [
+            168,
+            129
+          ],
+          "sha256": "ef974a1e61ef1f849597b07a8afe10a6a28376858add9f0f176fe765f373e6ff",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_igloo_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-02/3star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "c71bb7d8c70bbca5dcfb79c0ea1a53113b8e880b0f0b961d878cb2de4780302f",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              699,
+              327,
+              821,
+              441
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/이글루 부품_3성.webp",
+          "pixel_size": [
+            182,
+            135
+          ],
+          "sha256": "93fbd9265370485d4d2da0b1118bdb32a393b18ffda0418f57e939dbb32c3b59",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_igloo_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-02/4star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "e15b534e60d49ae9bc5d31654da5a0dd6fa4b35903ad2bbca26f94308ff51d5d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              825,
+              327,
+              947,
+              441
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/이글루 부품_4성.webp",
+          "pixel_size": [
+            178,
+            114
+          ],
+          "sha256": "2e662a27d9578ab54eb5bff11288345d2dceacfba9c846123b483aa4afa43ce6",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_igloo_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-02/5star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "ee46e0fca9f585018e1b8dcf7ff366a44ae12485148f9917051e871a9c68b49d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              951,
+              327,
+              1072,
+              441
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/이글루 부품_5성.webp",
+          "pixel_size": [
+            128,
+            166
+          ],
+          "sha256": "f71c14a7615165fb2ed79095d72618d82115031b09993fbf30d6d966d545ba80",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_igloo_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 155,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "1",
+      "level_label": "1레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-03",
+      "name_ko": "아이스크림콘 눈 조각",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "雪糕筒雪雕",
+      "community_name_ko": "아이스크림콘 눈 조각",
+      "provided_hobby_level": 1,
+      "hobby_unlock_level": 1,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 1
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 1
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/아이스크림콘 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5313-76346572f8.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-03/1star.png",
+            "pixel_size": [
+              121,
+              113
+            ],
+            "sha256": "3e4a549b8706799bdff0ff4c0e61b0a2c8880c1f87a0f54410f99eac2f60b4c5",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              450,
+              445,
+              571,
+              558
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/아이스크림콘 눈 조각_1성.webp",
+          "pixel_size": [
+            124,
+            150
+          ],
+          "sha256": "d8c9986c68f4c572097300da267d72cd9aba377c267df9119c0a742e6db78b35",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_base_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-03/2star.png",
+            "pixel_size": [
+              120,
+              113
+            ],
+            "sha256": "d59d1c9c4be3e772b43b52a551e046fb59f2b6cd7fda5785f747e4f1605c1c3f",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              575,
+              445,
+              695,
+              558
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/아이스크림콘 눈 조각_2성.webp",
+          "pixel_size": [
+            132,
+            147
+          ],
+          "sha256": "f4d3c71cb884896d622f26ddaf364b037c2fe61b1d9f3c71fb9c5a728eba3f49",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_base_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-03/3star.png",
+            "pixel_size": [
+              122,
+              113
+            ],
+            "sha256": "eaf851ad9b928b13da45de9f7b7bf6330214205d506f711761447c484aaa273c",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              699,
+              445,
+              821,
+              558
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/아이스크림콘 눈 조각_3성.webp",
+          "pixel_size": [
+            166,
+            91
+          ],
+          "sha256": "e6a3e2af1504988150b485e5203dcc752a27ab12a5a8db0377e9436e7e013e84",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_base_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-03/4star.png",
+            "pixel_size": [
+              122,
+              113
+            ],
+            "sha256": "bf8725d58306335a8623fa51848501103e4da4197168752dbdcf7bcc9c961531",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              825,
+              445,
+              947,
+              558
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/아이스크림콘 눈 조각_4성.webp",
+          "pixel_size": [
+            143,
+            141
+          ],
+          "sha256": "6b92e2b7cf2df37163757559d7da18fc7a123ef6bdcee089ade55bdfd20eea69",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_base_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-03/5star.png",
+            "pixel_size": [
+              121,
+              113
+            ],
+            "sha256": "83dc025b5c1564057439f4d373c8310a46a9ee8de656fa411e3038bdd3ad844d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              951,
+              445,
+              1072,
+              558
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/아이스크림콘 눈 조각_5성.webp",
+          "pixel_size": [
+            136,
+            164
+          ],
+          "sha256": "ac518fb92df50913833fe65f242de2991df33a2d59acb2b16f26144b1ef2a1cc",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_base_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 155,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "1",
+      "level_label": "1레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-04",
+      "name_ko": "덩어리 눈 조각",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "一坨雪雕",
+      "community_name_ko": "덩어리 눈 조각",
+      "provided_hobby_level": 1,
+      "hobby_unlock_level": 1,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 1
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 1
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/덩어리 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5314-6125b0fde3.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-04/1star.png",
+            "pixel_size": [
+              121,
+              99
+            ],
+            "sha256": "88d30de177a578081c2e132b16a3c5f0101a87b80acc0c6994951a2ca3d77c66",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              450,
+              106,
+              571,
+              205
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/덩어리 눈 조각_1성.webp",
+          "pixel_size": [
+            147,
+            139
+          ],
+          "sha256": "11e801adea6b817400dc67cb01baccc3ba271c1c7f239a67f6399ec2b4f71660",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_fail_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "not_applicable",
+          "image": null,
+          "reason": "한국 게임 도감의 총 71칸 및 해외 표의 빈 2~5성 칸과 대조. 등급 이미지를 생성하거나 복제하지 않음."
+        },
+        {
+          "stars": 3,
+          "status": "not_applicable",
+          "image": null,
+          "reason": "한국 게임 도감의 총 71칸 및 해외 표의 빈 2~5성 칸과 대조. 등급 이미지를 생성하거나 복제하지 않음."
+        },
+        {
+          "stars": 4,
+          "status": "not_applicable",
+          "image": null,
+          "reason": "한국 게임 도감의 총 71칸 및 해외 표의 빈 2~5성 칸과 대조. 등급 이미지를 생성하거나 복제하지 않음."
+        },
+        {
+          "stars": 5,
+          "status": "not_applicable",
+          "image": null,
+          "reason": "한국 게임 도감의 총 71칸 및 해외 표의 빈 2~5성 칸과 대조. 등급 이미지를 생성하거나 복제하지 않음."
+        }
+      ],
+      "notes": [
+        "한국 스크린샷은 1성 표시 및 전체 71칸. 네이버 번역 표는 별점 없는 실패작이라고 설명하여 표기 충돌 있음. 1성 이미지 1개만 저장."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 155,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "1",
+      "level_label": "1레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-05",
+      "name_ko": "스마일리 눈 소나무",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "微笑雪松",
+      "community_name_ko": "스마일리 눈 소나무",
+      "provided_hobby_level": 2,
+      "hobby_unlock_level": 2,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 2
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 2
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/스마일리 눈 소나무_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5310-68046c727e.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-05/1star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "c0ad86702ccf4f3f80751f461b06681e6f312b27f3dce395deee15178c8f17cd",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              450,
+              562,
+              571,
+              676
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/스마일리 눈 소나무_1성.webp",
+          "pixel_size": [
+            152,
+            164
+          ],
+          "sha256": "bbdc50033f937a9c0e81bb48b2b76e7ad2edd173255d76eb3b8ed68418fb3d62",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_cedar_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-05/2star.png",
+            "pixel_size": [
+              120,
+              114
+            ],
+            "sha256": "dd4df1d6262ee4df10bfc2a4ee1e2296935e53526cf97708b1f55358d037bac9",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              575,
+              562,
+              695,
+              676
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/스마일리 눈 소나무_2성.webp",
+          "pixel_size": [
+            126,
+            188
+          ],
+          "sha256": "1adffc7efad5869aff7ac277d710324113e68da70d114727424653522ed6b7e8",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_cedar_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-05/3star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "e85e51f29bdf69ac1da7de196564037b22f19cf7578b23b79d9afa02742d3b43",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              699,
+              562,
+              821,
+              676
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/스마일리 눈 소나무_3성.webp",
+          "pixel_size": [
+            110,
+            204
+          ],
+          "sha256": "121e2d29d3fae3d200506b7cd4c1a31f71b9126cf7c8243858bb0b9dd733d0dc",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_cedar_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-05/4star.png",
+            "pixel_size": [
+              122,
+              114
+            ],
+            "sha256": "a8d92dce67da62b6d482d83a292db53ef94e0cdcb8832d8fe484b5fb89dc1a8c",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              825,
+              562,
+              947,
+              676
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/스마일리 눈 소나무_4성.webp",
+          "pixel_size": [
+            126,
+            204
+          ],
+          "sha256": "5dac6b17774d141fdf415fb1d253f14c9293ab55ce7ad936ef9bc2a0ba3b9996",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_cedar_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-05/5star.png",
+            "pixel_size": [
+              121,
+              114
+            ],
+            "sha256": "e1f44755851e5ea748863255da090eb4616a52502a099c651f5e1d8f1ef568df",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FvsdsuBgpReu9kLR9846W_FyzisE.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-16.jpg",
+            "crop_box_xyxy": [
+              951,
+              562,
+              1072,
+              676
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/스마일리 눈 소나무_5성.webp",
+          "pixel_size": [
+            123,
+            201
+          ],
+          "sha256": "2454e5235f945c122a443bbebc0b1b6f8bd5adf533cbc0bdd5341e9550a01c00",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_cedar_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 155,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "2",
+      "level_label": "2레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-06",
+      "name_ko": "무스 타르타르 눈 조각",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "塔塔麋鹿雪雕",
+      "community_name_ko": "무스 타르타르 눈 조각",
+      "provided_hobby_level": 2,
+      "hobby_unlock_level": 2,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 2
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 2
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/무스 타르타르 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5306-ea861dff17.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-06/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "e7a6e854f642776253ad84451ecce0f54cd6546ae84573ca971f238786c79386",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              252,
+              405,
+              409
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/무스 타르타르 눈 조각_1성.webp",
+          "pixel_size": [
+            155,
+            190
+          ],
+          "sha256": "d76ed99e5de410f9267e32e8072f4f48663a94bd9e213c1f76b657f02ce5e67a",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_elk_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-06/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "4b6855e91c5468e54b8d694784244fb3ece0541edefda92a85a87cf39fbedf34",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              252,
+              573,
+              409
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/무스 타르타르 눈 조각_2성.webp",
+          "pixel_size": [
+            116,
+            198
+          ],
+          "sha256": "3eac7b2240dc3a3307102a5a104e19291b92c939b1b2ef84be440aa3fcab5b2e",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_elk_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-06/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "e0c6f74cb4c2e9b05096425ba87b0efcd8a60f52396391950b110861a86529a4",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              252,
+              740,
+              409
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/무스 타르타르 눈 조각_3성.webp",
+          "pixel_size": [
+            90,
+            208
+          ],
+          "sha256": "d2e8878dc4ef1581a471657fe245dbea30eef5cbee590abeaa2d1d5b63691c24",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_elk_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-06/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "4aa65107cedefd884716aa125ea59a33c9bb3a1b1a969f6b7f6500cc9a2c1f1b",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              252,
+              907,
+              409
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/무스 타르타르 눈 조각_4성.webp",
+          "pixel_size": [
+            92,
+            208
+          ],
+          "sha256": "f043470e9cf9b7e334aa018d997a79f8d8070c65614b5744cf9d15dc3a715340",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_elk_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-06/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "13f86ef47397ec6ac0c00161f3dcb4886f56337d65490b03495f5b425e882ebd",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              252,
+              1075,
+              409
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/무스 타르타르 눈 조각_5성.webp",
+          "pixel_size": [
+            83,
+            210
+          ],
+          "sha256": "33db0a1736e149e750648b0e3f896c21fcd3ac4dda417e48d3870115e16aed88",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_elk_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 165,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "2",
+      "level_label": "2레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-07",
+      "name_ko": "보보 비버 눈 조각",
+      "name_ko_status": "game_screenshot_verified",
+      "name_zh": "波波河狸雪雕",
+      "community_name_ko": "보보 비버 눈 조각",
+      "provided_hobby_level": 2,
+      "hobby_unlock_level": 2,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 2
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 2
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/보보 비버 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5304-cc3835030b.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-07/1star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "18f442731387ee2ecb8652f66914b9af54fc24ee6abbf435194a279b13d1cb1f",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              413,
+              405,
+              569
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/보보 비버 눈 조각_1성.webp",
+          "pixel_size": [
+            132,
+            173
+          ],
+          "sha256": "c3df683b620fa0a5da6e3a5c1054a9a88343b00aaa48ea74dbbbe665fe972ed6",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_beaver_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-07/2star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "ac239dcb5f34e85d68c23095783daafd3d276fc89b775c80ae8e8d9a5c74b534",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              413,
+              573,
+              569
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/보보 비버 눈 조각_2성.webp",
+          "pixel_size": [
+            110,
+            201
+          ],
+          "sha256": "db904a25ea6a10d8a10579c25dfcdc95c5e6ed83adcabfb127f9b7a878273b8e",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_beaver_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-07/3star.png",
+            "pixel_size": [
+              163,
+              156
+            ],
+            "sha256": "49cf2b7541ba7a6378589fff9b79fa3a74f66e4b86f345ac8d21b0a5ff2ba197",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              413,
+              740,
+              569
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/보보 비버 눈 조각_3성.webp",
+          "pixel_size": [
+            136,
+            199
+          ],
+          "sha256": "28a8248a53eb292462fd17a679f4b3ee7c09dfcafaaabed31a4c07aeeb5040af",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_beaver_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-07/4star.png",
+            "pixel_size": [
+              163,
+              156
+            ],
+            "sha256": "1953a036ae78f1950dfbbf06bbc8db5a2957fe405af2a48309c371ace295fb9d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              413,
+              907,
+              569
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/보보 비버 눈 조각_4성.webp",
+          "pixel_size": [
+            113,
+            202
+          ],
+          "sha256": "7eb0d2188e55288ad917b59df2eb711283e20b8347414d1eda3b2411c1e0d15b",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_beaver_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-07/5star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "5790a72ce491562e14709567b6d1bf3e9a9ddca5e36a947f77168b7fb043d645",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              413,
+              1075,
+              569
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/보보 비버 눈 조각_5성.webp",
+          "pixel_size": [
+            135,
+            194
+          ],
+          "sha256": "c6684ed6d3d4def73aaf8a81345ce3fa843dc7a3e0cb48bc7a226b8a8aedc71a",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_beaver_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 165,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "2",
+      "level_label": "2레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-08",
+      "name_ko": "복실복실 양 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "琼琼绵羊雪雕",
+      "community_name_ko": "복실복실 양 눈 조각",
+      "provided_hobby_level": 3,
+      "hobby_unlock_level": 3,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 3
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 3
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/복실복실 양 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5301-e316b17ddc.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-08/1star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "83a7557a49a11c7db4c9d0f534447232c15bddfa218776136b131fd7e8bbf183",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              573,
+              405,
+              729
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/복실복실 양 눈 조각_1성.webp",
+          "pixel_size": [
+            150,
+            162
+          ],
+          "sha256": "a770cbbc78aa37281fd4b0f332c12e176f226484c75356e1ee58d1ca50bc9b71",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_sheep_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-08/2star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "b3b65ddcba64c09335f04516541224ca0d566b02b1741cca66c339cdea2ff377",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              573,
+              573,
+              729
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/복실복실 양 눈 조각_2성.webp",
+          "pixel_size": [
+            97,
+            201
+          ],
+          "sha256": "b517955c07fb81dae3ea48ad84192d6e333238630fab45c70229cbee9dc59bd3",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_sheep_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-08/3star.png",
+            "pixel_size": [
+              163,
+              156
+            ],
+            "sha256": "e52e3c6640f88b8d379f327b6725619c3ed967acc09bb137eb73b7fdd7012e47",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              573,
+              740,
+              729
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/복실복실 양 눈 조각_3성.webp",
+          "pixel_size": [
+            110,
+            205
+          ],
+          "sha256": "783fbab1808f6190ab5ba872bdafac2384331cd5523e30abc14144902e24d4fd",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_sheep_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-08/4star.png",
+            "pixel_size": [
+              163,
+              156
+            ],
+            "sha256": "ae850473434d9bfede9fdaebd66d3933138b42ee0a2c6ed582443a1f276472e7",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              573,
+              907,
+              729
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/복실복실 양 눈 조각_4성.webp",
+          "pixel_size": [
+            135,
+            183
+          ],
+          "sha256": "29c3fe41a513d8b32cd9f2000f3477dce36d066ed0c3c03354a6f705e1f39a8d",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_sheep_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-08/5star.png",
+            "pixel_size": [
+              164,
+              156
+            ],
+            "sha256": "1dd91275dcfb98372ab3459c93aab82d3807b03fbdd01c86966cec4096e33190",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              573,
+              1075,
+              729
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/복실복실 양 눈 조각_5성.webp",
+          "pixel_size": [
+            113,
+            201
+          ],
+          "sha256": "fb071ca2d0b51857737a3da465fa533db78c302188134ef12757af947a25da8a",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_sheep_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 190,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "3",
+      "level_label": "3레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-09",
+      "name_ko": "백조 도로시 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "萝萝天鹅雪雕",
+      "community_name_ko": "백조 도로시 눈 조각",
+      "provided_hobby_level": 3,
+      "hobby_unlock_level": 3,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 3
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 3
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/백조 도로시 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5302-28be328fd3.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-09/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "d4d74bc86bba74b566453d0afd7acce9885417918ac6e1de551d64130f73a521",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              733,
+              405,
+              890
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/백조 도로시 눈 조각_1성.webp",
+          "pixel_size": [
+            140,
+            182
+          ],
+          "sha256": "7287800597db5b926a6a5526fb8a55e3baa6ee3a56768dda7d85e9aeb17f34d8",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_swan_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-09/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "9a18f3e518d3dacc18090e77110bcdd87e25cc0ff460404184ea223b83b54052",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              733,
+              573,
+              890
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/백조 도로시 눈 조각_2성.webp",
+          "pixel_size": [
+            115,
+            201
+          ],
+          "sha256": "dd85cc59fbd4b62f8f4351522308278a76116ada2eb3a17ceb4d0932bf82cc4e",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_swan_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-09/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "d5ef3c92a38194ec9c846f77af7cbf3c183d01457007eeb0f7ac364f342e8a41",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              733,
+              740,
+              890
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/백조 도로시 눈 조각_3성.webp",
+          "pixel_size": [
+            76,
+            204
+          ],
+          "sha256": "59c0fe500e56d9e223a99592cd5884f3e8b0a5947af2da70f4329b1e2d97585b",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_swan_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-09/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "f6a849c90e541ef1b0578611803ed992dfd836b2cef425d9ff0d9479e976baab",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              733,
+              907,
+              890
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/백조 도로시 눈 조각_4성.webp",
+          "pixel_size": [
+            100,
+            209
+          ],
+          "sha256": "078b9edc3d06477c23b5153ccab47c85a9ed99f9561257b14d57b71186878677",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_swan_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-09/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "a0711ccc2c10b54d7ee66c22a573959dc2e34a6f87c44d38a35dec172e1fe506",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              733,
+              1075,
+              890
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/백조 도로시 눈 조각_5성.webp",
+          "pixel_size": [
+            172,
+            217
+          ],
+          "sha256": "a736ddd5adfeaec72189965138c34b9818d6e684243642b1d05c26a0ae7d99e6",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_swan_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 190,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "3",
+      "level_label": "3레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-10",
+      "name_ko": "니니 토끼 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "妮妮雪兔雪雕",
+      "community_name_ko": "니니 토끼 눈 조각",
+      "provided_hobby_level": 3,
+      "hobby_unlock_level": 4,
+      "hobby_level_status": "conflicting_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 4
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 4
+        },
+        {
+          "url": "https://www.heartopia.live/en/events/winter-frost-season/",
+          "level": 3
+        }
+      ],
+      "weather": [
+        "맑음",
+        "무지개"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/니니 토끼 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5307-383df9a7bb.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-10/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "15828ec7d6e260fdb6752ab387ad1fa6ac53dc61731b5f1042b0cc41989e9197",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              1055,
+              405,
+              1212
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 토끼 눈 조각_1성.webp",
+          "pixel_size": [
+            132,
+            184
+          ],
+          "sha256": "e7a9431da8a5cb79daa5e9892700f4778570273168f947fc6bba938b6b38bfdd",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_rabbit_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-10/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "a2894e57c82c67a57d5c7519f0ae362fc07c8b1b5f3a5b92f2a16fa10f05ddde",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              1055,
+              573,
+              1212
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 토끼 눈 조각_2성.webp",
+          "pixel_size": [
+            140,
+            206
+          ],
+          "sha256": "8343227245858cbfcd89d98e165ba890c8957f1a9ca2554ee96eec59fd85e929",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_rabbit_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-10/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "9e8a785e3a2d23349b3a21271052eb74471e16c80413d8258c4dd92b4e726772",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              1055,
+              740,
+              1212
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 토끼 눈 조각_3성.webp",
+          "pixel_size": [
+            80,
+            216
+          ],
+          "sha256": "fe6d78555dbaf38054a2ca21a0b3f0c3d4a424c0eb1be5c036815803abb84ea4",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_rabbit_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-10/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "4abdd9b7968ee985135d9d813d34d59b078fe0ac9d4e0d2b03c68e4a1c26315d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              1055,
+              907,
+              1212
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 토끼 눈 조각_4성.webp",
+          "pixel_size": [
+            154,
+            213
+          ],
+          "sha256": "44ec1d49f1c3f403363e63fefeb22a3dfe6ec6bfe4d95a49864f4351218f3c91",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_rabbit_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-10/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "bfb6f9992a013e0b41c628e18c57b6e1c6aa5b52926df48d455a9e47812e0d7b",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              1055,
+              1075,
+              1212
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 토끼 눈 조각_5성.webp",
+          "pixel_size": [
+            127,
+            213
+          ],
+          "sha256": "ed2b8b72f22fb0bd417c060205fcc9530401ef05d7e5a4ad19cb31bcfba9f4a7",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_rabbit_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "사용자 목록 Lv.3, TapTap 표와 허브 Lv.4; Heartopia.live는 사용자 목록과 같아 지역/시즌 차이 또는 표기 오류 여부 확인 필요.",
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://www.heartopia.live/en/events/winter-frost-season/",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 225,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "unverified",
+      "level_label": "확인 중 (3·4레벨 출처 불일치)",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-11",
+      "name_ko": "요리사 마시모 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "莫莫厨师雪雕",
+      "community_name_ko": "요리사 마시모 눈 조각",
+      "provided_hobby_level": 4,
+      "hobby_unlock_level": 3,
+      "hobby_level_status": "conflicting_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 3
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 3
+        },
+        {
+          "url": "https://www.heartopia.live/en/events/winter-frost-season/",
+          "level": 4
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/요리사 마시모 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5300-eba4b40b73.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-11/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "25ee2837473e0f4c7f5dd261a45dec8168ff1892c1666e2fc10d4ccdcb909004",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              894,
+              405,
+              1051
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/요리사 마시모 눈 조각_1성.webp",
+          "pixel_size": [
+            124,
+            194
+          ],
+          "sha256": "0da1ea04829e6fe7823344ea9e05dc1586b67eb79f0997f42441e14cb942a4e7",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_massimo_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-11/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "e18cb199289ba82423bb8cad9a22ca91093f479873210cef86492dd34883250e",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              894,
+              573,
+              1051
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/요리사 마시모 눈 조각_2성.webp",
+          "pixel_size": [
+            88,
+            205
+          ],
+          "sha256": "5d2fbb35c73e36aa454869d6be23e145a05f8942410dabb6180a5f034158bde5",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_massimo_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-11/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "a43fcdd865b1bb472c0959045bd9c8c77a71a290a3e00c4c3801e86bd7d1d08d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              894,
+              740,
+              1051
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/요리사 마시모 눈 조각_3성.webp",
+          "pixel_size": [
+            80,
+            208
+          ],
+          "sha256": "a222ba8720627dcba1e43ea77429f7c7dfc9bcdd02b24fcb64e6e7102ac0b905",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_massimo_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-11/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "48c847321ed1df885d133e91fae236f64a7fc7df01c0ade23a84ec7b1eda35d8",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              894,
+              907,
+              1051
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/요리사 마시모 눈 조각_4성.webp",
+          "pixel_size": [
+            112,
+            208
+          ],
+          "sha256": "1344ad4c0574835c429436e0d995cee2167726568c37e69a88e56e98eaeacc0c",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_massimo_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-11/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "dad26eb0c20c3350f7696265b02b08eabe108aae0e722ced09b62929683fec2c",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              894,
+              1075,
+              1051
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/요리사 마시모 눈 조각_5성.webp",
+          "pixel_size": [
+            123,
+            213
+          ],
+          "sha256": "61317e8909189957b14dbf439e17e75c3e0865f38c9f2ca9a380a255462b5d09",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_massimo_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "사용자 목록 Lv.4, TapTap 표와 허브 Lv.3; Heartopia.live는 사용자 목록과 같아 지역/시즌 차이 또는 표기 오류 여부 확인 필요.",
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://www.heartopia.live/en/events/winter-frost-season/",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 225,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "unverified",
+      "level_label": "확인 중 (3·4레벨 출처 불일치)",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-12",
+      "name_ko": "파도 벌 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "浪花蜂雪雕",
+      "community_name_ko": "파도 벌 눈 조각",
+      "provided_hobby_level": 4,
+      "hobby_unlock_level": 4,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 4
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 4
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/파도 벌 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5303-735d7a9bbc.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-12/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "49483b8e62164642ff3dff5fa41f5597916cb024b0b0b90337cf168cb5c2c377",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              1216,
+              405,
+              1373
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/파도 벌 눈 조각_1성.webp",
+          "pixel_size": [
+            140,
+            191
+          ],
+          "sha256": "d2999b955d0302537ff57e355bec9b5f48ca4c1623992a6541b5412da28cac16",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bee_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-12/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "573aad86b3322935fe51345c61bc6c51f04d53885654567fdf60fbba295d2842",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              1216,
+              573,
+              1373
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/파도 벌 눈 조각_2성.webp",
+          "pixel_size": [
+            98,
+            184
+          ],
+          "sha256": "a475b53d656b3305bab2fea488ccd5df807990904e8eaa440914cc0f0eb11350",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bee_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-12/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "062e7795295a1394bbaa7f3e7fcfc38380c9503f79fb89d66509cc06fe813ea4",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              1216,
+              740,
+              1373
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/파도 벌 눈 조각_3성.webp",
+          "pixel_size": [
+            99,
+            217
+          ],
+          "sha256": "cd7d6ad5575d50cda70199bbaa2ad4ef76a957b056cffd1e5779acbb58730848",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bee_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-12/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "2059b67e1c2cc1a06f95c30fa7eafb7a63665507e569c7981415f3c659112e6b",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              1216,
+              907,
+              1373
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/파도 벌 눈 조각_4성.webp",
+          "pixel_size": [
+            110,
+            213
+          ],
+          "sha256": "4c099d455b55ddd89c84889eac5b11e06aaaae09126c555d6a36df8f915b261f",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bee_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-12/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "db8d1be9757be4b449054169e650e9311da661b0585941a9bf960ddec567716a",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              1216,
+              1075,
+              1373
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/파도 벌 눈 조각_5성.webp",
+          "pixel_size": [
+            161,
+            210
+          ],
+          "sha256": "480f6c8177adf4eff2b268ef7da3caad2cf1625bdab52ca7ad391e0c3b6e865d",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bee_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 225,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "4",
+      "level_label": "4레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-13",
+      "name_ko": "베이비 코알라 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "贝贝考拉雪雕",
+      "community_name_ko": "베이비 코알라 눈 조각",
+      "provided_hobby_level": 4,
+      "hobby_unlock_level": 4,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 4
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 4
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/베이비 코알라 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5305-e9c0f8aa62.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-13/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "d94ced6e3a26d9e4b4b0f7d2a638f0a1183622a194644b949db6c63b8a73a31d",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              1377,
+              405,
+              1534
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/베이비 코알라 눈 조각_1성.webp",
+          "pixel_size": [
+            146,
+            170
+          ],
+          "sha256": "96c6edbd3ae0945a2a9e284214481a8ef18919b53d3669ceab96c3886f0133aa",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_koala_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-13/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "21a740202ca60f3d38d7262ff6335d9d054cd841930ad2d3251804a64b534c28",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              1377,
+              573,
+              1534
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/베이비 코알라 눈 조각_2성.webp",
+          "pixel_size": [
+            149,
+            189
+          ],
+          "sha256": "a343511bcb37ff2131bce8d33006a2048bdb9e0e7ad1661da9bb338adb4e2533",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_koala_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-13/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "e181dcfaba12fd718d138796ee577ce1f994b50647d233ad5bc30cb170a3bbaf",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              1377,
+              740,
+              1534
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/베이비 코알라 눈 조각_3성.webp",
+          "pixel_size": [
+            107,
+            193
+          ],
+          "sha256": "1c0e0f09cec7763159879a838bc5857b47bafc8f94e55dcaa8d8ab0cef0ec3a3",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_koala_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-13/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "2333713b1c5861b02600ed947e9f2be3b70b7e763d07fa41fa8e549e6df0a897",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              1377,
+              907,
+              1534
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/베이비 코알라 눈 조각_4성.webp",
+          "pixel_size": [
+            96,
+            210
+          ],
+          "sha256": "537b1b4e0736eea5f89b111f14d4f909ad58845b40ffccf7566bad8465cf8b4b",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_koala_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-13/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "75ef934db5b2f73732b7c3ca4e656e64cd15810df9081610e3f776a1b1cf816b",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              1377,
+              1075,
+              1534
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/베이비 코알라 눈 조각_5성.webp",
+          "pixel_size": [
+            155,
+            205
+          ],
+          "sha256": "b2be829e97a2191a64659f8d02d99e297784133aca938e5f32256a2335884ee6",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_koala_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 225,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "4",
+      "level_label": "4레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-14",
+      "name_ko": "블랑코 호랑이 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "布布虎雪雕",
+      "community_name_ko": "블랑코 호랑이 눈 조각",
+      "provided_hobby_level": 5,
+      "hobby_unlock_level": 5,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 5
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 5
+        }
+      ],
+      "weather": [
+        "모든 날씨"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/블랑코 호랑이 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5308-efeafd12d4.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-14/1star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "b390b13bd28c040430552b7357f3fd6e19a30c3094c46710e509fe8d34c37d22",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              1538,
+              405,
+              1695
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/블랑코 호랑이 눈 조각_1성.webp",
+          "pixel_size": [
+            151,
+            185
+          ],
+          "sha256": "eef3ae13f28e5f5f36abe7c13e997f7b27551657f62176ea13342b1a680e7195",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_tiger_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-14/2star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "1f08678fdae7bf383c3d37ed081cfcd211b9888822ad55d8ce4617da6ed67891",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              1538,
+              573,
+              1695
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/블랑코 호랑이 눈 조각_2성.webp",
+          "pixel_size": [
+            117,
+            200
+          ],
+          "sha256": "c9b55fd5714115178092b6b7ccaae43e188df6425b3df8dd8127d978078efee2",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_tiger_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-14/3star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "6ce9ee243116e54736248183d8dc6328113bc2fae011ef97a748f34e9bd74cfc",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              1538,
+              740,
+              1695
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/블랑코 호랑이 눈 조각_3성.webp",
+          "pixel_size": [
+            80,
+            208
+          ],
+          "sha256": "d13461d744cfed28e52ae99793ab8c9855cd094cf1edbfd7e172a6090ad0f04f",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_tiger_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-14/4star.png",
+            "pixel_size": [
+              163,
+              157
+            ],
+            "sha256": "66580fb1227556e2805edff86eb8818bd6dc4c740d6df4d37f0bd3a6f630e6b9",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              1538,
+              907,
+              1695
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/블랑코 호랑이 눈 조각_4성.webp",
+          "pixel_size": [
+            100,
+            210
+          ],
+          "sha256": "22ee042689cb4c5c5dd9bf7915d2481685f96a6a0c369d619acba7377c74f2ac",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_tiger_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-14/5star.png",
+            "pixel_size": [
+              164,
+              157
+            ],
+            "sha256": "c0883b08ae16d17957227be8cd87cd3f3969e96350efa4aeeaa69f2754d4eba3",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              1538,
+              1075,
+              1695
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/블랑코 호랑이 눈 조각_5성.webp",
+          "pixel_size": [
+            163,
+            205
+          ],
+          "sha256": "1526df304971a6179f678d8dfb6546b0acceb9bde953eb820bbea60db329d916",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_tiger_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 280,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "5",
+      "level_label": "5레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    },
+    {
+      "id": "sculpture-15",
+      "name_ko": "니니 베어 눈 조각",
+      "name_ko_status": "korean_community_catalog_matched",
+      "name_zh": "尼尼熊雪雕",
+      "community_name_ko": "니니 베어 눈 조각",
+      "provided_hobby_level": 5,
+      "hobby_unlock_level": 5,
+      "hobby_level_status": "cross_checked_community_sources",
+      "hobby_level_evidence": [
+        {
+          "url": "https://www.taptap.cn/moment/633309097806007143",
+          "level": 5
+        },
+        {
+          "url": "https://heartopia-hub.com/ko/catalog/snowflakes",
+          "level": 5
+        }
+      ],
+      "weather": [
+        "비",
+        "눈",
+        "무지개"
+      ],
+      "time": "상시",
+      "conditions_status": "community_sources; regional/seasonal verification needed",
+      "representative_image": "catalog/images/transparent/니니 베어 눈 조각_1성.webp",
+      "community_icon_url": "https://heartopia-hub.com/item-images/game/5309-9f09a93e43.webp",
+      "stars": [
+        {
+          "stars": 1,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-15/1star.png",
+            "pixel_size": [
+              164,
+              158
+            ],
+            "sha256": "198da7a8757f8d9f141211c985b0d153ee93ad8068fb6f8b7264c51846330b3c",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              241,
+              1699,
+              405,
+              1857
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 베어 눈 조각_1성.webp",
+          "pixel_size": [
+            135,
+            177
+          ],
+          "sha256": "c15c1df416adfc822a4a75a84f927e00a9ea63a7debfe495ba4d16d5d455e155",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bear_1.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 2,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-15/2star.png",
+            "pixel_size": [
+              164,
+              158
+            ],
+            "sha256": "3bdd7277a14235f0288f112a6e048468ee7bf5e89119becdaa3afd7e198427a6",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              409,
+              1699,
+              573,
+              1857
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 베어 눈 조각_2성.webp",
+          "pixel_size": [
+            86,
+            194
+          ],
+          "sha256": "e1e9b183ec1885151b171c713ec1aaa184e51287bb5d3d680053e203827fe1bb",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bear_2.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 3,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-15/3star.png",
+            "pixel_size": [
+              163,
+              158
+            ],
+            "sha256": "2013a0aa1b2558d9cc4c85195d5f56f6228a5c11d7ae2cb44cb21d1bf3ac016f",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              577,
+              1699,
+              740,
+              1857
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 베어 눈 조각_3성.webp",
+          "pixel_size": [
+            95,
+            211
+          ],
+          "sha256": "eb5a2af1ebd3d8d364c64b5e0256885f1693ac2dbf358156cf66a533307c5cb7",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bear_3.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 4,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-15/4star.png",
+            "pixel_size": [
+              163,
+              158
+            ],
+            "sha256": "7cd1b8d6be1268b0f9dfdc85e15d936e3c4f3933130e5e8087de2dcbda9983f1",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              744,
+              1699,
+              907,
+              1857
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 베어 눈 조각_4성.webp",
+          "pixel_size": [
+            100,
+            208
+          ],
+          "sha256": "dde01b972fe37e62de8d3eebfc234b72408c9ef6afccadb5be7c65049d6e1243",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bear_4.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        },
+        {
+          "stars": 5,
+          "status": "collected",
+          "previous_asset": {
+            "image": "catalog/images/sculpture-15/5star.png",
+            "pixel_size": [
+              164,
+              158
+            ],
+            "sha256": "3ded3035d850de14b8258cc422decdd6e12bb7df5e092154d9dcbfaa171b05fb",
+            "source_page_url": "https://www.taptap.cn/moment/633309097806007143",
+            "source_image_url": "https://img2-tc.tapimg.com/moment/etag/FojI7err7MrQlu3Fq4ZK4jKqAZAa.jpg/_tap_ugc.jpg",
+            "source_local_image": "source/taptap-images/image-17.jpg",
+            "crop_box_xyxy": [
+              911,
+              1699,
+              1075,
+              1857
+            ],
+            "evidence": "중국어 도감의 왼쪽부터 1~5성 열. 픽셀 크롭만 수행, 배경/워터마크 유지."
+          },
+          "image": "catalog/images/transparent/니니 베어 눈 조각_5성.webp",
+          "pixel_size": [
+            138,
+            220
+          ],
+          "sha256": "a1f6f37f9a6bcd6c91f39559697610d64f988521235e22a71fe4697306124249",
+          "source_local_image": "C:\\Users\\k\\Desktop\\user_kit\\뜌타 유저키트-20260419T055550Z-3-001\\뜌타 유저키트\\snowballbase\\spr_ui_item_normal_p_snowballbase_bear_5.png",
+          "evidence": "사용자 제공 유저키트의 종류·성급별 투명 PNG를 무손실 WebP로 변환. 파일명 성급과 기존 외형 대조."
+        }
+      ],
+      "notes": [
+        "한국 게임 UI 직접 확인은 미완료이며, 2026-10-14 한국어 허브 도감의 동일 한글명과 대조 완료."
+      ],
+      "source_urls": [
+        "https://m.blog.naver.com/hyjueng/224168770515",
+        "https://www.taptap.cn/moment/633309097806007143",
+        "https://heartopia-hub.com/ko/catalog/snowflakes",
+        "https://gamerch.com/heartopia/965654",
+        "https://gamerch.com/heartopia/961081",
+        "https://www.taptap.cn/moment/637923730395237916"
+      ],
+      "sell_price_1star": 280,
+      "price_grade": 1,
+      "price_source": "https://gamerch.com/heartopia/965654",
+      "material": "눈덩이",
+      "filter_level": "5",
+      "level_label": "5레벨",
+      "name_ko_source": "https://heartopia-hub.com/ko/catalog/snowflakes",
+      "name_ko_checked_on": "2026-10-14"
+    }
+  ],
+  "rechecked_on": "2026-10-14",
+  "recheck_note": "일본 2026 가격/날씨 표 및 한국 허브·중국 도감 대조. 기존 이름과 충돌 레벨 근거는 유지. 1성 가격은 명시적 표 값. 한국 현재 신규해금 가능 여부는 미확인.",
+  "assets_checked_on": "2026-10-14"
+}

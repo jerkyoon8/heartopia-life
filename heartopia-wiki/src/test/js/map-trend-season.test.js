@@ -100,3 +100,35 @@ test('ordinary dynamic resource control attributes escape names',()=>{
     assert.doesNotMatch(group.innerHTML,/<script>|data-name=""/);
     assert.match(group.innerHTML,/data-name="&quot;&lt;script&gt;bad&lt;\/script&gt;"/);
 });
+
+test('collapsed ordinary and season lists do not activate image requests',()=>{
+    const {app,list}=setup();app.ui.renderCategoryList();
+    for (const group of list.children) {
+        assert.doesNotMatch(group.innerHTML,/<img\b[^>]*\ssrc=/);
+    }
+    assert.match(list.children[0].innerHTML,/<img\b[^>]*width="24"[^>]*height="24"/);
+});
+
+test('expanding either list activates only its lazy images and survives rerender',()=>{
+    const {app,list}=setup();
+    const render=()=>{list.children=[];app.ui.renderCategoryList();};
+    const forage=()=>list.children.find(c=>c.innerHTML.includes('class="category-header" data-category="forageable"'));
+    app.state.expandedCategories.forageable=true;render();
+    assert.match(forage().innerHTML,/<img\b[^>]*src="\/mushroom.webp"[^>]*loading="lazy"/);
+    assert.doesNotMatch(list.children[0].innerHTML,/<img\b[^>]*\ssrc=/);
+    app.state.expandedCategories.trend_season=true;render();
+    assert.match(list.children[0].innerHTML,/<img\b[^>]*src="\/tree.webp"[^>]*loading="lazy"/);
+    app.state.itemVisible['forageable:뽕나무버섯']=false;render();
+    assert.match(forage().innerHTML,/src="\/mushroom.webp"/);
+    app.state.expandedCategories.forageable=false;render();
+    assert.doesNotMatch(forage().innerHTML,/<img\b[^>]*\ssrc=/);
+    app.state.expandedCategories.forageable=true;render();
+    assert.match(forage().innerHTML,/src="\/mushroom.webp"/);
+});
+
+test('lazy sidebar images preserve escaped URLs',()=>{
+    const {app,list}=setup();
+    app.state.masterDynamicResources[1].iconUrl='/uploads/tree.webp?name="<&';
+    app.state.expandedCategories.trend_season=true;app.ui.renderCategoryList();
+    assert.match(list.children[0].innerHTML,/src="\/uploads\/tree.webp\?name=&quot;&lt;&amp;"/);
+});

@@ -533,6 +533,13 @@
                                 <th:block sec:authorize="hasRole('ADMIN')">
                                     <div class="settings-divider"></div>
                                     <div class="settings-section-title">관리자</div>
+                                    <a th:href="@{/wiki/admin/catalog-cache}" class="settings-item" role="menuitem">
+                                        <div class="settings-item-label">
+                                            <i class="fas fa-rotate"></i>
+                                            <span class="settings-item-title">도감 캐시 관리</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                    </a>
                                     <a th:href="@{/wiki/admin/event-settings}" class="settings-item" role="menuitem">
                                         <div class="settings-item-label">
                                             <i class="fas fa-calendar-check"></i>

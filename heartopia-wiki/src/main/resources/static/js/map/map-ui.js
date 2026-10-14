@@ -9,6 +9,12 @@ window.MapApp.ui = {
             .replaceAll('"', '&quot;')
             .replaceAll("'", '&#039;');
     },
+    renderSidebarIcon: function (iconUrl, fallback, isExpanded) {
+        if (!iconUrl) return `<span class="pin-item-icon">${fallback}</span>`;
+        // 접힌 목록은 src를 생략해 요청하지 않고, 펼친 목록만 지연 로딩한다.
+        const source = isExpanded ? ` src="${this.escapeHtml(iconUrl)}"` : '';
+        return `<img class="pin-item-icon"${source} loading="lazy" decoding="async" width="24" height="24" alt="">`;
+    },
     showToast: function (message, duration = 2500) {
         const mapToast = document.getElementById('mapToast');
         const mapToastText = document.getElementById('mapToastText');
@@ -188,7 +194,7 @@ window.MapApp.ui = {
                 const id = escape(pins[0]?.id || 'm-' + r.name);
                 const visible = state.itemVisible[`${category}:${r.name}`] !== false;
                 return `<div class="pin-item" data-id="${id}" data-category="${category}" data-name="${escape(r.name)}">
-                    ${r.iconUrl ? `<img class="pin-item-icon" src="${escape(r.iconUrl)}" alt="">` : '<span class="pin-item-icon">★</span>'}
+                    ${this.renderSidebarIcon(r.iconUrl, '★', state.expandedCategories.trend_season === true)}
                     <span class="pin-item-name">${escape(r.name)} (${pins.length})</span><div class="pin-item-controls">
                     ${pins.length ? `<button class="item-visibility-toggle ${visible ? '' : 'off'}" data-id="${id}" data-category="${category}" data-name="${escape(r.name)}" title="표시/숨기기"><i class="fas fa-eye"></i></button>` : ''}
                     ${window.isAdmin ? `<button class="trend-resource-edit" data-resource-id="${r.id}" title="아이템 수정"><i class="fas fa-pen"></i></button><button class="item-add-btn" data-category="${category}" data-name="${escape(r.name)}" title="연속 배치"><i class="fas fa-plus"></i></button>` : ''}
@@ -439,12 +445,11 @@ window.MapApp.ui = {
                 const visibilityKey = window.MapApp.getItemVisibilityKey(category, pin);
                 const isItemVisible = state.itemVisible[visibilityKey] !== false;
                 const safeName = window.MapApp.ui.escapeHtml(pin.name);
-                const safeIconUrl = window.MapApp.ui.escapeHtml(pin.iconUrl || '');
 
                 return `
                     <div class="pin-item ${isPlacing ? 'placing' : ''}" data-id="${pin.id}" data-name="${safeName}" data-category="${category}">
                         ${isUnplaced ? '<span class="pin-unplaced" title="미배치"></span>' : ''}
-                        ${pin.iconUrl ? `<img class="pin-item-icon" src="${safeIconUrl}" alt="" />` : `<span class="pin-item-icon">${config.icon}</span>`}
+                        ${window.MapApp.ui.renderSidebarIcon(pin.iconUrl, config.icon, isExpanded)}
                         <span class="pin-item-name">${safeName} ${isMultiLocation ? `(${pinCount})` : ''}</span>
                         <div class="pin-item-controls">
                             ${(hasVisibilityToggle && !isUnplaced) || (isMultiLocation && pinCount > 0) ? `

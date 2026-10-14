@@ -1,0 +1,22 @@
+.snow-notice,.snow-guide { padding:16px; margin-bottom:22px; border:1px solid var(--border-color); border-radius:12px; background:var(--card-bg); line-height:1.7; }
+.snow-guide summary,.snow-variants summary { cursor:pointer; font-weight:700; }
+.snow-guide p { margin:12px 0 0; }
+.snow-image { background:#edf5fa!important; }
+.snow-image img { max-height:145px; object-fit:contain; }
+.snow-note,.snow-count { font-size:.85rem; color:var(--stat-label); }
+.snow-count { margin:12px 0 0; }
+.snow-variants { margin:0 14px 16px; border-top:1px solid var(--border-color); padding-top:12px; }
+.snow-star-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+.snow-star-grid figure { margin:0; text-align:center; min-width:0; }
+.snow-star-grid img { width:100%; max-width:165px; height:auto; border-radius:8px; }
+.snow-star-grid figcaption { font-size:.8rem; margin-top:4px; color:var(--stat-label); }
+.snow-na { display:flex; align-items:center; justify-content:center; min-height:80px; color:var(--stat-label); font-size:.85rem; }
+.snow-guide-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 15px; border:1px solid var(--border-color); border-radius:10px; background:var(--card-bg); color:var(--text-color); font-weight:700; }
+.snow-guide-button:hover { background:var(--nav-hover); }
+.snow-guide-button:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.snow-item[hidden] { display:none!important; }
+.snow-tutorial li { margin-bottom:12px; line-height:1.7; }
+.snow-tutorial .snow-guide { margin-top:16px; }
+.snow-tutorial-images { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:12px; }
+.snow-tutorial-images img { display:block; width:100%; height:auto; border-radius:12px; }
+@media (max-width:575px) { .snow-tutorial-images { grid-template-columns:1fr; } }

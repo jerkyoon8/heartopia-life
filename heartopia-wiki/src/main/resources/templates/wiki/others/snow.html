@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/common-head :: common_head}"></th:block>
+    <link rel="stylesheet" href="/css/snow.css"><script src="/js/snow.js" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="mw-body">
+    <div class="page-header"><i class="fas fa-snowman fa-2x text-info" aria-hidden="true"></i><h1>눈 조각 도감</h1></div>
+    <p class="snow-notice">눈 조각 15종 · 성급별 실제 외형 71개<br>눈덩이를 작업대에 올리고 눈꽃 표시를 눌러 조각합니다. 취미 레벨은 제작 종류를, 별 등급은 완성품의 품질과 외형을 구분합니다.</p>
+    <div class="wiki-filter-container">
+        <div class="filter-top-tier">
+            <div class="search-wrapper"><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="snowSearch" class="search-input" placeholder="눈 조각 검색..." aria-label="눈 조각 검색"></div>
+            <button type="button" class="btn-flower-guide snow-guide-button" data-bs-toggle="modal" data-bs-target="#snowTutorialModal"><i class="fas fa-book-open" aria-hidden="true"></i> 눈 조각 튜토리얼</button>
+            <button type="button" class="btn-filter-toggle" id="snowFilterToggle" aria-controls="snowAdvancedFilters" aria-expanded="false"><i class="fas fa-sliders-h" aria-hidden="true"></i> 상세 옵션</button>
+            <button type="button" id="snowReset" class="btn-reset-icon" title="초기화" aria-label="초기화"><i class="fas fa-undo" aria-hidden="true"></i></button>
+        </div>
+        <div class="filter-advanced-tier" id="snowAdvancedFilters"><div class="advanced-section"><div class="section-label">조건 검색</div><div class="advanced-controls-box">
+            <div class="filter-select-wrapper"><label class="prefix" for="snowLevel">취미 레벨</label><select id="snowLevel"><option value="all">모든 레벨</option><option value="1">1레벨</option><option value="2">2레벨</option><option value="3">3레벨</option><option value="4">4레벨</option><option value="5">5레벨</option><option value="unverified">레벨 확인 중</option></select></div>
+            <div class="filter-select-wrapper"><label class="prefix" for="snowWeather">날씨</label><select id="snowWeather"><option value="all">모든 조건</option><option>맑음</option><option>비</option><option>눈</option><option>무지개</option></select></div>
+        </div></div></div>
+        <p class="snow-count" id="snowCount" aria-live="polite">15종</p>
+    </div>
+    <div class="wiki-grid-layout" id="snowGrid">
+        <article class="wiki-item-card snow-item" th:each="item : ${snowSculptures}" th:data-name="${item.name_ko}" th:data-level="${item.filter_level}" th:data-weather="${#strings.listJoin(item.weather, '|')}">
+            <div class="wiki-item-image snow-image"><img th:src="${'/snow/' + item.representative_image}" th:alt="${item.name_ko + ' 1성'}" loading="lazy" decoding="async"></div>
+            <div class="wiki-item-info"><div class="wiki-item-name" th:text="${item.name_ko}">눈 조각</div></div>
+            <table class="wiki-item-stats">
+                <tr><td class="stat-label">제작 재료</td><td class="stat-value" th:text="${item.material}">눈덩이</td></tr>
+                <tr><td class="stat-label">취미 레벨</td><td class="stat-value" th:text="${item.level_label}">1레벨</td></tr>
+                <tr><td class="stat-label">시간</td><td class="stat-value" th:text="${item.time}">상시</td></tr>
+                <tr><td class="stat-label">날씨</td><td class="stat-value" th:text="${#strings.listJoin(item.weather, ' · ')}"></td></tr>
+                <tr><td class="stat-label">1성 판매가</td><td class="stat-value" th:text="${item.sell_price_1star + ' 골드'}"></td></tr>
+            </table>
+            <details class="snow-variants"><summary>성급별 외형 보기</summary><div class="snow-star-grid"><figure th:each="star : ${item.stars}">
+                <a th:if="${star.image != null}" th:href="${'/snow/' + star.image}"><img th:src="${'/snow/' + star.image}" th:alt="${item.name_ko + ' ' + star.stars + '성'}" loading="lazy" decoding="async"></a>
+                <div class="snow-na" th:if="${star.image == null}">해당 없음</div><figcaption th:text="${star.stars + '성'}"></figcaption>
+            </figure></div></details>
+        </article>
+    </div>
+    <p id="snowEmpty" hidden>검색 결과가 없습니다.</p>
+</main>
+<div class="modal fade" id="snowTutorialModal" tabindex="-1" aria-labelledby="snowTutorialTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title" id="snowTutorialTitle">눈 조각 튜토리얼</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button></div>
+    <div class="modal-body snow-tutorial">
+        <div class="snow-guide">
+            <strong>시즌이 끝나도 눈 조각을 만들 수 있나요?</strong>
+            <p>눈 조각 취미와 눈덩이 생성 장비·작업대를 이미 보유했다면 시즌 종료 후에도 제작할 수 있습니다.</p>
+            <p>시즌 때 퀘스트를 하지 않은 경우에도, 해외 공략에서는 에쥬어에게 눈 조각 취미를 구매한 뒤 다시 대화하면 도구와 안내 퀘스트를 받을 수 있다고 안내합니다. 한국 서버의 현재 신규 해금 여부는 확인 중이므로, 에쥬어의 ‘트렌드 취미’ 상점에서 ‘눈 조각 취미’ 판매 여부를 먼저 확인해 주세요.</p>
+        </div>
+        <div class="snow-tutorial-images">
+            <a href="/snow/tutorial/눈조각_만들기.webp" target="_blank" rel="noopener"><img src="/snow/tutorial/눈조각_만들기.webp" alt="눈 조각 만들기: 도구 준비, 눈덩이 받기, 눈꽃 누르기, 완성품 배치" width="1024" height="1536" loading="lazy"></a>
+            <a href="/snow/tutorial/눈조각_알아두기.webp" target="_blank" rel="noopener"><img src="/snow/tutorial/눈조각_알아두기.webp" alt="눈 조각 알아두기: 취미 레벨과 별 등급의 차이, 토끼와 곰의 날씨 조건, 결과의 변동" width="1024" height="1536" loading="lazy"></a>
+        </div>
+        <p class="snow-note">제작 방식을 설명하기 위해 새로 만든 안내 그림이며 실제 게임 화면은 아닙니다. 그림을 누르면 크게 볼 수 있습니다.</p>
+        <ol><li><strong>취미와 도구 준비</strong><br>에쥬어의 취미 상점에서 눈 조각 취미를 해금하고 안내 퀘스트로 눈덩이 생성 장비와 조각 작업대를 받습니다. 현재 한국 서버의 신규 해금 가능 여부는 확인 중입니다.</li>
+            <li><strong>눈덩이 받기</strong><br>홈에 눈덩이 생성 장비를 놓고 생성된 눈덩이를 받습니다. 일본 제작 안내는 1시간마다 생성된다고 설명합니다. 눈이 쌓인 날 채집 중에도 얻을 수 있다는 이용자 공략이 있습니다.</li>
+            <li><strong>작업대에서 조각</strong><br>눈덩이를 가진 상태로 작업대를 조사합니다. 제한 시간 안에 나타나는 눈꽃 표시를 눌러 미니게임을 진행합니다.</li>
+            <li><strong>완성품 수집과 배치</strong><br>완성품을 받고 홈에 배치합니다. 눈 벽돌과 이글루 부품은 조합해 꾸밀 수 있습니다. 같은 종류도 별 등급에 따라 외형이 달라집니다.</li></ol>
+        <div class="snow-guide"><strong>취미 레벨과 별 등급은 달라요</strong><p>취미 레벨은 제작할 수 있는 종류를 늘립니다. 별 등급은 결과물의 품질입니다. 특정 점수나 완료 라운드가 원하는 조각·성급을 반드시 보장하는 것은 아닙니다.</p><p>일부 조각에는 날씨 조건이 있습니다. 토끼는 맑음·무지개, 곰은 비·눈·무지개 때 도전하세요.</p></div>
+        <p class="snow-note">제작 방식은 과거 한국 화면과 해외 공략을 대조한 안내입니다. 시즌 종료 후 기존 보유자의 제작과 신규 취미 해금은 구분해서 확인해야 합니다.</p>
+    </div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button></div>
+</div></div></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

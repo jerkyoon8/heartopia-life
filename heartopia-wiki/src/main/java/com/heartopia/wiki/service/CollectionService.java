@@ -290,7 +290,7 @@ public class CollectionService {
         collectionMapper.insertAnimal(animal);
     }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings", "cookingDetail"}, allEntries = true)
     public void addCooking(CookingCollection cooking) {
         collectionMapper.insertCooking(cooking);
     }
@@ -330,7 +330,7 @@ public class CollectionService {
     @org.springframework.cache.annotation.CacheEvict(value = {"allAnimals", "countAnimals", "searchAnimals"}, allEntries = true)
     public void updateAnimal(AnimalCollection animal) { collectionMapper.updateAnimal(animal); }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings", "cookingDetail"}, allEntries = true)
     public void updateCooking(CookingCollection cooking) { collectionMapper.updateCooking(cooking); }
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
@@ -360,7 +360,7 @@ public class CollectionService {
     @org.springframework.cache.annotation.CacheEvict(value = {"allAnimals", "countAnimals", "searchAnimals"}, allEntries = true)
     public void deleteAnimal(Integer id) { collectionMapper.deleteAnimal(id); }
 
-    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings"}, allEntries = true)
+    @org.springframework.cache.annotation.CacheEvict(value = {"allCookings", "countCookings", "searchCookings", "cookingDetail"}, allEntries = true)
     public void deleteCooking(Integer id) { collectionMapper.deleteCooking(id); }
 
     @org.springframework.cache.annotation.CacheEvict(value = {"allFlowers", "countFlowers", "searchFlowers"}, allEntries = true)
